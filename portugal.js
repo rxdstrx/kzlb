@@ -15,12 +15,18 @@ const noData       = document.getElementById('noData');
 // Convert time string to seconds for proper sorting
 function timeToSeconds(t) {
   if (!t || t === '—') return Infinity;
+  // Remove any spaces
+  t = t.trim();
   const parts = t.split(':');
-  if (parts.length === 3) {
-    return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
-  } else if (parts.length === 2) {
-    return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
-  }
+  try {
+    if (parts.length === 3) {
+      // HH:MM:SS.xxxx
+      return Math.abs(parseInt(parts[0])) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
+    } else if (parts.length === 2) {
+      // MM:SS.xxxx
+      return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+    }
+  } catch { return Infinity; }
   return parseFloat(t);
 }
 
@@ -203,6 +209,16 @@ function buildMapList() {
   const ptMapList   = document.getElementById('ptMapList');
   const ptMapSearch = document.getElementById('ptMapSearch');
 
+  // Build map → tier lookup from ALL_MAPS + from player data
+  const mapTierLookup = {};
+  if (typeof ALL_MAPS !== 'undefined') {
+    ALL_MAPS.forEach(m => { mapTierLookup[m.name] = m.tier; });
+  }
+  // Also get tier from player map records
+  allPlayers.forEach(p => (p.maps_list || []).forEach(m => {
+    if (!mapTierLookup[m.map] && m.tier) mapTierLookup[m.map] = m.tier;
+  }));
+
   const mapSet = new Set();
   allPlayers.forEach(p => (p.maps_list || []).forEach(m => mapSet.add(m.map)));
   const maps = [...mapSet].sort();
@@ -210,9 +226,10 @@ function buildMapList() {
   function render(filter = '') {
     ptMapList.innerHTML = '';
     maps.filter(m => m.toLowerCase().includes(filter.toLowerCase())).forEach(m => {
+      const tier = mapTierLookup[m] || '?';
       const chip = document.createElement('div');
       chip.className = 'pt-map-chip' + (selectedMap === m ? ' active' : '');
-      chip.textContent = m;
+      chip.innerHTML = `<span class="chip-tier">T${tier}</span> ${m}`;
       chip.addEventListener('click', () => {
         selectedMap = selectedMap === m ? null : m;
         currentPage = 1;
