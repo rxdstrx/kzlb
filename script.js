@@ -536,10 +536,9 @@ function renderCountries(filter = '') {
     item.className = 'country-item' + (selectedCountry?.code === c.code ? ' active' : '');
     item.innerHTML = `<span class="country-flag">${c.flag}</span><span>${c.name}</span>`;
     item.addEventListener('click', () => {
-      // Navigate to country page if available
       const countryPages = { pt: 'portugal.html' };
       if (countryPages[c.code]) {
-        window.location.href = countryPages[c.code];
+        window.location.assign('portugal.html');
         return;
       }
       selectedCountry = selectedCountry?.code === c.code ? null : c;
@@ -576,9 +575,26 @@ tierBtn.addEventListener('click', () => {
   chevron.classList.toggle('rotated', isOpen);
 });
 
+let selectedTier = null;
+
 document.querySelectorAll('.tier-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    window.location.href = `tier.html?tier=${chip.dataset.tier}`;
+  chip.addEventListener('click', (e) => {
+    e.stopPropagation();
+    selectedTier = selectedTier === chip.dataset.tier ? null : chip.dataset.tier;
+    document.querySelectorAll('.tier-chip').forEach(c => c.classList.toggle('active', c.dataset.tier === selectedTier));
+
+    // Filter maps by tier and show in maps dropdown
+    if (selectedTier) {
+      const tierMaps = ALL_MAPS.filter(m => String(m.tier) === selectedTier);
+      mapsBtn.querySelector('span').textContent = `Tier ${selectedTier} Maps`;
+      mapsOptions.classList.remove('hidden');
+      mapsChevron.classList.add('rotated');
+      renderMapsFilter('', tierMaps);
+      mapsSearch.focus();
+    } else {
+      mapsBtn.querySelector('span').textContent = selectedMap || 'Maps';
+      renderMapsFilter('');
+    }
   });
 });
 
@@ -590,9 +606,10 @@ const mapsChevron = document.getElementById('mapsChevron');
 const mapsSearch  = document.getElementById('mapsSearch');
 const mapsList    = document.getElementById('mapsList');
 
-function renderMapsFilter(filter = '') {
+function renderMapsFilter(filter = '', sourceList = null) {
   mapsList.innerHTML = '';
-  const filtered = ALL_MAPS.filter(m => m.name.toLowerCase().includes(filter.toLowerCase()));
+  const base = sourceList || ALL_MAPS;
+  const filtered = base.filter(m => m.name.toLowerCase().includes(filter.toLowerCase()));
   filtered.forEach(m => {
     const item = document.createElement('div');
     item.className = 'country-item' + (selectedMap === m.name ? ' active' : '');
