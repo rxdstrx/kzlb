@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KZ — Map Records</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="maps.css" />
+  <link rel="stylesheet" href="profile.css" />
+  <link rel="stylesheet" href="portugal.css" />
+</head>
+<body>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+
+  <div class="container">
+    <a class="back-btn" id="backBtn" href="javascript:history.back()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </a>
+
+    <div class="pt-header">
+      <img class="map-hero-thumb" id="mapThumb" src="" alt="" />
+      <div>
+        <h1 class="pt-title" id="mapTitle">—</h1>
+        <p class="pt-sub" id="mapSub">Loading...</p>
+      </div>
+    </div>
+
+    <!-- Country filter -->
+    <div class="map-country-filter">
+      <span class="map-filter-label">Filter by country:</span>
+      <div class="map-country-chips" id="countryChips">
+        <div class="map-country-chip active" data-country="all">🌍 All</div>
+        <div class="map-country-chip" data-country="pt">🇵🇹 Portugal</div>
+      </div>
+    </div>
+
+    <div class="profile-loading" id="loadingState">
+      <div class="spinner"></div>
+      <p>Loading records…</p>
+    </div>
+
+    <div class="table-wrapper hidden" id="tableWrapper" style="margin-top:16px">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-rank">#</th>
+            <th>Player</th>
+            <th>Time</th>
+            <th>Position</th>
+            <th>Runs</th>
+          </tr>
+        </thead>
+        <tbody id="mapBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="noData">No records found.</div>
+      <div id="pagination"></div>
+    </div>
+  </div>
+
+  <script src="maps-data.js"></script>
+  <script src="map.js"></script>
+</body>
+</html>
