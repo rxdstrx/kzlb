@@ -100,7 +100,7 @@ async function resolveSteamId(identifier) {
 
   if (!isLocal) {
     try {
-      const res  = await fetch(`https://legendary-gecko-290df8.netlify.app/api/steam-resolve?input=${encodeURIComponent(identifier)}`);
+      const res  = await fetch(`https://kzlb.vercel.app/api/steam-resolve?input=${encodeURIComponent(identifier)}`);
       if (res.ok) {
         const data = await res.json();
         if (data.steamid) return data.steamid;
