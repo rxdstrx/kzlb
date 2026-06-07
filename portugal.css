@@ -131,3 +131,39 @@
 .rank-badge.top1 { color: #fbbf24; }
 .rank-badge.top2 { color: #94a3b8; }
 .rank-badge.top3 { color: #b87333; }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.page-btn {
+  padding: 7px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.page-btn:hover:not(.disabled) {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.page-btn.disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.page-info {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.35);
+}
