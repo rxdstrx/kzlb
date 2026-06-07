@@ -1,4 +1,5 @@
 const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+const API_BASE = 'https://legendary-gecko-290df8.netlify.app';
 
 const CIRCUMFERENCE = 264;
 const STEPS = [
@@ -183,7 +184,7 @@ function renderMaps(mapList) {
 
 async function triggerScrape(sid) {
   try {
-    await fetch(`/api/trigger-scrape?steamid=${sid}`);
+    await fetch(`${API_BASE}/api/trigger-scrape?steamid=${sid}`);
   } catch {}
 }
 
