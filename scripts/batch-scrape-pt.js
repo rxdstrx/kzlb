@@ -117,12 +117,19 @@ async function fetchPlayerStats(page, steamid) {
 
   await browser.close();
 
-  // Sort by KZ points descending
-  kzPlayers.sort((a, b) => b.kz_points - a.kz_points);
+  // Merge with existing pt-kz-players.json
+  const ptKzFile = path.join(cacheDir, 'pt-kz-players.json');
+  let existing = [];
+  if (fs.existsSync(ptKzFile)) {
+    try { existing = JSON.parse(fs.readFileSync(ptKzFile, 'utf8')).players || []; } catch {}
+  }
+  const existingIds = new Set(existing.map(p => p.steamid));
+  const merged = [...existing, ...kzPlayers.filter(p => !existingIds.has(p.steamid))];
+  merged.sort((a, b) => b.kz_points - a.kz_points);
 
   fs.writeFileSync(
     path.join(cacheDir, 'pt-kz-players.json'),
-    JSON.stringify({ updated_at: new Date().toISOString(), players: kzPlayers }, null, 2)
+    JSON.stringify({ updated_at: new Date().toISOString(), players: merged }, null, 2)
   );
 
   console.log(`\nDone! ${withKZ} players with KZ data, ${withoutKZ} without.`);
