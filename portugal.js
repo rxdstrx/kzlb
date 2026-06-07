@@ -1,6 +1,8 @@
 const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+const PAGE_SIZE = 100;
 
 let allPlayers = [];
+let currentPage = 1;
 let currentTab = 'overall';
 let selectedMap = null;
 
@@ -10,11 +12,55 @@ const ptBody       = document.getElementById('ptBody');
 const ptSub        = document.getElementById('ptSub');
 const noData       = document.getElementById('noData');
 
+// Convert time string to seconds for proper sorting
+function timeToSeconds(t) {
+  if (!t || t === '—') return Infinity;
+  const parts = t.split(':');
+  if (parts.length === 3) {
+    return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
+  } else if (parts.length === 2) {
+    return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+  }
+  return parseFloat(t);
+}
+
+// Manually add strxng666 if not in list
+const MANUAL_PLAYERS = [
+  {
+    steamid: '76561199381926813',
+    nickname: 'strxng666',
+    country: 'pt',
+    kz_points: 1186,
+    kz_place: 9330,
+    kz_maps: '14 (8.44%)',
+    avatar: 'https://avatars.steamstatic.com/87383322bc3f13e6e9622c74b942957fc1b6db45_full.jpg',
+    maps_list: [],
+  }
+];
+
 async function init() {
   try {
     const res  = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
     const data = await res.json();
     allPlayers = data.players || [];
+
+    // Add manual players if not already in list
+    MANUAL_PLAYERS.forEach(mp => {
+      if (!allPlayers.find(p => p.steamid === mp.steamid)) {
+        allPlayers.push(mp);
+      }
+    });
+
+    // Load strxng666's maps from individual cache
+    const strx = allPlayers.find(p => p.steamid === '76561199381926813');
+    if (strx && !strx.maps_list?.length) {
+      try {
+        const r = await fetch(`${CACHE_BASE}/76561199381926813.json`);
+        const d = await r.json();
+        strx.maps_list = d.maps?.list || [];
+      } catch {}
+    }
+
     ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(data.updated_at))} ago`;
     loadingState.classList.add('hidden');
     tableWrapper.classList.remove('hidden');
@@ -25,6 +71,59 @@ async function init() {
   }
 }
 
+function getOverallSorted() {
+  return [...allPlayers].sort((a, b) => b.kz_points - a.kz_points);
+}
+
+function getMapSorted(mapName) {
+  return allPlayers
+    .map(p => {
+      const entry = (p.maps_list || []).find(m => m.map === mapName);
+      return entry ? { ...p, entry } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => timeToSeconds(a.entry.time_record) - timeToSeconds(b.entry.time_record));
+}
+
+function renderPagination(total) {
+  const existing = document.getElementById('pagination');
+  if (existing) existing.remove();
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  if (totalPages <= 1) return;
+
+  const nav = document.createElement('div');
+  nav.id = 'pagination';
+  nav.className = 'pagination';
+
+  const prev = document.createElement('button');
+  prev.className = 'page-btn' + (currentPage === 1 ? ' disabled' : '');
+  prev.textContent = '← Prev';
+  prev.disabled = currentPage === 1;
+  prev.addEventListener('click', () => { currentPage--; rerenderCurrent(); });
+
+  const info = document.createElement('span');
+  info.className = 'page-info';
+  info.textContent = `Page ${currentPage} of ${totalPages}`;
+
+  const next = document.createElement('button');
+  next.className = 'page-btn' + (currentPage === totalPages ? ' disabled' : '');
+  next.textContent = 'Next →';
+  next.disabled = currentPage === totalPages;
+  next.addEventListener('click', () => { currentPage++; rerenderCurrent(); });
+
+  nav.appendChild(prev);
+  nav.appendChild(info);
+  nav.appendChild(next);
+  tableWrapper.appendChild(nav);
+}
+
+function rerenderCurrent() {
+  if (selectedMap) renderByMap(selectedMap);
+  else renderOverall();
+  window.scrollTo({ top: document.getElementById('tableWrapper').offsetTop - 20, behavior: 'smooth' });
+}
+
 function renderOverall() {
   ptBody.innerHTML = '';
   noData.classList.add('hidden');
@@ -32,11 +131,14 @@ function renderOverall() {
   document.getElementById('thPlace').textContent  = 'Global Rank';
   document.getElementById('thMaps').textContent   = 'Maps Done';
 
-  const sorted = [...allPlayers].sort((a, b) => b.kz_points - a.kz_points);
+  const sorted = getOverallSorted();
   if (!sorted.length) { noData.classList.remove('hidden'); return; }
 
-  sorted.forEach((p, i) => {
-    const rank = i + 1;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = sorted.slice(start, start + PAGE_SIZE);
+
+  page.forEach((p, i) => {
+    const rank = start + i + 1;
     const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -53,6 +155,8 @@ function renderOverall() {
     `;
     ptBody.appendChild(tr);
   });
+
+  renderPagination(sorted.length);
 }
 
 function renderByMap(mapName) {
@@ -62,22 +166,19 @@ function renderByMap(mapName) {
   document.getElementById('thPlace').textContent  = 'Position';
   document.getElementById('thMaps').textContent   = 'Runs';
 
-  const players = allPlayers
-    .map(p => {
-      const mapEntry = (p.maps_list || []).find(m => m.map === mapName);
-      return mapEntry ? { ...p, mapEntry } : null;
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.mapEntry.time_record.localeCompare(b.mapEntry.time_record));
+  const sorted = getMapSorted(mapName);
 
-  if (!players.length) {
+  if (!sorted.length) {
     noData.textContent = `No Portuguese players found for ${mapName}`;
     noData.classList.remove('hidden');
     return;
   }
 
-  players.forEach((p, i) => {
-    const rank = i + 1;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = sorted.slice(start, start + PAGE_SIZE);
+
+  page.forEach((p, i) => {
+    const rank = start + i + 1;
     const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -88,31 +189,33 @@ function renderByMap(mapName) {
           <a class="player-nick" href="profile.html?steamid=${p.steamid}">${p.nickname}</a>
         </div>
       </td>
-      <td><span class="time-cell">${p.mapEntry.time_record}</span></td>
-      <td><span class="pos-cell">${p.mapEntry.place_num}</span></td>
-      <td><span class="runs-cell">${p.mapEntry.completions}</span></td>
+      <td><span class="time-cell">${p.entry.time_record}</span></td>
+      <td><span class="pos-cell">${p.entry.place_num}</span></td>
+      <td><span class="runs-cell">${p.entry.completions}</span></td>
     `;
     ptBody.appendChild(tr);
   });
+
+  renderPagination(sorted.length);
 }
 
 function buildMapList() {
-  const ptMapList  = document.getElementById('ptMapList');
+  const ptMapList   = document.getElementById('ptMapList');
   const ptMapSearch = document.getElementById('ptMapSearch');
 
-  // Collect all unique maps across all players
   const mapSet = new Set();
   allPlayers.forEach(p => (p.maps_list || []).forEach(m => mapSet.add(m.map)));
   const maps = [...mapSet].sort();
 
   function render(filter = '') {
     ptMapList.innerHTML = '';
-    maps.filter(m => m.includes(filter)).forEach(m => {
+    maps.filter(m => m.toLowerCase().includes(filter.toLowerCase())).forEach(m => {
       const chip = document.createElement('div');
       chip.className = 'pt-map-chip' + (selectedMap === m ? ' active' : '');
       chip.textContent = m;
       chip.addEventListener('click', () => {
         selectedMap = selectedMap === m ? null : m;
+        currentPage = 1;
         render(ptMapSearch.value);
         if (selectedMap) renderByMap(selectedMap);
         else renderOverall();
@@ -129,6 +232,7 @@ function buildMapList() {
 document.getElementById('tabOverall').addEventListener('click', () => {
   currentTab = 'overall';
   selectedMap = null;
+  currentPage = 1;
   document.getElementById('tabOverall').classList.add('active');
   document.getElementById('tabMap').classList.remove('active');
   document.getElementById('mapSelector').classList.add('hidden');
