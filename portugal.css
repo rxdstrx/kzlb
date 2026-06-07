@@ -122,9 +122,17 @@
 .chip-tier {
   font-size: 0.65rem;
   font-weight: 700;
-  color: rgba(255,255,255,0.3);
   margin-right: 2px;
 }
+.chip-tier.t1 { color: #ffffff; }
+.chip-tier.t2 { color: #b0d4f1; }
+.chip-tier.t3 { color: #38bdf8; }
+.chip-tier.t4 { color: #1d4ed8; }
+.chip-tier.t5 { color: #fb7185; }
+.chip-tier.t6 { color: #7c3aed; }
+.chip-tier.t7 { color: #4c1d95; }
+.chip-tier.t8 { color: #f97316; }
+.chip-tier.t9 { color: #ea580c; }
 
 .player-cell {
   display: flex;
