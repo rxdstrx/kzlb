@@ -240,6 +240,28 @@ header {
   transform: rotate(180deg);
 }
 
+.filter-country-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  color: rgba(255,255,255,0.3);
+}
+
+.filter-country-input {
+  background: none;
+  border: none;
+  outline: none;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.82rem;
+  font-family: inherit;
+  width: 150px;
+}
+
+.filter-country-input::placeholder {
+  color: rgba(255,255,255,0.25);
+}
+
 .filter-divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.06);
