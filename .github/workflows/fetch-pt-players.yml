@@ -1,0 +1,31 @@
+name: Fetch Portuguese Players
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 0' # every Sunday at 3am
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch players from FACEIT
+        env:
+          FACEIT_KEY: ${{ secrets.FACEIT_KEY }}
+        run: node scripts/fetch-pt-players.js
+
+      - name: Commit results
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add cache/pt-players.json
+          git diff --staged --quiet || git commit -m "update: pt players list"
+          git push
