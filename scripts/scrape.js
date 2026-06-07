@@ -48,7 +48,7 @@ const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv
       if (url.includes('/api/api/v2/leaderboard/data')) {
         const json = await response.json();
         mapsData = json;
-        console.log('Got maps data, count:', Array.isArray(json) ? json.length : typeof json);
+        console.log('Got maps data raw:', JSON.stringify(json).slice(0, 500));
       }
     } catch (e) {
       console.log('Response parse error for', url, e.message);
@@ -94,7 +94,7 @@ const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv
     steamid,
     cached_at: new Date().toISOString(),
     user: userData,
-    maps: Array.isArray(mapsData) ? mapsData : [],
+    maps: mapsData,
   };
 
   const cacheDir = path.join(__dirname, '..', 'cache');
