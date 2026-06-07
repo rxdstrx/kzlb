@@ -79,6 +79,7 @@ async function fetchPlayerStats(page, steamid) {
 
       if (mapList.length > 0) {
         withKZ++;
+        const desc = maps?.header?.desc || {};
         const result = {
           steamid: steamid64,
           nickname,
@@ -86,18 +87,18 @@ async function fetchPlayerStats(page, steamid) {
           skill_level,
           country: 'pt',
           cached_at: new Date().toISOString(),
-          kz_points: kzUser.points || 0,
-          kz_place: kzUser.place || 0,
+          kz_points: desc['{{Points}}'] || 0,
+          kz_place: desc['{{Position}}'] || 0,
+          kz_maps: desc['{{COMPLETIONS-MAP}}'] || '0',
           avatar: maps?.header?.avatar || '',
-          user,
-          maps,
+          maps_list: mapList,
         };
 
         // Save individual cache file
         fs.writeFileSync(path.join(cacheDir, `${steamid64}.json`), JSON.stringify({
           steamid: steamid64,
           cached_at: new Date().toISOString(),
-          user,
+          user: {},
           maps,
         }, null, 2));
 

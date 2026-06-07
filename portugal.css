@@ -1,0 +1,133 @@
+.pt-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.pt-flag {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.pt-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #f0f0f5;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+}
+
+.pt-title span {
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pt-sub {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.3);
+  margin: 0;
+}
+
+.pt-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pt-tab {
+  padding: 8px 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.85rem;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pt-tab.active {
+  background: rgba(129,140,248,0.15);
+  border-color: rgba(129,140,248,0.35);
+  color: #a5b4fc;
+}
+
+.pt-map-selector {
+  margin-bottom: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.pt-map-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.pt-map-chip {
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+
+.pt-map-chip:hover {
+  background: rgba(255,255,255,0.09);
+  color: #fff;
+}
+
+.pt-map-chip.active {
+  background: rgba(129,140,248,0.2);
+  border-color: rgba(129,140,248,0.4);
+  color: #a5b4fc;
+}
+
+.player-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.player-nick {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.player-nick:hover { color: #a5b4fc; }
+
+.rank-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  width: 28px;
+  text-align: center;
+}
+
+.rank-badge.top1 { color: #fbbf24; }
+.rank-badge.top2 { color: #94a3b8; }
+.rank-badge.top3 { color: #b87333; }
