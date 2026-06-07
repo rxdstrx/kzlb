@@ -101,7 +101,7 @@ async function resolveSteamId(identifier) {
   if (!isLocal) {
     // Use our own Netlify function — reliable, server-side, no CORS
     try {
-      const res  = await fetch(`/api/steam-resolve?input=${encodeURIComponent(identifier)}`);
+      const res  = await fetch(`https://legendary-gecko-290df8.netlify.app/api/steam-resolve?input=${encodeURIComponent(identifier)}`);
       const data = await res.json();
       if (data.steamid) return data.steamid;
     } catch {}
