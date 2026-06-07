@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KZplus — Kreedz Leaderboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="maps.css" />
+  <link rel="stylesheet" href="profile.css" />
+  <link rel="stylesheet" href="landing.css" />
+</head>
+<body>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <!-- KZplus logo -->
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="10" fill="rgba(56,189,248,0.12)"/>
+        <text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#38bdf8">KZ</text>
+        <line x1="27" y1="10" x2="27" y2="26" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="19" y1="18" x2="35" y2="18" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-logo-text">KZ<span>plus</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="partners.html">Partners</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══ VIEW: HOME ══ -->
+  <div id="view-home">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="hero-tag">We grow Kreedz</div>
+        <div class="hero-title-wrap">
+          <!-- KZ player silhouette SVG -->
+          <svg class="kz-player-bg" viewBox="0 0 120 200" fill="white" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Head -->
+            <circle cx="72" cy="22" r="13"/>
+            <!-- Torso -->
+            <path d="M72 35 C68 55 65 70 62 85" stroke="white" stroke-width="9" stroke-linecap="round" fill="none"/>
+            <!-- Right arm (forward/up) -->
+            <path d="M68 48 C58 38 44 30 32 24" stroke="white" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <!-- Left arm (back/down) -->
+            <path d="M70 52 C80 58 90 68 96 78" stroke="white" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <!-- Right leg (back, extended) -->
+            <path d="M65 85 C58 105 55 122 60 140" stroke="white" stroke-width="8" stroke-linecap="round" fill="none"/>
+            <!-- Left leg (forward, bent knee) -->
+            <path d="M63 85 C55 100 40 108 28 112" stroke="white" stroke-width="8" stroke-linecap="round" fill="none"/>
+            <!-- Left foot -->
+            <path d="M28 112 C20 116 14 118 10 116" stroke="white" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <!-- Right foot -->
+            <path d="M60 140 C64 152 66 160 62 166" stroke="white" stroke-width="6" stroke-linecap="round" fill="none"/>
+          </svg>
+          <h1 class="hero-title">
+            <span class="word-reveal" style="--i:0">Kreedz</span>
+            <span class="word-reveal gradient-word" style="--i:1">made</span><br>
+            <span class="word-reveal gradient-word" style="--i:2">for</span>
+            <span class="word-reveal gradient-word" style="--i:3">everyone</span>
+          </h1>
+        </div>
+        <p class="hero-sub">
+          Over 50,000 players worldwide compete in CS2 KZ every month — mastering movement, chaining jumps, and pushing their limits on hundreds of unique maps.
+        </p>
+        <div class="hero-cta">
+          <button class="btn-primary" id="startBtn">
+            Start
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2l.01 10M3 9l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <a href="partners.html" class="btn-secondary">
+            Our Partners →
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-label">Daily KZ Players</div>
+            <div>
+              <span class="chart-value">3,000</span>
+              <span class="chart-change">↑ 0.0%</span>
+            </div>
+          </div>
+          <div class="chart-graph-wrap">
+            <!-- Y-axis: % values (vertical, left side) -->
+            <div class="chart-y-labels">
+              <span>20%</span>
+              <span>15%</span>
+              <span>10%</span>
+              <span>5%</span>
+            </div>
+
+            <div class="chart-svg-wrap">
+              <svg viewBox="0 0 380 130" fill="none" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.15"/>
+                    <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                  </linearGradient>
+                  <filter id="lineGlow" x="-10%" y="-80%" width="120%" height="260%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+                    <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.22 0 0 0 0 0.74 0 0 0 0 0.98 0 0 0 0.8 0" result="glow"/>
+                    <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                </defs>
+
+                <!-- Horizontal grid lines (Y = % levels) -->
+                <line x1="0" y1="4"   x2="380" y2="4"   class="grid-h"/> <!-- 20% -->
+                <line x1="0" y1="44"  x2="380" y2="44"  class="grid-h"/> <!-- 15% -->
+                <line x1="0" y1="84"  x2="380" y2="84"  class="grid-h"/> <!-- 10% -->
+                <line x1="0" y1="122" x2="380" y2="122" class="grid-h"/> <!-- 5%  -->
+
+                <!-- Vertical grid lines (X = player count milestones) -->
+                <line x1="76"  y1="0" x2="76"  y2="130" class="grid-v"/> <!-- 1000 -->
+                <line x1="152" y1="0" x2="152" y2="130" class="grid-v"/> <!-- 1500 -->
+                <line x1="228" y1="0" x2="228" y2="130" class="grid-v"/> <!-- 2000 -->
+                <line x1="304" y1="0" x2="304" y2="130" class="grid-v"/> <!-- 2500 -->
+                <line x1="380" y1="0" x2="380" y2="130" class="grid-v"/> <!-- 3000 -->
+
+                <!-- Area -->
+                <path class="chart-area" d="M0,122 C40,112 60,104 90,90 C120,76 140,80 170,66 C200,52 220,56 250,42 C280,28 310,32 340,18 C360,10 370,8 380,4 L380,130 L0,130 Z" fill="url(#chartGrad)"/>
+
+                <!-- Glow line (subtle) -->
+                <path id="chart-glow-line" class="chart-glow-line" d="M0,122 C40,112 60,104 90,90 C120,76 140,80 170,66 C200,52 220,56 250,42 C280,28 310,32 340,18 C360,10 370,8 380,4" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" fill="none" filter="url(#lineGlow)" opacity="0"/>
+
+                <!-- Main line -->
+                <path class="chart-line" d="M0,122 C40,112 60,104 90,90 C120,76 140,80 170,66 C200,52 220,56 250,42 C280,28 310,32 340,18 C360,10 370,8 380,4" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+                <!-- Milestone dots — positions calculated ON the line -->
+                <!-- 500: x=0,   y=122 | delay=0.3s  -->
+                <g class="ms-dot" style="--dx:0.3s">
+                  <circle cx="0"   cy="122" r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="0"   cy="122" r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                </g>
+                <!-- 1000: x=76,  y=97  | delay=1.2s  -->
+                <g class="ms-dot" style="--dx:1.2s">
+                  <circle cx="76"  cy="97"  r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="76"  cy="97"  r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                </g>
+                <!-- 1500: x=152, y=72  | delay=2.1s  -->
+                <g class="ms-dot" style="--dx:2.1s">
+                  <circle cx="152" cy="72"  r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="152" cy="72"  r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                </g>
+                <!-- 2000: x=228, y=50  | delay=2.9s  -->
+                <g class="ms-dot" style="--dx:2.9s">
+                  <circle cx="228" cy="50"  r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="228" cy="50"  r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                </g>
+                <!-- 2500: x=304, y=27  | delay=3.8s  -->
+                <g class="ms-dot" style="--dx:3.8s">
+                  <circle cx="304" cy="27"  r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="304" cy="27"  r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                </g>
+                <!-- 3000: x=380, y=4   | delay=5.0s  -->
+                <g class="ms-dot" style="--dx:5.0s">
+                  <circle cx="380" cy="4"   r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="380" cy="4"   r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- X-axis: player count labels (horizontal, bottom) -->
+          <div class="chart-x-labels">
+            <span>500</span>
+            <span>1000</span>
+            <span>1500</span>
+            <span>2000</span>
+            <span>2500</span>
+            <span>3000</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEADERBOARD SECTION -->
+    <div class="section-divider" id="leaderboard-section">
+      <h2>KZ Leaderboard</h2>
+    </div>
+
+    <div class="container">
+      <header>
+        <h1 class="title">KZ <span>Leaderboard</span></h1>
+        <p class="subtitle">Top 100 Players</p>
+      </header>
+
+      <!-- Search bar -->
+      <div class="search-bar-wrapper">
+        <form class="search-form" id="searchForm">
+          <div class="search-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <input class="search-input" id="searchInput" type="text"
+            placeholder="Paste Steam or Cybershoke link to view player stats…"
+            autocomplete="off" spellcheck="false" />
+          <button class="search-submit" type="submit">Search</button>
+        </form>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="filter-wrapper">
+          <button class="filter-btn" id="filterBtn">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+              <path d="M1 3h13M3 7h9M5 11h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Filter
+          </button>
+          <div class="filter-dropdown" id="filterDropdown">
+            <div class="filter-section">
+              <button class="filter-category" id="tierBtn">
+                <span>Tier</span>
+                <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="tier-options" id="tierOptions">
+                <div class="tier-grid">
+                  <button class="tier-chip" data-tier="1">1</button>
+                  <button class="tier-chip" data-tier="2">2</button>
+                  <button class="tier-chip" data-tier="3">3</button>
+                  <button class="tier-chip" data-tier="4">4</button>
+                  <button class="tier-chip" data-tier="5">5</button>
+                  <button class="tier-chip" data-tier="6">6</button>
+                  <button class="tier-chip" data-tier="7">7</button>
+                  <button class="tier-chip" data-tier="8">8</button>
+                  <button class="tier-chip" data-tier="9">9</button>
+                  <button class="tier-chip" data-tier="10">10</button>
+                </div>
+              </div>
+            </div>
+            <div class="filter-divider"></div>
+            <div class="filter-section">
+              <button class="filter-category" id="mapsBtn">
+                <span>Maps</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M4.5 2L9 6L4.5 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main leaderboard -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th class="col-nickname">Nickname</th>
+              <th class="col-map">Map</th>
+              <th class="col-time">Time</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ VIEW: PROFILE ══ -->
+  <div id="view-profile" style="display:none">
+    <div class="container" style="padding-top:80px">
+      <button class="back-btn" id="backBtn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back
+      </button>
+
+      <div class="profile-loading" id="loadingState">
+        <div class="spinner"></div>
+        <p>Loading profile…</p>
+      </div>
+
+      <div class="profile-error hidden" id="errorState">
+        <p id="errorMsg">Could not load profile.</p>
+        <p style="margin-top:8px;font-size:0.8rem;color:rgba(255,255,255,0.2)">
+          Try pasting your Steam64 ID directly (e.g. <code style="color:rgba(255,255,255,0.35)">76561199381926813</code>)
+        </p>
+      </div>
+
+      <div class="profile-content hidden" id="profileContent">
+        <div class="player-card">
+          <img class="player-avatar" id="playerAvatar" src="" alt="avatar" />
+          <div class="player-info">
+            <h2 class="player-name" id="playerName">—</h2>
+            <span class="player-id" id="playerSteamId">—</span>
+          </div>
+          <a class="cybershoke-btn" id="cybershokeLink" href="#" target="_blank" rel="noopener">
+            View on Cybershoke
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+              <path d="M2 9L9 2M9 2H4M9 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="table-wrapper" style="margin-top:24px">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-mapname">Map</th>
+                <th class="col-tier-sm">Tier</th>
+                <th>Runs</th>
+                <th>Time</th>
+                <th>Position</th>
+                <th class="col-pts">Points</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="statsBody"></tbody>
+          </table>
+          <div class="empty-state hidden" id="noStats">No completed maps found.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="maps-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

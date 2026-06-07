@@ -1,0 +1,69 @@
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition: color 0.15s;
+  letter-spacing: 0.03em;
+}
+
+.back-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.col-mapname { width: auto; }
+.col-tier { width: 70px; }
+.col-time { width: 120px; text-align: right; }
+
+.map-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.map-thumb {
+  width: 64px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.map-thumb-empty {
+  width: 64px;
+  height: 36px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+.mapname-cell {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "SF Mono", "Fira Code", monospace;
+}
+
+.tier-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.tier-1 { background: rgba(34, 197, 94, 0.12);  border: 1px solid rgba(34, 197, 94, 0.25);  color: #4ade80; }
+.tier-2 { background: rgba(59, 130, 246, 0.12);  border: 1px solid rgba(59, 130, 246, 0.25);  color: #60a5fa; }
+.tier-3 { background: rgba(168, 85, 247, 0.12);  border: 1px solid rgba(168, 85, 247, 0.25);  color: #c084fc; }
+.tier-4 { background: rgba(234, 179, 8, 0.12);   border: 1px solid rgba(234, 179, 8, 0.25);   color: #facc15; }
+.tier-5 { background: rgba(249, 115, 22, 0.12);  border: 1px solid rgba(249, 115, 22, 0.25);  color: #fb923c; }
+.tier-6 { background: rgba(239, 68, 68, 0.12);   border: 1px solid rgba(239, 68, 68, 0.25);   color: #f87171; }
+.tier-7 { background: rgba(236, 72, 153, 0.12);  border: 1px solid rgba(236, 72, 153, 0.25);  color: #f472b6; }
+.tier-8 { background: rgba(99, 102, 241, 0.12);  border: 1px solid rgba(99, 102, 241, 0.25);  color: #818cf8; }
+.tier-9  { background: rgba(20, 184, 166, 0.12); border: 1px solid rgba(20, 184, 166, 0.25);  color: #2dd4bf; }
+.tier-10 { background: rgba(244, 63, 94, 0.15);  border: 1px solid rgba(244, 63, 94, 0.35);   color: #fb7185; }

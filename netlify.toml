@@ -1,0 +1,16 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  timeout = 26
+
+[[redirects]]
+  from = "/api/kz-stats"
+  to = "/.netlify/functions/kz-stats"
+  status = 200
+
+[[redirects]]
+  from = "/api/steam-resolve"
+  to = "/.netlify/functions/steam-resolve"
+  status = 200

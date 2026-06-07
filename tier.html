@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KZ Leaderboard — Tier</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="maps.css" />
+  <link rel="stylesheet" href="tier.css" />
+</head>
+<body>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+
+  <div class="container">
+    <header>
+      <a class="back-btn" href="index.html">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back
+      </a>
+      <h1 class="title">Tier <span id="tier-title">—</span></h1>
+      <p class="subtitle" id="tier-subtitle">Maps</p>
+    </header>
+
+    <!-- Tier pill nav -->
+    <div class="tier-nav">
+      <a class="tier-nav-pill" href="tier.html?tier=1">1</a>
+      <a class="tier-nav-pill" href="tier.html?tier=2">2</a>
+      <a class="tier-nav-pill" href="tier.html?tier=3">3</a>
+      <a class="tier-nav-pill" href="tier.html?tier=4">4</a>
+      <a class="tier-nav-pill" href="tier.html?tier=5">5</a>
+      <a class="tier-nav-pill" href="tier.html?tier=6">6</a>
+      <a class="tier-nav-pill" href="tier.html?tier=7">7</a>
+      <a class="tier-nav-pill" href="tier.html?tier=8">8</a>
+      <a class="tier-nav-pill" href="tier.html?tier=9">9</a>
+      <a class="tier-nav-pill" href="tier.html?tier=10">10</a>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-rank">#</th>
+            <th class="col-mapname">Map</th>
+            <th class="col-time">Time</th>
+          </tr>
+        </thead>
+        <tbody id="tier-body"></tbody>
+      </table>
+      <div class="empty-state hidden" id="empty-state">
+        <p>No maps for this tier yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="maps-data.js"></script>
+  <script src="tier.js"></script>
+</body>
+</html>

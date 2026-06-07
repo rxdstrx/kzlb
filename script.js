@@ -1,0 +1,411 @@
+// ── Views ──
+const viewHome    = document.getElementById('view-home');
+const viewProfile = document.getElementById('view-profile');
+
+function showHome() {
+  viewHome.style.display    = '';
+  viewProfile.style.display = 'none';
+  document.title = 'KZ Leaderboard';
+}
+
+function showProfile() {
+  viewHome.style.display    = 'none';
+  viewProfile.style.display = '';
+}
+
+// ── Hash router ──
+async function route() {
+  const hash = window.location.hash; // e.g. #profile/strx666
+
+  if (hash.startsWith('#profile/')) {
+    const identifier = decodeURIComponent(hash.slice('#profile/'.length));
+    showProfile();
+    resetProfile();
+    const steamid = await resolveSteamId(identifier);
+    if (steamid) {
+      loadProfile(steamid);
+    } else {
+      showError('Could not resolve a Steam ID from that link.');
+    }
+  } else {
+    showHome();
+  }
+}
+
+window.addEventListener('hashchange', route);
+window.addEventListener('load', route);
+
+// ── Back button ──
+document.getElementById('backBtn').addEventListener('click', () => {
+  window.location.hash = '';
+});
+
+// ── Search form ──
+document.getElementById('searchForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const raw = document.getElementById('searchInput').value.trim();
+  if (!raw) return;
+
+  // Use the raw input as the hash identifier (vanity name, full URL, or steamid64)
+  const identifier = extractIdentifier(raw);
+  window.location.hash = '#profile/' + encodeURIComponent(identifier);
+});
+
+function extractIdentifier(input) {
+  // Direct steamid64
+  if (/^\d{17}$/.test(input)) return input;
+  // steamcommunity.com/profiles/STEAMID64
+  const pm = input.match(/steamcommunity\.com\/profiles\/(\d{17})/);
+  if (pm) return pm[1];
+  // steamcommunity.com/id/VANITYNAME
+  const vm = input.match(/steamcommunity\.com\/id\/([^/?#]+)/);
+  if (vm) return vm[1];
+  // cybershoke.net/...STEAMID64 (any cybershoke URL with a 17-digit ID)
+  const cm = input.match(/cybershoke\.net\/.*?(\d{17})/);
+  if (cm) return cm[1];
+  // Any URL containing a 17-digit steamid64
+  const any = input.match(/\b(\d{17})\b/);
+  if (any) return any[1];
+  // fallback — treat as vanity name
+  return input;
+}
+
+async function fetchViaProxy(url) {
+  const proxies = [
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+  ];
+  for (const proxy of proxies) {
+    try {
+      const res = await fetch(proxy, { signal: AbortSignal.timeout(6000) });
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.length > 20) return text;
+      }
+    } catch {}
+  }
+  return null;
+}
+
+async function resolveSteamId(identifier) {
+  // Already a steamid64
+  if (/^\d{17}$/.test(identifier)) return identifier;
+
+  const isLocal = location.protocol === 'file:';
+
+  if (!isLocal) {
+    // Use our own Netlify function — reliable, server-side, no CORS
+    try {
+      const res  = await fetch(`/api/steam-resolve?input=${encodeURIComponent(identifier)}`);
+      const data = await res.json();
+      if (data.steamid) return data.steamid;
+    } catch {}
+  } else {
+    // Fallback for local: playerdb.co supports vanity names
+    try {
+      const res  = await fetch(`https://playerdb.co/api/player/steam/${encodeURIComponent(identifier)}`);
+      const data = await res.json();
+      if (data?.data?.player?.id) return data.data.player.id;
+    } catch {}
+  }
+
+  return null;
+}
+
+// ── Profile helpers ──
+function resetProfile() {
+  document.getElementById('loadingState').classList.remove('hidden');
+  document.getElementById('errorState').classList.add('hidden');
+  document.getElementById('profileContent').classList.add('hidden');
+  document.getElementById('statsBody').innerHTML = '';
+  document.getElementById('noStats').classList.add('hidden');
+}
+
+function showError(msg) {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('errorState').classList.remove('hidden');
+  document.getElementById('errorMsg').textContent = msg;
+}
+
+async function loadProfile(sid) {
+  try {
+    // playerdb.co — free public API with CORS support
+    const res  = await fetch(`https://playerdb.co/api/player/steam/${sid}`);
+    const data = await res.json();
+    const player = data?.data?.player;
+
+    const name   = player?.username || 'Unknown Player';
+    const avatar = player?.avatar   || '';
+
+    document.getElementById('playerName').textContent    = name;
+    document.getElementById('playerSteamId').textContent = sid;
+    document.getElementById('playerAvatar').src          = avatar;
+    document.title = `KZ — ${name}`;
+
+    document.getElementById('cybershokeLink').href =
+      `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}`;
+
+    await loadCybershokeStats(sid);
+
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('profileContent').classList.remove('hidden');
+
+  } catch {
+    showError('Failed to load Steam profile. Check the link and try again.');
+  }
+}
+
+async function loadCybershokeStats(sid) {
+  const statsBody = document.getElementById('statsBody');
+  const noStats   = document.getElementById('noStats');
+  const mapLookup = {};
+  ALL_MAPS.forEach(m => { mapLookup[m.name] = m; });
+
+  // When hosted on Netlify, use our own serverless function (no CORS issues)
+  // When running locally (file://), show fallback link
+  const isLocal = location.protocol === 'file:';
+  let rows = null;
+
+  if (!isLocal) {
+    try {
+      const res = await fetch(`/api/kz-stats?steamid=${sid}`, {
+        headers: { 'Accept': 'application/json' },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // Cybershoke returns { data: { items: [...] } } or similar
+        rows = Array.isArray(data)
+          ? data
+          : (data.data?.items || data.data?.maps || data.data || data.items || data.maps || data.results || []);
+      }
+    } catch (e) {
+      console.log('[CS] function error:', e.message);
+    }
+  }
+
+  if (!rows || !rows.length) {
+    noStats.innerHTML = `Stats unavailable — <a href="https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}" target="_blank" rel="noopener" style="color:#818cf8">view on Cybershoke ↗</a>`;
+    noStats.classList.remove('hidden');
+    return;
+  }
+
+  rows.forEach(row => {
+    const mapName = row.map || row.mapName || row.map_name || row.name || '—';
+    const mapInfo = mapLookup[mapName] || {};
+    const tier    = row.tier ?? mapInfo.tier ?? '—';
+    const runs    = row.completions ?? row.runs ?? row.count ?? row.finishes ?? '—';
+    const time    = row.time ?? row.best_time ?? row.bestTime ?? '—';
+    const posNum  = row.position ?? row.rank ?? null;
+    const posTotal= row.total ?? row.totalPlayers ?? null;
+    const pos     = posNum != null ? `${posNum}${posTotal ? ' / ' + posTotal : ''}` : '—';
+    const pts     = row.points != null ? Number(row.points).toFixed(4) : '—';
+    const rawDate = row.date ?? row.created_at ?? row.completedAt ?? '';
+    const date    = rawDate ? rawDate.slice(0, 10) : '—';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <div class="map-name-cell">
+          ${mapInfo.img
+            ? `<img class="map-thumb" src="${mapInfo.img}" alt="${mapName}">`
+            : '<div class="map-thumb map-thumb-empty"></div>'}
+          <span class="mapname-cell">${mapName}</span>
+        </div>
+      </td>
+      <td><span class="tier-badge tier-${tier}">${tier}</span></td>
+      <td><span class="runs-cell">${runs}</span></td>
+      <td><span class="time-cell">${time}</span></td>
+      <td><span class="pos-cell">${pos}</span></td>
+      <td><span class="pts-cell">${pts}</span></td>
+      <td><span class="date-cell">${date}</span></td>
+    `;
+    statsBody.appendChild(tr);
+  });
+}
+
+// ── Chart animation engine ──
+(function () {
+  const line      = document.querySelector('.chart-line');
+  const glowLine  = document.getElementById('chart-glow-line');
+  const area      = document.querySelector('.chart-area');
+  const endDot    = document.querySelector('.chart-dot');
+  const endRing   = document.querySelector('.chart-dot-ring');
+  const valueEl   = document.querySelector('.chart-value');
+  const changeEl  = document.querySelector('.chart-change');
+  if (!line || !valueEl) return;
+
+  // Get actual path length for precise animation
+  const LEN = line.getTotalLength();
+  line.style.strokeDasharray    = LEN;
+  line.style.strokeDashoffset   = LEN;
+  if (glowLine) {
+    glowLine.style.strokeDasharray  = LEN;
+    glowLine.style.strokeDashoffset = LEN;
+  }
+
+  // Milestone dots — [x-ratio-along-path, element-index]
+  const msDots = Array.from(document.querySelectorAll('.ms-dot'));
+  // X positions of each dot: 0, 76, 152, 228, 304, 380 → ratios of total x=380
+  const msRatios = [0/380, 76/380, 152/380, 228/380, 304/380, 380/380];
+  const msShown  = new Array(msDots.length).fill(false);
+
+  const LINE_DUR = 8000;  // 8s line draw
+  const NUM_DUR  = 30000;
+  const PCT_DUR  = 8000;
+  const START = 3000, END = 3400, END_PCT = 18.4;
+  const PCT_MILESTONES = [5, 10, 15, 18.4];
+  const pctTriggered = new Set();
+
+  function ease(t) {
+    return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+  }
+
+  function triggerGlow() {
+    if (!glowLine) return;
+    glowLine.classList.remove('pulsing');
+    void glowLine.offsetWidth;
+    glowLine.classList.add('pulsing');
+    setTimeout(() => glowLine.classList.remove('pulsing'), 1000);
+  }
+
+  function showDot(dot) {
+    const center = dot.querySelector('.ms-center');
+    const ring   = dot.querySelector('.ms-ring');
+    if (center) {
+      center.style.animation = 'msDotPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    }
+    if (ring) {
+      ring.style.animation = 'msRingPulse 1.8s ease infinite';
+    }
+  }
+
+  let startTime = null;
+
+  function tick(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+
+    // ── Line drawing ──
+    const lineProg = Math.min(elapsed / LINE_DUR, 1);
+    const lineEase = ease(lineProg);
+    const offset   = LEN * (1 - lineEase);
+    line.style.strokeDashoffset = offset;
+    if (glowLine) glowLine.style.strokeDashoffset = offset;
+
+    // Fade in area when line is ~70% drawn
+    if (lineEase > 0.7 && area) area.style.opacity = ((lineEase - 0.7) / 0.3).toFixed(2);
+
+    // Show end dot when line completes
+    if (lineProg >= 1) {
+      if (endDot)  endDot.style.opacity  = '1';
+      if (endRing) endRing.style.opacity = '0.2';
+    }
+
+    // ── Milestone dots — triggered when line passes their x-ratio ──
+    msDots.forEach((dot, i) => {
+      if (msShown[i]) return;
+      if (lineEase >= msRatios[i]) {
+        msShown[i] = true;
+        showDot(dot);
+      }
+    });
+
+    // ── Counter ──
+    const numProg = Math.min(elapsed / NUM_DUR, 1);
+    const pctProg = Math.min(elapsed / PCT_DUR, 1);
+    const val = Math.round(START + (END - START) * ease(numProg));
+    const pct = END_PCT * ease(pctProg);
+    valueEl.textContent  = val.toLocaleString();
+    changeEl.textContent = `↑ ${pct.toFixed(1)}%`;
+
+    for (const m of PCT_MILESTONES) {
+      if (!pctTriggered.has(m) && pct >= m) {
+        pctTriggered.add(m);
+        triggerGlow();
+      }
+    }
+
+    if (numProg < 1 || lineProg < 1) requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+})();
+
+// ── Start button smooth scroll ──
+function smoothScrollTo(targetY, duration = 1200) {
+  const startY = window.scrollY;
+  const diff   = targetY - startY;
+  let start    = null;
+
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function step(timestamp) {
+    if (!start) start = timestamp;
+    const elapsed  = timestamp - start;
+    const progress = Math.min(elapsed / duration, 1);
+    window.scrollTo(0, startY + diff * easeInOutCubic(progress));
+    if (progress < 1) requestAnimationFrame(step);
+  }
+
+  requestAnimationFrame(step);
+}
+
+document.getElementById('startBtn')?.addEventListener('click', () => {
+  const target = document.getElementById('leaderboard-section');
+  smoothScrollTo(target.getBoundingClientRect().top + window.scrollY - 20);
+});
+
+// ── Leaderboard rows ──
+const tbody = document.getElementById('leaderboard-body');
+for (let i = 1; i <= 100; i++) {
+  const tr = document.createElement('tr');
+  const rankClass = i === 1 ? 'top1' : i === 2 ? 'top2' : i === 3 ? 'top3' : '';
+  tr.innerHTML = `
+    <td><span class="rank ${rankClass}">${i}</span></td>
+    <td><span class="map-cell">—</span></td>
+    <td><span class="map-cell">—</span></td>
+    <td><span class="time-cell">—</span></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+// ── Filter button toggle ──
+const filterBtn      = document.getElementById('filterBtn');
+const filterDropdown = document.getElementById('filterDropdown');
+
+filterBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const isOpen = filterDropdown.classList.toggle('open');
+  filterBtn.classList.toggle('active', isOpen);
+});
+
+document.addEventListener('click', () => {
+  filterDropdown.classList.remove('open');
+  filterBtn.classList.remove('active');
+});
+
+filterDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+// ── Tier expand ──
+const tierBtn     = document.getElementById('tierBtn');
+const tierOptions = document.getElementById('tierOptions');
+const chevron     = tierBtn.querySelector('.chevron');
+
+tierBtn.addEventListener('click', () => {
+  const isOpen = tierOptions.classList.toggle('open');
+  chevron.classList.toggle('rotated', isOpen);
+});
+
+document.querySelectorAll('.tier-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    window.location.href = `tier.html?tier=${chip.dataset.tier}`;
+  });
+});
+
+// ── Maps button ──
+document.getElementById('mapsBtn').addEventListener('click', () => {
+  window.location.href = 'maps.html';
+});
