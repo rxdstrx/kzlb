@@ -46,9 +46,13 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
   const raw = document.getElementById('searchInput').value.trim();
   if (!raw) return;
 
-  // Use the raw input as the hash identifier (vanity name, full URL, or steamid64)
   const identifier = extractIdentifier(raw);
-  window.location.hash = '#profile/' + encodeURIComponent(identifier);
+  const steamid = await resolveSteamId(identifier);
+  if (steamid) {
+    window.location.href = `profile.html?steamid=${steamid}`;
+  } else {
+    showError('Could not resolve a Steam ID from that link.');
+  }
 });
 
 function extractIdentifier(input) {
