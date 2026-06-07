@@ -60,7 +60,7 @@ async function loadProfile(sid) {
     setStatIfExists('statPBTop100',   desc['PB {{TOP-1}} 100']     ?? '—');
 
     // Maps table
-    const mapList = data.maps?.list || [];
+    const mapList = (data.maps?.list || []).sort((a, b) => Number(a.tier) - Number(b.tier));
     renderMaps(mapList);
 
     // Cached time
