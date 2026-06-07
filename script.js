@@ -383,6 +383,9 @@ function renderLeaderboard() {
   lbEmpty.classList.add('hidden');
 
   if (!lbPlayers.length) {
+    lbEmpty.textContent = selectedCountry
+      ? `No KZ data found for ${selectedCountry.name} players.`
+      : 'Select a country from the filter to load players.';
     lbEmpty.classList.remove('hidden');
     return;
   }

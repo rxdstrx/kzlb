@@ -288,11 +288,15 @@ header {
 }
 
 .country-list {
-  max-height: 180px;
+  max-height: 160px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 1px;
+}
+
+#mapsOptions .country-list {
+  max-height: 120px;
 }
 
 .country-list::-webkit-scrollbar {
