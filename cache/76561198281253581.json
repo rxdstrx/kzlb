@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198281253581",
+  "cached_at": "2026-06-07T09:43:57.412Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_breezeblocks",
+        "points": "26.8220",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "6 391 / 8 515",
+        "time_record": "09:52.9532",
+        "unixtime_record": 1765755242
+      }
+    ],
+    "header": {
+      "title": "s1monN",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/c3f376f817bc8076a0a07d5a3b893a6c57550178_full.jpg",
+      "desc": {
+        "{{Position}}": 242863,
+        "{{Points}}": 26,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

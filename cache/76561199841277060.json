@@ -1,0 +1,76 @@
+{
+  "steamid": "76561199841277060",
+  "cached_at": "2026-06-07T09:44:51.071Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "15.6518",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "44 652 / 70 452",
+        "time_record": "05:44.1094",
+        "unixtime_record": 1773319726
+      },
+      {
+        "map": "kz_phamous",
+        "points": "46.0535",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "104 282 / 189 177",
+        "time_record": "05:50.7813",
+        "unixtime_record": 1759868173
+      }
+    ],
+    "header": {
+      "title": "Trigemeos4",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/00a155e4d6a311d7473f286eb1b6c14b12a1f70c_full.jpg",
+      "desc": {
+        "{{Position}}": 157750,
+        "{{Points}}": 61,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

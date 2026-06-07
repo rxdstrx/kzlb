@@ -1,0 +1,94 @@
+{
+  "steamid": "76561198106816309",
+  "cached_at": "2026-06-07T09:33:54.263Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_village",
+        "points": "118.3816",
+        "completions": "2",
+        "tier": "3",
+        "place_num": "5 805 / 21 727",
+        "time_record": "01:58.2188",
+        "unixtime_record": 1778675804
+      },
+      {
+        "map": "kz_skytower",
+        "points": "94.9940",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "8 065 / 22 565",
+        "time_record": "21:12.4688",
+        "unixtime_record": 1776879347
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "35.0269",
+        "completions": "5",
+        "tier": "1",
+        "place_num": "14 721 / 70 452",
+        "time_record": "02:33.7657",
+        "unixtime_record": 1776966840
+      },
+      {
+        "map": "kz_phamous",
+        "points": "74.5315",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "46 736 / 189 177",
+        "time_record": "03:36.7500",
+        "unixtime_record": 1776765720
+      }
+    ],
+    "header": {
+      "title": "Bburny",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/49927afb7165e9fc79d806c18ba6377eabe4e1f4_full.jpg",
+      "desc": {
+        "{{Position}}": 39684,
+        "{{Points}}": 322,
+        "{{COMPLETIONS-MAP}}": "4 (2.41%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "steamid": "76561198023996508",
+  "cached_at": "2026-06-07T09:57:33.254Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_grotto",
+        "points": "24.7552",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "24 860 / 33 998",
+        "time_record": "07:30.9375",
+        "unixtime_record": 1731011339
+      },
+      {
+        "map": "kz_kzro_syotiles",
+        "points": "35.2966",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "29 969 / 41 535",
+        "time_record": "03:54.1563",
+        "unixtime_record": 1731276471
+      },
+      {
+        "map": "kz_leto",
+        "points": "15.9038",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "80 790 / 109 494",
+        "time_record": "07:34.5469",
+        "unixtime_record": 1743533832
+      },
+      {
+        "map": "kz_phamous",
+        "points": "47.6562",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "100 300 / 189 177",
+        "time_record": "05:38.9844",
+        "unixtime_record": 1730848430
+      }
+    ],
+    "header": {
+      "title": "BOT_AllMightyPT",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/f78c811e10e4081c70dd4e5dd85897029a7bcc31_full.jpg",
+      "desc": {
+        "{{Position}}": 93087,
+        "{{Points}}": 123,
+        "{{COMPLETIONS-MAP}}": "4 (2.41%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

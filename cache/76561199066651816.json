@@ -1,0 +1,67 @@
+{
+  "steamid": "76561199066651816",
+  "cached_at": "2026-06-07T09:33:26.412Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "16.3551",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "43 244 / 70 452",
+        "time_record": "05:29.3125",
+        "unixtime_record": 1759761837
+      }
+    ],
+    "header": {
+      "title": "Мопс",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/aa42d969201bc0bcc4f17eabfa0d22038ec27448_full.jpg",
+      "desc": {
+        "{{Position}}": 277736,
+        "{{Points}}": 16,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

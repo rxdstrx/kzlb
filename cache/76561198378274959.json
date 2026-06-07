@@ -1,0 +1,94 @@
+{
+  "steamid": "76561198378274959",
+  "cached_at": "2026-06-07T09:41:29.240Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_key",
+        "points": "47.4823",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "5 847 / 13 004",
+        "time_record": "07:09.2344",
+        "unixtime_record": 1768484170
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "34.1152",
+        "completions": "3",
+        "tier": "1",
+        "place_num": "15 707 / 70 452",
+        "time_record": "02:37.8750",
+        "unixtime_record": 1773576498
+      },
+      {
+        "map": "kz_lego",
+        "points": "59.7082",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "25 936 / 60 564",
+        "time_record": "02:41.3750",
+        "unixtime_record": 1768766795
+      },
+      {
+        "map": "kz_phamous",
+        "points": "83.2918",
+        "completions": "4",
+        "tier": "2",
+        "place_num": "33 371 / 189 177",
+        "time_record": "03:13.9532",
+        "unixtime_record": 1769179411
+      }
+    ],
+    "header": {
+      "title": "heaeha",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/469100bfe2392cc5a4310cbfc7c7f0912f5aafc5_full.jpg",
+      "desc": {
+        "{{Position}}": 56140,
+        "{{Points}}": 224,
+        "{{COMPLETIONS-MAP}}": "4 (2.41%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

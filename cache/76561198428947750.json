@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198428947750",
+  "cached_at": "2026-06-07T09:39:02.102Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_victoria",
+        "points": "62.7051",
+        "completions": "68",
+        "tier": "1",
+        "place_num": "261 / 56 611",
+        "time_record": "00:46.9063",
+        "unixtime_record": 1780766239
+      },
+      {
+        "map": "kz_lego",
+        "points": "121.1288",
+        "completions": "14",
+        "tier": "2",
+        "place_num": "469 / 60 564",
+        "time_record": "01:19.5469",
+        "unixtime_record": 1780200991
+      }
+    ],
+    "header": {
+      "title": "Raki",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/ca40b5aa4b5f92b239df0e0896aa1695f6dc7615_full.jpg",
+      "desc": {
+        "{{Position}}": 67138,
+        "{{Points}}": 183,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

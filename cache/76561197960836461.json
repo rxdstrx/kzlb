@@ -1,0 +1,67 @@
+{
+  "steamid": "76561197960836461",
+  "cached_at": "2026-06-07T09:48:10.742Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_lmn",
+        "points": "8.3067",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "15 259 / 15 831",
+        "time_record": "07:08.9532",
+        "unixtime_record": 1759968308
+      }
+    ],
+    "header": {
+      "title": "dmgod",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/059f27b9bdf15392d8b0114d8d106bd430398cf2_full.jpg",
+      "desc": {
+        "{{Position}}": 304411,
+        "{{Points}}": 8,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

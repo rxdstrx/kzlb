@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198338274077",
+  "cached_at": "2026-06-07T09:51:16.565Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "25.6016",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "26 780 / 70 452",
+        "time_record": "03:30.3750",
+        "unixtime_record": 1750614918
+      }
+    ],
+    "header": {
+      "title": "malumalokooo",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/316f6d974f8b77f0975e4ca62cffa2cea48bc840_full.jpg",
+      "desc": {
+        "{{Position}}": 246828,
+        "{{Points}}": 25,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

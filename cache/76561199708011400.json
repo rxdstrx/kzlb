@@ -1,0 +1,85 @@
+{
+  "steamid": "76561199708011400",
+  "cached_at": "2026-06-07T09:48:28.255Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "59.8230",
+        "completions": "23",
+        "tier": "1",
+        "place_num": "607 / 70 452",
+        "time_record": "01:30.0313",
+        "unixtime_record": 1780528350
+      },
+      {
+        "map": "kz_lego",
+        "points": "107.5643",
+        "completions": "9",
+        "tier": "2",
+        "place_num": "3 131 / 60 564",
+        "time_record": "01:29.5782",
+        "unixtime_record": 1780125048
+      },
+      {
+        "map": "kz_phamous",
+        "points": "18.7179",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "175 785 / 189 177",
+        "time_record": "14:23.0625",
+        "unixtime_record": 1762905170
+      }
+    ],
+    "header": {
+      "title": "nepoer",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/2d2bbb54b9ab4d8269773fdf55e3b700f96634fc_full.jpg",
+      "desc": {
+        "{{Position}}": 66403,
+        "{{Points}}": 186,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

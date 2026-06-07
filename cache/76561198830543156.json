@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198830543156",
+  "cached_at": "2026-06-07T09:31:54.527Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_phamous",
+        "points": "101.8823",
+        "completions": "10",
+        "tier": "2",
+        "place_num": "11 117 / 189 177",
+        "time_record": "02:38.5625",
+        "unixtime_record": 1755707846
+      },
+      {
+        "map": "kz_lego",
+        "points": "26.0571",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "46 594 / 60 564",
+        "time_record": "06:09.7813",
+        "unixtime_record": 1774902339
+      }
+    ],
+    "header": {
+      "title": "dgo_soares21",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/bef95c098d9cfea4ae2ab8ec4c5f4585de0dcde2_full.jpg",
+      "desc": {
+        "{{Position}}": 90651,
+        "{{Points}}": 127,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

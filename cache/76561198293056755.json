@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198293056755",
+  "cached_at": "2026-06-07T10:06:53.215Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_igneous",
+        "points": "84.9718",
+        "completions": "2",
+        "tier": "3",
+        "place_num": "23 225 / 43 767",
+        "time_record": "04:14.7032",
+        "unixtime_record": 1745154763
+      }
+    ],
+    "header": {
+      "title": "鲁本",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/7c87913d0723b510c70e6a476b130e22b35d17bb_full.jpg",
+      "desc": {
+        "{{Position}}": 125298,
+        "{{Points}}": 84,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

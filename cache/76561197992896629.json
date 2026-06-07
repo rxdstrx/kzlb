@@ -1,0 +1,67 @@
+{
+  "steamid": "76561197992896629",
+  "cached_at": "2026-06-07T09:39:17.744Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_phamous",
+        "points": "87.4039",
+        "completions": "11",
+        "tier": "2",
+        "place_num": "27 589 / 189 177",
+        "time_record": "03:04.8282",
+        "unixtime_record": 1744654550
+      }
+    ],
+    "header": {
+      "title": "maia",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/962e220a013571e5a72da1c31e7fb006a79c29fe_full.jpg",
+      "desc": {
+        "{{Position}}": 122568,
+        "{{Points}}": 87,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

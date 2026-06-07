@@ -1,0 +1,76 @@
+{
+  "steamid": "76561199071909752",
+  "cached_at": "2026-06-07T09:32:25.619Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "30.9204",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "19 503 / 70 452",
+        "time_record": "02:54.1875",
+        "unixtime_record": 1758229023
+      },
+      {
+        "map": "kz_phamous",
+        "points": "40.3301",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "119 498 / 189 177",
+        "time_record": "06:40.5625",
+        "unixtime_record": 1750773542
+      }
+    ],
+    "header": {
+      "title": "bella ciao",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/f0d5009f4044a8422060d19ec729b837771dac52_full.jpg",
+      "desc": {
+        "{{Position}}": 142877,
+        "{{Points}}": 71,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

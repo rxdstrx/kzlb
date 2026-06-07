@@ -1,0 +1,85 @@
+{
+  "steamid": "76561198255245681",
+  "cached_at": "2026-06-07T09:38:34.717Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_lego",
+        "points": "43.0453",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "35 154 / 60 564",
+        "time_record": "03:43.8438",
+        "unixtime_record": 1778105739
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "13.5934",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "49 092 / 70 452",
+        "time_record": "06:36.2188",
+        "unixtime_record": 1775249500
+      },
+      {
+        "map": "kz_phamous",
+        "points": "62.5054",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "67 960 / 189 177",
+        "time_record": "04:18.4532",
+        "unixtime_record": 1776106961
+      }
+    ],
+    "header": {
+      "title": "zangetsu",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/0637e485cce8bfe62ae96643d14f5221cb9b78c1_full.jpg",
+      "desc": {
+        "{{Position}}": 95874,
+        "{{Points}}": 119,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

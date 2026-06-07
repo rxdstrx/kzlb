@@ -1,0 +1,85 @@
+{
+  "steamid": "76561198306834314",
+  "cached_at": "2026-06-07T09:37:23.228Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_outback",
+        "points": "71.2175",
+        "completions": "2",
+        "tier": "3",
+        "place_num": "4 618 / 11 803",
+        "time_record": "06:28.9532",
+        "unixtime_record": 1774377607
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "47.4075",
+        "completions": "17",
+        "tier": "1",
+        "place_num": "4 723 / 70 452",
+        "time_record": "01:53.6094",
+        "unixtime_record": 1779742211
+      },
+      {
+        "map": "kz_kiwibridge",
+        "points": "27.1446",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "11 689 / 22 597",
+        "time_record": "02:41.8594",
+        "unixtime_record": 1779053048
+      }
+    ],
+    "header": {
+      "title": "Splitz",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/853554daff464c310f2a2f81a4d31df949c649da_full.jpg",
+      "desc": {
+        "{{Position}}": 81610,
+        "{{Points}}": 145,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

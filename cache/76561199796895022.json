@@ -1,0 +1,67 @@
+{
+  "steamid": "76561199796895022",
+  "cached_at": "2026-06-07T09:40:23.670Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_phamous",
+        "points": "81.4930",
+        "completions": "6",
+        "tier": "2",
+        "place_num": "35 938 / 189 177",
+        "time_record": "03:18.2344",
+        "unixtime_record": 1740855852
+      }
+    ],
+    "header": {
+      "title": "ЛЮБЛЮ МИЛАНУ",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/b6b6478be274c0540c804a1437d53b3f3ca10e90_full.jpg",
+      "desc": {
+        "{{Position}}": 129404,
+        "{{Points}}": 81,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

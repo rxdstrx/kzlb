@@ -1,0 +1,85 @@
+{
+  "steamid": "76561197987743648",
+  "cached_at": "2026-06-07T09:40:34.722Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_igneous",
+        "points": "73.1246",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "26 997 / 43 767",
+        "time_record": "04:55.9688",
+        "unixtime_record": 1736274006
+      },
+      {
+        "map": "kz_leto",
+        "points": "26.3487",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "60 194 / 109 494",
+        "time_record": "04:34.3594",
+        "unixtime_record": 1736274442
+      },
+      {
+        "map": "kz_phamous",
+        "points": "36.0295",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "131 376 / 189 177",
+        "time_record": "07:28.3750",
+        "unixtime_record": 1736273066
+      }
+    ],
+    "header": {
+      "title": "n1t",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/8a3d03f8f3873bdee188877f81e3e2e94906c4e5_full.jpg",
+      "desc": {
+        "{{Position}}": 86592,
+        "{{Points}}": 135,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

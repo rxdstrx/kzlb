@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198237621728",
+  "cached_at": "2026-06-07T09:33:52.398Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "11.3954",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "54 051 / 70 452",
+        "time_record": "07:52.6407",
+        "unixtime_record": 1775555790
+      }
+    ],
+    "header": {
+      "title": "wAkzz-",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/bf930125dc66860d3814ca3e823d6bf3680835a7_full.jpg",
+      "desc": {
+        "{{Position}}": 294275,
+        "{{Points}}": 11,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

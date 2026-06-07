@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198058060126",
+  "cached_at": "2026-06-07T09:58:24.801Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_village",
+        "points": "28.4658",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "20 112 / 21 727",
+        "time_record": "08:11.6407",
+        "unixtime_record": 1767059543
+      }
+    ],
+    "header": {
+      "title": "deepz",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/5231ab1dc570fa567937fe068b8c22eab86ae326_full.jpg",
+      "desc": {
+        "{{Position}}": 237709,
+        "{{Points}}": 28,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

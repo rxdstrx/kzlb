@@ -1,0 +1,67 @@
+{
+  "steamid": "76561199256481489",
+  "cached_at": "2026-06-07T09:37:13.364Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_leto",
+        "points": "16.9901",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "78 219 / 109 494",
+        "time_record": "07:05.4844",
+        "unixtime_record": 1724327380
+      }
+    ],
+    "header": {
+      "title": "dante mentality",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/95385cfd6d00c3a74dbad6326d69c09db033dce5_full.jpg",
+      "desc": {
+        "{{Position}}": 275579,
+        "{{Points}}": 16,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

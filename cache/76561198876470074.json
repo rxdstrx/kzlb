@@ -1,0 +1,85 @@
+{
+  "steamid": "76561198876470074",
+  "cached_at": "2026-06-07T09:51:10.190Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_ehcivec_final",
+        "points": "75.7385",
+        "completions": "2",
+        "tier": "3",
+        "place_num": "3 116 / 6 366",
+        "time_record": "04:06.8438",
+        "unixtime_record": 1780251664
+      },
+      {
+        "map": "kz_kiwiparadise",
+        "points": "64.0158",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "4 273 / 8 110",
+        "time_record": "01:05.7500",
+        "unixtime_record": 1780433063
+      },
+      {
+        "map": "kz_lego",
+        "points": "41.1797",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "36 211 / 60 564",
+        "time_record": "03:53.9844",
+        "unixtime_record": 1780432537
+      }
+    ],
+    "header": {
+      "title": "APOCA",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/101f72d0932e554e82dba65050e7fca7b57eddc1_full.jpg",
+      "desc": {
+        "{{Position}}": 68098,
+        "{{Points}}": 180,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

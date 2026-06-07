@@ -1,0 +1,94 @@
+{
+  "steamid": "76561198855203012",
+  "cached_at": "2026-06-07T09:58:34.576Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_grotto",
+        "points": "18.8809",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "28 388 / 33 998",
+        "time_record": "09:51.2344",
+        "unixtime_record": 1722421396
+      },
+      {
+        "map": "kz_victoria",
+        "points": "4.6935",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "53 513 / 56 611",
+        "time_record": "10:26.6719",
+        "unixtime_record": 1722251800
+      },
+      {
+        "map": "kz_leto",
+        "points": "21.8163",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "68 152 / 109 494",
+        "time_record": "05:31.3594",
+        "unixtime_record": 1722421802
+      },
+      {
+        "map": "kz_phamous",
+        "points": "25.7934",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "159 150 / 189 177",
+        "time_record": "10:26.3125",
+        "unixtime_record": 1722535698
+      }
+    ],
+    "header": {
+      "title": "NicYo",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/ee9b91f648246599bcb127c71bd137fc598a993d_full.jpg",
+      "desc": {
+        "{{Position}}": 142981,
+        "{{Points}}": 71,
+        "{{COMPLETIONS-MAP}}": "4 (2.41%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

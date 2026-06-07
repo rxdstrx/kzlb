@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198839111966",
+  "cached_at": "2026-06-07T10:04:06.465Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_phamous",
+        "points": "49.9759",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "94 698 / 189 177",
+        "time_record": "05:23.2500",
+        "unixtime_record": 1761575367
+      }
+    ],
+    "header": {
+      "title": "Drowned",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/55705e7b227ce622947913277526ba39b8396030_full.jpg",
+      "desc": {
+        "{{Position}}": 180106,
+        "{{Points}}": 49,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

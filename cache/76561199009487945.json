@@ -1,0 +1,76 @@
+{
+  "steamid": "76561199009487945",
+  "cached_at": "2026-06-07T09:34:09.578Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_variety_fix",
+        "points": "88.6327",
+        "completions": "7",
+        "tier": "4",
+        "place_num": "12 023 / 27 082",
+        "time_record": "24:44.5313",
+        "unixtime_record": 1755088327
+      },
+      {
+        "map": "kz_phamous",
+        "points": "90.0140",
+        "completions": "14",
+        "tier": "2",
+        "place_num": "24 270 / 189 177",
+        "time_record": "02:59.4688",
+        "unixtime_record": 1742902004
+      }
+    ],
+    "header": {
+      "title": "солдат вермахта",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/e62ce73053656b9c1b9cf36c54858cd423f6f8b8_full.jpg",
+      "desc": {
+        "{{Position}}": 68836,
+        "{{Points}}": 178,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

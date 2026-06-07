@@ -1,0 +1,67 @@
+{
+  "steamid": "76561199009415051",
+  "cached_at": "2026-06-07T09:38:19.313Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_victoria",
+        "points": "20.2846",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "30 502 / 56 611",
+        "time_record": "02:25.0000",
+        "unixtime_record": 1753308108
+      }
+    ],
+    "header": {
+      "title": "idrox",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/b9a55ed4bdb9192e216f2100e70e779589353adf_full.jpg",
+      "desc": {
+        "{{Position}}": 264385,
+        "{{Points}}": 20,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

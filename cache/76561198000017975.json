@@ -1,0 +1,85 @@
+{
+  "steamid": "76561198000017975",
+  "cached_at": "2026-06-07T09:36:32.810Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_victoria",
+        "points": "25.3421",
+        "completions": "3",
+        "tier": "1",
+        "place_num": "24 141 / 56 611",
+        "time_record": "01:56.0625",
+        "unixtime_record": 1780439675
+      },
+      {
+        "map": "kz_lego",
+        "points": "4.9011",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "60 329 / 60 564",
+        "time_record": "32:45.9532",
+        "unixtime_record": 1780353582
+      },
+      {
+        "map": "kz_leto",
+        "points": "16.5436",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "79 244 / 109 494",
+        "time_record": "07:16.9688",
+        "unixtime_record": 1780439020
+      }
+    ],
+    "header": {
+      "title": "IRAA",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/7089810ab8ddb918ed208600c632c4a3c3fd13d7_full.jpg",
+      "desc": {
+        "{{Position}}": 187212,
+        "{{Points}}": 46,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

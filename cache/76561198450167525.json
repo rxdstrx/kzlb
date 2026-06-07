@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198450167525",
+  "cached_at": "2026-06-07T09:32:46.302Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_igneous",
+        "points": "125.0452",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "11 233 / 43 767",
+        "time_record": "02:53.0782",
+        "unixtime_record": 1742938157
+      },
+      {
+        "map": "kz_variety_fix",
+        "points": "63.9942",
+        "completions": "15",
+        "tier": "4",
+        "place_num": "16 417 / 27 082",
+        "time_record": "34:16.0938",
+        "unixtime_record": 1770831839
+      }
+    ],
+    "header": {
+      "title": "Levvampir",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/c070be8c399dfa0e80e200d5b40fc5fe71c7f16f_full.jpg",
+      "desc": {
+        "{{Position}}": 65486,
+        "{{Points}}": 189,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

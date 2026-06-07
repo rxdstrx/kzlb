@@ -1,0 +1,85 @@
+{
+  "steamid": "76561198999294319",
+  "cached_at": "2026-06-07T09:34:13.188Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_victoria",
+        "points": "6.2580",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "51 185 / 56 611",
+        "time_record": "07:50.0000",
+        "unixtime_record": 1751482247
+      },
+      {
+        "map": "kz_leto",
+        "points": "21.3314",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "69 070 / 109 494",
+        "time_record": "05:38.8907",
+        "unixtime_record": 1751459543
+      },
+      {
+        "map": "kz_phamous",
+        "points": "46.7363",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "102 518 / 189 177",
+        "time_record": "05:45.6563",
+        "unixtime_record": 1751620000
+      }
+    ],
+    "header": {
+      "title": "KenShirou",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/06e109078f8e40b9bd932dcf735f7aa5b5b93208_full.jpg",
+      "desc": {
+        "{{Position}}": 138674,
+        "{{Points}}": 74,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

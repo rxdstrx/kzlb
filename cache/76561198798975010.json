@@ -1,0 +1,94 @@
+{
+  "steamid": "76561198798975010",
+  "cached_at": "2026-06-07T09:34:03.730Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_lmn",
+        "points": "21.5400",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "10 892 / 15 831",
+        "time_record": "02:45.4219",
+        "unixtime_record": 1766838497
+      },
+      {
+        "map": "kz_village",
+        "points": "34.1470",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "19 241 / 21 727",
+        "time_record": "06:49.8438",
+        "unixtime_record": 1766838283
+      },
+      {
+        "map": "kz_lego",
+        "points": "36.5649",
+        "completions": "3",
+        "tier": "2",
+        "place_num": "39 120 / 60 564",
+        "time_record": "04:23.5157",
+        "unixtime_record": 1771794341
+      },
+      {
+        "map": "kz_phamous",
+        "points": "44.2500",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "108 911 / 189 177",
+        "time_record": "06:05.0782",
+        "unixtime_record": 1766837484
+      }
+    ],
+    "header": {
+      "title": "u n i-",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/acb1d5538d89ae9a9f8b7179543277592da741a6_full.jpg",
+      "desc": {
+        "{{Position}}": 86079,
+        "{{Points}}": 136,
+        "{{COMPLETIONS-MAP}}": "4 (2.41%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

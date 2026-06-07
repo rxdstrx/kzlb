@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198844540177",
+  "cached_at": "2026-06-07T10:00:57.181Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "23.6339",
+        "completions": "3",
+        "tier": "1",
+        "place_num": "29 946 / 70 452",
+        "time_record": "03:47.8907",
+        "unixtime_record": 1770746452
+      }
+    ],
+    "header": {
+      "title": "Crocodilo  Bombardiro",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/7f972258529ae95771203e9d3371b28b27d151f1_full.jpg",
+      "desc": {
+        "{{Position}}": 253321,
+        "{{Points}}": 23,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "steamid": "76561199470530515",
+  "cached_at": "2026-06-07T09:45:59.621Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_gigablock_cs2",
+        "points": "37.8390",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "4 817 / 8 302",
+        "time_record": "13:03.4375",
+        "unixtime_record": 1769857512
+      },
+      {
+        "map": "kz_key",
+        "points": "39.6133",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "7 392 / 13 004",
+        "time_record": "08:34.5000",
+        "unixtime_record": 1770125279
+      },
+      {
+        "map": "kz_breezeblocks",
+        "points": "16.9168",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "7 759 / 8 515",
+        "time_record": "15:40.1407",
+        "unixtime_record": 1769690118
+      },
+      {
+        "map": "kz_spire",
+        "points": "16.7883",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "8 587 / 10 368",
+        "time_record": "38:16.5469",
+        "unixtime_record": 1770298910
+      },
+      {
+        "map": "kz_wasabi",
+        "points": "10.1737",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "9 671 / 10 288",
+        "time_record": "17:22.6563",
+        "unixtime_record": 1769606331
+      },
+      {
+        "map": "kz_brightblock",
+        "points": "15.1642",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "10 252 / 15 775",
+        "time_record": "07:10.3438",
+        "unixtime_record": 1770209070
+      },
+      {
+        "map": "kz_village",
+        "points": "70.9278",
+        "completions": "2",
+        "tier": "3",
+        "place_num": "12 891 / 21 727",
+        "time_record": "03:17.3125",
+        "unixtime_record": 1770040836
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "21.0839",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "34 262 / 70 452",
+        "time_record": "04:15.4532",
+        "unixtime_record": 1769895673
+      },
+      {
+        "map": "kz_victoria",
+        "points": "16.4073",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "35 998 / 56 611",
+        "time_record": "02:59.2657",
+        "unixtime_record": 1769950784
+      },
+      {
+        "map": "kz_leto",
+        "points": "23.3925",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "65 169 / 109 494",
+        "time_record": "05:09.0313",
+        "unixtime_record": 1767731688
+      },
+      {
+        "map": "kz_phamous",
+        "points": "43.4887",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "110 948 / 189 177",
+        "time_record": "06:11.4688",
+        "unixtime_record": 1755613264
+      }
+    ],
+    "header": {
+      "title": "hshs",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/6e3f965f23596857b21f50fcf56d79866265435a_full.jpg",
+      "desc": {
+        "{{Position}}": 41132,
+        "{{Points}}": 311,
+        "{{COMPLETIONS-MAP}}": "11 (6.63%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

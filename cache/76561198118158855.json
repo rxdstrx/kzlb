@@ -1,0 +1,85 @@
+{
+  "steamid": "76561198118158855",
+  "cached_at": "2026-06-07T09:46:14.847Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_grotto",
+        "points": "46.5037",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "13 510 / 33 998",
+        "time_record": "04:00.0469",
+        "unixtime_record": 1720712708
+      },
+      {
+        "map": "kz_victoria",
+        "points": "28.9958",
+        "completions": "3",
+        "tier": "1",
+        "place_num": "19 916 / 56 611",
+        "time_record": "01:41.4375",
+        "unixtime_record": 1720639387
+      },
+      {
+        "map": "kz_phamous",
+        "points": "78.8455",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "39 938 / 189 177",
+        "time_record": "03:24.8907",
+        "unixtime_record": 1720639987
+      }
+    ],
+    "header": {
+      "title": "MigaZz",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/93062adc8a0aeebd56493fd9e166d358e8f54fa9_full.jpg",
+      "desc": {
+        "{{Position}}": 77884,
+        "{{Points}}": 154,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

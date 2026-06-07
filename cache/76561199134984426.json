@@ -1,0 +1,130 @@
+{
+  "steamid": "76561199134984426",
+  "cached_at": "2026-06-07T09:44:32.366Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_breezeblocks",
+        "points": "41.8341",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "4 144 / 8 515",
+        "time_record": "06:20.1719",
+        "unixtime_record": 1756427265
+      },
+      {
+        "map": "kz_spire",
+        "points": "30.2909",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "5 327 / 10 368",
+        "time_record": "21:12.8282",
+        "unixtime_record": 1756431524
+      },
+      {
+        "map": "kz_summercliff2",
+        "points": "61.2024",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "5 812 / 14 745",
+        "time_record": "08:15.7813",
+        "unixtime_record": 1756427923
+      },
+      {
+        "map": "kz_grotto",
+        "points": "38.9551",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "16 979 / 33 998",
+        "time_record": "04:46.5625",
+        "unixtime_record": 1739240710
+      },
+      {
+        "map": "kz_kzro_syotiles",
+        "points": "53.1453",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "19 313 / 41 535",
+        "time_record": "02:35.5157",
+        "unixtime_record": 1739236038
+      },
+      {
+        "map": "kz_igneous",
+        "points": "95.7637",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "19 801 / 43 767",
+        "time_record": "03:46.0000",
+        "unixtime_record": 1739239782
+      },
+      {
+        "map": "kz_victoria",
+        "points": "23.2253",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "26 735 / 56 611",
+        "time_record": "02:06.6407",
+        "unixtime_record": 1739238121
+      },
+      {
+        "map": "kz_phamous",
+        "points": "56.4511",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "80 253 / 189 177",
+        "time_record": "04:46.1719",
+        "unixtime_record": 1739238649
+      }
+    ],
+    "header": {
+      "title": "Витя Альварез",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/e507415c4186a7ea15111c5e2dc3641da31bacd1_full.jpg",
+      "desc": {
+        "{{Position}}": 31949,
+        "{{Points}}": 400,
+        "{{COMPLETIONS-MAP}}": "8 (4.82%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

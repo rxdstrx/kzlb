@@ -1,0 +1,85 @@
+{
+  "steamid": "76561199788306994",
+  "cached_at": "2026-06-07T10:06:16.474Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_village",
+        "points": "74.2314",
+        "completions": "2",
+        "tier": "3",
+        "place_num": "12 323 / 21 727",
+        "time_record": "03:08.5313",
+        "unixtime_record": 1777239766
+      },
+      {
+        "map": "kz_igneous",
+        "points": "75.3236",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "26 321 / 43 767",
+        "time_record": "04:47.3282",
+        "unixtime_record": 1776694174
+      },
+      {
+        "map": "kz_leto",
+        "points": "21.3304",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "69 072 / 109 494",
+        "time_record": "05:38.9063",
+        "unixtime_record": 1777239423
+      }
+    ],
+    "header": {
+      "title": "Donich",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/1cdc2f42953838f24365cd385a53518811b8963c_full.jpg",
+      "desc": {
+        "{{Position}}": 71471,
+        "{{Points}}": 170,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

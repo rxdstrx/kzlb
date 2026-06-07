@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198387022467",
+  "cached_at": "2026-06-07T09:45:02.438Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_phamous",
+        "points": "92.1316",
+        "completions": "8",
+        "tier": "2",
+        "place_num": "21 577 / 189 177",
+        "time_record": "02:55.3438",
+        "unixtime_record": 1741211201
+      },
+      {
+        "map": "kz_leto",
+        "points": "37.2510",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "44 870 / 109 494",
+        "time_record": "03:14.0625",
+        "unixtime_record": 1768775223
+      }
+    ],
+    "header": {
+      "title": "RENAULT 5 TURBO RALLY Peek",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/630cd7707e0f182a00ef2d5b0d475ff574c798e5_full.jpg",
+      "desc": {
+        "{{Position}}": 89798,
+        "{{Points}}": 129,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

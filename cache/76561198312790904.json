@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198312790904",
+  "cached_at": "2026-06-07T10:03:36.026Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_leto",
+        "points": "5.0514",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "106 125 / 109 494",
+        "time_record": "23:51.0938",
+        "unixtime_record": 1741203748
+      }
+    ],
+    "header": {
+      "title": "Nexty27",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/5497fd4e235c17358ebae937f5c6ab073984a2db_full.jpg",
+      "desc": {
+        "{{Position}}": 313672,
+        "{{Points}}": 5,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198400477104",
+  "cached_at": "2026-06-07T09:37:29.102Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_victoria",
+        "points": "10.4480",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "44 420 / 56 611",
+        "time_record": "04:41.5157",
+        "unixtime_record": 1742594015
+      },
+      {
+        "map": "kz_phamous",
+        "points": "33.4965",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "138 356 / 189 177",
+        "time_record": "08:02.2813",
+        "unixtime_record": 1740777917
+      }
+    ],
+    "header": {
+      "title": "Elyte",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/b89908c86d70d8c76539550b2de02784fef86653_full.jpg",
+      "desc": {
+        "{{Position}}": 194140,
+        "{{Points}}": 43,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

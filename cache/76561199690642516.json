@@ -1,0 +1,148 @@
+{
+  "steamid": "76561199690642516",
+  "cached_at": "2026-06-07T09:35:05.308Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_sunstone",
+        "points": "31.3788",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "7 326 / 11 318",
+        "time_record": "07:13.0938",
+        "unixtime_record": 1765308336
+      },
+      {
+        "map": "kz_16pillars",
+        "points": "31.0979",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "7 332 / 8 152",
+        "time_record": "30:08.0625",
+        "unixtime_record": 1746458987
+      },
+      {
+        "map": "kz_fastmap",
+        "points": "18.3337",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "10 581 / 11 946",
+        "time_record": "06:35.2344",
+        "unixtime_record": 1761865611
+      },
+      {
+        "map": "kz_brightblock",
+        "points": "9.2513",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "13 618 / 15 775",
+        "time_record": "11:45.3907",
+        "unixtime_record": 1760362301
+      },
+      {
+        "map": "kz_edp445",
+        "points": "32.7855",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "14 172 / 18 177",
+        "time_record": "03:03.3750",
+        "unixtime_record": 1763497474
+      },
+      {
+        "map": "kz_hillside",
+        "points": "17.8042",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "15 701 / 19 787",
+        "time_record": "08:02.0313",
+        "unixtime_record": 1762979005
+      },
+      {
+        "map": "kz_lego",
+        "points": "38.7889",
+        "completions": "8",
+        "tier": "2",
+        "place_num": "37 714 / 60 564",
+        "time_record": "04:08.4063",
+        "unixtime_record": 1765307873
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "14.8847",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "46 219 / 70 452",
+        "time_record": "06:01.8438",
+        "unixtime_record": 1763497178
+      },
+      {
+        "map": "kz_victoria",
+        "points": "3.3674",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "55 125 / 56 611",
+        "time_record": "14:33.4532",
+        "unixtime_record": 1748210326
+      },
+      {
+        "map": "kz_phamous",
+        "points": "63.9870",
+        "completions": "45",
+        "tier": "2",
+        "place_num": "65 021 / 189 177",
+        "time_record": "04:12.4688",
+        "unixtime_record": 1756852012
+      }
+    ],
+    "header": {
+      "title": "Fredikson_085",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/f73d0c3ac950a2e83a7570200092ad844f1fdf12_full.jpg",
+      "desc": {
+        "{{Position}}": 48691,
+        "{{Points}}": 261,
+        "{{COMPLETIONS-MAP}}": "10 (6.03%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

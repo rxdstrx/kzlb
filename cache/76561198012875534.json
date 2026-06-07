@@ -1,0 +1,139 @@
+{
+  "steamid": "76561198012875534",
+  "cached_at": "2026-06-07T10:01:46.866Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_lumen",
+        "points": "20.4411",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "1 943 / 2 420",
+        "time_record": "13:21.3594",
+        "unixtime_record": 1774400394
+      },
+      {
+        "map": "kz_checkmate",
+        "points": "38.2455",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "3 029 / 5 639",
+        "time_record": "17:28.6094",
+        "unixtime_record": 1774547712
+      },
+      {
+        "map": "kz_highland",
+        "points": "62.1212",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "3 190 / 8 705",
+        "time_record": "04:08.8282",
+        "unixtime_record": 1774398550
+      },
+      {
+        "map": "kz_skytower",
+        "points": "101.8125",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "6 735 / 22 565",
+        "time_record": "19:47.2500",
+        "unixtime_record": 1776185765
+      },
+      {
+        "map": "kz_edp445",
+        "points": "63.8730",
+        "completions": "3",
+        "tier": "2",
+        "place_num": "6 792 / 18 177",
+        "time_record": "01:34.1250",
+        "unixtime_record": 1774363230
+      },
+      {
+        "map": "kz_victoria",
+        "points": "34.6541",
+        "completions": "3",
+        "tier": "1",
+        "place_num": "14 106 / 56 611",
+        "time_record": "01:24.8750",
+        "unixtime_record": 1774986605
+      },
+      {
+        "map": "kz_igneous",
+        "points": "104.2389",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "17 243 / 43 767",
+        "time_record": "03:27.6250",
+        "unixtime_record": 1774534788
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "26.3230",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "25 743 / 70 452",
+        "time_record": "03:24.6094",
+        "unixtime_record": 1774982087
+      },
+      {
+        "map": "kz_phamous",
+        "points": "67.1539",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "59 276 / 189 177",
+        "time_record": "04:00.5625",
+        "unixtime_record": 1774527642
+      }
+    ],
+    "header": {
+      "title": "detective bonghits",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/8b0fdeebced87569e3f1adf9ad5376618ffaa51e_full.jpg",
+      "desc": {
+        "{{Position}}": 24274,
+        "{{Points}}": 518,
+        "{{COMPLETIONS-MAP}}": "9 (5.43%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

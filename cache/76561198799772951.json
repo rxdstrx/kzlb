@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198799772951",
+  "cached_at": "2026-06-07T09:39:40.160Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_wetlands",
+        "points": "55.1081",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "5 834 / 15 457",
+        "time_record": "01:27.8594",
+        "unixtime_record": 1763731783
+      },
+      {
+        "map": "kz_lego",
+        "points": "15.6697",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "54 758 / 60 564",
+        "time_record": "10:14.9063",
+        "unixtime_record": 1763826289
+      }
+    ],
+    "header": {
+      "title": "KYZ",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/091d7b1a0a94c27bc95446bbd328f7e04cbcce37_full.jpg",
+      "desc": {
+        "{{Position}}": 143559,
+        "{{Points}}": 70,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

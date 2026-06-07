@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198295780004",
+  "cached_at": "2026-06-07T10:05:47.338Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "5.5985",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "66 858 / 70 452",
+        "time_record": "16:02.0313",
+        "unixtime_record": 1751230220
+      },
+      {
+        "map": "kz_leto",
+        "points": "6.0065",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "104 444 / 109 494",
+        "time_record": "20:03.5313",
+        "unixtime_record": 1750969939
+      }
+    ],
+    "header": {
+      "title": "Posse de bola",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/dca39970780a09aad024fc2b50581d2e3af1706b_full.jpg",
+      "desc": {
+        "{{Position}}": 293580,
+        "{{Points}}": 11,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

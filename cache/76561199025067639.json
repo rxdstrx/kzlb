@@ -1,0 +1,67 @@
+{
+  "steamid": "76561199025067639",
+  "cached_at": "2026-06-07T10:06:23.358Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_phamous",
+        "points": "44.8061",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "107 427 / 189 177",
+        "time_record": "06:00.5469",
+        "unixtime_record": 1738104986
+      }
+    ],
+    "header": {
+      "title": "Luis Suarez",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/46cd190c187f3d56a0f1bb6ff629c7bd41acb3a4_full.jpg",
+      "desc": {
+        "{{Position}}": 192014,
+        "{{Points}}": 44,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}
