@@ -66,8 +66,23 @@ const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv
     console.log('Navigation note:', e.message);
   }
 
-  // Extra wait for lazy-loaded data
-  await new Promise(r => setTimeout(r, 10000));
+  // Wait for initial load
+  await new Promise(r => setTimeout(r, 5000));
+
+  // Click the "Карты" tab to trigger maps API call
+  try {
+    await page.evaluate(() => {
+      const tabs = Array.from(document.querySelectorAll('button, a, div[role="tab"], span'));
+      const mapsTab = tabs.find(el => el.textContent.trim().includes('арт') || el.textContent.trim().includes('Map'));
+      if (mapsTab) { mapsTab.click(); console.log('Clicked maps tab:', mapsTab.textContent); }
+      else console.log('Maps tab not found, available tabs:', tabs.map(t => t.textContent.trim()).filter(t => t.length < 30).join(' | '));
+    });
+  } catch (e) {
+    console.log('Tab click error:', e.message);
+  }
+
+  // Wait for maps data to load
+  await new Promise(r => setTimeout(r, 8000));
 
   console.log('Page title:', await page.title());
   console.log('User data keys:', Object.keys(userData));
