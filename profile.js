@@ -121,7 +121,6 @@ function renderMaps(mapList) {
       <td><span class="runs-cell">${runs}</span></td>
       <td><span class="time-cell">${time}</span></td>
       <td><span class="pos-cell">${pos}</span></td>
-      <td><span class="pts-cell">${pts}</span></td>
       <td><span class="date-cell">${date}</span></td>
     `;
     statsBody.appendChild(tr);

@@ -123,32 +123,28 @@
 /* ── Stats table columns ── */
 .col-tier-sm { width: 55px; }
 .col-mapname { min-width: 160px; }
-.col-pts { text-align: right; width: 90px; }
-.col-date { width: 120px; white-space: nowrap; }
-
-.pts-cell {
-  color: #f59e0b;
-  font-size: 0.82rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
+.col-date { width: 140px; white-space: nowrap; }
 
 .pos-cell {
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.75);
   font-variant-numeric: tabular-nums;
 }
 
 .runs-cell {
   font-size: 0.82rem;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.75);
+  font-variant-numeric: tabular-nums;
+}
+
+.time-cell {
+  color: rgba(255,255,255,0.75);
   font-variant-numeric: tabular-nums;
 }
 
 .date-cell {
   font-size: 0.78rem;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.65);
 }
 
 .empty-state {
