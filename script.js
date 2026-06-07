@@ -99,11 +99,18 @@ async function resolveSteamId(identifier) {
   const isLocal = location.protocol === 'file:';
 
   if (!isLocal) {
-    // Use our own Netlify function — reliable, server-side, no CORS
     try {
       const res  = await fetch(`https://legendary-gecko-290df8.netlify.app/api/steam-resolve?input=${encodeURIComponent(identifier)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.steamid) return data.steamid;
+      }
+    } catch {}
+    // Fallback: resolve directly via playerdb
+    try {
+      const res  = await fetch(`https://playerdb.co/api/player/steam/${encodeURIComponent(identifier)}`);
       const data = await res.json();
-      if (data.steamid) return data.steamid;
+      if (data?.data?.player?.id) return data.data.player.id;
     } catch {}
   } else {
     // Fallback for local: playerdb.co supports vanity names
