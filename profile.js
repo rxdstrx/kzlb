@@ -27,9 +27,10 @@ async function loadProfile(sid) {
     const cacheRes = await fetch(`${CACHE_BASE}/${sid}.json?bust=${Date.now()}`);
 
     if (!cacheRes.ok) {
-      // No cache yet — trigger scrape and tell user to wait
       triggerScrape(sid);
-      showError('Stats not cached yet. Please wait ~2 minutes and refresh the page — we are fetching your data now.');
+      // Show loading message and auto-poll every 10 seconds
+      loadingState.querySelector('p').textContent = 'Fetching stats… this takes ~2 minutes.';
+      setTimeout(() => pollForCache(sid), 10000);
       return;
     }
 
@@ -132,6 +133,22 @@ async function triggerScrape(sid) {
   try {
     await fetch(`/api/trigger-scrape?steamid=${sid}`);
   } catch {}
+}
+
+async function pollForCache(sid, attempts = 0) {
+  if (attempts > 24) {
+    showError('Could not fetch stats after 4 minutes. Please refresh the page.');
+    return;
+  }
+  const res = await fetch(`${CACHE_BASE}/${sid}.json?bust=${Date.now()}`).catch(() => null);
+  if (res && res.ok) {
+    // Data is ready — reload the profile
+    loadProfile(sid);
+    return;
+  }
+  const dots = '.'.repeat((attempts % 3) + 1);
+  loadingState.querySelector('p').textContent = `Fetching stats${dots} this takes ~2 minutes.`;
+  setTimeout(() => pollForCache(sid, attempts + 1), 10000);
 }
 
 function timeSince(date) {
