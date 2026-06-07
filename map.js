@@ -4,8 +4,8 @@ const PAGE_SIZE  = 100;
 const params  = new URLSearchParams(window.location.search);
 const mapName = params.get('map');
 
-let allRecords = [];
-let filtered   = [];
+let allRecords  = [];
+let filtered    = [];
 let currentPage = 1;
 let activeCountry = 'all';
 
@@ -26,19 +26,33 @@ function timeToSeconds(t) {
 }
 
 async function init() {
-  if (!mapName) { document.getElementById('mapTitle').textContent = 'No map specified'; return; }
-
-  // Set map info
-  const mapInfo = typeof ALL_MAPS !== 'undefined' ? ALL_MAPS.find(m => m.name === mapName) : null;
-  document.getElementById('mapTitle').textContent = mapName;
-  document.title = `KZ — ${mapName}`;
-  if (mapInfo?.img) {
-    document.getElementById('mapThumb').src = mapInfo.img;
-    document.getElementById('mapThumb').style.display = 'block';
+  if (!mapName) {
+    document.getElementById('mapTitle').textContent = 'No map specified';
+    return;
   }
 
-  // Load all country caches that have this map
+  // Set map info from ALL_MAPS
+  const mapInfo = typeof ALL_MAPS !== 'undefined' ? ALL_MAPS.find(m => m.name === mapName) : null;
+  const tier = mapInfo?.tier;
+
+  document.getElementById('mapTitle').textContent = mapName;
+  document.title = `KZ — ${mapName}`;
+
+  if (mapInfo?.img) {
+    const thumb = document.getElementById('mapThumb');
+    thumb.src = mapInfo.img;
+    thumb.style.display = 'block';
+  }
+
+  // Set tier badge with color
+  if (tier) {
+    const badge = document.getElementById('mapTierBadge');
+    badge.textContent = `Tier ${tier}`;
+    badge.className = `tier-badge tier-${tier}`;
+  }
+
   try {
+    // Load Portuguese players
     const ptRes  = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
     const ptData = await ptRes.json();
     const ptPlayers = ptData.players || [];
@@ -47,25 +61,30 @@ async function init() {
       const entry = (p.maps_list || []).find(m => m.map === mapName);
       if (entry) {
         allRecords.push({
-          steamid: p.steamid,
-          nickname: p.nickname,
-          avatar: p.avatar,
-          country: 'pt',
-          countryFlag: '🇵🇹',
+          steamid:    p.steamid,
+          nickname:   p.nickname,
+          avatar:     p.avatar,
+          country:    'pt',
+          flag:       '🇵🇹',
           time_record: entry.time_record,
-          place_num: entry.place_num,
+          place_num:   entry.place_num,
           completions: entry.completions,
         });
       }
     });
 
+    // Sort by time ascending
     allRecords.sort((a, b) => timeToSeconds(a.time_record) - timeToSeconds(b.time_record));
-    document.getElementById('mapSub').textContent = `${allRecords.length} records found`;
+
+    document.getElementById('mapSub').textContent =
+      `${allRecords.length} player${allRecords.length !== 1 ? 's' : ''} with records · Sorted by fastest time`;
+
     loadingState.classList.add('hidden');
     tableWrapper.classList.remove('hidden');
     applyFilter();
   } catch (e) {
     loadingState.querySelector('p').textContent = 'Failed to load records.';
+    console.error(e);
   }
 }
 
@@ -73,7 +92,6 @@ function applyFilter() {
   filtered = activeCountry === 'all'
     ? allRecords
     : allRecords.filter(r => r.country === activeCountry);
-
   currentPage = 1;
   renderPage();
 }
@@ -100,7 +118,7 @@ function renderPage() {
         <div class="player-cell">
           <img class="player-thumb" src="${r.avatar}" onerror="this.style.display='none'" />
           <a class="player-nick" href="profile.html?steamid=${r.steamid}">${r.nickname}</a>
-          <span style="font-size:1rem">${r.countryFlag}</span>
+          <span style="font-size:0.9rem">${r.flag}</span>
         </div>
       </td>
       <td><span class="time-cell">${r.time_record}</span></td>
@@ -120,11 +138,12 @@ function renderPagination(total) {
   if (totalPages <= 1) return;
 
   pag.className = 'pagination';
+
   const prev = document.createElement('button');
   prev.className = 'page-btn' + (currentPage === 1 ? ' disabled' : '');
   prev.textContent = '← Prev';
   prev.disabled = currentPage === 1;
-  prev.addEventListener('click', () => { currentPage--; renderPage(); });
+  prev.addEventListener('click', () => { currentPage--; renderPage(); window.scrollTo(0, 0); });
 
   const info = document.createElement('span');
   info.className = 'page-info';
@@ -134,12 +153,12 @@ function renderPagination(total) {
   next.className = 'page-btn' + (currentPage === totalPages ? ' disabled' : '');
   next.textContent = 'Next →';
   next.disabled = currentPage === totalPages;
-  next.addEventListener('click', () => { currentPage++; renderPage(); });
+  next.addEventListener('click', () => { currentPage++; renderPage(); window.scrollTo(0, 0); });
 
   pag.append(prev, info, next);
 }
 
-// Country filter chips
+// Country filter
 document.getElementById('countryChips').addEventListener('click', e => {
   const chip = e.target.closest('.map-country-chip');
   if (!chip) return;
@@ -147,18 +166,5 @@ document.getElementById('countryChips').addEventListener('click', e => {
   document.querySelectorAll('.map-country-chip').forEach(c => c.classList.toggle('active', c === chip));
   applyFilter();
 });
-
-// Add CSS for map page elements
-const style = document.createElement('style');
-style.textContent = `
-.map-hero-thumb { width:80px;height:80px;border-radius:12px;object-fit:cover;flex-shrink:0; }
-.map-country-filter { display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap; }
-.map-filter-label { font-size:0.8rem;color:rgba(255,255,255,0.35); }
-.map-country-chips { display:flex;gap:6px;flex-wrap:wrap; }
-.map-country-chip { padding:5px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;color:rgba(255,255,255,0.5);font-size:0.78rem;cursor:pointer;transition:all 0.12s; }
-.map-country-chip:hover { background:rgba(255,255,255,0.09);color:#fff; }
-.map-country-chip.active { background:rgba(129,140,248,0.2);border-color:rgba(129,140,248,0.4);color:#a5b4fc; }
-`;
-document.head.appendChild(style);
 
 init();
