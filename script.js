@@ -487,7 +487,40 @@ document.querySelectorAll('.tier-chip').forEach(chip => {
   });
 });
 
-// ── Maps button ──
-document.getElementById('mapsBtn').addEventListener('click', () => {
-  window.location.href = 'maps.html';
+// ── Maps selector ──
+let selectedMap = null;
+const mapsBtn     = document.getElementById('mapsBtn');
+const mapsOptions = document.getElementById('mapsOptions');
+const mapsChevron = document.getElementById('mapsChevron');
+const mapsSearch  = document.getElementById('mapsSearch');
+const mapsList    = document.getElementById('mapsList');
+
+function renderMapsFilter(filter = '') {
+  mapsList.innerHTML = '';
+  const filtered = ALL_MAPS.filter(m => m.name.toLowerCase().includes(filter.toLowerCase()));
+  filtered.forEach(m => {
+    const item = document.createElement('div');
+    item.className = 'country-item' + (selectedMap === m.name ? ' active' : '');
+    item.innerHTML = `<span class="country-flag" style="font-size:0.7rem;opacity:0.5">T${m.tier}</span><span>${m.name}</span>`;
+    item.addEventListener('click', () => {
+      selectedMap = selectedMap === m.name ? null : m.name;
+      mapsBtn.querySelector('span').textContent = selectedMap || 'Maps';
+      renderMapsFilter(mapsSearch.value);
+    });
+    mapsList.appendChild(item);
+  });
+}
+
+mapsBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  mapsOptions.classList.toggle('hidden');
+  mapsChevron.classList.toggle('rotated', !mapsOptions.classList.contains('hidden'));
+  if (!mapsOptions.classList.contains('hidden')) {
+    renderMapsFilter();
+    mapsSearch.focus();
+  }
 });
+
+mapsSearch.addEventListener('input', () => renderMapsFilter(mapsSearch.value));
+mapsSearch.addEventListener('click', e => e.stopPropagation());
+mapsList.addEventListener('click', e => e.stopPropagation());
