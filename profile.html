@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KZ — Player Profile</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="maps.css" />
+  <link rel="stylesheet" href="profile.css" />
+</head>
+<body>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+
+  <div class="container">
+    <a class="back-btn" href="index.html">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </a>
+
+    <!-- Loading state -->
+    <div class="profile-loading" id="loadingState">
+      <div class="spinner"></div>
+      <p>Loading profile…</p>
+    </div>
+
+    <!-- Error state -->
+    <div class="profile-error hidden" id="errorState">
+      <p id="errorMsg">Could not load profile.</p>
+      <a href="index.html" class="back-btn" style="margin-top:16px">← Go back</a>
+    </div>
+
+    <!-- Profile content -->
+    <div class="profile-content hidden" id="profileContent">
+
+      <!-- Player card -->
+      <div class="player-card">
+        <img class="player-avatar" id="playerAvatar" src="" alt="avatar" />
+        <div class="player-info">
+          <h2 class="player-name" id="playerName">—</h2>
+          <span class="player-id" id="playerSteamId">—</span>
+        </div>
+        <a class="cybershoke-btn" id="cybershokeLink" href="#" target="_blank" rel="noopener">
+          View on Cybershoke
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+            <path d="M2 9L9 2M9 2H4M9 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Stats table -->
+      <div class="table-wrapper" id="statsTable" style="margin-top:24px">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-mapname">Map</th>
+              <th class="col-tier-sm">Tier</th>
+              <th>Runs</th>
+              <th>Time</th>
+              <th>Position</th>
+              <th class="col-pts">Points</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="statsBody"></tbody>
+        </table>
+        <div class="empty-state hidden" id="noStats">No completed maps found.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="maps-data.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>
