@@ -3,7 +3,7 @@ const path = require('path');
 
 const FACEIT_KEY = process.env.FACEIT_KEY;
 const LIMIT = 100;
-const MAX_PAGES = 100; // up to 10000 players
+const MAX_PAGES = 1; // 50 players for testing
 
 async function fetchPage(offset) {
   const res = await fetch(
