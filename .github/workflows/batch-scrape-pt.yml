@@ -36,7 +36,9 @@ jobs:
         run: |
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
+          git stash
           git pull --rebase
+          git stash pop
           git add cache/
           git diff --staged --quiet || git commit -m "update: pt kz players batch scrape"
           git push
