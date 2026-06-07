@@ -1,0 +1,42 @@
+name: Batch Scrape PT Players
+
+on:
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-scraper-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-scraper-
+
+      - name: Install dependencies
+        run: |
+          if [ ! -d "node_modules/puppeteer-core" ]; then
+            npm install puppeteer-core @sparticuz/chromium puppeteer-extra puppeteer-extra-plugin-stealth
+          fi
+
+      - name: Batch scrape KZ stats
+        run: node scripts/batch-scrape-pt.js
+
+      - name: Commit results
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git pull --rebase
+          git add cache/
+          git diff --staged --quiet || git commit -m "update: pt kz players batch scrape"
+          git push
