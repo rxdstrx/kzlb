@@ -11,7 +11,8 @@
       "WebFetch(domain:api.cybershoke.net)",
       "Skill(update-config)",
       "Skill(update-config:*)",
-      "Bash(mkdir -p \"C:\\\\Users\\\\uastr\\\\Documents\\\\KZLB\\\\.claude\")"
+      "Bash(mkdir -p \"C:\\\\Users\\\\uastr\\\\Documents\\\\KZLB\\\\.claude\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/pt-kz-players.json\")"
     ]
   }
 }
