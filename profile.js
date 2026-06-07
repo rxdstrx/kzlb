@@ -77,6 +77,11 @@ async function loadProfile(sid) {
     if (!cacheRes.ok) {
       triggerScrape(sid);
       startProgress();
+      const loadingLink = document.getElementById('loadingCybershokeLink');
+      if (loadingLink) {
+        loadingLink.href = `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}`;
+        loadingLink.classList.remove('hidden');
+      }
       setTimeout(() => pollForCache(sid), 10000);
       return;
     }

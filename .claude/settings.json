@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"C:\\Users\\uastr\\Documents\\KZLB\" && git add . && git pull --rebase && git push",
+            "shell": "bash",
+            "timeout": 60,
+            "statusMessage": "Pushing to GitHub..."
+          }
+        ]
+      }
+    ]
+  }
+}
