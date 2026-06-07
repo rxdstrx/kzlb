@@ -369,18 +369,102 @@ document.getElementById('startBtn')?.addEventListener('click', () => {
   smoothScrollTo(target.getBoundingClientRect().top + window.scrollY - 20);
 });
 
-// ── Leaderboard rows ──
-const tbody = document.getElementById('leaderboard-body');
-for (let i = 1; i <= 100; i++) {
-  const tr = document.createElement('tr');
-  const rankClass = i === 1 ? 'top1' : i === 2 ? 'top2' : i === 3 ? 'top3' : '';
-  tr.innerHTML = `
-    <td><span class="rank ${rankClass}">${i}</span></td>
-    <td><span class="map-cell">—</span></td>
-    <td><span class="map-cell">—</span></td>
-    <td><span class="time-cell">—</span></td>
-  `;
-  tbody.appendChild(tr);
+// ── Leaderboard data ──
+const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+const COUNTRY_CACHE = { pt: null };
+let lbPlayers = [];
+let lbSelectedMap = null;
+
+const lbBody  = document.getElementById('leaderboard-body');
+const lbEmpty = document.getElementById('lbEmpty');
+
+function renderLeaderboard() {
+  lbBody.innerHTML = '';
+  lbEmpty.classList.add('hidden');
+
+  if (!lbPlayers.length) {
+    lbEmpty.classList.remove('hidden');
+    return;
+  }
+
+  let rows = [...lbPlayers];
+
+  if (lbSelectedMap) {
+    // Map view — sort by time
+    document.getElementById('lb-col1').textContent = 'Time';
+    document.getElementById('lb-col2').textContent = 'Position';
+    document.getElementById('lb-col3').textContent = 'Runs';
+
+    rows = rows.map(p => {
+      const entry = (p.maps_list || []).find(m => m.map === lbSelectedMap);
+      return entry ? { ...p, entry } : null;
+    }).filter(Boolean).sort((a, b) => a.entry.time_record.localeCompare(b.entry.time_record));
+
+    if (!rows.length) {
+      lbEmpty.textContent = `No players found for ${lbSelectedMap}`;
+      lbEmpty.classList.remove('hidden');
+      return;
+    }
+
+    rows.forEach((p, i) => {
+      const rank = i + 1;
+      const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="rank ${rankClass}">${rank}</span></td>
+        <td>
+          <div class="player-cell">
+            <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
+            <a class="player-nick" href="profile.html?steamid=${p.steamid}">${p.nickname}</a>
+          </div>
+        </td>
+        <td><span class="time-cell">${p.entry.time_record}</span></td>
+        <td><span class="pos-cell">${p.entry.place_num}</span></td>
+        <td><span class="runs-cell">${p.entry.completions}</span></td>
+      `;
+      lbBody.appendChild(tr);
+    });
+
+  } else {
+    // Overall view — sort by points
+    document.getElementById('lb-col1').textContent = 'Points';
+    document.getElementById('lb-col2').textContent = 'Global Rank';
+    document.getElementById('lb-col3').textContent = 'Maps Done';
+
+    rows.sort((a, b) => b.kz_points - a.kz_points);
+
+    rows.forEach((p, i) => {
+      const rank = i + 1;
+      const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="rank ${rankClass}">${rank}</span></td>
+        <td>
+          <div class="player-cell">
+            <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
+            <a class="player-nick" href="profile.html?steamid=${p.steamid}">${p.nickname}</a>
+          </div>
+        </td>
+        <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
+        <td><span class="pos-cell">#${p.kz_place?.toLocaleString() || '—'}</span></td>
+        <td><span class="runs-cell">${p.kz_maps || p.maps_list?.length || '—'}</span></td>
+      `;
+      lbBody.appendChild(tr);
+    });
+  }
+}
+
+async function loadCountryPlayers(code) {
+  if (code === 'pt') {
+    if (!COUNTRY_CACHE.pt) {
+      lbBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:rgba(255,255,255,0.3)">Loading...</td></tr>';
+      const res = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
+      const data = await res.json();
+      COUNTRY_CACHE.pt = data.players || [];
+    }
+    lbPlayers = COUNTRY_CACHE.pt;
+    renderLeaderboard();
+  }
 }
 
 // ── Filter button toggle ──
@@ -452,6 +536,8 @@ function renderCountries(filter = '') {
       selectedCountry = selectedCountry?.code === c.code ? null : c;
       countryBtn.querySelector('span').textContent = selectedCountry ? selectedCountry.name : 'Country';
       renderCountries(countrySearch.value);
+      if (selectedCountry) loadCountryPlayers(selectedCountry.code);
+      else { lbPlayers = []; renderLeaderboard(); }
     });
     countryList.appendChild(item);
   });
@@ -504,8 +590,10 @@ function renderMapsFilter(filter = '') {
     item.innerHTML = `<span class="country-flag" style="font-size:0.7rem;opacity:0.5">T${m.tier}</span><span>${m.name}</span>`;
     item.addEventListener('click', () => {
       selectedMap = selectedMap === m.name ? null : m.name;
+      lbSelectedMap = selectedMap;
       mapsBtn.querySelector('span').textContent = selectedMap || 'Maps';
       renderMapsFilter(mapsSearch.value);
+      renderLeaderboard();
     });
     mapsList.appendChild(item);
   });

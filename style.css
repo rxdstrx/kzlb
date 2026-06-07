@@ -240,6 +240,27 @@ header {
   transform: rotate(180deg);
 }
 
+.player-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.player-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+.player-nick {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+  text-decoration: none;
+}
+.player-nick:hover { color: #a5b4fc; }
+
 .country-options {
   padding: 6px 8px 8px;
 }
