@@ -41,8 +41,7 @@ jobs:
         run: |
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
-          git fetch origin main
-          git checkout origin/main -- . 2>/dev/null || true
           git add cache/
           git diff --staged --quiet || git commit -m "cache: ${{ github.event.inputs.steamid }}"
+          git pull --rebase=false --strategy-option=ours origin main
           git push origin HEAD:main
