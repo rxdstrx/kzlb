@@ -1,0 +1,76 @@
+{
+  "steamid": "76561197963208503",
+  "cached_at": "2026-06-07T09:58:48.465Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_niche",
+        "points": "28.5489",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "21 327 / 25 917",
+        "time_record": "23:30.5469",
+        "unixtime_record": 1724528241
+      },
+      {
+        "map": "kz_leto",
+        "points": "38.3153",
+        "completions": "3",
+        "tier": "2",
+        "place_num": "43 522 / 109 494",
+        "time_record": "03:08.6719",
+        "unixtime_record": 1724526728
+      }
+    ],
+    "header": {
+      "title": "ru1",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/76ab59981e93f4d2e3d1673df21cb6aadea62a45_full.jpg",
+      "desc": {
+        "{{Position}}": 149379,
+        "{{Points}}": 66,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198037409486",
+  "cached_at": "2026-06-07T09:45:52.433Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_phamous",
+        "points": "13.3233",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "184 337 / 189 177",
+        "time_record": "20:12.5157",
+        "unixtime_record": 1778879329
+      }
+    ],
+    "header": {
+      "title": "JMiraak",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/bc569a583aef139c6b66e389513ee40ed9703d65_full.jpg",
+      "desc": {
+        "{{Position}}": 287913,
+        "{{Points}}": 13,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

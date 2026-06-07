@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198872017264",
+  "cached_at": "2026-06-07T09:41:26.399Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "7.7717",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "62 576 / 70 452",
+        "time_record": "11:33.0157",
+        "unixtime_record": 1762082021
+      },
+      {
+        "map": "kz_phamous",
+        "points": "61.4759",
+        "completions": "5",
+        "tier": "2",
+        "place_num": "70 004 / 189 177",
+        "time_record": "04:22.7813",
+        "unixtime_record": 1745019637
+      }
+    ],
+    "header": {
+      "title": "Shiiu",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/27ca0bdd181732c2a1f0d7962f11f5051fcea3b5_full.jpg",
+      "desc": {
+        "{{Position}}": 145752,
+        "{{Points}}": 69,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

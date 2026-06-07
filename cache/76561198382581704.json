@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198382581704",
+  "cached_at": "2026-06-07T09:41:01.161Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "46.0275",
+        "completions": "4",
+        "tier": "1",
+        "place_num": "5 524 / 70 452",
+        "time_record": "01:57.0157",
+        "unixtime_record": 1774191878
+      },
+      {
+        "map": "kz_lego",
+        "points": "72.0994",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "19 615 / 60 564",
+        "time_record": "02:13.6407",
+        "unixtime_record": 1774706304
+      }
+    ],
+    "header": {
+      "title": "mega willi",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/f1d4bc5b5b4046fa9e60052ce3902993dc2407d3_full.jpg",
+      "desc": {
+        "{{Position}}": 96537,
+        "{{Points}}": 118,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

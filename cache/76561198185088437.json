@@ -1,0 +1,112 @@
+{
+  "steamid": "76561198185088437",
+  "cached_at": "2026-06-07T09:42:04.128Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kzpro_only_up_extended",
+        "points": "17.9627",
+        "completions": "2",
+        "tier": "3",
+        "place_num": "8 575 / 28 721",
+        "time_record": "26:43.1407",
+        "unixtime_record": 1731615403
+      },
+      {
+        "map": "kz_wetlands",
+        "points": "6.9991",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "14 723 / 15 457",
+        "time_record": "11:31.7657",
+        "unixtime_record": 1754853934
+      },
+      {
+        "map": "kz_dzy_beyond_v2",
+        "points": "20.8175",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "15 414 / 17 756",
+        "time_record": "19:06.5000",
+        "unixtime_record": 1751832401
+      },
+      {
+        "map": "kz_kzro_syotiles",
+        "points": "56.3318",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "17 625 / 41 535",
+        "time_record": "02:26.7188",
+        "unixtime_record": 1741292732
+      },
+      {
+        "map": "kz_niche",
+        "points": "19.6368",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "23 969 / 25 917",
+        "time_record": "34:10.7188",
+        "unixtime_record": 1720797950
+      },
+      {
+        "map": "kz_leto",
+        "points": "26.3788",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "60 154 / 109 494",
+        "time_record": "04:34.0469",
+        "unixtime_record": 1720375931
+      }
+    ],
+    "header": {
+      "title": "Guima",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/2040f38fc2ac76f5b15fd00bb1586238f7c42b45_full.jpg",
+      "desc": {
+        "{{Position}}": 80535,
+        "{{Points}}": 148,
+        "{{COMPLETIONS-MAP}}": "6 (3.62%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

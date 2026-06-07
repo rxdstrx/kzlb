@@ -1,0 +1,67 @@
+{
+  "steamid": "76561199816767771",
+  "cached_at": "2026-06-07T09:54:56.475Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_victoria",
+        "points": "5.0363",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "53 007 / 56 611",
+        "time_record": "09:44.0157",
+        "unixtime_record": 1749071749
+      }
+    ],
+    "header": {
+      "title": "S",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/03ec28cadf1174f427a963fda9389883fa7839a0_full.jpg",
+      "desc": {
+        "{{Position}}": 313704,
+        "{{Points}}": 5,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

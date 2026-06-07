@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198312239659",
+  "cached_at": "2026-06-07T10:02:25.084Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "2.8340",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "69 975 / 70 452",
+        "time_record": "31:40.5000",
+        "unixtime_record": 1767561997
+      }
+    ],
+    "header": {
+      "title": "Argus",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/37a5b0b2b1595cb2242580fe6e376081628c0f5b_full.jpg",
+      "desc": {
+        "{{Position}}": 317424,
+        "{{Points}}": 2,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

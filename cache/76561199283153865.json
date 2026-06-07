@@ -1,0 +1,76 @@
+{
+  "steamid": "76561199283153865",
+  "cached_at": "2026-06-07T09:55:08.023Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_niche",
+        "points": "36.4693",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "18 682 / 25 917",
+        "time_record": "18:24.2032",
+        "unixtime_record": 1767477100
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "15.4408",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "45 071 / 70 452",
+        "time_record": "05:48.8125",
+        "unixtime_record": 1777313129
+      }
+    ],
+    "header": {
+      "title": "valdi2405",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/6808c1154be96b9eca85f416c2be8d5742e48fa7_full.jpg",
+      "desc": {
+        "{{Position}}": 176020,
+        "{{Points}}": 51,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

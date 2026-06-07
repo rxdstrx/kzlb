@@ -1,0 +1,103 @@
+{
+  "steamid": "76561198818417737",
+  "cached_at": "2026-06-07T09:42:32.261Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_hillside",
+        "points": "47.7203",
+        "completions": "4",
+        "tier": "1",
+        "place_num": "2 249 / 19 787",
+        "time_record": "02:59.8438",
+        "unixtime_record": 1754666317
+      },
+      {
+        "map": "kz_dejavu",
+        "points": "66.5680",
+        "completions": "4",
+        "tier": "3",
+        "place_num": "2 404 / 8 644",
+        "time_record": "16:15.1407",
+        "unixtime_record": 1774783247
+      },
+      {
+        "map": "kz_phamous",
+        "points": "106.8080",
+        "completions": "11",
+        "tier": "2",
+        "place_num": "6 893 / 189 177",
+        "time_record": "02:31.2500",
+        "unixtime_record": 1752920225
+      },
+      {
+        "map": "kz_skytower",
+        "points": "79.4858",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "11 492 / 22 565",
+        "time_record": "25:20.7344",
+        "unixtime_record": 1774556576
+      },
+      {
+        "map": "kz_lego",
+        "points": "74.6118",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "18 381 / 60 564",
+        "time_record": "02:09.1407",
+        "unixtime_record": 1755189713
+      }
+    ],
+    "header": {
+      "title": "rdykid",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/efeafbd4ca02d2963ad0405eb9029c12558d2bcd_full.jpg",
+      "desc": {
+        "{{Position}}": 34144,
+        "{{Points}}": 375,
+        "{{COMPLETIONS-MAP}}": "5 (3.02%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "steamid": "76561199273979929",
+  "cached_at": "2026-06-07T10:07:07.896Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_checkmate",
+        "points": "19.0385",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "5 107 / 5 639",
+        "time_record": "35:06.5000",
+        "unixtime_record": 1769901954
+      },
+      {
+        "map": "kz_key",
+        "points": "26.2368",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "10 283 / 13 004",
+        "time_record": "12:56.8125",
+        "unixtime_record": 1769374263
+      },
+      {
+        "map": "kz_fastmap",
+        "points": "12.2835",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "11 371 / 11 946",
+        "time_record": "09:49.9063",
+        "unixtime_record": 1768164063
+      },
+      {
+        "map": "kz_hillside",
+        "points": "19.0954",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "15 002 / 19 787",
+        "time_record": "07:29.4375",
+        "unixtime_record": 1770324565
+      },
+      {
+        "map": "kz_village",
+        "points": "30.5806",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "19 822 / 21 727",
+        "time_record": "07:37.6407",
+        "unixtime_record": 1770383068
+      },
+      {
+        "map": "kz_igneous",
+        "points": "62.6414",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "30 379 / 43 767",
+        "time_record": "05:45.5000",
+        "unixtime_record": 1770668743
+      },
+      {
+        "map": "kz_victoria",
+        "points": "18.4459",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "33 024 / 56 611",
+        "time_record": "02:39.4532",
+        "unixtime_record": 1773528962
+      },
+      {
+        "map": "kz_leto",
+        "points": "22.5028",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "66 841 / 109 494",
+        "time_record": "05:21.2500",
+        "unixtime_record": 1768164654
+      },
+      {
+        "map": "kz_phamous",
+        "points": "42.3037",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "114 191 / 189 177",
+        "time_record": "06:21.8750",
+        "unixtime_record": 1768070812
+      }
+    ],
+    "header": {
+      "title": "Mr. Aura",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/058d16848865a009c6b991cf456c7d398531aef3_full.jpg",
+      "desc": {
+        "{{Position}}": 50245,
+        "{{Points}}": 253,
+        "{{COMPLETIONS-MAP}}": "9 (5.43%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

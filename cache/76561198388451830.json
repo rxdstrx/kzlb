@@ -1,0 +1,130 @@
+{
+  "steamid": "76561198388451830",
+  "cached_at": "2026-06-07T09:34:01.382Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_ehcivec_final",
+        "points": "50.7214",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "4 774 / 6 366",
+        "time_record": "06:08.5938",
+        "unixtime_record": 1758138652
+      },
+      {
+        "map": "kz_spire",
+        "points": "15.3722",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "8 885 / 10 368",
+        "time_record": "41:48.1094",
+        "unixtime_record": 1758211315
+      },
+      {
+        "map": "kz_hillside",
+        "points": "17.4585",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "15 881 / 19 787",
+        "time_record": "08:11.5782",
+        "unixtime_record": 1758289549
+      },
+      {
+        "map": "kz_igneous",
+        "points": "50.8508",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "34 366 / 43 767",
+        "time_record": "07:05.6094",
+        "unixtime_record": 1758233490
+      },
+      {
+        "map": "kz_lego",
+        "points": "36.3858",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "39 226 / 60 564",
+        "time_record": "04:24.8125",
+        "unixtime_record": 1758309629
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "15.7931",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "44 359 / 70 452",
+        "time_record": "05:41.0313",
+        "unixtime_record": 1758232711
+      },
+      {
+        "map": "kz_victoria",
+        "points": "10.0149",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "45 123 / 56 611",
+        "time_record": "04:53.6875",
+        "unixtime_record": 1758288228
+      },
+      {
+        "map": "kz_leto",
+        "points": "14.6133",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "83 800 / 109 494",
+        "time_record": "08:14.6875",
+        "unixtime_record": 1758288931
+      }
+    ],
+    "header": {
+      "title": "✪ lesya-",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/1eb2484fc8ff1dd19c197ee56216ef1d97b1097f_full.jpg",
+      "desc": {
+        "{{Position}}": 59367,
+        "{{Points}}": 211,
+        "{{COMPLETIONS-MAP}}": "8 (4.82%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

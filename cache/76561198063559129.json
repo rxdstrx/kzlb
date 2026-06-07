@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198063559129",
+  "cached_at": "2026-06-07T09:43:56.101Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_phamous",
+        "points": "15.6349",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "181 227 / 189 177",
+        "time_record": "17:13.2500",
+        "unixtime_record": 1743418480
+      }
+    ],
+    "header": {
+      "title": "XybaS",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/ab68a80ec9d1015fa7cb7fafa85f53df8d7e8520_full.jpg",
+      "desc": {
+        "{{Position}}": 280244,
+        "{{Points}}": 15,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

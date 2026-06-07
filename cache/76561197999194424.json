@@ -1,0 +1,67 @@
+{
+  "steamid": "76561197999194424",
+  "cached_at": "2026-06-07T09:40:54.431Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_village",
+        "points": "67.2126",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "13 521 / 21 727",
+        "time_record": "03:28.2188",
+        "unixtime_record": 1770826489
+      }
+    ],
+    "header": {
+      "title": "xiviTs",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/811af51ca8d9e1e141b7dada33d14468db7c3997_full.jpg",
+      "desc": {
+        "{{Position}}": 148798,
+        "{{Points}}": 67,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

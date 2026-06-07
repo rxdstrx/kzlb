@@ -1,0 +1,85 @@
+{
+  "steamid": "76561199518841788",
+  "cached_at": "2026-06-07T10:09:20.191Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_mz",
+        "points": "22.1413",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "8 979 / 13 319",
+        "time_record": "00:35.9532",
+        "unixtime_record": 1758983302
+      },
+      {
+        "map": "kz_variety_fix",
+        "points": "22.5737",
+        "completions": "2",
+        "tier": "4",
+        "place_num": "23 028 / 27 082",
+        "time_record": "01:37:08.8125",
+        "unixtime_record": 1780404653
+      },
+      {
+        "map": "kz_leto",
+        "points": "15.4854",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "81 796 / 109 494",
+        "time_record": "07:46.8282",
+        "unixtime_record": 1771743768
+      }
+    ],
+    "header": {
+      "title": "d3ruew",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/faed277918761163fad1c154b80e387b1bc662f8_full.jpg",
+      "desc": {
+        "{{Position}}": 160408,
+        "{{Points}}": 60,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

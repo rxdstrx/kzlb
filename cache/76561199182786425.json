@@ -1,0 +1,94 @@
+{
+  "steamid": "76561199182786425",
+  "cached_at": "2026-06-07T09:40:13.790Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_victoria",
+        "points": "34.6286",
+        "completions": "3",
+        "tier": "1",
+        "place_num": "14 126 / 56 611",
+        "time_record": "01:24.9375",
+        "unixtime_record": 1780268856
+      },
+      {
+        "map": "kz_skytower",
+        "points": "41.2556",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "19 857 / 22 565",
+        "time_record": "48:49.9532",
+        "unixtime_record": 1780263478
+      },
+      {
+        "map": "kz_variety_fix",
+        "points": "27.1713",
+        "completions": "2",
+        "tier": "4",
+        "place_num": "22 219 / 27 082",
+        "time_record": "01:20:42.5313",
+        "unixtime_record": 1780758642
+      },
+      {
+        "map": "kz_lego",
+        "points": "36.1533",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "39 364 / 60 564",
+        "time_record": "04:26.5157",
+        "unixtime_record": 1780263994
+      }
+    ],
+    "header": {
+      "title": "silven",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/6e3009b587c15bf563681fa6f5646d17aaaf273c_full.jpg",
+      "desc": {
+        "{{Position}}": 84742,
+        "{{Points}}": 139,
+        "{{COMPLETIONS-MAP}}": "4 (2.41%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

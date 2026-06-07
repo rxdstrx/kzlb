@@ -1,0 +1,94 @@
+{
+  "steamid": "76561198314585776",
+  "cached_at": "2026-06-07T09:36:16.677Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_valley",
+        "points": "101.8922",
+        "completions": "4",
+        "tier": "2",
+        "place_num": "4 034 / 19 630",
+        "time_record": "00:54.9375",
+        "unixtime_record": 1763845462
+      },
+      {
+        "map": "kz_brightblock",
+        "points": "15.4292",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "10 088 / 15 775",
+        "time_record": "07:02.9532",
+        "unixtime_record": 1763161574
+      },
+      {
+        "map": "kz_fastmap",
+        "points": "19.1997",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "10 453 / 11 946",
+        "time_record": "06:17.4063",
+        "unixtime_record": 1763162232
+      },
+      {
+        "map": "kz_victoria",
+        "points": "13.3637",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "40 096 / 56 611",
+        "time_record": "03:40.0938",
+        "unixtime_record": 1762921066
+      }
+    ],
+    "header": {
+      "title": "EtrauD ~",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/6750ecf20189e09894ef349e8d5ac23cf7cecd5c_full.jpg",
+      "desc": {
+        "{{Position}}": 79756,
+        "{{Points}}": 149,
+        "{{COMPLETIONS-MAP}}": "4 (2.41%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

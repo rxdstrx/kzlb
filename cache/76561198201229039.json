@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198201229039",
+  "cached_at": "2026-06-07T09:33:46.844Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_grotto",
+        "points": "30.3899",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "21 737 / 33 998",
+        "time_record": "06:07.3282",
+        "unixtime_record": 1750419459
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "10.9749",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "55 050 / 70 452",
+        "time_record": "08:10.7500",
+        "unixtime_record": 1750359875
+      }
+    ],
+    "header": {
+      "title": "André Sem F",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/d08e66bc2b3389662b75d8413643067368741aba_full.jpg",
+      "desc": {
+        "{{Position}}": 200733,
+        "{{Points}}": 41,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

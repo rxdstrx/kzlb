@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198013097975",
+  "cached_at": "2026-06-07T10:06:10.629Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_hex",
+        "points": "64.8820",
+        "completions": "2",
+        "tier": "3",
+        "place_num": "1 215 / 1 599",
+        "time_record": "04:15.4063",
+        "unixtime_record": 1780076251
+      }
+    ],
+    "header": {
+      "title": "masterRP",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/19f6aada5cb33abf018394a855ea445d706704d9_full.jpg",
+      "desc": {
+        "{{Position}}": 152555,
+        "{{Points}}": 64,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

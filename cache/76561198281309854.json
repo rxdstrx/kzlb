@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198281309854",
+  "cached_at": "2026-06-07T09:37:51.076Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_phamous",
+        "points": "32.5833",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "140 880 / 189 177",
+        "time_record": "08:15.7969",
+        "unixtime_record": 1746550091
+      }
+    ],
+    "header": {
+      "title": "DNL22",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/32f6e2ea11c5d41ef63caa100c834ab9db85a686_full.jpg",
+      "desc": {
+        "{{Position}}": 225330,
+        "{{Points}}": 32,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

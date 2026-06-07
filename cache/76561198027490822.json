@@ -1,0 +1,85 @@
+{
+  "steamid": "76561198027490822",
+  "cached_at": "2026-06-07T09:40:19.761Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_village",
+        "points": "128.7075",
+        "completions": "2",
+        "tier": "3",
+        "place_num": "4 446 / 21 727",
+        "time_record": "01:48.7344",
+        "unixtime_record": 1775504738
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "10.5834",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "55 962 / 70 452",
+        "time_record": "08:28.9063",
+        "unixtime_record": 1775505551
+      },
+      {
+        "map": "kz_leto",
+        "points": "17.6224",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "76 883 / 109 494",
+        "time_record": "06:50.2188",
+        "unixtime_record": 1737253136
+      }
+    ],
+    "header": {
+      "title": "nok",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/acf9c16e7d33b641be3a5bf68e3d12942ae54d09_full.jpg",
+      "desc": {
+        "{{Position}}": 76802,
+        "{{Points}}": 156,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

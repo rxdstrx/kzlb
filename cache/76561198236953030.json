@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198236953030",
+  "cached_at": "2026-06-07T09:42:45.153Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_lego",
+        "points": "15.3316",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "55 022 / 60 564",
+        "time_record": "10:28.4688",
+        "unixtime_record": 1770321517
+      },
+      {
+        "map": "kz_phamous",
+        "points": "22.7156",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "166 979 / 189 177",
+        "time_record": "11:51.1719",
+        "unixtime_record": 1765576080
+      }
+    ],
+    "header": {
+      "title": "Livosker",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/107b30b9811c52509b02bb171b2899242b7c79b3_full.jpg",
+      "desc": {
+        "{{Position}}": 209721,
+        "{{Points}}": 38,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

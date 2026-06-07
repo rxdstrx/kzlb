@@ -1,0 +1,85 @@
+{
+  "steamid": "76561198170076453",
+  "cached_at": "2026-06-07T09:35:33.277Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_lego",
+        "points": "76.0097",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "17 687 / 60 564",
+        "time_record": "02:06.7657",
+        "unixtime_record": 1768848493
+      },
+      {
+        "map": "kz_victoria",
+        "points": "15.3203",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "37 406 / 56 611",
+        "time_record": "03:11.9844",
+        "unixtime_record": 1744283506
+      },
+      {
+        "map": "kz_leto",
+        "points": "10.7169",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "93 634 / 109 494",
+        "time_record": "11:14.5469",
+        "unixtime_record": 1768165579
+      }
+    ],
+    "header": {
+      "title": "Kapitxo",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/df984cbaf42d0457dfc79eb2544bdf6550fac0b2_full.jpg",
+      "desc": {
+        "{{Position}}": 108232,
+        "{{Points}}": 102,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "steamid": "76561198190469699",
+  "cached_at": "2026-06-07T09:51:06.119Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_valley",
+        "points": "118.4699",
+        "completions": "7",
+        "tier": "2",
+        "place_num": "939 / 19 630",
+        "time_record": "00:47.2500",
+        "unixtime_record": 1760973036
+      },
+      {
+        "map": "kz_mz",
+        "points": "55.4375",
+        "completions": "4",
+        "tier": "1",
+        "place_num": "1 920 / 13 319",
+        "time_record": "00:14.3594",
+        "unixtime_record": 1759678251
+      },
+      {
+        "map": "kz_variety_fix",
+        "points": "146.5949",
+        "completions": "57",
+        "tier": "4",
+        "place_num": "3 944 / 27 082",
+        "time_record": "14:57.5625",
+        "unixtime_record": 1764536960
+      },
+      {
+        "map": "kz_loftroofs",
+        "points": "35.7335",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "4 036 / 4 666",
+        "time_record": "23:51.1407",
+        "unixtime_record": 1758316856
+      },
+      {
+        "map": "kz_brightblock",
+        "points": "23.1463",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "5 864 / 15 775",
+        "time_record": "04:41.9375",
+        "unixtime_record": 1760377936
+      },
+      {
+        "map": "kz_edp445",
+        "points": "63.4099",
+        "completions": "3",
+        "tier": "2",
+        "place_num": "6 896 / 18 177",
+        "time_record": "01:34.8125",
+        "unixtime_record": 1759842966
+      },
+      {
+        "map": "kz_woodstock_v2",
+        "points": "42.2013",
+        "completions": "5",
+        "tier": "1",
+        "place_num": "8 162 / 70 452",
+        "time_record": "02:07.6250",
+        "unixtime_record": 1760904801
+      },
+      {
+        "map": "kz_leto",
+        "points": "76.8661",
+        "completions": "5",
+        "tier": "2",
+        "place_num": "9 708 / 109 494",
+        "time_record": "01:34.0469",
+        "unixtime_record": 1775075745
+      }
+    ],
+    "header": {
+      "title": "𝙽𝙸𝙶𝙷𝚃𝙼𝙰𝚁",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/4d3d531940517cd8e079a5e9b77d4a79d7c04df8_full.jpg",
+      "desc": {
+        "{{Position}}": 22221,
+        "{{Points}}": 561,
+        "{{COMPLETIONS-MAP}}": "8 (4.82%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "steamid": "76561198387665994",
+  "cached_at": "2026-06-07T09:31:43.599Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_leto",
+        "points": "42.0865",
+        "completions": "4",
+        "tier": "2",
+        "place_num": "39 216 / 109 494",
+        "time_record": "02:51.7657",
+        "unixtime_record": 1771237380
+      }
+    ],
+    "header": {
+      "title": "snoozlooz",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/f96ee3c24568ccfcc56836a0f0fd63f33e5c4509_full.jpg",
+      "desc": {
+        "{{Position}}": 198868,
+        "{{Points}}": 42,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "steamid": "76561198844329938",
+  "cached_at": "2026-06-07T09:32:27.490Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_key",
+        "points": "24.6009",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "10 613 / 13 004",
+        "time_record": "13:48.4688",
+        "unixtime_record": 1769083885
+      },
+      {
+        "map": "kz_leto",
+        "points": "22.5731",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "66 716 / 109 494",
+        "time_record": "05:20.2500",
+        "unixtime_record": 1769257465
+      }
+    ],
+    "header": {
+      "title": "Smookaay",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/5d49decd7b2a2fe80347203f7f40c9c3f0ef672b_full.jpg",
+      "desc": {
+        "{{Position}}": 186340,
+        "{{Points}}": 47,
+        "{{COMPLETIONS-MAP}}": "2 (1.21%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

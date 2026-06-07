@@ -1,0 +1,85 @@
+{
+  "steamid": "76561198313741106",
+  "cached_at": "2026-06-07T09:36:14.393Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_victoria",
+        "points": "37.7009",
+        "completions": "2",
+        "tier": "1",
+        "place_num": "11 323 / 56 611",
+        "time_record": "01:18.0157",
+        "unixtime_record": 1776424644
+      },
+      {
+        "map": "kz_lego",
+        "points": "79.0193",
+        "completions": "3",
+        "tier": "2",
+        "place_num": "16 258 / 60 564",
+        "time_record": "02:01.9375",
+        "unixtime_record": 1774611565
+      },
+      {
+        "map": "kz_leto",
+        "points": "11.3888",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "91 893 / 109 494",
+        "time_record": "10:34.7500",
+        "unixtime_record": 1767700378
+      }
+    ],
+    "header": {
+      "title": "McJacare",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/38e93ff93f92554f9be4985abd8c5cf84d8d3516_full.jpg",
+      "desc": {
+        "{{Position}}": 90550,
+        "{{Points}}": 128,
+        "{{COMPLETIONS-MAP}}": "3 (1.81%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}

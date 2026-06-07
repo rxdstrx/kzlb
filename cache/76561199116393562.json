@@ -1,0 +1,184 @@
+{
+  "steamid": "76561199116393562",
+  "cached_at": "2026-06-07T09:52:20.360Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_fastmap",
+        "points": "66.3543",
+        "completions": "4",
+        "tier": "2",
+        "place_num": "3 360 / 11 946",
+        "time_record": "01:49.2032",
+        "unixtime_record": 1763395632
+      },
+      {
+        "map": "kz_highland",
+        "points": "59.0193",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "3 539 / 8 705",
+        "time_record": "04:21.9063",
+        "unixtime_record": 1767789675
+      },
+      {
+        "map": "kz_niche",
+        "points": "98.5150",
+        "completions": "4",
+        "tier": "3",
+        "place_num": "4 693 / 25 917",
+        "time_record": "06:48.7657",
+        "unixtime_record": 1763306732
+      },
+      {
+        "map": "kz_wasabi",
+        "points": "33.5239",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "5 265 / 10 288",
+        "time_record": "05:16.4219",
+        "unixtime_record": 1763475286
+      },
+      {
+        "map": "kz_spiritblockv2",
+        "points": "39.0500",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "5 384 / 12 735",
+        "time_record": "04:14.6719",
+        "unixtime_record": 1763397250
+      },
+      {
+        "map": "kz_dejavu",
+        "points": "34.1603",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "5 978 / 8 644",
+        "time_record": "31:40.2500",
+        "unixtime_record": 1763917418
+      },
+      {
+        "map": "kz_dzy_beyond_v2",
+        "points": "48.9930",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "7 551 / 17 756",
+        "time_record": "08:07.1563",
+        "unixtime_record": 1763474339
+      },
+      {
+        "map": "kz_sunstone",
+        "points": "25.1958",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "8 432 / 11 318",
+        "time_record": "08:59.3750",
+        "unixtime_record": 1769276694
+      },
+      {
+        "map": "kz_igneous",
+        "points": "130.1198",
+        "completions": "3",
+        "tier": "3",
+        "place_num": "9 920 / 43 767",
+        "time_record": "02:46.3282",
+        "unixtime_record": 1763396621
+      },
+      {
+        "map": "kz_grotto",
+        "points": "56.0474",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "10 009 / 33 998",
+        "time_record": "03:19.1719",
+        "unixtime_record": 1763156342
+      },
+      {
+        "map": "kz_edp445",
+        "points": "38.0547",
+        "completions": "1",
+        "tier": "2",
+        "place_num": "12 821 / 18 177",
+        "time_record": "02:37.9844",
+        "unixtime_record": 1763474641
+      },
+      {
+        "map": "kz_variety_fix",
+        "points": "57.3126",
+        "completions": "2",
+        "tier": "4",
+        "place_num": "17 554 / 27 082",
+        "time_record": "38:15.7969",
+        "unixtime_record": 1774731629
+      },
+      {
+        "map": "kz_kzro_syotiles",
+        "points": "49.1275",
+        "completions": "2",
+        "tier": "2",
+        "place_num": "21 651 / 41 535",
+        "time_record": "02:48.2344",
+        "unixtime_record": 1744827644
+      },
+      {
+        "map": "kz_phamous",
+        "points": "65.5405",
+        "completions": "3",
+        "tier": "2",
+        "place_num": "62 207 / 189 177",
+        "time_record": "04:06.4844",
+        "unixtime_record": 1756743017
+      }
+    ],
+    "header": {
+      "title": "-kYjin",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/177f13c9dc11e09bd98a4bf8093a121910d8323e_full.jpg",
+      "desc": {
+        "{{Position}}": 14901,
+        "{{Points}}": 801,
+        "{{COMPLETIONS-MAP}}": "14 (8.44%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}
