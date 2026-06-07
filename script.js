@@ -536,6 +536,12 @@ function renderCountries(filter = '') {
     item.className = 'country-item' + (selectedCountry?.code === c.code ? ' active' : '');
     item.innerHTML = `<span class="country-flag">${c.flag}</span><span>${c.name}</span>`;
     item.addEventListener('click', () => {
+      // Navigate to country page if available
+      const countryPages = { pt: 'portugal.html' };
+      if (countryPages[c.code]) {
+        window.location.href = countryPages[c.code];
+        return;
+      }
       selectedCountry = selectedCountry?.code === c.code ? null : c;
       countryBtn.querySelector('span').textContent = selectedCountry ? selectedCountry.name : 'Country';
       renderCountries(countrySearch.value);
@@ -590,7 +596,7 @@ function renderMapsFilter(filter = '') {
   filtered.forEach(m => {
     const item = document.createElement('div');
     item.className = 'country-item' + (selectedMap === m.name ? ' active' : '');
-    item.innerHTML = `<span class="country-flag" style="font-size:0.7rem;opacity:0.5">T${m.tier}</span><span>${m.name}</span>`;
+    item.innerHTML = `<span style="font-size:0.68rem;font-weight:700;color:rgba(255,255,255,0.3);min-width:18px">T${m.tier}</span><span>${m.name}</span>`;
     item.addEventListener('click', () => {
       selectedMap = selectedMap === m.name ? null : m.name;
       lbSelectedMap = selectedMap;
