@@ -33,20 +33,18 @@ const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv
 
   await page.setExtraHTTPHeaders({ 'Accept-Language': 'ru-RU,ru;q=0.9' });
 
-  console.log(`Navigating to cybershoke page for ${steamid}...`);
+  console.log('Navigating to cybershoke...');
 
   try {
-    await page.goto(`https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${steamid}`, {
-      waitUntil: 'networkidle2',
-      timeout: 60000,
+    await page.goto('https://cybershoke.net/', {
+      waitUntil: 'domcontentloaded',
+      timeout: 30000,
     });
   } catch (e) {
     console.log('Navigation note:', e.message);
   }
 
-  // Wait for page to settle and cookies/session to be established
-  await new Promise(r => setTimeout(r, 4000));
-
+  await new Promise(r => setTimeout(r, 1500));
   console.log('Page title:', await page.title());
 
   // Make API calls directly from within the page context using correct steamid

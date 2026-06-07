@@ -19,8 +19,20 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-scraper-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-scraper-
+
       - name: Install dependencies
-        run: npm install puppeteer-core @sparticuz/chromium puppeteer-extra puppeteer-extra-plugin-stealth
+        run: |
+          if [ ! -d "node_modules/puppeteer-core" ]; then
+            npm install puppeteer-core @sparticuz/chromium puppeteer-extra puppeteer-extra-plugin-stealth
+          else
+            echo "Using cached node_modules"
+          fi
 
       - name: Scrape stats
         run: node scripts/scrape.js ${{ github.event.inputs.steamid }}
