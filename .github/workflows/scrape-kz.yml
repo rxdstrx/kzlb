@@ -1,0 +1,34 @@
+name: Scrape KZ Stats
+
+on:
+  workflow_dispatch:
+    inputs:
+      steamid:
+        description: 'Steam ID64'
+        required: true
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install puppeteer-core @sparticuz/chromium puppeteer-extra puppeteer-extra-plugin-stealth
+
+      - name: Scrape stats
+        run: node scripts/scrape.js ${{ github.event.inputs.steamid }}
+
+      - name: Commit cache
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add cache/
+          git diff --staged --quiet || git commit -m "cache: ${{ github.event.inputs.steamid }}"
+          git push
