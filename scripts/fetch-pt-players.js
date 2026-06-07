@@ -3,7 +3,8 @@ const path = require('path');
 
 const FACEIT_KEY = process.env.FACEIT_KEY;
 const LIMIT = 100;
-const MAX_PAGES = 1; // 50 players for testing
+const START_PAGE = 1; // skip first 100 already fetched
+const MAX_PAGES = 51; // 5000 more players
 
 async function fetchPage(offset) {
   const res = await fetch(
@@ -31,7 +32,7 @@ async function getSteamId(playerId) {
 (async () => {
   const players = [];
 
-  for (let page = 0; page < MAX_PAGES; page++) {
+  for (let page = START_PAGE; page < MAX_PAGES; page++) {
     const offset = page * LIMIT;
     const items = await fetchPage(offset);
     if (!items.length) { console.log(`No more players at offset ${offset}`); break; }
