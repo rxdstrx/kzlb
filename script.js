@@ -400,6 +400,77 @@ document.addEventListener('click', () => {
 
 filterDropdown.addEventListener('click', (e) => e.stopPropagation());
 
+// ── Country selector ──
+const COUNTRIES = [
+  { code: 'pt', name: 'Portugal', flag: '🇵🇹' },
+  { code: 'br', name: 'Brazil', flag: '🇧🇷' },
+  { code: 'ru', name: 'Russia', flag: '🇷🇺' },
+  { code: 'de', name: 'Germany', flag: '🇩🇪' },
+  { code: 'fr', name: 'France', flag: '🇫🇷' },
+  { code: 'pl', name: 'Poland', flag: '🇵🇱' },
+  { code: 'us', name: 'United States', flag: '🇺🇸' },
+  { code: 'se', name: 'Sweden', flag: '🇸🇪' },
+  { code: 'fi', name: 'Finland', flag: '🇫🇮' },
+  { code: 'dk', name: 'Denmark', flag: '🇩🇰' },
+  { code: 'no', name: 'Norway', flag: '🇳🇴' },
+  { code: 'nl', name: 'Netherlands', flag: '🇳🇱' },
+  { code: 'es', name: 'Spain', flag: '🇪🇸' },
+  { code: 'tr', name: 'Turkey', flag: '🇹🇷' },
+  { code: 'ua', name: 'Ukraine', flag: '🇺🇦' },
+  { code: 'cz', name: 'Czech Republic', flag: '🇨🇿' },
+  { code: 'sk', name: 'Slovakia', flag: '🇸🇰' },
+  { code: 'hu', name: 'Hungary', flag: '🇭🇺' },
+  { code: 'ro', name: 'Romania', flag: '🇷🇴' },
+  { code: 'bg', name: 'Bulgaria', flag: '🇧🇬' },
+  { code: 'hr', name: 'Croatia', flag: '🇭🇷' },
+  { code: 'rs', name: 'Serbia', flag: '🇷🇸' },
+  { code: 'kz', name: 'Kazakhstan', flag: '🇰🇿' },
+  { code: 'cn', name: 'China', flag: '🇨🇳' },
+  { code: 'au', name: 'Australia', flag: '🇦🇺' },
+  { code: 'gb', name: 'United Kingdom', flag: '🇬🇧' },
+  { code: 'ca', name: 'Canada', flag: '🇨🇦' },
+  { code: 'ar', name: 'Argentina', flag: '🇦🇷' },
+  { code: 'cl', name: 'Chile', flag: '🇨🇱' },
+  { code: 'mx', name: 'Mexico', flag: '🇲🇽' },
+];
+
+let selectedCountry = null;
+const countryBtn     = document.getElementById('countryBtn');
+const countryOptions = document.getElementById('countryOptions');
+const countryChevron = document.getElementById('countryChevron');
+const countrySearch  = document.getElementById('countrySearch');
+const countryList    = document.getElementById('countryList');
+
+function renderCountries(filter = '') {
+  countryList.innerHTML = '';
+  const filtered = COUNTRIES.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
+  filtered.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'country-item' + (selectedCountry?.code === c.code ? ' active' : '');
+    item.innerHTML = `<span class="country-flag">${c.flag}</span><span>${c.name}</span>`;
+    item.addEventListener('click', () => {
+      selectedCountry = selectedCountry?.code === c.code ? null : c;
+      countryBtn.querySelector('span').textContent = selectedCountry ? selectedCountry.name : 'Country';
+      renderCountries(countrySearch.value);
+    });
+    countryList.appendChild(item);
+  });
+}
+
+countryBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  countryOptions.classList.toggle('hidden');
+  countryChevron.classList.toggle('rotated', !countryOptions.classList.contains('hidden'));
+  if (!countryOptions.classList.contains('hidden')) {
+    renderCountries();
+    countrySearch.focus();
+  }
+});
+
+countrySearch.addEventListener('input', () => renderCountries(countrySearch.value));
+countrySearch.addEventListener('click', e => e.stopPropagation());
+countryList.addEventListener('click', e => e.stopPropagation());
+
 // ── Tier expand ──
 const tierBtn     = document.getElementById('tierBtn');
 const tierOptions = document.getElementById('tierOptions');
