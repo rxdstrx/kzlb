@@ -240,26 +240,74 @@ header {
   transform: rotate(180deg);
 }
 
-.filter-country-wrap {
+.country-options {
+  padding: 6px 8px 8px;
+}
+
+.country-options.hidden {
+  display: none;
+}
+
+.country-search-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+  margin-bottom: 6px;
+  box-sizing: border-box;
+}
+
+.country-search-input::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+
+.country-list {
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.country-list::-webkit-scrollbar {
+  width: 3px;
+}
+
+.country-list::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+}
+
+.country-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 4px;
-  color: rgba(255,255,255,0.3);
-}
-
-.filter-country-input {
-  background: none;
-  border: none;
-  outline: none;
-  color: rgba(255,255,255,0.75);
+  padding: 7px 10px;
+  border-radius: 6px;
+  cursor: pointer;
   font-size: 0.82rem;
-  font-family: inherit;
-  width: 150px;
+  color: rgba(255,255,255,0.65);
+  transition: background 0.1s;
 }
 
-.filter-country-input::placeholder {
-  color: rgba(255,255,255,0.25);
+.country-item:hover {
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+}
+
+.country-item.active {
+  background: rgba(129,140,248,0.15);
+  color: #a5b4fc;
+}
+
+.country-flag {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .filter-divider {
