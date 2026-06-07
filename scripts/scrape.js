@@ -33,60 +33,49 @@ const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv
 
   await page.setExtraHTTPHeaders({ 'Accept-Language': 'ru-RU,ru;q=0.9' });
 
-  // Set up interceptors BEFORE navigation
-  let userData = {};
-  let mapsData = [];
-
-  page.on('response', async (response) => {
-    const url = response.url();
-    try {
-      if (url.includes('/api/api/v1/leaderboard/user')) {
-        const json = await response.json();
-        userData = json;
-        console.log('Got user data:', JSON.stringify(json).slice(0, 200));
-      }
-      if (url.includes('/api/api/v2/leaderboard/data')) {
-        const json = await response.json();
-        mapsData = json;
-        console.log('Got maps data raw:', JSON.stringify(json).slice(0, 500));
-      }
-    } catch (e) {
-      console.log('Response parse error for', url, e.message);
-    }
-  });
-
   console.log(`Navigating to cybershoke page for ${steamid}...`);
 
   try {
     await page.goto(`https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${steamid}`, {
-      waitUntil: 'networkidle0',
+      waitUntil: 'networkidle2',
       timeout: 60000,
     });
   } catch (e) {
     console.log('Navigation note:', e.message);
   }
 
-  // Wait for initial load
-  await new Promise(r => setTimeout(r, 5000));
-
-  // Click the "Карты" tab to trigger maps API call
-  try {
-    await page.evaluate(() => {
-      const tabs = Array.from(document.querySelectorAll('button, a, div[role="tab"], span'));
-      const mapsTab = tabs.find(el => el.textContent.trim().includes('арт') || el.textContent.trim().includes('Map'));
-      if (mapsTab) { mapsTab.click(); console.log('Clicked maps tab:', mapsTab.textContent); }
-      else console.log('Maps tab not found, available tabs:', tabs.map(t => t.textContent.trim()).filter(t => t.length < 30).join(' | '));
-    });
-  } catch (e) {
-    console.log('Tab click error:', e.message);
-  }
-
-  // Wait for maps data to load
-  await new Promise(r => setTimeout(r, 8000));
+  // Wait for page to settle and cookies/session to be established
+  await new Promise(r => setTimeout(r, 4000));
 
   console.log('Page title:', await page.title());
-  console.log('User data keys:', Object.keys(userData));
-  console.log('Maps count:', Array.isArray(mapsData) ? mapsData.length : 'not array');
+
+  // Make API calls directly from within the page context using correct steamid
+  const { userData, mapsData } = await page.evaluate(async (sid) => {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json, text/plain, */*',
+      'Origin': 'https://cybershoke.net',
+      'Referer': `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}`,
+    };
+    const body = JSON.stringify({
+      mode: 18, season: 0, only_friends: false, only_pro: false,
+      id_games: '2', map: null, category: null,
+      steamid64: sid, sub_type: 0, type: 1,
+    });
+
+    const [uRes, mRes] = await Promise.all([
+      fetch('https://cybershoke.net/api/api/v1/leaderboard/user', { method: 'POST', headers, body }),
+      fetch('https://cybershoke.net/api/api/v2/leaderboard/data', { method: 'POST', headers, body }),
+    ]);
+
+    return {
+      userData: await uRes.json().catch(() => ({})),
+      mapsData: await mRes.json().catch(() => ({})),
+    };
+  }, steamid);
+
+  console.log('User keys:', Object.keys(userData));
+  console.log('Maps list count:', mapsData?.list?.length ?? 'no list');
 
   await browser.close();
 
