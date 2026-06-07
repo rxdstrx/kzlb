@@ -1,5 +1,53 @@
 const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
-const TRIGGER_URL = 'https://raspy-river-8e9e.dmitriyrodniy.workers.dev/trigger';
+
+const CIRCUMFERENCE = 264;
+const STEPS = [
+  { at: 0,   pct: 0,   label: 'Triggering scrape…',      sub: 'Starting GitHub Action' },
+  { at: 8,   pct: 15,  label: 'Action queued…',           sub: 'Waiting for a runner' },
+  { at: 18,  pct: 30,  label: 'Launching browser…',       sub: 'Setting up Puppeteer' },
+  { at: 30,  pct: 50,  label: 'Loading player page…',     sub: 'Connecting to Cybershoke' },
+  { at: 42,  pct: 65,  label: 'Fetching KZ stats…',       sub: 'Reading map records' },
+  { at: 55,  pct: 80,  label: 'Saving data…',             sub: 'Committing to cache' },
+  { at: 68,  pct: 92,  label: 'Almost done…',             sub: 'Finalizing' },
+];
+
+let progressInterval = null;
+
+function startProgress() {
+  const circle  = document.getElementById('progressCircle');
+  const pctEl   = document.getElementById('progressPct');
+  const stepEl  = document.getElementById('loadingStep');
+  const subEl   = document.getElementById('loadingSub');
+  if (!circle) return;
+
+  let elapsed = 0;
+  progressInterval = setInterval(() => {
+    elapsed++;
+    const step = [...STEPS].reverse().find(s => elapsed >= s.at) || STEPS[0];
+    const nextStep = STEPS[STEPS.indexOf(step) + 1];
+    let pct = step.pct;
+    if (nextStep) {
+      const segProgress = (elapsed - step.at) / (nextStep.at - step.at);
+      pct = step.pct + (nextStep.pct - step.pct) * Math.min(segProgress, 1);
+    }
+    pct = Math.min(pct, 96);
+    circle.style.strokeDashoffset = CIRCUMFERENCE - (CIRCUMFERENCE * pct / 100);
+    pctEl.textContent = Math.round(pct) + '%';
+    stepEl.textContent = step.label;
+    subEl.textContent  = step.sub;
+  }, 1000);
+}
+
+function stopProgress() {
+  clearInterval(progressInterval);
+  const circle = document.getElementById('progressCircle');
+  const pctEl  = document.getElementById('progressPct');
+  if (circle) {
+    circle.style.stroke = '#34d399';
+    circle.style.strokeDashoffset = '0';
+  }
+  if (pctEl) pctEl.textContent = '100%';
+}
 
 const params = new URLSearchParams(window.location.search);
 const steamid = params.get('steamid');
@@ -28,8 +76,7 @@ async function loadProfile(sid) {
 
     if (!cacheRes.ok) {
       triggerScrape(sid);
-      // Show loading message and auto-poll every 10 seconds
-      loadingState.querySelector('p').textContent = 'Fetching stats… this takes ~2 minutes.';
+      startProgress();
       setTimeout(() => pollForCache(sid), 10000);
       return;
     }
@@ -142,7 +189,8 @@ async function pollForCache(sid, attempts = 0) {
   }
   const res = await fetch(`${CACHE_BASE}/${sid}.json?bust=${Date.now()}`).catch(() => null);
   if (res && res.ok) {
-    // Data is ready — reload the profile
+    stopProgress();
+    await new Promise(r => setTimeout(r, 600));
     loadProfile(sid);
     return;
   }
