@@ -229,7 +229,7 @@ function buildMapList() {
       const tier = mapTierLookup[m] || '?';
       const chip = document.createElement('div');
       chip.className = 'pt-map-chip' + (selectedMap === m ? ' active' : '');
-      chip.innerHTML = `<span class="chip-tier">T${tier}</span> ${m}`;
+      chip.innerHTML = `<span class="chip-tier t${tier}">T${tier}</span> ${m}`;
       chip.addEventListener('click', () => {
         selectedMap = selectedMap === m ? null : m;
         currentPage = 1;

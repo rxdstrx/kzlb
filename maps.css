@@ -57,13 +57,13 @@
   letter-spacing: 0.04em;
 }
 
-.tier-1 { background: rgba(34, 197, 94, 0.12);  border: 1px solid rgba(34, 197, 94, 0.25);  color: #4ade80; }
-.tier-2 { background: rgba(59, 130, 246, 0.12);  border: 1px solid rgba(59, 130, 246, 0.25);  color: #60a5fa; }
-.tier-3 { background: rgba(168, 85, 247, 0.12);  border: 1px solid rgba(168, 85, 247, 0.25);  color: #c084fc; }
-.tier-4 { background: rgba(234, 179, 8, 0.12);   border: 1px solid rgba(234, 179, 8, 0.25);   color: #facc15; }
-.tier-5 { background: rgba(249, 115, 22, 0.12);  border: 1px solid rgba(249, 115, 22, 0.25);  color: #fb923c; }
-.tier-6 { background: rgba(239, 68, 68, 0.12);   border: 1px solid rgba(239, 68, 68, 0.25);   color: #f87171; }
-.tier-7 { background: rgba(236, 72, 153, 0.12);  border: 1px solid rgba(236, 72, 153, 0.25);  color: #f472b6; }
-.tier-8 { background: rgba(99, 102, 241, 0.12);  border: 1px solid rgba(99, 102, 241, 0.25);  color: #818cf8; }
-.tier-9  { background: rgba(20, 184, 166, 0.12); border: 1px solid rgba(20, 184, 166, 0.25);  color: #2dd4bf; }
-.tier-10 { background: rgba(244, 63, 94, 0.15);  border: 1px solid rgba(244, 63, 94, 0.35);   color: #fb7185; }
+.tier-1  { background: rgba(255,255,255,0.08);   border: 1px solid rgba(255,255,255,0.2);    color: #ffffff; }
+.tier-2  { background: rgba(176,212,241,0.1);    border: 1px solid rgba(176,212,241,0.25);   color: #b0d4f1; }
+.tier-3  { background: rgba(56,189,248,0.1);     border: 1px solid rgba(56,189,248,0.25);    color: #38bdf8; }
+.tier-4  { background: rgba(29,78,216,0.15);     border: 1px solid rgba(29,78,216,0.35);     color: #60a5fa; }
+.tier-5  { background: rgba(251,113,133,0.1);    border: 1px solid rgba(251,113,133,0.25);   color: #fb7185; }
+.tier-6  { background: rgba(124,58,237,0.12);    border: 1px solid rgba(124,58,237,0.3);     color: #a78bfa; }
+.tier-7  { background: rgba(76,29,149,0.15);     border: 1px solid rgba(76,29,149,0.35);     color: #7c3aed; }
+.tier-8  { background: rgba(249,115,22,0.1);     border: 1px solid rgba(249,115,22,0.25);    color: #f97316; }
+.tier-9  { background: rgba(234,88,12,0.1);      border: 1px solid rgba(234,88,12,0.25);     color: #ea580c; }
+.tier-10 { background: rgba(244,63,94,0.15);     border: 1px solid rgba(244,63,94,0.35);     color: #fb7185; }
