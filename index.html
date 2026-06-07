@@ -276,15 +276,17 @@
       <div class="table-wrapper">
         <table>
           <thead>
-            <tr>
+            <tr id="leaderboard-head">
               <th class="col-rank">#</th>
-              <th class="col-nickname">Nickname</th>
-              <th class="col-map">Map</th>
-              <th class="col-time">Time</th>
+              <th>Player</th>
+              <th id="lb-col1">Points</th>
+              <th id="lb-col2">Global Rank</th>
+              <th id="lb-col3">Maps Done</th>
             </tr>
           </thead>
           <tbody id="leaderboard-body"></tbody>
         </table>
+        <div class="empty-state hidden" id="lbEmpty">No data — select a country to load players.</div>
       </div>
     </div>
   </div>
