@@ -575,26 +575,10 @@ tierBtn.addEventListener('click', () => {
   chevron.classList.toggle('rotated', isOpen);
 });
 
-let selectedTier = null;
-
 document.querySelectorAll('.tier-chip').forEach(chip => {
   chip.addEventListener('click', (e) => {
     e.stopPropagation();
-    selectedTier = selectedTier === chip.dataset.tier ? null : chip.dataset.tier;
-    document.querySelectorAll('.tier-chip').forEach(c => c.classList.toggle('active', c.dataset.tier === selectedTier));
-
-    // Filter maps by tier and show in maps dropdown
-    if (selectedTier) {
-      const tierMaps = ALL_MAPS.filter(m => String(m.tier) === selectedTier);
-      mapsBtn.querySelector('span').textContent = `Tier ${selectedTier} Maps`;
-      mapsOptions.classList.remove('hidden');
-      mapsChevron.classList.add('rotated');
-      renderMapsFilter('', tierMaps);
-      mapsSearch.focus();
-    } else {
-      mapsBtn.querySelector('span').textContent = selectedMap || 'Maps';
-      renderMapsFilter('');
-    }
+    window.location.href = `tier.html?tier=${chip.dataset.tier}`;
   });
 });
 
