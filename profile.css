@@ -121,8 +121,10 @@
 }
 
 /* ── Stats table columns ── */
-.col-tier-sm { width: 60px; }
-.col-pts { text-align: right; }
+.col-tier-sm { width: 55px; }
+.col-mapname { min-width: 160px; }
+.col-pts { text-align: right; width: 90px; }
+.col-date { width: 120px; white-space: nowrap; }
 
 .pts-cell {
   color: #f59e0b;
