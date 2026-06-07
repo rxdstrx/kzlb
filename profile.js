@@ -1,5 +1,5 @@
 const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
-const API_BASE = 'https://legendary-gecko-290df8.netlify.app';
+const API_BASE = 'https://kzlb.vercel.app';
 
 const CIRCUMFERENCE = 264;
 const STEPS = [
