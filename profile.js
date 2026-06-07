@@ -105,8 +105,9 @@ function renderMaps(mapList) {
     const time    = row.time_record ?? '—';
     const pos     = row.place_num ?? '—';
     const pts     = row.points != null ? Number(row.points).toFixed(4) : '—';
-    const date    = row.unixtime_record
-      ? new Date(row.unixtime_record * 1000).toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
+    const d = row.unixtime_record ? new Date(row.unixtime_record * 1000) : null;
+    const date = d
+      ? `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
       : '—';
 
     const tr = document.createElement('tr');

@@ -123,7 +123,7 @@
 /* ── Stats table columns ── */
 .col-tier-sm { width: 55px; }
 .col-mapname { min-width: 160px; }
-.col-date { width: 140px; white-space: nowrap; }
+.col-date { width: 160px; min-width: 160px; white-space: nowrap; }
 
 .pos-cell {
   font-size: 0.8rem;
