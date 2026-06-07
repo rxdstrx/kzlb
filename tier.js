@@ -23,6 +23,7 @@ if (filtered.length === 0) {
     const i = index + 1;
     const tr = document.createElement('tr');
     const rankClass = i === 1 ? 'top1' : i === 2 ? 'top2' : i === 3 ? 'top3' : '';
+    tr.style.cursor = 'pointer';
     tr.innerHTML = `
       <td><span class="rank ${rankClass}">${i}</span></td>
       <td>
@@ -31,8 +32,11 @@ if (filtered.length === 0) {
           <span class="mapname-cell">${map.name}</span>
         </div>
       </td>
-      <td><span class="time-cell">—</span></td>
+      <td><span class="time-cell" style="color:rgba(129,140,248,0.7);font-size:0.78rem">View records →</span></td>
     `;
+    tr.addEventListener('click', () => {
+      window.location.href = `map.html?map=${encodeURIComponent(map.name)}`;
+    });
     tbody.appendChild(tr);
   });
 }
