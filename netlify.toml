@@ -14,6 +14,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/trigger-scrape"
+  to = "/.netlify/functions/trigger-scrape"
+  status = 200
+
+[[redirects]]
   from = "/api/steam-resolve"
   to = "/.netlify/functions/steam-resolve"
   status = 200

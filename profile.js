@@ -130,14 +130,7 @@ function renderMaps(mapList) {
 
 async function triggerScrape(sid) {
   try {
-    await fetch(`https://api.github.com/repos/rxdstrx/kzlb/actions/workflows/scrape-kz.yml/dispatches`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/vnd.github+json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ref: 'main', inputs: { steamid: sid } }),
-    });
+    await fetch(`/api/trigger-scrape?steamid=${sid}`);
   } catch {}
 }
 
