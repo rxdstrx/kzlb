@@ -421,8 +421,19 @@ function renderPagination(totalRows) {
   lbPagBot.classList.remove('hidden');
 
   const scrollToTop = () => {
-    const y = document.getElementById('lbPaginationTop').getBoundingClientRect().top + window.scrollY - 80;
-    window.scrollTo({ top: y, behavior: 'smooth' });
+    const targetY = document.getElementById('lbPaginationTop').getBoundingClientRect().top + window.scrollY - 80;
+    const startY = window.scrollY;
+    const diff = targetY - startY;
+    const duration = 350;
+    let start = null;
+    function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+    function step(ts) {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      window.scrollTo(0, startY + diff * ease(progress));
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
   };
 
   document.getElementById('lbPrevBtnTop').addEventListener('click', () => { lbPage--; renderLeaderboard(); });
