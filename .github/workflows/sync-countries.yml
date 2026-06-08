@@ -1,0 +1,29 @@
+name: Sync Player Countries
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # runs daily at 4am UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync countries from Faceit
+        env:
+          FACEIT_KEY: ${{ secrets.FACEIT_KEY }}
+        run: node scripts/sync-countries.js
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cache/
+          git diff --cached --quiet || git commit -m "auto: sync player countries from Faceit"
+          git push
