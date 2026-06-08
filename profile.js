@@ -52,6 +52,17 @@ function stopProgress() {
 
 const params = new URLSearchParams(window.location.search);
 const steamid = params.get('steamid');
+const urlCountry = params.get('country');
+
+function countryToFlag(code) {
+  if (!code || code.length !== 2) return '';
+  return code.toUpperCase().replace(/./g, c => String.fromCodePoint(c.charCodeAt(0) + 127397));
+}
+
+if (urlCountry) {
+  const flagEl = document.getElementById('playerFlag');
+  if (flagEl) flagEl.textContent = ' ' + countryToFlag(urlCountry);
+}
 
 const loadingState   = document.getElementById('loadingState');
 const errorState     = document.getElementById('errorState');
