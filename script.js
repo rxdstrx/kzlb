@@ -679,6 +679,7 @@ const ALL_COUNTRIES = [
   { code: 'ye', name: 'Yemen', flag: '🇾🇪' },
   { code: 'zm', name: 'Zambia', flag: '🇿🇲' },
   { code: 'zw', name: 'Zimbabwe', flag: '🇿🇼' },
+  { code: 'va', name: 'Vatican City', flag: '🇻🇦' },
 ];
 
 // ── Country selector ──
