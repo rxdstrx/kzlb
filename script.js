@@ -433,7 +433,7 @@ function renderLeaderboard() {
         <td>
           <div class="player-cell">
             <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
-            <a class="player-nick" href="profile.html?steamid=${p.steamid}">${p.nickname}</a>
+            <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${p.country || ''}">${p.nickname}</a>
           </div>
         </td>
         <td><span class="time-cell">${p.entry.time_record}</span></td>
@@ -460,7 +460,7 @@ function renderLeaderboard() {
         <td>
           <div class="player-cell">
             <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
-            <a class="player-nick" href="profile.html?steamid=${p.steamid}">${p.nickname}</a>
+            <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${p.country || ''}">${p.nickname}</a>
           </div>
         </td>
         <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
