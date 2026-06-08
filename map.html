@@ -38,7 +38,12 @@
       <button class="map-all-btn active" id="mapAllBtn">🌍 All</button>
       <div class="map-country-dropdown-wrap" id="mapCountryDropdownWrap">
         <button class="map-country-btn" id="mapCountryBtn">Country ▾</button>
-        <div class="map-country-list hidden" id="mapCountryList"></div>
+        <div class="map-country-list hidden" id="mapCountryList">
+          <div class="map-country-search-wrap">
+            <input class="map-country-search" id="mapCountrySearch" type="text" placeholder="Search country..." autocomplete="off" />
+          </div>
+          <div id="mapCountryOptions"></div>
+        </div>
       </div>
     </div>
 
@@ -152,12 +157,30 @@
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 12px;
       padding: 6px;
-      max-height: 260px;
-      overflow-y: auto;
-      min-width: 180px;
+      min-width: 200px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     }
     .map-country-list.hidden { display: none; }
+    .map-country-search-wrap {
+      padding: 4px 4px 6px;
+    }
+    .map-country-search {
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.82rem;
+      padding: 6px 10px;
+      outline: none;
+    }
+    .map-country-search::placeholder { color: rgba(255,255,255,0.35); }
+    .map-country-search:focus { border-color: rgba(129,140,248,0.5); }
+    #mapCountryOptions {
+      max-height: 220px;
+      overflow-y: auto;
+    }
     .map-country-option {
       padding: 7px 12px;
       border-radius: 8px;
