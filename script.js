@@ -589,8 +589,6 @@ mapsBtn.addEventListener('click', () => {
 });
 
 // ── Add yourself ──
-const CF_WORKER_URL = 'https://kzlb-stats.rxdstrx.workers.dev';
-
 let addSelectedCountry = 'pt';
 
 document.querySelectorAll('.country-chip').forEach(chip => {
@@ -621,7 +619,7 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
   showAddStatus('loading', 'Submitting… this may take a few minutes while we fetch your stats.');
 
   try {
-    const res = await fetch(`${CF_WORKER_URL}/add-player?steamid=${steamid}&country=${addSelectedCountry}`);
+    const res = await fetch(`/api/add-player?steamid=${steamid}&country=${addSelectedCountry}`);
     const data = await res.json();
 
     if (data.ok) {
