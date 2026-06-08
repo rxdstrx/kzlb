@@ -1,7 +1,7 @@
 /**
  * scrape-top100.js
- * Fetches top 100 KZ players from Cybershoke, looks up their country via Faceit,
- * saves to correct country files and rebuilds world.
+ * Fetches top 100 KZ players from Cybershoke leaderboard,
+ * scrapes each player's full stats via browser, looks up country via Faceit.
  */
 
 const puppeteer = require('puppeteer-extra');
@@ -9,7 +9,6 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const chromium = require('@sparticuz/chromium');
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 
 puppeteer.use(StealthPlugin());
 
@@ -32,39 +31,7 @@ async function getFaceitCountry(steamid) {
   } catch { return 'xx'; }
 }
 
-function fetchKzStats(steamid, cookieHeader) {
-  return new Promise((resolve) => {
-    const body = JSON.stringify({
-      mode: 18, season: 0, only_friends: false, only_pro: false,
-      id_games: '2', map: null, category: null,
-      steamid64: steamid, sub_type: 0, type: 1,
-    });
-    const req = https.request({
-      hostname: 'cybershoke.net',
-      path: '/api/api/v2/leaderboard/data',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json, text/plain, */*',
-        'Origin': 'https://cybershoke.net',
-        'Referer': `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${steamid}`,
-        'Cookie': cookieHeader,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36',
-        'Content-Length': Buffer.byteLength(body),
-      },
-    }, (res) => {
-      let data = '';
-      res.on('data', c => data += c);
-      res.on('end', () => { try { resolve(JSON.parse(data)); } catch { resolve({}); } });
-    });
-    req.on('error', () => resolve({}));
-    req.setTimeout(20000, () => { req.destroy(); resolve({}); });
-    req.write(body); req.end();
-  });
-}
-
 (async () => {
-  // Step 1: launch browser, get CF session + top 100 list
   console.log('Launching browser...');
   const browser = await puppeteer.launch({
     args: chromium.args,
@@ -72,6 +39,7 @@ function fetchKzStats(steamid, cookieHeader) {
     executablePath: await chromium.executablePath(),
     headless: true,
   });
+
   const page = await browser.newPage();
   const cookies = COOKIE.split('; ').map(c => {
     const [name, ...rest] = c.split('=');
@@ -82,7 +50,7 @@ function fetchKzStats(steamid, cookieHeader) {
   await page.goto('https://cybershoke.net/', { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
   await new Promise(r => setTimeout(r, 3000));
 
-  // Fetch top 100 list only (no individual stats yet)
+  // Step 1: fetch top 100 list via browser
   console.log('Fetching top 100 KZ leaderboard...');
   const topList = await page.evaluate(async () => {
     const headers = {
@@ -98,36 +66,31 @@ function fetchKzStats(steamid, cookieHeader) {
     const data = await res.json().catch(() => ({}));
     return data?.list || [];
   });
+  console.log(`Got ${topList.length} players from leaderboard\n`);
 
-  // Get CF cookies for direct HTTPS requests
-  const allCookies = await page.cookies('https://cybershoke.net');
-  await browser.close();
-  const cookieHeader = allCookies.map(c => `${c.name}=${c.value}`).join('; ');
-  console.log(`Got ${topList.length} players. Fetching their full stats + countries in parallel...`);
-
-  // Step 2: fetch individual stats (10 at a time) + country via Faceit in parallel
+  // Step 2: fetch each player's full stats via browser + country via Faceit in parallel
   const results = [];
-  for (let i = 0; i < topList.length; i += 10) {
-    const batch = topList.slice(i, i + 10);
-    const batchResults = await Promise.all(batch.map(async (p) => {
-      const [mapsData, country] = await Promise.all([
-        fetchKzStats(p.steamid64, cookieHeader),
-        getFaceitCountry(p.steamid64),
-      ]);
-      return { p, mapsData, country };
-    }));
-    results.push(...batchResults);
-    for (const { p, country } of batchResults) {
-      console.log(`  [#${p.place}] ${p.name} → ${country}`);
-    }
-    if (i + 10 < topList.length) await new Promise(r => setTimeout(r, 400));
-  }
-
-  // Step 3: build player objects
-  const byCountry = {};
-  for (const { p, mapsData, country } of results) {
+  for (let i = 0; i < topList.length; i++) {
+    const p = topList[i];
     const sid = p.steamid64;
     if (!sid) continue;
+
+    // Fetch KZ stats via browser (reliable, bypasses CF)
+    const mapsData = await page.evaluate(async (steamid) => {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json, text/plain, */*',
+        'Origin': 'https://cybershoke.net',
+        'Referer': `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${steamid}`,
+      };
+      const body = JSON.stringify({ mode: 18, season: 0, only_friends: false, only_pro: false, id_games: '2', map: null, category: null, steamid64: steamid, sub_type: 0, type: 1 });
+      const res = await fetch('https://cybershoke.net/api/api/v2/leaderboard/data', { method: 'POST', headers, body });
+      return res.json().catch(() => ({}));
+    }, sid);
+
+    // Fetch country from Faceit in parallel
+    const country = await getFaceitCountry(sid);
+
     const mapList = mapsData?.list || [];
     const desc = mapsData?.header?.desc || {};
 
@@ -147,15 +110,17 @@ function fetchKzStats(steamid, cookieHeader) {
       steamid: sid, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData,
     }, null, 2));
 
-    console.log(`  ${p.name} (${country}) — ${mapList.length} maps, ${player.kz_points} pts`);
+    results.push(player);
+    console.log(`[${i+1}/${topList.length}] ${p.name} (${country}) — ${mapList.length} maps, ${player.kz_points} pts`);
 
-    if (!byCountry[country]) byCountry[country] = [];
-    byCountry[country].push(player);
+    await new Promise(r => setTimeout(r, 200));
   }
 
-  // Step 4: remove these players from all country files, then re-add to correct ones
+  await browser.close();
+
+  // Step 3: remove from all country files, re-add to correct ones
   const allCountryFiles = fs.readdirSync(cacheDir).filter(f => f.endsWith('-kz-players.json') && f !== 'world-kz-players.json');
-  const allNewSteamids = new Set(results.map(r => r.p.steamid64).filter(Boolean));
+  const allNewSteamids = new Set(results.map(p => p.steamid));
   for (const cf of allCountryFiles) {
     const cfPath = path.join(cacheDir, cf);
     try {
@@ -164,6 +129,12 @@ function fetchKzStats(steamid, cookieHeader) {
       d.players = d.players.filter(p => !allNewSteamids.has(p.steamid));
       if (d.players.length !== before) fs.writeFileSync(cfPath, Buffer.from(JSON.stringify(d, null, 2), 'utf8'));
     } catch {}
+  }
+
+  const byCountry = {};
+  for (const player of results) {
+    if (!byCountry[player.country]) byCountry[player.country] = [];
+    byCountry[player.country].push(player);
   }
 
   for (const [country, players] of Object.entries(byCountry)) {
@@ -177,7 +148,7 @@ function fetchKzStats(steamid, cookieHeader) {
     console.log(`Saved ${players.length} to ${country}-kz-players.json`);
   }
 
-  // Step 5: normalize place totals
+  // Step 4: normalize place totals
   const countryFiles = fs.readdirSync(cacheDir).filter(f => f.endsWith('-kz-players.json') && f !== 'world-kz-players.json');
   const mapMaxTotal = {};
   for (const cf of countryFiles) {
@@ -186,7 +157,7 @@ function fetchKzStats(steamid, cookieHeader) {
       for (const p of players) {
         for (const m of (p.maps_list || [])) {
           if (!m.place_num) continue;
-          const clean = m.place_num.replace(/[\s ]/g, '');
+          const clean = m.place_num.replace(/[\s ]/g, '');
           const parts = clean.split('/');
           if (parts.length < 2) continue;
           const total = parseInt(parts[1].replace(/\D/g, ''), 10) || 0;
@@ -204,7 +175,7 @@ function fetchKzStats(steamid, cookieHeader) {
         for (const m of (p.maps_list || [])) {
           const maxTotal = mapMaxTotal[m.map];
           if (!maxTotal || !m.place_num) continue;
-          const clean = m.place_num.replace(/[\s ]/g, '');
+          const clean = m.place_num.replace(/[\s ]/g, '');
           const parts = clean.split('/');
           if (parts.length < 2) continue;
           const rank = parseInt(parts[0].replace(/\D/g, ''), 10) || 0;
@@ -216,7 +187,7 @@ function fetchKzStats(steamid, cookieHeader) {
     } catch {}
   }
 
-  // Step 6: rebuild world
+  // Step 5: rebuild world
   const seen = new Set();
   const worldPlayers = [];
   for (const cf of countryFiles) {
