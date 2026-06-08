@@ -902,15 +902,33 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     return;
   }
 
-  // Auto-select country from Faceit only if user hasn't manually picked one
+  // Auto-detect country from Faceit — show confirmation modal if not manually picked
   if (autoCountry && !userPickedCountry) {
     const match = ALL_COUNTRIES.find(c => c.code === autoCountry.toLowerCase());
     if (match) {
-      addSelectedCountry = match.code;
-      document.querySelectorAll('#addCountryList .country-chip').forEach(c => c.classList.remove('active'));
-      const chip = document.querySelector(`#addCountryList .country-chip[data-country="${match.code}"]`);
-      if (chip) chip.classList.add('active');
-      else { otherBtn.textContent = `${match.flag} ${match.name} ▾`; otherBtn.classList.add('active'); }
+      // Show modal and wait for user to confirm or cancel
+      const confirmed = await new Promise(resolve => {
+        const overlay = document.getElementById('countryConfirmOverlay');
+        document.getElementById('countryConfirmFlag').textContent = match.flag;
+        document.getElementById('countryConfirmName').textContent = match.name;
+        overlay.style.display = 'flex';
+        showAddStatus('', '');
+        document.getElementById('countryConfirmYes').onclick = () => { overlay.style.display = 'none'; resolve(true); };
+        document.getElementById('countryConfirmNo').onclick = () => { overlay.style.display = 'none'; resolve(false); };
+      });
+
+      if (confirmed) {
+        addSelectedCountry = match.code;
+        document.querySelectorAll('#addCountryList .country-chip').forEach(c => c.classList.remove('active'));
+        const chip = document.querySelector(`#addCountryList .country-chip[data-country="${match.code}"]`);
+        if (chip) chip.classList.add('active');
+        else { otherBtn.textContent = `${match.flag} ${match.name} ▾`; otherBtn.classList.add('active'); }
+      } else {
+        // User wants to pick manually — re-enable and stop here
+        showAddStatus('error', 'Please select your correct country below.');
+        submitBtn.disabled = false;
+        return;
+      }
     }
   }
 
