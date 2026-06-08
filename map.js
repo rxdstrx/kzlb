@@ -63,7 +63,9 @@ const ALL_COUNTRIES = [
 ];
 
 const params  = new URLSearchParams(window.location.search);
-const mapName = params.get('map');
+let mapName = params.get('map');
+// Alias: redirect old name to new name
+if (mapName === 'kz_woodstock') mapName = 'kz_woodstock_v2';
 
 let allRecords  = [];
 let filtered    = [];
