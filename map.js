@@ -31,7 +31,6 @@ async function init() {
     return;
   }
 
-  // Set map info from ALL_MAPS
   const mapInfo = typeof ALL_MAPS !== 'undefined' ? ALL_MAPS.find(m => m.name === mapName) : null;
   const tier = mapInfo?.tier;
 
@@ -44,7 +43,6 @@ async function init() {
     thumb.style.display = 'block';
   }
 
-  // Set tier badge with color
   if (tier) {
     const badge = document.getElementById('mapTierBadge');
     badge.textContent = `Tier ${tier}`;
@@ -52,20 +50,19 @@ async function init() {
   }
 
   try {
-    // Load Portuguese players
-    const ptRes  = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
-    const ptData = await ptRes.json();
-    const ptPlayers = ptData.players || [];
+    // Load all players from world cache
+    const res  = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`);
+    const data = await res.json();
+    const players = data.players || [];
 
-    ptPlayers.forEach(p => {
+    players.forEach(p => {
       const entry = (p.maps_list || []).find(m => m.map === mapName);
       if (entry) {
         allRecords.push({
-          steamid:    p.steamid,
-          nickname:   p.nickname,
-          avatar:     p.avatar,
-          country:    'pt',
-          flag:       '🇵🇹',
+          steamid:     p.steamid,
+          nickname:    p.nickname,
+          avatar:      p.avatar,
+          country:     p.country || 'xx',
           time_record: entry.time_record,
           place_num:   entry.place_num,
           completions: entry.completions,
@@ -73,19 +70,61 @@ async function init() {
       }
     });
 
-    // Sort by time ascending
     allRecords.sort((a, b) => timeToSeconds(a.time_record) - timeToSeconds(b.time_record));
 
     document.getElementById('mapSub').textContent =
       `${allRecords.length} player${allRecords.length !== 1 ? 's' : ''} with records · Sorted by fastest time`;
+
+    buildCountryFilter();
 
     loadingState.classList.add('hidden');
     tableWrapper.classList.remove('hidden');
     applyFilter();
   } catch (e) {
     loadingState.querySelector('p').textContent = 'Failed to load records.';
-    console.error(e);
   }
+}
+
+function buildCountryFilter() {
+  const countries = [...new Set(allRecords.map(r => r.country))].sort();
+  const wrap = document.getElementById('mapCountryDropdownWrap');
+  const btn  = document.getElementById('mapCountryBtn');
+  const list = document.getElementById('mapCountryList');
+
+  list.innerHTML = '';
+
+  // "All countries" option
+  const allDiv = document.createElement('div');
+  allDiv.className = 'map-country-option map-country-all';
+  allDiv.textContent = '🌍 All countries';
+  allDiv.addEventListener('click', () => {
+    activeCountry = 'all';
+    btn.textContent = '🌍 All ▾';
+    list.classList.add('hidden');
+    applyFilter();
+  });
+  list.appendChild(allDiv);
+
+  countries.forEach(code => {
+    const div = document.createElement('div');
+    div.className = 'map-country-option';
+    div.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${code.toUpperCase()}`;
+    div.addEventListener('click', () => {
+      activeCountry = code;
+      btn.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${code.toUpperCase()} ▾`;
+      list.classList.add('hidden');
+      applyFilter();
+    });
+    list.appendChild(div);
+  });
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    list.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => list.classList.add('hidden'));
+  list.addEventListener('click', e => e.stopPropagation());
 }
 
 function applyFilter() {
@@ -117,8 +156,8 @@ function renderPage() {
       <td>
         <div class="player-cell">
           <img class="player-thumb" src="${r.avatar}" onerror="this.style.display='none'" />
-          <a class="player-nick" href="profile.html?steamid=${r.steamid}">${r.nickname}</a>
-          <span style="font-size:0.9rem">${r.flag}</span>
+          <a class="player-nick" href="profile.html?steamid=${r.steamid}&country=${r.country}">${r.nickname}</a>
+          <img src="https://flagcdn.com/w20/${r.country}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-left:4px">
         </div>
       </td>
       <td><span class="time-cell">${r.time_record}</span></td>
@@ -157,14 +196,5 @@ function renderPagination(total) {
 
   pag.append(prev, info, next);
 }
-
-// Country filter
-document.getElementById('countryChips').addEventListener('click', e => {
-  const chip = e.target.closest('.map-country-chip');
-  if (!chip) return;
-  activeCountry = chip.dataset.country;
-  document.querySelectorAll('.map-country-chip').forEach(c => c.classList.toggle('active', c === chip));
-  applyFilter();
-});
 
 init();

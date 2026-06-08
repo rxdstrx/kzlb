@@ -36,9 +36,11 @@
     <!-- Country filter -->
     <div class="map-country-filter">
       <span class="map-filter-label">Country:</span>
-      <div class="map-country-chips" id="countryChips">
-        <div class="map-country-chip active" data-country="all">🌍 All</div>
-        <div class="map-country-chip" data-country="pt">🇵🇹 Portugal</div>
+      <div class="map-country-dropdown-wrap" id="mapCountryDropdownWrap">
+        <button class="map-country-btn" id="mapCountryBtn">🌍 All ▾</button>
+        <div class="map-country-list hidden" id="mapCountryList">
+          <div class="map-country-option map-country-all" data-country="all">🌍 All countries</div>
+        </div>
       </div>
     </div>
 
@@ -106,26 +108,46 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 16px;
-      flex-wrap: wrap;
     }
     .map-filter-label { font-size: 0.8rem; color: rgba(255,255,255,0.35); }
-    .map-country-chips { display: flex; gap: 6px; flex-wrap: wrap; }
-    .map-country-chip {
-      padding: 5px 12px;
+    .map-country-dropdown-wrap { position: relative; }
+    .map-country-btn {
+      padding: 6px 14px;
       background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 20px;
-      color: rgba(255,255,255,0.5);
-      font-size: 0.78rem;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.82rem;
       cursor: pointer;
       transition: all 0.12s;
+      white-space: nowrap;
     }
-    .map-country-chip:hover { background: rgba(255,255,255,0.09); color: #fff; }
-    .map-country-chip.active {
-      background: rgba(129,140,248,0.2);
-      border-color: rgba(129,140,248,0.4);
-      color: #a5b4fc;
+    .map-country-btn:hover { background: rgba(255,255,255,0.09); color: #fff; }
+    .map-country-list {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 200;
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+      min-width: 180px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     }
+    .map-country-list.hidden { display: none; }
+    .map-country-option {
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      transition: background 0.1s;
+      white-space: nowrap;
+    }
+    .map-country-option:hover { background: rgba(255,255,255,0.08); color: #fff; }
   </style>
 
   <script src="maps-data.js"></script>
