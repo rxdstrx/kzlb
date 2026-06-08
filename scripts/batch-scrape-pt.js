@@ -13,8 +13,31 @@ const ptFile   = path.join(cacheDir, 'pt-players.json');
 
 if (!fs.existsSync(ptFile)) { console.error('pt-players.json not found'); process.exit(1); }
 
-const { players } = JSON.parse(fs.readFileSync(ptFile, 'utf8'));
-console.log(`Loaded ${players.length} Portuguese players`);
+const { players: allPlayers } = JSON.parse(fs.readFileSync(ptFile, 'utf8'));
+
+// Load existing KZ players so we don't re-scrape them
+const ptKzFile = path.join(cacheDir, 'pt-kz-players.json');
+let existingKz = [];
+if (fs.existsSync(ptKzFile)) {
+  try { existingKz = JSON.parse(fs.readFileSync(ptKzFile, 'utf8')).players || []; } catch {}
+}
+const alreadyScraped = new Set(existingKz.map(p => p.steamid));
+
+// Also skip players that have an individual cache file (already scanned, no KZ data)
+// unless they're being re-scraped by force
+allPlayers.forEach(p => {
+  if (fs.existsSync(path.join(cacheDir, `${p.steamid64}.json`))) {
+    alreadyScraped.add(p.steamid64);
+  }
+});
+
+// Filter to only players we haven't scanned yet
+const players = allPlayers.filter(p => !alreadyScraped.has(p.steamid64));
+console.log(`Total in pt-players.json: ${allPlayers.length}`);
+console.log(`Already scanned: ${alreadyScraped.size}`);
+console.log(`To scrape: ${players.length}`);
+
+if (!players.length) { console.log('Nothing to scrape.'); process.exit(0); }
 
 async function fetchPlayerStats(page, steamid) {
   const body = JSON.stringify({
@@ -22,14 +45,12 @@ async function fetchPlayerStats(page, steamid) {
     id_games: '2', map: null, category: null,
     steamid64: steamid, sub_type: 0, type: 1,
   });
-
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json, text/plain, */*',
     'Origin': 'https://cybershoke.net',
     'Referer': `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${steamid}`,
   };
-
   const [userRes, mapsRes] = await page.evaluate(async (steamid, headers, body) => {
     const [u, m] = await Promise.all([
       fetch('https://cybershoke.net/api/api/v1/leaderboard/user', { method: 'POST', headers, body }),
@@ -37,7 +58,6 @@ async function fetchPlayerStats(page, steamid) {
     ]);
     return [await u.json().catch(() => ({})), await m.json().catch(() => ({}))];
   }, steamid, headers, body);
-
   return { user: userRes, maps: mapsRes };
 }
 
@@ -50,15 +70,12 @@ async function fetchPlayerStats(page, steamid) {
   });
 
   const page = await browser.newPage();
-
-  // Set cookies
   const cookies = COOKIE.split('; ').map(c => {
     const [name, ...rest] = c.split('=');
     return { name, value: rest.join('='), domain: 'cybershoke.net' };
   });
   await page.setCookie(...cookies);
 
-  // Navigate once to get cf_clearance
   console.log('Getting cybershoke session...');
   await page.goto('https://cybershoke.net/', { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
   await new Promise(r => setTimeout(r, 2000));
@@ -73,13 +90,18 @@ async function fetchPlayerStats(page, steamid) {
     const { steamid64, nickname, faceit_elo, skill_level } = player;
 
     try {
-      const { user, maps } = await fetchPlayerStats(page, steamid64);
+      const { maps } = await fetchPlayerStats(page, steamid64);
       const mapList = maps?.list || [];
-      const kzUser  = user?.['18'] || {};
+      const desc = maps?.header?.desc || {};
+
+      // Save individual cache file (marks as scanned even if no KZ data)
+      fs.writeFileSync(path.join(cacheDir, `${steamid64}.json`), JSON.stringify({
+        steamid: steamid64, country: 'pt', cached_at: new Date().toISOString(),
+        user: {}, maps,
+      }, null, 2));
 
       if (mapList.length > 0) {
         withKZ++;
-        const desc = maps?.header?.desc || {};
         const result = {
           steamid: steamid64,
           nickname,
@@ -93,17 +115,8 @@ async function fetchPlayerStats(page, steamid) {
           avatar: maps?.header?.avatar || '',
           maps_list: mapList,
         };
-
-        // Save individual cache file
-        fs.writeFileSync(path.join(cacheDir, `${steamid64}.json`), JSON.stringify({
-          steamid: steamid64,
-          cached_at: new Date().toISOString(),
-          user: {},
-          maps,
-        }, null, 2));
-
         kzPlayers.push(result);
-        console.log(`[${i+1}/${players.length}] ✓ ${nickname} — ${mapList.length} maps, ${kzUser.points || 0} pts`);
+        console.log(`[${i+1}/${players.length}] ✓ ${nickname} — ${mapList.length} maps, ${result.kz_points} pts`);
       } else {
         withoutKZ++;
         console.log(`[${i+1}/${players.length}] ✗ ${nickname} — no KZ data`);
@@ -117,21 +130,27 @@ async function fetchPlayerStats(page, steamid) {
 
   await browser.close();
 
-  // Merge with existing pt-kz-players.json
-  const ptKzFile = path.join(cacheDir, 'pt-kz-players.json');
-  let existing = [];
-  if (fs.existsSync(ptKzFile)) {
-    try { existing = JSON.parse(fs.readFileSync(ptKzFile, 'utf8')).players || []; } catch {}
-  }
-  const existingIds = new Set(existing.map(p => p.steamid));
-  const merged = [...existing, ...kzPlayers.filter(p => !existingIds.has(p.steamid))];
+  // Merge with existing pt-kz-players.json (no dupes)
+  const existingIds = new Set(existingKz.map(p => p.steamid));
+  const merged = [...existingKz, ...kzPlayers.filter(p => !existingIds.has(p.steamid))];
   merged.sort((a, b) => b.kz_points - a.kz_points);
 
-  fs.writeFileSync(
-    path.join(cacheDir, 'pt-kz-players.json'),
-    JSON.stringify({ updated_at: new Date().toISOString(), players: merged }, null, 2)
-  );
+  fs.writeFileSync(ptKzFile, Buffer.from(JSON.stringify({ updated_at: new Date().toISOString(), players: merged }, null, 2), 'utf8'));
 
-  console.log(`\nDone! ${withKZ} players with KZ data, ${withoutKZ} without.`);
-  console.log(`Saved to cache/pt-kz-players.json`);
+  // Rebuild world
+  const worldFile = path.join(cacheDir, 'world-kz-players.json');
+  const countryFiles = fs.readdirSync(cacheDir).filter(f => f.endsWith('-kz-players.json') && f !== 'world-kz-players.json');
+  const seen = new Set();
+  const worldPlayers = [];
+  for (const cf of countryFiles) {
+    try {
+      const ps = JSON.parse(fs.readFileSync(path.join(cacheDir, cf), 'utf8')).players || [];
+      for (const p of ps) { if (!seen.has(p.steamid)) { seen.add(p.steamid); worldPlayers.push(p); } }
+    } catch {}
+  }
+  worldPlayers.sort((a, b) => b.kz_points - a.kz_points);
+  fs.writeFileSync(worldFile, Buffer.from(JSON.stringify({ updated_at: new Date().toISOString(), players: worldPlayers }, null, 2), 'utf8'));
+
+  console.log(`\nDone! ${withKZ} new KZ players, ${withoutKZ} without KZ.`);
+  console.log(`pt-kz-players.json: ${merged.length} total | world: ${worldPlayers.length} total`);
 })();

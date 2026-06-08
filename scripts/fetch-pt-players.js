@@ -3,18 +3,29 @@ const path = require('path');
 
 const FACEIT_KEY = process.env.FACEIT_KEY;
 const LIMIT = 100;
-const START_PAGE = 1; // skip first 100 already fetched
-const MAX_PAGES = 51; // 5000 more players
+
+// Args: node fetch-pt-players.js <startOffset> <endOffset>
+// e.g. node fetch-pt-players.js 5000 5100   → fetches positions 5001-5100
+const startOffset = parseInt(process.argv[2] || '5000', 10);
+const endOffset   = parseInt(process.argv[3] || '5100', 10);
+
+const cacheDir = path.join(__dirname, '..', 'cache');
+const ptFile   = path.join(cacheDir, 'pt-players.json');
+
+// Load existing pt-players.json to skip already-known steamids
+let existingPlayers = [];
+if (fs.existsSync(ptFile)) {
+  try { existingPlayers = JSON.parse(fs.readFileSync(ptFile, 'utf8')).players || []; } catch {}
+}
+const knownSteamids = new Set(existingPlayers.map(p => p.steamid64));
+console.log(`Already have ${existingPlayers.length} players in pt-players.json`);
 
 async function fetchPage(offset) {
   const res = await fetch(
     `https://open.faceit.com/data/v4/rankings/games/cs2/regions/EU?country=pt&limit=${LIMIT}&offset=${offset}`,
     { headers: { 'Authorization': `Bearer ${FACEIT_KEY}` } }
   );
-  if (!res.ok) {
-    console.log(`Page ${offset}: status ${res.status}`);
-    return [];
-  }
+  if (!res.ok) { console.log(`Offset ${offset}: status ${res.status}`); return []; }
   const data = await res.json();
   return data.items || [];
 }
@@ -30,41 +41,41 @@ async function getSteamId(playerId) {
 }
 
 (async () => {
-  const players = [];
+  const newPlayers = [];
 
-  for (let page = START_PAGE; page < MAX_PAGES; page++) {
-    const offset = page * LIMIT;
+  for (let offset = startOffset; offset < endOffset; offset += LIMIT) {
     const items = await fetchPage(offset);
     if (!items.length) { console.log(`No more players at offset ${offset}`); break; }
-
-    console.log(`Page ${page + 1}: got ${items.length} players`);
+    console.log(`Offset ${offset}: got ${items.length} players`);
 
     for (const item of items) {
       const steamid = await getSteamId(item.player_id);
-      if (steamid) {
-        players.push({
-          faceit_id: item.player_id,
-          nickname: item.nickname,
-          faceit_elo: item.faceit_elo,
-          skill_level: item.skill_level,
-          steamid64: steamid,
-          country: 'pt',
-        });
-        console.log(`  ${item.nickname} → ${steamid}`);
+      if (!steamid) continue;
+      if (knownSteamids.has(steamid)) {
+        console.log(`  SKIP ${item.nickname} (already known)`);
+        continue;
       }
-      await new Promise(r => setTimeout(r, 100)); // rate limit
+      newPlayers.push({
+        faceit_id: item.player_id,
+        nickname: item.nickname,
+        faceit_elo: item.faceit_elo,
+        skill_level: item.skill_level,
+        steamid64: steamid,
+        country: 'pt',
+      });
+      knownSteamids.add(steamid);
+      console.log(`  ${item.nickname} → ${steamid}`);
+      await new Promise(r => setTimeout(r, 100));
     }
 
     if (items.length < LIMIT) break;
   }
 
-  console.log(`\nTotal Portuguese players found: ${players.length}`);
+  console.log(`\nNew players found: ${newPlayers.length}`);
 
-  const cacheDir = path.join(__dirname, '..', 'cache');
+  // Append to existing pt-players.json
+  const merged = [...existingPlayers, ...newPlayers];
   if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
-  fs.writeFileSync(
-    path.join(cacheDir, 'pt-players.json'),
-    JSON.stringify({ updated_at: new Date().toISOString(), players }, null, 2)
-  );
-  console.log('Saved to cache/pt-players.json');
+  fs.writeFileSync(ptFile, JSON.stringify({ updated_at: new Date().toISOString(), players: merged }, null, 2));
+  console.log(`pt-players.json now has ${merged.length} total players`);
 })();
