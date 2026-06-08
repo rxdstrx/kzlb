@@ -1,4 +1,5 @@
 {
+  "updated_at": "2026-06-08T02:42:59.107Z",
   "players": [
     {
       "steamid": "76561198432524486",
@@ -10,6 +11,46 @@
       "kz_maps": "0 (0%)",
       "avatar": "https://avatars.steamstatic.com/1119a42c7bce0417f4b57a711dfe10ebfe180733_full.jpg",
       "maps_list": []
+    },
+    {
+      "steamid": "76561198219053175",
+      "nickname": "Lethanum",
+      "faceit_elo": 1895,
+      "country": "tr",
+      "cached_at": "2026-06-07T10:03:29.690Z",
+      "kz_points": 40,
+      "kz_place": 202349,
+      "kz_maps": "3 (1.81%)",
+      "avatar": "https://avatars.steamstatic.com/706c92d190b1ce4d0a958fdecf48581a1f55ea51_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_skytower",
+          "points": "19.5460",
+          "completions": "1",
+          "tier": "3",
+          "place_num": "22 261 / 22 565",
+          "time_record": "01:43:04.2188",
+          "unixtime_record": 1778009754
+        },
+        {
+          "map": "kz_victoria",
+          "points": "10.4858",
+          "completions": "1",
+          "tier": "1",
+          "place_num": "44 370 / 56 611",
+          "time_record": "04:40.5000",
+          "unixtime_record": 1780588194
+        },
+        {
+          "map": "kz_woodstock_v2",
+          "points": "10.7216",
+          "completions": "1",
+          "tier": "1",
+          "place_num": "55 642 / 70 452",
+          "time_record": "08:22.3438",
+          "unixtime_record": 1777762171
+        }
+      ]
     }
   ]
 }
