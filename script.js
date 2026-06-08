@@ -46,6 +46,17 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
   const raw = document.getElementById('searchInput').value.trim();
   if (!raw) return;
 
+  if (raw.includes('faceit.com')) {
+    const faceit = await resolveFaceit(raw);
+    if (faceit?.steamid) {
+      const q = faceit.country ? `&country=${faceit.country}` : '';
+      window.location.href = `profile.html?steamid=${faceit.steamid}${q}`;
+    } else {
+      showError('Could not find this Faceit profile.');
+    }
+    return;
+  }
+
   const identifier = extractIdentifier(raw);
   const steamid = await resolveSteamId(identifier);
   if (steamid) {
