@@ -92,8 +92,22 @@ async function loadProfile(sid) {
     // Player info from maps.header or user mode 18
     const header = data.maps?.header || {};
     const kzUser = data.user?.['18'] || {};
-    const name   = header.title || kzUser.name || 'Unknown Player';
-    const avatar = header.avatar || kzUser.avatar || '';
+    let name   = header.title || kzUser.name || '';
+    let avatar = header.avatar || kzUser.avatar || '';
+
+    // Fallback to Steam/playerdb if no name or avatar
+    if (!name || !avatar) {
+      try {
+        const pdb = await fetch(`https://playerdb.co/api/player/steam/${sid}`);
+        const pdbData = await pdb.json();
+        const player = pdbData?.data?.player;
+        if (player) {
+          if (!name) name = player.username || 'Unknown Player';
+          if (!avatar) avatar = player.avatar || '';
+        }
+      } catch {}
+    }
+    if (!name) name = 'Unknown Player';
     const desc   = header.desc || {};
 
     document.getElementById('playerName').textContent    = name;
