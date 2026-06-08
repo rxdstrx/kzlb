@@ -7,7 +7,7 @@ const path = require('path');
 puppeteer.use(StealthPlugin());
 
 const steamid = process.argv[2];
-const country = (process.argv[3] || 'xx').toLowerCase();
+let country = (process.argv[3] || 'xx').toLowerCase();
 const nickname = process.argv[4] || '';
 
 if (!steamid || !/^\d{17}$/.test(steamid)) {
@@ -15,7 +15,20 @@ if (!steamid || !/^\d{17}$/.test(steamid)) {
   process.exit(1);
 }
 
+const FACEIT_KEY = process.env.FACEIT_KEY;
 const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv4pjmnJVyhKQk3oYa5q65yHTyVmNYroRvWumE0Km; multitoken_created=1; cookie_read=1; lang_g=ru; current-game=2; vip=true; vip-group=LITE`;
+
+async function getFaceitCountry(sid) {
+  if (!FACEIT_KEY) return null;
+  try {
+    const res = await fetch(`https://open.faceit.com/data/v4/players?game=cs2&game_player_id=${sid}`, {
+      headers: { 'Authorization': `Bearer ${FACEIT_KEY}` }
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.country?.toLowerCase() || null;
+  } catch { return null; }
+}
 
 const cacheDir = path.join(__dirname, '..', 'cache');
 
@@ -39,6 +52,18 @@ function getLeaderboardFile(c) {
   });
   await page.setCookie(...cookies);
   await page.setExtraHTTPHeaders({ 'Accept-Language': 'ru-RU,ru;q=0.9' });
+
+  // If country unknown, try Faceit lookup automatically
+  if (country === 'xx') {
+    console.log('Country unknown — trying Faceit lookup...');
+    const faceitCountry = await getFaceitCountry(steamid);
+    if (faceitCountry) {
+      country = faceitCountry;
+      console.log(`Found country via Faceit: ${country}`);
+    } else {
+      console.log('No Faceit account found — player will be added without a flag (xx).');
+    }
+  }
 
   console.log('Getting cybershoke session...');
   await page.goto('https://cybershoke.net/', { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});

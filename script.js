@@ -890,11 +890,8 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     }
   }
 
-  if (!addSelectedCountry) {
-    showAddStatus('error', 'Please select your country.');
-    submitBtn.disabled = false;
-    return;
-  }
+  // Country is optional — if not selected, backend will try Faceit or use xx (no flag)
+  const countryToSubmit = addSelectedCountry || 'xx';
 
   // Check if player already exists in world leaderboard
   showAddStatus('loading', 'Checking if you\'re already on the leaderboard…');
@@ -914,7 +911,7 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
   showAddStatus('loading', 'Submitting… this may take a few minutes while we fetch your stats.');
 
   try {
-    const res = await fetch(`https://kzlb.vercel.app/api/add-player?steamid=${steamid}&country=${addSelectedCountry}`);
+    const res = await fetch(`https://kzlb.vercel.app/api/add-player?steamid=${steamid}&country=${countryToSubmit}`);
     const data = await res.json();
 
     if (data.ok) {
