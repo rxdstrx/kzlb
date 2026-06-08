@@ -59,7 +59,7 @@ const ALL_COUNTRIES = [
   {code:'ua',name:'Ukraine'},{code:'ae',name:'United Arab Emirates'},{code:'gb',name:'United Kingdom'},
   {code:'us',name:'United States'},{code:'uy',name:'Uruguay'},{code:'uz',name:'Uzbekistan'},
   {code:'ve',name:'Venezuela'},{code:'vn',name:'Vietnam'},{code:'ye',name:'Yemen'},
-  {code:'zm',name:'Zambia'},{code:'zw',name:'Zimbabwe'},
+  {code:'zm',name:'Zambia'},{code:'zw',name:'Zimbabwe'},{code:'va',name:'Vatican City'},
 ];
 
 const params  = new URLSearchParams(window.location.search);
