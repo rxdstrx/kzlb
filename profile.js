@@ -56,7 +56,7 @@ const urlCountry = params.get('country');
 
 function countryToFlag(code) {
   if (!code || code.length !== 2) return '';
-  return code.toUpperCase().replace(/./g, c => String.fromCodePoint(c.charCodeAt(0) + 127397));
+  return `<img src="https://flagcdn.com/w40/${code.toLowerCase()}.png" alt="${code}" style="height:18px;border-radius:2px;vertical-align:middle;margin-left:6px;">`;
 }
 
 
@@ -125,7 +125,7 @@ async function loadProfile(sid) {
     const flagEl = document.getElementById('playerFlag');
     const nameEl = document.getElementById('playerName');
     nameEl.childNodes[0].textContent = name;
-    if (flagEl && country) flagEl.textContent = ' ' + countryToFlag(country);
+    if (flagEl && country) flagEl.innerHTML = countryToFlag(country);
 
     const csLink = `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}`;
     const cybLink = document.getElementById('cybershokeLink');
