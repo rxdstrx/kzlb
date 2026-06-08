@@ -420,7 +420,7 @@ function renderPagination(totalRows) {
   lbPagTop.classList.remove('hidden');
   lbPagBot.classList.remove('hidden');
 
-  const scrollToTop = () => document.getElementById('lbPaginationTop').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const scrollToTop = () => document.getElementById('leaderboard-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   document.getElementById('lbPrevBtnTop').addEventListener('click', () => { lbPage--; renderLeaderboard(); });
   document.getElementById('lbNextBtnTop').addEventListener('click', () => { lbPage++; renderLeaderboard(); });
