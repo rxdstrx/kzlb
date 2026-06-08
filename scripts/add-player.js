@@ -105,6 +105,21 @@ function getLeaderboardFile(c) {
   );
   console.log(`Saved cache/${steamid}.json`);
 
+  // Remove player from any OTHER country file they may be in (prevents cross-file dupes)
+  const allCountryFiles = fs.readdirSync(cacheDir).filter(f => f.endsWith('-kz-players.json') && f !== 'world-kz-players.json' && f !== `${country}-kz-players.json`);
+  for (const cf of allCountryFiles) {
+    const cfPath = path.join(cacheDir, cf);
+    try {
+      const d = JSON.parse(fs.readFileSync(cfPath, 'utf8'));
+      const before = d.players.length;
+      d.players = d.players.filter(p => p.steamid !== steamid);
+      if (d.players.length !== before) {
+        fs.writeFileSync(cfPath, JSON.stringify(d, null, 2));
+        console.log(`Removed ${steamid} from ${cf}`);
+      }
+    } catch {}
+  }
+
   // Merge into country leaderboard file
   const lbFile = getLeaderboardFile(country);
   let existing = [];
