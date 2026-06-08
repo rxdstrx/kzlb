@@ -556,11 +556,11 @@
 
 /* ══ ADD YOURSELF BOX ══ */
 .add-yourself-box {
+  position: relative;
   margin: 0;
   background: rgba(56,189,248,0.04);
   border: 1px solid rgba(56,189,248,0.15);
   border-radius: 16px;
-  overflow: hidden;
   transition: border-color 0.2s;
 }
 
