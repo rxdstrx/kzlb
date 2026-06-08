@@ -488,38 +488,7 @@ document.addEventListener('click', () => {
 filterDropdown.addEventListener('click', (e) => e.stopPropagation());
 
 // ── Country selector ──
-const COUNTRIES = [
-  { code: 'pt', name: 'Portugal', flag: '🇵🇹' },
-  { code: 'br', name: 'Brazil', flag: '🇧🇷' },
-  { code: 'ru', name: 'Russia', flag: '🇷🇺' },
-  { code: 'de', name: 'Germany', flag: '🇩🇪' },
-  { code: 'fr', name: 'France', flag: '🇫🇷' },
-  { code: 'pl', name: 'Poland', flag: '🇵🇱' },
-  { code: 'us', name: 'United States', flag: '🇺🇸' },
-  { code: 'se', name: 'Sweden', flag: '🇸🇪' },
-  { code: 'fi', name: 'Finland', flag: '🇫🇮' },
-  { code: 'dk', name: 'Denmark', flag: '🇩🇰' },
-  { code: 'no', name: 'Norway', flag: '🇳🇴' },
-  { code: 'nl', name: 'Netherlands', flag: '🇳🇱' },
-  { code: 'es', name: 'Spain', flag: '🇪🇸' },
-  { code: 'tr', name: 'Turkey', flag: '🇹🇷' },
-  { code: 'ua', name: 'Ukraine', flag: '🇺🇦' },
-  { code: 'cz', name: 'Czech Republic', flag: '🇨🇿' },
-  { code: 'sk', name: 'Slovakia', flag: '🇸🇰' },
-  { code: 'hu', name: 'Hungary', flag: '🇭🇺' },
-  { code: 'ro', name: 'Romania', flag: '🇷🇴' },
-  { code: 'bg', name: 'Bulgaria', flag: '🇧🇬' },
-  { code: 'hr', name: 'Croatia', flag: '🇭🇷' },
-  { code: 'rs', name: 'Serbia', flag: '🇷🇸' },
-  { code: 'kz', name: 'Kazakhstan', flag: '🇰🇿' },
-  { code: 'cn', name: 'China', flag: '🇨🇳' },
-  { code: 'au', name: 'Australia', flag: '🇦🇺' },
-  { code: 'gb', name: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'ca', name: 'Canada', flag: '🇨🇦' },
-  { code: 'ar', name: 'Argentina', flag: '🇦🇷' },
-  { code: 'cl', name: 'Chile', flag: '🇨🇱' },
-  { code: 'mx', name: 'Mexico', flag: '🇲🇽' },
-];
+const COUNTRIES = ALL_COUNTRIES;
 
 let selectedCountry = null;
 const countryBtn     = document.getElementById('countryBtn');
