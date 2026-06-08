@@ -46,26 +46,28 @@ async function getSteamId(playerId) {
   for (let offset = startOffset; offset < endOffset; offset += LIMIT) {
     const items = await fetchPage(offset);
     if (!items.length) { console.log(`No more players at offset ${offset}`); break; }
-    console.log(`Offset ${offset}: got ${items.length} players`);
+    console.log(`Offset ${offset}: got ${items.length} players — resolving steamids in parallel...`);
 
-    for (const item of items) {
-      const steamid = await getSteamId(item.player_id);
-      if (!steamid) continue;
-      if (knownSteamids.has(steamid)) {
-        console.log(`  SKIP ${item.nickname} (already known)`);
-        continue;
+    // Resolve all steamids in parallel (10 at a time)
+    const BATCH = 10;
+    for (let i = 0; i < items.length; i += BATCH) {
+      const batch = items.slice(i, i + BATCH);
+      const resolved = await Promise.all(batch.map(async item => {
+        const steamid = await getSteamId(item.player_id);
+        return { item, steamid };
+      }));
+      for (const { item, steamid } of resolved) {
+        if (!steamid) continue;
+        if (knownSteamids.has(steamid)) { console.log(`  SKIP ${item.nickname}`); continue; }
+        newPlayers.push({
+          faceit_id: item.player_id, nickname: item.nickname,
+          faceit_elo: item.faceit_elo, skill_level: item.skill_level,
+          steamid64: steamid, country: 'pt',
+        });
+        knownSteamids.add(steamid);
+        console.log(`  ${item.nickname} → ${steamid}`);
       }
-      newPlayers.push({
-        faceit_id: item.player_id,
-        nickname: item.nickname,
-        faceit_elo: item.faceit_elo,
-        skill_level: item.skill_level,
-        steamid64: steamid,
-        country: 'pt',
-      });
-      knownSteamids.add(steamid);
-      console.log(`  ${item.nickname} → ${steamid}`);
-      await new Promise(r => setTimeout(r, 100));
+      if (i + BATCH < items.length) await new Promise(r => setTimeout(r, 200));
     }
 
     if (items.length < LIMIT) break;
