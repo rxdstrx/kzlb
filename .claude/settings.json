@@ -13,5 +13,13 @@
         ]
       }
     ]
+  },
+  "permissions": {
+    "allow": [
+      "PowerShell(git *)",
+      "PowerShell(cd *)",
+      "Bash(git *)",
+      "Bash(cd *)"
+    ]
   }
 }
