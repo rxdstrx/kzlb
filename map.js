@@ -1,4 +1,4 @@
-const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const PAGE_SIZE  = 100;
 
 const params  = new URLSearchParams(window.location.search);
