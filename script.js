@@ -609,13 +609,16 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     return;
   }
 
-  const steamid = extractSteamId(input);
+  submitBtn.disabled = true;
+  showAddStatus('loading', 'Resolving Steam ID…');
+
+  const steamid = await resolveSteamId(input);
   if (!steamid) {
     showAddStatus('error', 'Could not find a valid Steam64 ID. Try pasting your full Steam profile URL.');
+    submitBtn.disabled = false;
     return;
   }
 
-  submitBtn.disabled = true;
   showAddStatus('loading', 'Submitting… this may take a few minutes while we fetch your stats.');
 
   try {
@@ -633,18 +636,6 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     submitBtn.disabled = false;
   }
 });
-
-function extractSteamId(input) {
-  // Direct Steam64 ID
-  if (/^\d{17}$/.test(input)) return input;
-  // Steam profile URL: steamcommunity.com/profiles/76561198...
-  const profileMatch = input.match(/steamcommunity\.com\/profiles\/(\d{17})/);
-  if (profileMatch) return profileMatch[1];
-  // Cybershoke URL with steamid64
-  const csMatch = input.match(/\/(\d{17})/);
-  if (csMatch) return csMatch[1];
-  return null;
-}
 
 function showAddStatus(type, msg) {
   const el = document.getElementById('addYourselfStatus');
