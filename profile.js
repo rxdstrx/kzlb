@@ -117,13 +117,14 @@ async function loadProfile(sid) {
     if (!name) name = 'Unknown Player';
     const desc   = header.desc || {};
 
-    document.getElementById('playerName').textContent    = name;
     document.getElementById('playerSteamId').textContent = sid;
     document.getElementById('playerAvatar').src          = avatar;
     document.title = `KZ — ${name}`;
 
     const country = urlCountry || data.country || null;
     const flagEl = document.getElementById('playerFlag');
+    const nameEl = document.getElementById('playerName');
+    nameEl.childNodes[0].textContent = name;
     if (flagEl && country) flagEl.textContent = ' ' + countryToFlag(country);
 
     const csLink = `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}`;
