@@ -1062,7 +1062,8 @@ document.getElementById('updateSubmit').addEventListener('click', async () => {
     if (data.ok) {
       showUpdateStatus('success', 'Update triggered! Your records will refresh in a few minutes.');
     } else {
-      showUpdateStatus('error', data.error || 'Something went wrong. Are you on the leaderboard yet?');
+      const errMsg = data.error?.includes('not found') ? 'Player not found in leaderboard. Use "Add to the leaderboard" first.' : (data.error || 'Something went wrong. Are you on the leaderboard yet?');
+      showUpdateStatus('error', errMsg);
     }
   } catch (e) {
     showUpdateStatus('error', 'Could not reach the server. Try again later.');
