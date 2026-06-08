@@ -73,11 +73,6 @@ function getLeaderboardFile(c) {
   await browser.close();
 
   const mapList = mapsData?.list || [];
-  if (mapList.length === 0) {
-    console.error('No KZ data found for this player.');
-    process.exit(1);
-  }
-
   const desc = mapsData?.header?.desc || {};
   const resolvedNickname = nickname || mapsData?.header?.name || steamid;
 
