@@ -1161,7 +1161,9 @@ function showAddStatus(type, msg) {
   const readmeWrap = document.querySelector('#addYourselfBox .readme-wrap');
   if (readmeWrap) {
     if (msg) {
-      readmeWrap.style.position = 'static';
+      readmeWrap.style.position = 'relative';
+      readmeWrap.style.bottom = 'auto';
+      readmeWrap.style.right = 'auto';
       readmeWrap.style.marginTop = '8px';
       readmeWrap.style.marginBottom = '4px';
       readmeWrap.style.paddingRight = '4px';
