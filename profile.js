@@ -80,6 +80,20 @@ if (!steamid) {
 // ── Update record button ──
 const updateRecordBtn = document.getElementById('updateRecordBtn');
 const updateRecordStatus = document.getElementById('updateRecordStatus');
+let originalCachedAt = null; // saved when profile loads
+
+// Save original cached_at after profile loads
+async function saveOriginalCachedAt() {
+  try {
+    const r = await fetch(`https://api.github.com/repos/rxdstrx/kzlb/contents/cache/${steamid}.json`);
+    if (r.ok) {
+      const meta = await r.json();
+      const content = JSON.parse(atob(meta.content.replace(/\n/g, '')));
+      originalCachedAt = content.cached_at;
+    }
+  } catch {}
+}
+if (steamid) saveOriginalCachedAt();
 
 if (updateRecordBtn && steamid) {
   updateRecordBtn.addEventListener('click', async () => {
@@ -92,24 +106,27 @@ if (updateRecordBtn && steamid) {
       const res = await fetch(`https://kzlb.vercel.app/api/update-player?steamid=${steamid}`);
       const data = await res.json();
       if (data.ok) {
-        updateRecordStatus.className = 'update-record-status loading';
-        updateRecordStatus.textContent = '⏳ Processing… (approx. less than 1 min)';
         const startTime = Date.now();
         const timer = setInterval(() => {
           const secs = Math.floor((Date.now() - startTime) / 1000);
           const m = Math.floor(secs / 60), s = secs % 60;
           updateRecordStatus.textContent = `⏳ Processing… ${m}:${String(s).padStart(2,'0')} (approx. less than 1 min)`;
         }, 1000);
+        updateRecordStatus.textContent = '⏳ Processing… 0:00 (approx. less than 1 min)';
 
         async function pollDone() {
           try {
-            const r = await fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/${steamid}.json?bust=${Date.now()}`);
+            // Use GitHub API — bypasses CDN caching
+            const r = await fetch(`https://api.github.com/repos/rxdstrx/kzlb/contents/cache/${steamid}.json`);
             if (r.ok) {
-              const d = await r.json();
-              if (new Date(d.cached_at).getTime() >= startTime) {
+              const meta = await r.json();
+              const content = JSON.parse(atob(meta.content.replace(/\n/g, '')));
+              const newCachedAt = content.cached_at;
+              if (newCachedAt && newCachedAt !== originalCachedAt) {
                 clearInterval(timer);
                 updateRecordStatus.className = 'update-record-status success';
                 updateRecordStatus.textContent = '✅ Done! Reloading profile…';
+                originalCachedAt = newCachedAt;
                 setTimeout(() => window.location.reload(), 1500);
                 return;
               }
