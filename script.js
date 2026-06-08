@@ -879,6 +879,58 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
   }
 });
 
+// ── Update records ──
+document.getElementById('updateSubmit').addEventListener('click', async () => {
+  const input = document.getElementById('updateInput').value.trim();
+  const submitBtn = document.getElementById('updateSubmit');
+
+  if (!input) {
+    showUpdateStatus('error', 'Please paste your Steam, Faceit or Cybershoke link.');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  showUpdateStatus('loading', 'Resolving profile…');
+
+  let steamid = null;
+
+  if (input.includes('faceit.com')) {
+    const faceit = await resolveFaceit(input);
+    steamid = faceit?.steamid || null;
+  } else {
+    steamid = await resolveSteamId(extractIdentifier(input));
+  }
+
+  if (!steamid) {
+    showUpdateStatus('error', 'Could not find a valid Steam ID. Try your Steam or Faceit profile URL.');
+    submitBtn.disabled = false;
+    return;
+  }
+
+  showUpdateStatus('loading', 'Updating… this may take a few minutes.');
+
+  try {
+    const res = await fetch(`https://kzlb.vercel.app/api/update-player?steamid=${steamid}`);
+    const data = await res.json();
+    if (data.ok) {
+      showUpdateStatus('success', 'Update triggered! Your records will refresh in a few minutes.');
+    } else {
+      showUpdateStatus('error', data.error || 'Something went wrong. Are you on the leaderboard yet?');
+    }
+  } catch (e) {
+    showUpdateStatus('error', 'Could not reach the server. Try again later.');
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+function showUpdateStatus(type, msg) {
+  const el = document.getElementById('updateStatus');
+  el.className = `add-yourself-status ${type}`;
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
 async function resolveFaceit(input) {
   try {
     const res = await fetch(`https://kzlb.vercel.app/api/faceit-resolve?input=${encodeURIComponent(input)}`);
