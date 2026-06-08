@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer-extra');
+﻿const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const chromium = require('@sparticuz/chromium');
 const fs = require('fs');
@@ -146,7 +146,7 @@ function getLeaderboardFile(c) {
       }
     } catch {}
   }
-  function fmtNum(n) { return n.toLocaleString('fr-FR').replace(/\s/g, ' '); }
+    function fmtNum(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
   for (const cf of countryFiles) {
     const cfPath = path.join(cacheDir, cf);
     try {
