@@ -732,13 +732,15 @@ mapsBtn.addEventListener('click', () => {
 
 const CHIP_COUNTRIES = ['pt','es','fr','de','br','pl','tr','ru','gb'];
 
-let addSelectedCountry = 'pt';
+let addSelectedCountry = null;
+let userPickedCountry = false;
 
 document.querySelectorAll('#addCountryList .country-chip').forEach(chip => {
   chip.addEventListener('click', () => {
     document.querySelectorAll('#addCountryList .country-chip').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
     addSelectedCountry = chip.dataset.country;
+    userPickedCountry = true;
     document.getElementById('addCountryDropdown').classList.add('hidden');
   });
 });
@@ -758,6 +760,7 @@ function renderAddCountryOptions(filter = '') {
       el.textContent = `${c.flag} ${c.name}`;
       el.addEventListener('click', () => {
         addSelectedCountry = c.code;
+        userPickedCountry = true;
         otherBtn.textContent = `${c.flag} ${c.name} ▾`;
         otherBtn.classList.add('active');
         document.querySelectorAll('#addCountryList .country-chip').forEach(ch => ch.classList.remove('active'));
@@ -827,8 +830,8 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     return;
   }
 
-  // Auto-select country from Faceit if user hasn't manually changed it
-  if (autoCountry && addSelectedCountry === 'pt') {
+  // Auto-select country from Faceit only if user hasn't manually picked one
+  if (autoCountry && !userPickedCountry) {
     const match = ALL_COUNTRIES.find(c => c.code === autoCountry.toLowerCase());
     if (match) {
       addSelectedCountry = match.code;
@@ -837,6 +840,12 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
       if (chip) chip.classList.add('active');
       else { otherBtn.textContent = `${match.flag} ${match.name} ▾`; otherBtn.classList.add('active'); }
     }
+  }
+
+  if (!addSelectedCountry) {
+    showAddStatus('error', 'Please select your country.');
+    submitBtn.disabled = false;
+    return;
   }
 
   showAddStatus('loading', 'Submitting… this may take a few minutes while we fetch your stats.');
