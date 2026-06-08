@@ -487,72 +487,7 @@ document.addEventListener('click', () => {
 
 filterDropdown.addEventListener('click', (e) => e.stopPropagation());
 
-// ── Country selector ──
-const COUNTRIES = ALL_COUNTRIES;
-
-let selectedCountry = null;
-const countryBtn     = document.getElementById('countryBtn');
-const countryOptions = document.getElementById('countryOptions');
-const countryChevron = document.getElementById('countryChevron');
-const countrySearch  = document.getElementById('countrySearch');
-const countryList    = document.getElementById('countryList');
-
-function renderCountries(filter = '') {
-  countryList.innerHTML = '';
-  const filtered = COUNTRIES.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
-  filtered.forEach(c => {
-    const item = document.createElement('div');
-    item.className = 'country-item' + (selectedCountry?.code === c.code ? ' active' : '');
-    item.innerHTML = `<span class="country-flag">${c.flag}</span><span>${c.name}</span>`;
-    item.addEventListener('click', () => {
-      if (c.code === 'pt') {
-        window.location.assign('portugal.html');
-      } else {
-        window.location.assign(`country.html?code=${c.code}`);
-      }
-    });
-    countryList.appendChild(item);
-  });
-}
-
-countryBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  countryOptions.classList.toggle('hidden');
-  countryChevron.classList.toggle('rotated', !countryOptions.classList.contains('hidden'));
-  if (!countryOptions.classList.contains('hidden')) {
-    renderCountries();
-    countrySearch.focus();
-  }
-});
-
-countrySearch.addEventListener('input', () => renderCountries(countrySearch.value));
-countrySearch.addEventListener('click', e => e.stopPropagation());
-countryList.addEventListener('click', e => e.stopPropagation());
-
-// ── Tier expand ──
-const tierBtn     = document.getElementById('tierBtn');
-const tierOptions = document.getElementById('tierOptions');
-const chevron     = tierBtn.querySelector('.chevron');
-
-tierBtn.addEventListener('click', () => {
-  const isOpen = tierOptions.classList.toggle('open');
-  chevron.classList.toggle('rotated', isOpen);
-});
-
-document.querySelectorAll('.tier-chip').forEach(chip => {
-  chip.addEventListener('click', (e) => {
-    e.stopPropagation();
-    window.location.href = `tier.html?tier=${chip.dataset.tier}`;
-  });
-});
-
-// ── Maps button ──
-const mapsBtn = document.getElementById('mapsBtn');
-mapsBtn.addEventListener('click', () => {
-  window.location.href = 'maps.html';
-});
-
-// ── Add yourself ──
+// ── Country / Add yourself shared list ──
 const ALL_COUNTRIES = [
   { code: 'af', name: 'Afghanistan', flag: '🇦🇫' },
   { code: 'al', name: 'Albania', flag: '🇦🇱' },
@@ -727,6 +662,73 @@ const ALL_COUNTRIES = [
   { code: 'zm', name: 'Zambia', flag: '🇿🇲' },
   { code: 'zw', name: 'Zimbabwe', flag: '🇿🇼' },
 ];
+
+// ── Country selector ──
+const COUNTRIES = ALL_COUNTRIES;
+
+let selectedCountry = null;
+const countryBtn     = document.getElementById('countryBtn');
+const countryOptions = document.getElementById('countryOptions');
+const countryChevron = document.getElementById('countryChevron');
+const countrySearch  = document.getElementById('countrySearch');
+const countryList    = document.getElementById('countryList');
+
+function renderCountries(filter = '') {
+  countryList.innerHTML = '';
+  const filtered = COUNTRIES.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
+  filtered.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'country-item' + (selectedCountry?.code === c.code ? ' active' : '');
+    item.innerHTML = `<span class="country-flag">${c.flag}</span><span>${c.name}</span>`;
+    item.addEventListener('click', () => {
+      if (c.code === 'pt') {
+        window.location.assign('portugal.html');
+      } else {
+        window.location.assign(`country.html?code=${c.code}`);
+      }
+    });
+    countryList.appendChild(item);
+  });
+}
+
+countryBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  countryOptions.classList.toggle('hidden');
+  countryChevron.classList.toggle('rotated', !countryOptions.classList.contains('hidden'));
+  if (!countryOptions.classList.contains('hidden')) {
+    renderCountries();
+    countrySearch.focus();
+  }
+});
+
+countrySearch.addEventListener('input', () => renderCountries(countrySearch.value));
+countrySearch.addEventListener('click', e => e.stopPropagation());
+countryList.addEventListener('click', e => e.stopPropagation());
+
+// ── Tier expand ──
+const tierBtn     = document.getElementById('tierBtn');
+const tierOptions = document.getElementById('tierOptions');
+const chevron     = tierBtn.querySelector('.chevron');
+
+tierBtn.addEventListener('click', () => {
+  const isOpen = tierOptions.classList.toggle('open');
+  chevron.classList.toggle('rotated', isOpen);
+});
+
+document.querySelectorAll('.tier-chip').forEach(chip => {
+  chip.addEventListener('click', (e) => {
+    e.stopPropagation();
+    window.location.href = `tier.html?tier=${chip.dataset.tier}`;
+  });
+});
+
+// ── Maps button ──
+const mapsBtn = document.getElementById('mapsBtn');
+mapsBtn.addEventListener('click', () => {
+  window.location.href = 'maps.html';
+});
+
+// ── Add yourself ──
 
 const CHIP_COUNTRIES = ['pt','es','fr','de','br','pl','tr','ru','gb'];
 
