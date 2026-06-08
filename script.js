@@ -421,7 +421,7 @@ function renderPagination(totalRows) {
   lbPagBot.classList.remove('hidden');
 
   const scrollToTop = () => {
-    const y = document.getElementById('lbPaginationTop').getBoundingClientRect().top + window.scrollY;
+    const y = document.getElementById('lbPaginationTop').getBoundingClientRect().top + window.scrollY - 80;
     window.scrollTo({ top: y, behavior: 'smooth' });
   };
 
