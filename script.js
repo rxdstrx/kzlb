@@ -836,11 +836,11 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     steamid = faceit.steamid;
     autoCountry = faceit.country;
   } else {
-    steamid = await resolveSteamId(input);
+    steamid = await resolveSteamId(extractIdentifier(input));
   }
 
   if (!steamid) {
-    showAddStatus('error', 'Could not find a valid Steam64 ID. Try pasting your Steam or Faceit profile URL.');
+    showAddStatus('error', 'Could not find a valid Steam64 ID. Try pasting your Steam, Faceit, or Cybershoke profile URL.');
     submitBtn.disabled = false;
     return;
   }
