@@ -128,5 +128,16 @@ function getLeaderboardFile(c) {
     JSON.stringify({ updated_at: new Date().toISOString(), players: existing }, null, 2)
   );
 
+  // Update world leaderboard
+  const worldFile = path.join(cacheDir, 'world-kz-players.json');
+  let worldPlayers = [];
+  if (fs.existsSync(worldFile)) {
+    try { worldPlayers = JSON.parse(fs.readFileSync(worldFile, 'utf8')).players || []; } catch {}
+  }
+  const wi = worldPlayers.findIndex(p => p.steamid === steamid);
+  if (wi !== -1) worldPlayers[wi] = player; else worldPlayers.push(player);
+  worldPlayers.sort((a, b) => b.kz_points - a.kz_points);
+  fs.writeFileSync(worldFile, JSON.stringify({ updated_at: new Date().toISOString(), players: worldPlayers }, null, 2));
+
   console.log(`Done! ${resolvedNickname} — ${mapList.length} maps, ${player.kz_points} pts, rank #${player.kz_place}`);
 })();

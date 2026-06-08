@@ -400,7 +400,7 @@ function renderLeaderboard() {
   if (!lbPlayers.length) {
     lbEmpty.textContent = selectedCountry
       ? `No KZ data found for ${selectedCountry.name} players.`
-      : 'Select a country from the filter to load players.';
+      : 'No players found.';
     lbEmpty.classList.remove('hidden');
     return;
   }
@@ -473,17 +473,19 @@ function renderLeaderboard() {
 }
 
 async function loadCountryPlayers(code) {
-  if (code === 'pt') {
-    if (!COUNTRY_CACHE.pt) {
-      lbBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:rgba(255,255,255,0.3)">Loading...</td></tr>';
-      const res = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
-      const data = await res.json();
-      COUNTRY_CACHE.pt = data.players || [];
-    }
-    lbPlayers = COUNTRY_CACHE.pt;
-    renderLeaderboard();
+  const file = code === 'world' ? 'world-kz-players.json' : `${code}-kz-players.json`;
+  if (!COUNTRY_CACHE[code]) {
+    lbBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:rgba(255,255,255,0.3)">Loading...</td></tr>';
+    const res = await fetch(`${CACHE_BASE}/${file}?bust=${Date.now()}`);
+    const data = await res.json();
+    COUNTRY_CACHE[code] = data.players || [];
   }
+  lbPlayers = COUNTRY_CACHE[code];
+  renderLeaderboard();
 }
+
+// Load world leaderboard on startup
+loadCountryPlayers('world');
 
 // ── Filter button toggle ──
 const filterBtn      = document.getElementById('filterBtn');
