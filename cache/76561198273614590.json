@@ -1,0 +1,58 @@
+{
+  "steamid": "76561198273614590",
+  "country": "pt",
+  "cached_at": "2026-06-08T20:16:37.770Z",
+  "user": {},
+  "maps": {
+    "list": [],
+    "header": {
+      "title": "TOMAMO NOKU",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/f1268ff6611a46b2496d6a2e1e45047b448e167e_full.jpg",
+      "desc": {
+        "{{Position}}": 9999,
+        "{{Points}}": 0,
+        "{{COMPLETIONS-MAP}}": "0 (0%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}
