@@ -12,7 +12,10 @@
       "Skill(update-config)",
       "Skill(update-config:*)",
       "Bash(mkdir -p \"C:\\\\Users\\\\uastr\\\\Documents\\\\KZLB\\\\.claude\")",
-      "Bash(curl -s \"https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/pt-kz-players.json\")"
+      "Bash(curl -s \"https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/pt-kz-players.json\")",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\uastr\\\\Documents\\\\KZLB\\\\cache\" -Filter \"*.json\")",
+      "Bash(Measure-Object)",
+      "Bash(Select-Object -ExpandProperty Count)"
     ]
   }
 }
