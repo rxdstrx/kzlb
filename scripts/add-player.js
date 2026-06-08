@@ -74,7 +74,17 @@ function getLeaderboardFile(c) {
 
   const mapList = mapsData?.list || [];
   const desc = mapsData?.header?.desc || {};
-  const resolvedNickname = nickname || mapsData?.header?.name || steamid;
+
+  let resolvedNickname = nickname || mapsData?.header?.name || '';
+  if (!resolvedNickname) {
+    try {
+      const steamRes = await fetch(`https://playerdb.co/api/player/steam/${steamid}`);
+      const steamData = await steamRes.json();
+      resolvedNickname = steamData?.data?.player?.username || steamid;
+    } catch {
+      resolvedNickname = steamid;
+    }
+  }
 
   const player = {
     steamid,
