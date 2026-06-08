@@ -161,7 +161,7 @@ function renderPage() {
         </div>
       </td>
       <td><span class="time-cell">${r.time_record}</span></td>
-      <td><span class="pos-cell">${r.place_num}</span></td>
+      <td><span class="pos-cell">${(r.place_num || '').replace(/ /g, ' ')}</span></td>
       <td><span class="runs-cell">${r.completions}</span></td>
     `;
     mapBody.appendChild(tr);
