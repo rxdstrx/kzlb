@@ -630,8 +630,8 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     } else {
       showAddStatus('error', 'Something went wrong. Try again later.');
     }
-  } catch {
-    showAddStatus('error', 'Could not reach the server. Try again later.');
+  } catch (e) {
+    showAddStatus('error', 'Could not reach the server: ' + e.message);
   } finally {
     submitBtn.disabled = false;
   }
