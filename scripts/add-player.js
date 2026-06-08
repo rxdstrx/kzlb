@@ -101,7 +101,7 @@ function getLeaderboardFile(c) {
   // Save individual cache file
   fs.writeFileSync(
     path.join(cacheDir, `${steamid}.json`),
-    JSON.stringify({ steamid, cached_at: new Date().toISOString(), user: userData, maps: mapsData }, null, 2)
+    JSON.stringify({ steamid, country, cached_at: new Date().toISOString(), user: userData, maps: mapsData }, null, 2)
   );
   console.log(`Saved cache/${steamid}.json`);
 
