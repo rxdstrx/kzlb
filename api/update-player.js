@@ -24,7 +24,7 @@ export default async function handler(req, res) {
   } catch {}
 
   if (!playerFound) {
-    return res.status(404).json({ error: 'Player not found in leaderboard. Use "Add yourself" first.' });
+    return res.status(404).json({ error: 'Player not found in leaderboard. Use "Add to the leaderboard" first.' });
   }
 
   const response = await fetch(
