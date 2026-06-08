@@ -973,13 +973,55 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     const data = await res.json();
 
     if (data.ok) {
-      showAddStatus('success', 'You\'ve been submitted! Your stats will appear on the leaderboard in a few minutes after the workflow completes.');
+      submitBtn.disabled = false;
+      // Start live timer + poll for profile completion
+      const startTime = Date.now();
+      const submittedSteamid = steamid;
+      const submittedCountry = countryToSubmit;
+
+      function fmtElapsed() {
+        const secs = Math.floor((Date.now() - startTime) / 1000);
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        return `${m}:${String(s).padStart(2, '0')}`;
+      }
+
+      const timerInterval = setInterval(() => {
+        showAddStatus('loading', `⏳ Processing your stats… ${fmtElapsed()}`);
+      }, 1000);
+
+      showAddStatus('loading', '⏳ Processing your stats… 0:00');
+
+      async function pollForProfile() {
+        try {
+          const cacheRes = await fetch(`${CACHE_BASE}/${submittedSteamid}.json?bust=${Date.now()}`);
+          if (cacheRes.ok) {
+            const cacheData = await cacheRes.json();
+            const cachedAt = new Date(cacheData.cached_at).getTime();
+            if (cachedAt >= startTime) {
+              // Profile is ready
+              clearInterval(timerInterval);
+              showAddStatus('success', `✅ Done! Opening profile… (took ${fmtElapsed()})`);
+              setTimeout(() => {
+                window.location.href = `profile.html?steamid=${submittedSteamid}&country=${submittedCountry}`;
+              }, 1500);
+              return;
+            }
+          }
+        } catch {}
+        // Not ready yet, check again in 15s
+        setTimeout(pollForProfile, 15000);
+      }
+
+      // Start polling after 30s (workflow takes at least that long)
+      setTimeout(pollForProfile, 30000);
+
     } else {
       showAddStatus('error', 'Something went wrong. Try again later.');
+      submitBtn.disabled = false;
     }
   } catch (e) {
     showAddStatus('error', 'Could not reach the server: ' + e.message);
-  } finally {
     submitBtn.disabled = false;
   }
 });
