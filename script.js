@@ -414,8 +414,8 @@ function renderPagination(totalRows) {
   lbPagBot.innerHTML = html;
   lbPagTop.classList.remove('hidden');
   lbPagBot.classList.remove('hidden');
-  document.querySelectorAll('#lbPrevBtn').forEach(btn => btn.addEventListener('click', () => { lbPage--; renderLeaderboard(); document.getElementById('leaderboard-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
-  document.querySelectorAll('#lbNextBtn').forEach(btn => btn.addEventListener('click', () => { lbPage++; renderLeaderboard(); document.getElementById('leaderboard-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
+  document.querySelectorAll('#lbPrevBtn').forEach(btn => btn.addEventListener('click', () => { lbPage--; renderLeaderboard(); }));
+  document.querySelectorAll('#lbNextBtn').forEach(btn => btn.addEventListener('click', () => { lbPage++; renderLeaderboard(); }));
 }
 
 function renderLeaderboard() {
