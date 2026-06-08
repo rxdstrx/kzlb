@@ -219,9 +219,10 @@ function buildMapList() {
     if (!mapTierLookup[m.map] && m.tier) mapTierLookup[m.map] = m.tier;
   }));
 
-  const mapSet = new Set();
-  allPlayers.forEach(p => (p.maps_list || []).forEach(m => mapSet.add(m.map)));
-  const maps = [...mapSet].sort();
+  // Use ALL_MAPS as the source so all tiers 1-9 appear
+  const maps = typeof ALL_MAPS !== 'undefined'
+    ? [...ALL_MAPS].sort((a, b) => a.tier - b.tier || a.name.localeCompare(b.name)).map(m => m.name)
+    : [...new Set(allPlayers.flatMap(p => (p.maps_list || []).map(m => m.map)))].sort();
 
   function render(filter = '') {
     ptMapList.innerHTML = '';
