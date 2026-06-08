@@ -13,15 +13,17 @@ export default async function handler(req, res) {
 
   // Look up existing country from player cache
   let country = 'xx';
+  let playerFound = false;
   try {
     const cacheRes = await fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/${steamid}.json`);
     if (cacheRes.ok) {
+      playerFound = true;
       const data = await cacheRes.json();
       if (data.country) country = data.country;
     }
   } catch {}
 
-  if (country === 'xx') {
+  if (!playerFound) {
     return res.status(404).json({ error: 'Player not found in leaderboard. Use "Add yourself" first.' });
   }
 
