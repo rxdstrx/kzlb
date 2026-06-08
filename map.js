@@ -87,30 +87,31 @@ async function init() {
 
 function buildCountryFilter() {
   const countries = [...new Set(allRecords.map(r => r.country))].sort();
-  const wrap = document.getElementById('mapCountryDropdownWrap');
-  const btn  = document.getElementById('mapCountryBtn');
-  const list = document.getElementById('mapCountryList');
+  const allBtn = document.getElementById('mapAllBtn');
+  const btn    = document.getElementById('mapCountryBtn');
+  const list   = document.getElementById('mapCountryList');
 
   list.innerHTML = '';
 
-  // "All countries" option
-  const allDiv = document.createElement('div');
-  allDiv.className = 'map-country-option map-country-all';
-  allDiv.textContent = '🌍 All countries';
-  allDiv.addEventListener('click', () => {
+  // All button
+  allBtn.addEventListener('click', () => {
     activeCountry = 'all';
-    btn.textContent = '🌍 All ▾';
+    allBtn.classList.add('active');
+    btn.classList.remove('active');
+    btn.textContent = 'Country ▾';
     list.classList.add('hidden');
     applyFilter();
   });
-  list.appendChild(allDiv);
 
+  // Country dropdown options
   countries.forEach(code => {
     const div = document.createElement('div');
     div.className = 'map-country-option';
     div.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${code.toUpperCase()}`;
     div.addEventListener('click', () => {
       activeCountry = code;
+      allBtn.classList.remove('active');
+      btn.classList.add('active');
       btn.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${code.toUpperCase()} ▾`;
       list.classList.add('hidden');
       applyFilter();
