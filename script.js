@@ -405,17 +405,27 @@ function flagImg(country) {
 function renderPagination(totalRows) {
   const totalPages = Math.ceil(totalRows / LB_PAGE_SIZE);
   if (totalPages <= 1) { lbPagTop.classList.add('hidden'); lbPagBot.classList.add('hidden'); return; }
-  const html = `
-    <button class="lb-page-btn" id="lbPrevBtn" ${lbPage === 1 ? 'disabled' : ''}>← Prev</button>
+  const topHtml = `
+    <button class="lb-page-btn" id="lbPrevBtnTop" ${lbPage === 1 ? 'disabled' : ''}>← Prev</button>
     <span class="lb-page-info">Page ${lbPage} of ${totalPages}</span>
-    <button class="lb-page-btn" id="lbNextBtn" ${lbPage >= totalPages ? 'disabled' : ''}>Next →</button>
+    <button class="lb-page-btn" id="lbNextBtnTop" ${lbPage >= totalPages ? 'disabled' : ''}>Next →</button>
   `;
-  lbPagTop.innerHTML = html;
-  lbPagBot.innerHTML = html;
+  const botHtml = `
+    <button class="lb-page-btn" id="lbPrevBtnBot" ${lbPage === 1 ? 'disabled' : ''}>← Prev</button>
+    <span class="lb-page-info">Page ${lbPage} of ${totalPages}</span>
+    <button class="lb-page-btn" id="lbNextBtnBot" ${lbPage >= totalPages ? 'disabled' : ''}>Next →</button>
+  `;
+  lbPagTop.innerHTML = topHtml;
+  lbPagBot.innerHTML = botHtml;
   lbPagTop.classList.remove('hidden');
   lbPagBot.classList.remove('hidden');
-  document.querySelectorAll('#lbPrevBtn').forEach(btn => btn.addEventListener('click', () => { lbPage--; renderLeaderboard(); }));
-  document.querySelectorAll('#lbNextBtn').forEach(btn => btn.addEventListener('click', () => { lbPage++; renderLeaderboard(); }));
+
+  const scrollToTop = () => document.getElementById('lbPaginationTop').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  document.getElementById('lbPrevBtnTop').addEventListener('click', () => { lbPage--; renderLeaderboard(); });
+  document.getElementById('lbNextBtnTop').addEventListener('click', () => { lbPage++; renderLeaderboard(); });
+  document.getElementById('lbPrevBtnBot').addEventListener('click', () => { lbPage--; renderLeaderboard(); scrollToTop(); });
+  document.getElementById('lbNextBtnBot').addEventListener('click', () => { lbPage++; renderLeaderboard(); scrollToTop(); });
 }
 
 function renderLeaderboard() {
