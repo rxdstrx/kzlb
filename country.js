@@ -25,7 +25,7 @@ const COUNTRY_INFO = {
   de: { name: 'Germany', flag: '🇩🇪' }, gh: { name: 'Ghana', flag: '🇬🇭' }, gr: { name: 'Greece', flag: '🇬🇷' },
   gt: { name: 'Guatemala', flag: '🇬🇹' }, gn: { name: 'Guinea', flag: '🇬🇳' }, gw: { name: 'Guinea-Bissau', flag: '🇬🇼' },
   gy: { name: 'Guyana', flag: '🇬🇾' }, ht: { name: 'Haiti', flag: '🇭🇹' }, hn: { name: 'Honduras', flag: '🇭🇳' },
-  hu: { name: 'Hungary', flag: '🇭🇺' }, is: { name: 'Iceland', flag: '🇮🇸' }, in: { name: 'India', flag: '🇮🇳' },
+  hu: { name: 'Hungary', flag: '🇭🇺' }, hk: { name: 'Hong Kong', flag: '🇭🇰' }, is: { name: 'Iceland', flag: '🇮🇸' }, in: { name: 'India', flag: '🇮🇳' },
   id: { name: 'Indonesia', flag: '🇮🇩' }, ir: { name: 'Iran', flag: '🇮🇷' }, iq: { name: 'Iraq', flag: '🇮🇶' },
   ie: { name: 'Ireland', flag: '🇮🇪' }, il: { name: 'Israel', flag: '🇮🇱' }, it: { name: 'Italy', flag: '🇮🇹' },
   jm: { name: 'Jamaica', flag: '🇯🇲' }, jp: { name: 'Japan', flag: '🇯🇵' }, jo: { name: 'Jordan', flag: '🇯🇴' },
