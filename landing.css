@@ -518,3 +518,142 @@
   font-size: 0.8rem;
   color: rgba(255,255,255,0.3);
 }
+
+/* ══ ADD YOURSELF BOX ══ */
+.add-yourself-box {
+  margin: 0 0 20px;
+  background: rgba(56,189,248,0.04);
+  border: 1px solid rgba(56,189,248,0.15);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.add-yourself-box:hover {
+  border-color: rgba(56,189,248,0.25);
+}
+
+.add-yourself-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.add-yourself-header span {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.55);
+  font-weight: 500;
+}
+
+.add-yourself-header:hover span {
+  color: rgba(255,255,255,0.8);
+}
+
+.add-yourself-body {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.add-yourself-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: #f0f0f5;
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.add-yourself-input:focus {
+  border-color: rgba(56,189,248,0.4);
+}
+
+.add-yourself-input::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+
+.add-yourself-country-label {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.3);
+  font-weight: 500;
+}
+
+.add-yourself-countries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.country-chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.country-chip:hover {
+  border-color: rgba(56,189,248,0.3);
+  color: rgba(255,255,255,0.8);
+}
+
+.country-chip.active {
+  border-color: #38bdf8;
+  background: rgba(56,189,248,0.12);
+  color: #38bdf8;
+}
+
+.add-yourself-submit {
+  align-self: flex-start;
+  padding: 10px 22px;
+  background: #38bdf8;
+  border: none;
+  border-radius: 10px;
+  color: #060608;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.add-yourself-submit:hover { opacity: 0.85; }
+.add-yourself-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.add-yourself-status {
+  font-size: 0.82rem;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.add-yourself-status.success {
+  background: rgba(52,211,153,0.1);
+  border: 1px solid rgba(52,211,153,0.2);
+  color: #34d399;
+}
+
+.add-yourself-status.error {
+  background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.2);
+  color: #f87171;
+}
+
+.add-yourself-status.loading {
+  background: rgba(56,189,248,0.08);
+  border: 1px solid rgba(56,189,248,0.15);
+  color: #38bdf8;
+}

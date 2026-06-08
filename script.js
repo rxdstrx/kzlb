@@ -587,3 +587,70 @@ const mapsBtn = document.getElementById('mapsBtn');
 mapsBtn.addEventListener('click', () => {
   window.location.href = 'maps.html';
 });
+
+// ── Add yourself ──
+const CF_WORKER_URL = 'https://kzlb-stats.rxdstrx.workers.dev';
+
+let addSelectedCountry = 'pt';
+
+document.querySelectorAll('.country-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    addSelectedCountry = chip.dataset.country;
+  });
+});
+
+document.getElementById('addYourselfSubmit').addEventListener('click', async () => {
+  const input = document.getElementById('addSteamInput').value.trim();
+  const statusEl = document.getElementById('addYourselfStatus');
+  const submitBtn = document.getElementById('addYourselfSubmit');
+
+  if (!input) {
+    showAddStatus('error', 'Please paste your Steam profile link or Steam64 ID.');
+    return;
+  }
+
+  const steamid = extractSteamId(input);
+  if (!steamid) {
+    showAddStatus('error', 'Could not find a valid Steam64 ID. Try pasting your full Steam profile URL.');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  showAddStatus('loading', 'Submitting… this may take a few minutes while we fetch your stats.');
+
+  try {
+    const res = await fetch(`${CF_WORKER_URL}/add-player?steamid=${steamid}&country=${addSelectedCountry}`);
+    const data = await res.json();
+
+    if (data.ok) {
+      showAddStatus('success', 'You\'ve been submitted! Your stats will appear on the leaderboard in a few minutes after the workflow completes.');
+    } else {
+      showAddStatus('error', 'Something went wrong. Try again later.');
+    }
+  } catch {
+    showAddStatus('error', 'Could not reach the server. Try again later.');
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+function extractSteamId(input) {
+  // Direct Steam64 ID
+  if (/^\d{17}$/.test(input)) return input;
+  // Steam profile URL: steamcommunity.com/profiles/76561198...
+  const profileMatch = input.match(/steamcommunity\.com\/profiles\/(\d{17})/);
+  if (profileMatch) return profileMatch[1];
+  // Cybershoke URL with steamid64
+  const csMatch = input.match(/\/(\d{17})/);
+  if (csMatch) return csMatch[1];
+  return null;
+}
+
+function showAddStatus(type, msg) {
+  const el = document.getElementById('addYourselfStatus');
+  el.className = `add-yourself-status ${type}`;
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
