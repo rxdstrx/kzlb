@@ -1,6 +1,67 @@
 ﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const PAGE_SIZE  = 100;
 
+const ALL_COUNTRIES = [
+  {code:'af',name:'Afghanistan'},{code:'al',name:'Albania'},{code:'dz',name:'Algeria'},
+  {code:'ad',name:'Andorra'},{code:'ao',name:'Angola'},{code:'ag',name:'Antigua and Barbuda'},
+  {code:'ar',name:'Argentina'},{code:'am',name:'Armenia'},{code:'au',name:'Australia'},
+  {code:'at',name:'Austria'},{code:'az',name:'Azerbaijan'},{code:'bs',name:'Bahamas'},
+  {code:'bh',name:'Bahrain'},{code:'bd',name:'Bangladesh'},{code:'by',name:'Belarus'},
+  {code:'be',name:'Belgium'},{code:'bz',name:'Belize'},{code:'bj',name:'Benin'},
+  {code:'bt',name:'Bhutan'},{code:'bo',name:'Bolivia'},{code:'ba',name:'Bosnia and Herzegovina'},
+  {code:'bw',name:'Botswana'},{code:'br',name:'Brazil'},{code:'bn',name:'Brunei'},
+  {code:'bg',name:'Bulgaria'},{code:'bf',name:'Burkina Faso'},{code:'bi',name:'Burundi'},
+  {code:'cv',name:'Cape Verde'},{code:'kh',name:'Cambodia'},{code:'cm',name:'Cameroon'},
+  {code:'ca',name:'Canada'},{code:'cf',name:'Central African Republic'},{code:'td',name:'Chad'},
+  {code:'cl',name:'Chile'},{code:'cn',name:'China'},{code:'co',name:'Colombia'},
+  {code:'km',name:'Comoros'},{code:'cg',name:'Congo'},{code:'cr',name:'Costa Rica'},
+  {code:'hr',name:'Croatia'},{code:'cu',name:'Cuba'},{code:'cy',name:'Cyprus'},
+  {code:'cz',name:'Czech Republic'},{code:'dk',name:'Denmark'},{code:'dj',name:'Djibouti'},
+  {code:'do',name:'Dominican Republic'},{code:'ec',name:'Ecuador'},{code:'eg',name:'Egypt'},
+  {code:'sv',name:'El Salvador'},{code:'gq',name:'Equatorial Guinea'},{code:'er',name:'Eritrea'},
+  {code:'ee',name:'Estonia'},{code:'sz',name:'Eswatini'},{code:'et',name:'Ethiopia'},
+  {code:'fj',name:'Fiji'},{code:'fi',name:'Finland'},{code:'fr',name:'France'},
+  {code:'ga',name:'Gabon'},{code:'gm',name:'Gambia'},{code:'ge',name:'Georgia'},
+  {code:'de',name:'Germany'},{code:'gh',name:'Ghana'},{code:'gr',name:'Greece'},
+  {code:'gt',name:'Guatemala'},{code:'gn',name:'Guinea'},{code:'gw',name:'Guinea-Bissau'},
+  {code:'gy',name:'Guyana'},{code:'ht',name:'Haiti'},{code:'hn',name:'Honduras'},
+  {code:'hu',name:'Hungary'},{code:'hk',name:'Hong Kong'},{code:'is',name:'Iceland'},
+  {code:'in',name:'India'},{code:'id',name:'Indonesia'},{code:'ir',name:'Iran'},
+  {code:'iq',name:'Iraq'},{code:'ie',name:'Ireland'},{code:'il',name:'Israel'},
+  {code:'it',name:'Italy'},{code:'jm',name:'Jamaica'},{code:'jp',name:'Japan'},
+  {code:'jo',name:'Jordan'},{code:'kz',name:'Kazakhstan'},{code:'ke',name:'Kenya'},
+  {code:'kw',name:'Kuwait'},{code:'kg',name:'Kyrgyzstan'},{code:'la',name:'Laos'},
+  {code:'lv',name:'Latvia'},{code:'lb',name:'Lebanon'},{code:'ls',name:'Lesotho'},
+  {code:'lr',name:'Liberia'},{code:'ly',name:'Libya'},{code:'li',name:'Liechtenstein'},
+  {code:'lt',name:'Lithuania'},{code:'lu',name:'Luxembourg'},{code:'mg',name:'Madagascar'},
+  {code:'mw',name:'Malawi'},{code:'my',name:'Malaysia'},{code:'mv',name:'Maldives'},
+  {code:'ml',name:'Mali'},{code:'mt',name:'Malta'},{code:'mr',name:'Mauritania'},
+  {code:'mu',name:'Mauritius'},{code:'mx',name:'Mexico'},{code:'md',name:'Moldova'},
+  {code:'mc',name:'Monaco'},{code:'mn',name:'Mongolia'},{code:'me',name:'Montenegro'},
+  {code:'ma',name:'Morocco'},{code:'mz',name:'Mozambique'},{code:'mm',name:'Myanmar'},
+  {code:'na',name:'Namibia'},{code:'np',name:'Nepal'},{code:'nl',name:'Netherlands'},
+  {code:'nz',name:'New Zealand'},{code:'ni',name:'Nicaragua'},{code:'ne',name:'Niger'},
+  {code:'ng',name:'Nigeria'},{code:'mk',name:'North Macedonia'},{code:'no',name:'Norway'},
+  {code:'om',name:'Oman'},{code:'pk',name:'Pakistan'},{code:'pa',name:'Panama'},
+  {code:'pg',name:'Papua New Guinea'},{code:'py',name:'Paraguay'},{code:'pe',name:'Peru'},
+  {code:'ph',name:'Philippines'},{code:'pl',name:'Poland'},{code:'pt',name:'Portugal'},
+  {code:'qa',name:'Qatar'},{code:'ro',name:'Romania'},{code:'ru',name:'Russia'},
+  {code:'rw',name:'Rwanda'},{code:'sa',name:'Saudi Arabia'},{code:'sn',name:'Senegal'},
+  {code:'rs',name:'Serbia'},{code:'sl',name:'Sierra Leone'},{code:'sg',name:'Singapore'},
+  {code:'sk',name:'Slovakia'},{code:'si',name:'Slovenia'},{code:'so',name:'Somalia'},
+  {code:'za',name:'South Africa'},{code:'kr',name:'South Korea'},{code:'ss',name:'South Sudan'},
+  {code:'es',name:'Spain'},{code:'lk',name:'Sri Lanka'},{code:'sd',name:'Sudan'},
+  {code:'sr',name:'Suriname'},{code:'se',name:'Sweden'},{code:'ch',name:'Switzerland'},
+  {code:'sy',name:'Syria'},{code:'tw',name:'Taiwan'},{code:'tj',name:'Tajikistan'},
+  {code:'tz',name:'Tanzania'},{code:'th',name:'Thailand'},{code:'tl',name:'Timor-Leste'},
+  {code:'tg',name:'Togo'},{code:'tt',name:'Trinidad and Tobago'},{code:'tn',name:'Tunisia'},
+  {code:'tr',name:'Turkey'},{code:'tm',name:'Turkmenistan'},{code:'ug',name:'Uganda'},
+  {code:'ua',name:'Ukraine'},{code:'ae',name:'United Arab Emirates'},{code:'gb',name:'United Kingdom'},
+  {code:'us',name:'United States'},{code:'uy',name:'Uruguay'},{code:'uz',name:'Uzbekistan'},
+  {code:'ve',name:'Venezuela'},{code:'vn',name:'Vietnam'},{code:'ye',name:'Yemen'},
+  {code:'zm',name:'Zambia'},{code:'zw',name:'Zimbabwe'},
+];
+
 const params  = new URLSearchParams(window.location.search);
 const mapName = params.get('map');
 
@@ -86,7 +147,6 @@ async function init() {
 }
 
 function buildCountryFilter() {
-  const countries = [...new Set(allRecords.map(r => r.country))].sort();
   const allBtn = document.getElementById('mapAllBtn');
   const btn    = document.getElementById('mapCountryBtn');
   const list   = document.getElementById('mapCountryList');
@@ -103,16 +163,23 @@ function buildCountryFilter() {
     applyFilter();
   });
 
-  // Country dropdown options
-  countries.forEach(code => {
+  // Country dropdown — all 180 countries, show count badge if they have records
+  const recordsByCountry = {};
+  allRecords.forEach(r => { recordsByCountry[r.country] = (recordsByCountry[r.country] || 0) + 1; });
+
+  ALL_COUNTRIES.forEach(({ code, name }) => {
+    const count = recordsByCountry[code] || 0;
     const div = document.createElement('div');
     div.className = 'map-country-option';
-    div.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${code.toUpperCase()}`;
+    div.style.opacity = count ? '1' : '0.4';
+    div.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${name}${count ? ` <span style="margin-left:auto;font-size:0.72rem;color:#a5b4fc">${count}</span>` : ''}`;
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
     div.addEventListener('click', () => {
       activeCountry = code;
       allBtn.classList.remove('active');
       btn.classList.add('active');
-      btn.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${code.toUpperCase()} ▾`;
+      btn.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${name} ▾`;
       list.classList.add('hidden');
       applyFilter();
     });

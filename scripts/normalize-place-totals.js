@@ -1,5 +1,6 @@
 // For each map, find the highest "total" in place_num (the Y in "X / Y")
 // and apply it to every player's record for that map across all country files.
+// Uses plain spaces only — no non-breaking spaces.
 const fs   = require('fs');
 const path = require('path');
 
@@ -11,25 +12,29 @@ function readJSON(file) {
   return JSON.parse(raw);
 }
 
+function stripNum(s) {
+  // Remove any kind of space/nbsp and non-digit chars to get the raw number
+  if (!s) return 0;
+  return parseInt(s.replace(/[^\d]/g, ''), 10) || 0;
+}
+
+function fmtNum(n) {
+  // Format with regular spaces as thousands separator (no nbsp)
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
 function parseTotal(placeNum) {
   if (!placeNum) return 0;
-  // "1 069 / 27 186" — strip nbsp and spaces, split on /
-  const clean = placeNum.replace(/ /g, '').replace(/\s/g, '');
-  const parts = clean.split('/');
+  const parts = placeNum.split('/');
   if (parts.length < 2) return 0;
-  return parseInt(parts[1].replace(/\D/g, ''), 10) || 0;
+  return stripNum(parts[1]);
 }
 
-function formatNum(n) {
-  // Format number with non-breaking space thousands separator
-  return n.toLocaleString('fr-FR').replace(/\s/g, ' ');
-}
-
-function getRank(placeNum) {
+function parseRank(placeNum) {
   if (!placeNum) return null;
-  const clean = placeNum.replace(/ /g, '').replace(/\s/g, '');
-  const parts = clean.split('/');
-  return parseInt(parts[0].replace(/\D/g, ''), 10) || null;
+  const parts = placeNum.split('/');
+  const n = stripNum(parts[0]);
+  return n || null;
 }
 
 const countryFiles = fs.readdirSync(cacheDir)
@@ -62,9 +67,9 @@ for (const file of countryFiles) {
       for (const m of (p.maps_list || [])) {
         const maxTotal = mapMaxTotal[m.map];
         if (!maxTotal) continue;
-        const rank = getRank(m.place_num);
+        const rank = parseRank(m.place_num);
         if (rank === null) continue;
-        const newPlace = `${formatNum(rank)} / ${formatNum(maxTotal)}`;
+        const newPlace = `${fmtNum(rank)} / ${fmtNum(maxTotal)}`;
         if (m.place_num !== newPlace) {
           m.place_num = newPlace;
           changed = true;
