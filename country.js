@@ -59,7 +59,7 @@ const COUNTRY_INFO = {
   ae: { name: 'United Arab Emirates', flag: '🇦🇪' }, gb: { name: 'United Kingdom', flag: '🇬🇧' }, us: { name: 'United States', flag: '🇺🇸' },
   uy: { name: 'Uruguay', flag: '🇺🇾' }, uz: { name: 'Uzbekistan', flag: '🇺🇿' }, ve: { name: 'Venezuela', flag: '🇻🇪' },
   vn: { name: 'Vietnam', flag: '🇻🇳' }, ye: { name: 'Yemen', flag: '🇾🇪' }, zm: { name: 'Zambia', flag: '🇿🇲' },
-  zw: { name: 'Zimbabwe', flag: '🇿🇼' },
+  zw: { name: 'Zimbabwe', flag: '🇿🇼' }, va: { name: 'Vatican City', flag: '🇻🇦' },
 };
 
 const params = new URLSearchParams(location.search);
