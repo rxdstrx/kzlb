@@ -187,8 +187,17 @@ function getLeaderboardFile(c) {
   const worldFile = path.join(cacheDir, 'world-kz-players.json');
   const seen = new Set();
   const worldPlayers = [];
+  for (const cf of countryFiles) {
+    try {
+      const players = JSON.parse(fs.readFileSync(path.join(cacheDir, cf), 'utf8')).players || [];
+      for (const p of players) {
+        if (!seen.has(p.steamid)) { seen.add(p.steamid); worldPlayers.push(p); }
+      }
+    } catch {}
+  }
   worldPlayers.sort((a, b) => b.kz_points - a.kz_points);
-  fs.writeFileSync(worldFile, JSON.stringify({ updated_at: new Date().toISOString(), players: worldPlayers }, null, 2));
+  fs.writeFileSync(worldFile, Buffer.from(JSON.stringify({ updated_at: new Date().toISOString(), players: worldPlayers }, null, 2), 'utf8'));
+  console.log(`World rebuilt: ${worldPlayers.length} players`);
 
   console.log(`Done! ${resolvedNickname} — ${mapList.length} maps, ${player.kz_points} pts, rank #${player.kz_place}`);
 })();
