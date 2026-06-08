@@ -67,7 +67,7 @@ const countryCode = (window.COUNTRY_CODE || params.get('code') || 'xx').toLowerC
 const info = COUNTRY_INFO[countryCode] || { name: countryCode.toUpperCase(), flag: '🌍' };
 
 document.title = `KZ — ${info.name} Leaderboard`;
-document.getElementById('countryFlag').textContent = info.flag;
+document.getElementById('countryFlag').innerHTML = `<img src="https://flagcdn.com/w80/${countryCode}.png" alt="${info.name}" style="height:48px;border-radius:4px;">`;
 document.getElementById('countryName').textContent = info.name;
 document.getElementById('loadingText').textContent = `Loading ${info.name} leaderboard…`;
 
