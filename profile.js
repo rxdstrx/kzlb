@@ -77,6 +77,61 @@ if (!steamid) {
   loadProfile(steamid);
 }
 
+// ── Update record button ──
+const updateRecordBtn = document.getElementById('updateRecordBtn');
+const updateRecordStatus = document.getElementById('updateRecordStatus');
+
+if (updateRecordBtn && steamid) {
+  updateRecordBtn.addEventListener('click', async () => {
+    updateRecordBtn.disabled = true;
+    updateRecordStatus.className = 'update-record-status loading';
+    updateRecordStatus.textContent = '⏳ Updating…';
+    updateRecordStatus.classList.remove('hidden');
+
+    try {
+      const res = await fetch(`https://kzlb.vercel.app/api/update-player?steamid=${steamid}`);
+      const data = await res.json();
+      if (data.ok) {
+        updateRecordStatus.className = 'update-record-status loading';
+        updateRecordStatus.textContent = '⏳ Processing… (approx. less than 1 min)';
+        const startTime = Date.now();
+        const timer = setInterval(() => {
+          const secs = Math.floor((Date.now() - startTime) / 1000);
+          const m = Math.floor(secs / 60), s = secs % 60;
+          updateRecordStatus.textContent = `⏳ Processing… ${m}:${String(s).padStart(2,'0')} (approx. less than 1 min)`;
+        }, 1000);
+
+        async function pollDone() {
+          try {
+            const r = await fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/${steamid}.json?bust=${Date.now()}`);
+            if (r.ok) {
+              const d = await r.json();
+              if (new Date(d.cached_at).getTime() >= startTime) {
+                clearInterval(timer);
+                updateRecordStatus.className = 'update-record-status success';
+                updateRecordStatus.textContent = '✅ Done! Reloading profile…';
+                setTimeout(() => window.location.reload(), 1500);
+                return;
+              }
+            }
+          } catch {}
+          setTimeout(pollDone, 15000);
+        }
+        setTimeout(pollDone, 30000);
+
+      } else {
+        updateRecordStatus.className = 'update-record-status error';
+        updateRecordStatus.textContent = data.error || 'Something went wrong.';
+        updateRecordBtn.disabled = false;
+      }
+    } catch {
+      updateRecordStatus.className = 'update-record-status error';
+      updateRecordStatus.textContent = 'Could not reach the server. Try again later.';
+      updateRecordBtn.disabled = false;
+    }
+  });
+}
+
 async function loadProfile(sid) {
   try {
     // Try to load cached data from GitHub

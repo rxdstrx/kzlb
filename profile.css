@@ -159,6 +159,33 @@
   background: rgba(129,140,248,0.22);
   border-color: rgba(129,140,248,0.45);
 }
+.update-record-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, #34d399, #059669);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.update-record-profile-btn:hover { opacity: 0.85; }
+.update-record-profile-btn:disabled { opacity: 0.5; cursor: default; }
+.update-record-status {
+  font-size: 0.8rem;
+  margin-top: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+.update-record-status.loading { color: rgba(255,255,255,0.6); }
+.update-record-status.success { color: #34d399; }
+.update-record-status.error { color: #f87171; }
 
 /* ── Stats table columns ── */
 .col-tier-sm { width: 55px; }
