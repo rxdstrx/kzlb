@@ -894,6 +894,17 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     autoCountry = faceit.country;
   } else {
     steamid = await resolveSteamId(extractIdentifier(input));
+    if (steamid) {
+      // Try to get country from Faceit using steamid
+      showAddStatus('loading', 'Looking up country…');
+      try {
+        const fcRes = await fetch(`https://kzlb.vercel.app/api/faceit-country?steamid=${steamid}`);
+        if (fcRes.ok) {
+          const fcData = await fcRes.json();
+          if (fcData.country) autoCountry = fcData.country;
+        }
+      } catch {}
+    }
   }
 
   if (!steamid) {
