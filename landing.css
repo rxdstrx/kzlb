@@ -731,7 +731,8 @@
   z-index: 100;
 }
 
-.readme-wrap:hover .readme-tooltip {
+.readme-wrap:hover .readme-tooltip,
+.readme-tooltip:hover {
   display: block;
 }
 
