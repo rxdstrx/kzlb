@@ -149,11 +149,13 @@ async function init() {
 }
 
 function buildCountryFilter() {
-  const allBtn = document.getElementById('mapAllBtn');
-  const btn    = document.getElementById('mapCountryBtn');
-  const list   = document.getElementById('mapCountryList');
+  const allBtn     = document.getElementById('mapAllBtn');
+  const btn        = document.getElementById('mapCountryBtn');
+  const list       = document.getElementById('mapCountryList');
+  const optionsEl  = document.getElementById('mapCountryOptions');
+  const searchEl   = document.getElementById('mapCountrySearch');
 
-  list.innerHTML = '';
+  optionsEl.innerHTML = '';
 
   // All button
   allBtn.addEventListener('click', () => {
@@ -173,8 +175,9 @@ function buildCountryFilter() {
     const count = recordsByCountry[code] || 0;
     const div = document.createElement('div');
     div.className = 'map-country-option';
+    div.dataset.name = name.toLowerCase();
     div.style.opacity = count ? '1' : '0.4';
-    div.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${name}${count ? ` <span style="margin-left:auto;font-size:0.72rem;color:#a5b4fc">${count}</span>` : ''}`;
+    div.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${name}${count ? ` <span style="margin-left:auto;font-size:0.72rem;color:#a5b4fc;padding-left:8px">${count}</span>` : ''}`;
     div.style.display = 'flex';
     div.style.alignItems = 'center';
     div.addEventListener('click', () => {
@@ -183,14 +186,32 @@ function buildCountryFilter() {
       btn.classList.add('active');
       btn.innerHTML = `<img src="https://flagcdn.com/w20/${code}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-right:6px">${name} ▾`;
       list.classList.add('hidden');
+      searchEl.value = '';
+      showAllOptions();
       applyFilter();
     });
-    list.appendChild(div);
+    optionsEl.appendChild(div);
+  });
+
+  // Search filter
+  function showAllOptions() {
+    optionsEl.querySelectorAll('.map-country-option').forEach(el => el.style.display = 'flex');
+  }
+  searchEl.addEventListener('input', () => {
+    const q = searchEl.value.toLowerCase().trim();
+    optionsEl.querySelectorAll('.map-country-option').forEach(el => {
+      el.style.display = el.dataset.name.includes(q) ? 'flex' : 'none';
+    });
   });
 
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     list.classList.toggle('hidden');
+    if (!list.classList.contains('hidden')) {
+      searchEl.value = '';
+      showAllOptions();
+      setTimeout(() => searchEl.focus(), 50);
+    }
   });
 
   document.addEventListener('click', () => list.classList.add('hidden'));
