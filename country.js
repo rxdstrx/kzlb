@@ -63,7 +63,7 @@ const COUNTRY_INFO = {
 };
 
 const params = new URLSearchParams(location.search);
-const countryCode = (params.get('code') || 'xx').toLowerCase();
+const countryCode = (window.COUNTRY_CODE || params.get('code') || 'xx').toLowerCase();
 const info = COUNTRY_INFO[countryCode] || { name: countryCode.toUpperCase(), flag: '🌍' };
 
 document.title = `KZ — ${info.name} Leaderboard`;
