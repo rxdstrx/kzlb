@@ -1121,6 +1121,8 @@ function showAddStatus(type, msg) {
     if (msg) {
       readmeWrap.style.position = 'static';
       readmeWrap.style.marginTop = '8px';
+      readmeWrap.style.marginBottom = '4px';
+      readmeWrap.style.paddingRight = '4px';
       readmeWrap.style.textAlign = 'right';
     } else {
       readmeWrap.style.position = '';
