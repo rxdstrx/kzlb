@@ -987,10 +987,10 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
       }
 
       const timerInterval = setInterval(() => {
-        showAddStatus('loading', `⏳ Processing your stats… ${fmtElapsed()}`);
+        showAddStatus('loading', `⏳ Processing your stats… ${fmtElapsed()} (approx. 2 min)`);
       }, 1000);
 
-      showAddStatus('loading', '⏳ Processing your stats… 0:00');
+      showAddStatus('loading', '⏳ Processing your stats… 0:00 (approx. 2 min)');
 
       async function pollForProfile() {
         try {
