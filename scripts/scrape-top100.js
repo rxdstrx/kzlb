@@ -88,8 +88,20 @@ async function getFaceitCountry(steamid) {
       return res.json().catch(() => ({}));
     }, sid);
 
-    // Fetch country from Faceit in parallel
-    const country = await getFaceitCountry(sid);
+    // Use manually-pinned country if exists, otherwise fetch from Faceit
+    let country = 'xx';
+    const indFile = path.join(cacheDir, `${sid}.json`);
+    if (fs.existsSync(indFile)) {
+      try {
+        const cached = JSON.parse(fs.readFileSync(indFile, 'utf8'));
+        if (cached.country && cached.country !== 'xx') {
+          country = cached.country;
+        }
+      } catch {}
+    }
+    if (country === 'xx') {
+      country = await getFaceitCountry(sid);
+    }
 
     const mapList = mapsData?.list || [];
     const desc = mapsData?.header?.desc || {};
