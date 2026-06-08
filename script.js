@@ -420,7 +420,11 @@ function renderPagination(totalRows) {
   lbPagTop.classList.remove('hidden');
   lbPagBot.classList.remove('hidden');
 
-  const scrollToTop = () => document.getElementById('leaderboard-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const scrollToTop = () => {
+    const el = document.getElementById('leaderboard-section');
+    const y = el.getBoundingClientRect().top + window.scrollY - 20;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  };
 
   document.getElementById('lbPrevBtnTop').addEventListener('click', () => { lbPage--; renderLeaderboard(); });
   document.getElementById('lbNextBtnTop').addEventListener('click', () => { lbPage++; renderLeaderboard(); });
