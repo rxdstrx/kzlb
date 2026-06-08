@@ -661,8 +661,18 @@ function renderAddCountryOptions(filter = '') {
 
 otherBtn.addEventListener('click', (e) => {
   e.stopPropagation();
+  const isHidden = addDropdown.classList.contains('hidden');
   addDropdown.classList.toggle('hidden');
-  if (!addDropdown.classList.contains('hidden')) {
+  if (isHidden) {
+    const rect = otherBtn.getBoundingClientRect();
+    const dropH = 260;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < dropH) {
+      addDropdown.style.top = (rect.top - dropH - 6) + 'px';
+    } else {
+      addDropdown.style.top = (rect.bottom + 6) + 'px';
+    }
+    addDropdown.style.left = rect.left + 'px';
     renderAddCountryOptions();
     addSearch.focus();
   }
