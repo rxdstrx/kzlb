@@ -195,7 +195,7 @@
       </header>
 
       <!-- Search bar -->
-      <div class="search-bar-wrapper">
+      <div class="search-bar-wrapper" style="position:relative;">
         <form class="search-form" id="searchForm">
           <div class="search-icon">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -204,10 +204,11 @@
             </svg>
           </div>
           <input class="search-input" id="searchInput" type="text"
-            placeholder="Paste Steam or Cybershoke link to view player stats…"
+            placeholder="Paste Steam or Cybershoke link, or type a nickname…"
             autocomplete="off" spellcheck="false" />
           <button class="search-submit" type="submit">Search</button>
         </form>
+        <div id="searchSuggestions" class="search-suggestions hidden"></div>
       </div>
 
       <!-- Two column layout -->

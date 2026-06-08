@@ -1036,6 +1036,72 @@ function showUpdateStatus(type, msg) {
   el.classList.remove('hidden');
 }
 
+// ── Search autocomplete ──
+let allPlayersCache = null;
+const searchInput = document.getElementById('searchInput');
+const searchSuggestions = document.getElementById('searchSuggestions');
+
+async function getAllPlayers() {
+  if (allPlayersCache) return allPlayersCache;
+  try {
+    const res = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`);
+    const data = await res.json();
+    allPlayersCache = data.players || [];
+  } catch { allPlayersCache = []; }
+  return allPlayersCache;
+}
+
+function highlightMatch(text, query) {
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return text;
+  return text.slice(0, idx) + '<em>' + text.slice(idx, idx + query.length) + '</em>' + text.slice(idx + query.length);
+}
+
+searchInput.addEventListener('input', async () => {
+  const q = searchInput.value.trim();
+  // Only show suggestions for nickname searches (not URLs/steamids)
+  if (q.length < 2 || q.includes('.') || q.includes('/') || /^\d{6,}$/.test(q)) {
+    searchSuggestions.classList.add('hidden');
+    return;
+  }
+  const players = await getAllPlayers();
+  const matches = players.filter(p => p.nickname?.toLowerCase().includes(q.toLowerCase())).slice(0, 8);
+  if (!matches.length) { searchSuggestions.classList.add('hidden'); return; }
+
+  searchSuggestions.innerHTML = matches.map(p => {
+    const flagHtml = p.country && p.country !== 'xx'
+      ? `<img class="search-suggestion-flag" src="https://flagcdn.com/w20/${p.country}.png" onerror="this.style.display='none'">`
+      : '';
+    const avatarSrc = p.avatar || 'https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg';
+    return `<div class="search-suggestion-item" data-steamid="${p.steamid}" data-country="${p.country || 'xx'}">
+      <img class="search-suggestion-avatar" src="${avatarSrc}" onerror="this.src='https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg'">
+      <div class="search-suggestion-info">
+        <div class="search-suggestion-nick">${highlightMatch(p.nickname, q)}</div>
+        <div class="search-suggestion-meta">${flagHtml} ${p.kz_points ? Number(p.kz_points).toLocaleString() + ' pts' : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  searchSuggestions.querySelectorAll('.search-suggestion-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const sid = el.dataset.steamid;
+      const country = el.dataset.country;
+      searchSuggestions.classList.add('hidden');
+      window.location.href = `profile.html?steamid=${sid}&country=${country}`;
+    });
+  });
+
+  searchSuggestions.classList.remove('hidden');
+});
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') searchSuggestions.classList.add('hidden');
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-bar-wrapper')) searchSuggestions.classList.add('hidden');
+});
+
 async function resolveFaceit(input) {
   try {
     const res = await fetch(`https://kzlb.vercel.app/api/faceit-resolve?input=${encodeURIComponent(input)}`);
