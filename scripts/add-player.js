@@ -128,19 +128,50 @@ function getLeaderboardFile(c) {
     JSON.stringify({ updated_at: new Date().toISOString(), players: existing }, null, 2)
   );
 
-  // Rebuild world leaderboard from all country files (never incremental — avoids corruption)
-  const worldFile = path.join(cacheDir, 'world-kz-players.json');
-  const seen = new Set();
-  const worldPlayers = [];
+  // Normalize place_num totals: find max total per map and apply to all country files
   const countryFiles = fs.readdirSync(cacheDir).filter(f => f.endsWith('-kz-players.json') && f !== 'world-kz-players.json');
+  const mapMaxTotal = {};
   for (const cf of countryFiles) {
     try {
       const players = JSON.parse(fs.readFileSync(path.join(cacheDir, cf), 'utf8')).players || [];
       for (const p of players) {
-        if (!seen.has(p.steamid)) { seen.add(p.steamid); worldPlayers.push(p); }
+        for (const m of (p.maps_list || [])) {
+          if (!m.place_num) continue;
+          const clean = m.place_num.replace(/[ \s]/g, '');
+          const parts = clean.split('/');
+          if (parts.length < 2) continue;
+          const total = parseInt(parts[1].replace(/\D/g, ''), 10) || 0;
+          if (total > (mapMaxTotal[m.map] || 0)) mapMaxTotal[m.map] = total;
+        }
       }
     } catch {}
   }
+  function fmtNum(n) { return n.toLocaleString('fr-FR').replace(/\s/g, ' '); }
+  for (const cf of countryFiles) {
+    const cfPath = path.join(cacheDir, cf);
+    try {
+      const fileData = JSON.parse(fs.readFileSync(cfPath, 'utf8'));
+      let changed = false;
+      for (const p of (fileData.players || [])) {
+        for (const m of (p.maps_list || [])) {
+          const maxTotal = mapMaxTotal[m.map];
+          if (!maxTotal || !m.place_num) continue;
+          const clean = m.place_num.replace(/[ \s]/g, '');
+          const parts = clean.split('/');
+          if (parts.length < 2) continue;
+          const rank = parseInt(parts[0].replace(/\D/g, ''), 10) || 0;
+          const newPlace = `${fmtNum(rank)} / ${fmtNum(maxTotal)}`;
+          if (m.place_num !== newPlace) { m.place_num = newPlace; changed = true; }
+        }
+      }
+      if (changed) fs.writeFileSync(cfPath, JSON.stringify(fileData, null, 2));
+    } catch {}
+  }
+
+  // Rebuild world leaderboard from all country files (never incremental — avoids corruption)
+  const worldFile = path.join(cacheDir, 'world-kz-players.json');
+  const seen = new Set();
+  const worldPlayers = [];
   worldPlayers.sort((a, b) => b.kz_points - a.kz_points);
   fs.writeFileSync(worldFile, JSON.stringify({ updated_at: new Date().toISOString(), players: worldPlayers }, null, 2));
 
