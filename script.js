@@ -803,13 +803,40 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
   }
 
   submitBtn.disabled = true;
-  showAddStatus('loading', 'Resolving Steam ID…');
+  showAddStatus('loading', 'Resolving profile…');
 
-  const steamid = await resolveSteamId(input);
+  let steamid = null;
+  let autoCountry = null;
+
+  if (input.includes('faceit.com')) {
+    const faceit = await resolveFaceit(input);
+    if (!faceit || !faceit.steamid) {
+      showAddStatus('error', 'Could not find this Faceit profile. Make sure the URL is correct.');
+      submitBtn.disabled = false;
+      return;
+    }
+    steamid = faceit.steamid;
+    autoCountry = faceit.country;
+  } else {
+    steamid = await resolveSteamId(input);
+  }
+
   if (!steamid) {
-    showAddStatus('error', 'Could not find a valid Steam64 ID. Try pasting your full Steam profile URL.');
+    showAddStatus('error', 'Could not find a valid Steam64 ID. Try pasting your Steam or Faceit profile URL.');
     submitBtn.disabled = false;
     return;
+  }
+
+  // Auto-select country from Faceit if user hasn't manually changed it
+  if (autoCountry && addSelectedCountry === 'pt') {
+    const match = ALL_COUNTRIES.find(c => c.code === autoCountry.toLowerCase());
+    if (match) {
+      addSelectedCountry = match.code;
+      document.querySelectorAll('#addCountryList .country-chip').forEach(c => c.classList.remove('active'));
+      const chip = document.querySelector(`#addCountryList .country-chip[data-country="${match.code}"]`);
+      if (chip) chip.classList.add('active');
+      else { otherBtn.textContent = `${match.flag} ${match.name} ▾`; otherBtn.classList.add('active'); }
+    }
   }
 
   showAddStatus('loading', 'Submitting… this may take a few minutes while we fetch your stats.');
@@ -829,6 +856,14 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     submitBtn.disabled = false;
   }
 });
+
+async function resolveFaceit(input) {
+  try {
+    const res = await fetch(`https://kzlb.vercel.app/api/faceit-resolve?input=${encodeURIComponent(input)}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
+}
 
 function showAddStatus(type, msg) {
   const el = document.getElementById('addYourselfStatus');
