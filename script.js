@@ -890,8 +890,13 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     }
   }
 
-  // Country is optional — if not selected, backend will try Faceit or use xx (no flag)
-  const countryToSubmit = addSelectedCountry || 'xx';
+  if (!addSelectedCountry) {
+    showAddStatus('error', 'Please select your country.');
+    submitBtn.disabled = false;
+    return;
+  }
+
+  const countryToSubmit = addSelectedCountry;
 
   // Check if player already exists in world leaderboard
   showAddStatus('loading', 'Checking if you\'re already on the leaderboard…');
