@@ -389,13 +389,40 @@ const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const COUNTRY_CACHE = { pt: null };
 let lbPlayers = [];
 let lbSelectedMap = null;
+let lbPage = 1;
+const LB_PAGE_SIZE = 100;
 
-const lbBody  = document.getElementById('leaderboard-body');
-const lbEmpty = document.getElementById('lbEmpty');
+const lbBody   = document.getElementById('leaderboard-body');
+const lbEmpty  = document.getElementById('lbEmpty');
+const lbPagTop = document.getElementById('lbPaginationTop');
+const lbPagBot = document.getElementById('lbPaginationBottom');
+
+function flagImg(country) {
+  if (!country || country === 'xx') return '';
+  return `<img class="player-flag-img" src="https://flagcdn.com/w20/${country}.png" alt="${country}" onerror="this.style.display='none'">`;
+}
+
+function renderPagination(totalRows) {
+  const totalPages = Math.ceil(totalRows / LB_PAGE_SIZE);
+  if (totalPages <= 1) { lbPagTop.classList.add('hidden'); lbPagBot.classList.add('hidden'); return; }
+  const html = `
+    <button class="lb-page-btn" id="lbPrevBtn" ${lbPage === 1 ? 'disabled' : ''}>← Prev</button>
+    <span class="lb-page-info">Page ${lbPage} of ${totalPages}</span>
+    <button class="lb-page-btn" id="lbNextBtn" ${lbPage >= totalPages ? 'disabled' : ''}>Next →</button>
+  `;
+  lbPagTop.innerHTML = html;
+  lbPagBot.innerHTML = html;
+  lbPagTop.classList.remove('hidden');
+  lbPagBot.classList.remove('hidden');
+  document.querySelectorAll('#lbPrevBtn').forEach(btn => btn.addEventListener('click', () => { lbPage--; renderLeaderboard(); document.getElementById('leaderboard-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
+  document.querySelectorAll('#lbNextBtn').forEach(btn => btn.addEventListener('click', () => { lbPage++; renderLeaderboard(); document.getElementById('leaderboard-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
+}
 
 function renderLeaderboard() {
   lbBody.innerHTML = '';
   lbEmpty.classList.add('hidden');
+  lbPagTop.classList.add('hidden');
+  lbPagBot.classList.add('hidden');
 
   if (!lbPlayers.length) {
     lbEmpty.textContent = selectedCountry
@@ -424,8 +451,10 @@ function renderLeaderboard() {
       return;
     }
 
-    rows.forEach((p, i) => {
-      const rank = i + 1;
+    renderPagination(rows.length);
+    const startM = (lbPage - 1) * LB_PAGE_SIZE;
+    rows.slice(startM, startM + LB_PAGE_SIZE).forEach((p, i) => {
+      const rank = startM + i + 1;
       const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -433,7 +462,7 @@ function renderLeaderboard() {
         <td>
           <div class="player-cell">
             <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
-            <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${p.country || ''}">${p.nickname}</a>
+            ${flagImg(p.country)}<a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${p.country || ''}">${p.nickname}</a>
           </div>
         </td>
         <td><span class="time-cell">${p.entry.time_record}</span></td>
@@ -451,8 +480,10 @@ function renderLeaderboard() {
 
     rows.sort((a, b) => b.kz_points - a.kz_points);
 
-    rows.forEach((p, i) => {
-      const rank = i + 1;
+    renderPagination(rows.length);
+    const startO = (lbPage - 1) * LB_PAGE_SIZE;
+    rows.slice(startO, startO + LB_PAGE_SIZE).forEach((p, i) => {
+      const rank = startO + i + 1;
       const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -460,7 +491,7 @@ function renderLeaderboard() {
         <td>
           <div class="player-cell">
             <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
-            <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${p.country || ''}">${p.nickname}</a>
+            ${flagImg(p.country)}<a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${p.country || ''}">${p.nickname}</a>
           </div>
         </td>
         <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
@@ -481,6 +512,7 @@ async function loadCountryPlayers(code) {
     COUNTRY_CACHE[code] = data.players || [];
   }
   lbPlayers = COUNTRY_CACHE[code];
+  lbPage = 1;
   renderLeaderboard();
 }
 
