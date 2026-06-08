@@ -191,6 +191,10 @@ function renderMaps(mapList) {
       : '—';
 
     const tr = document.createElement('tr');
+    tr.style.cursor = 'pointer';
+    tr.addEventListener('click', () => {
+      window.location.href = `map.html?map=${encodeURIComponent(mapName)}`;
+    });
     tr.innerHTML = `
       <td>
         <div class="map-name-cell">
