@@ -1,6 +1,6 @@
 const ALL_MAPS = [
   // Tier 1
-  { name: 'kz_woodstock',    tier: 1, img: 'https://images.steamusercontent.com/ugc/14827388698616599198/7C106EE6554A51A156C1737430EE1E0E194DC3F8/' },
+  { name: 'kz_woodstock_v2', tier: 1, img: 'https://images.steamusercontent.com/ugc/14827388698616599198/7C106EE6554A51A156C1737430EE1E0E194DC3F8/' },
   { name: 'kz_victoria',     tier: 1, img: 'https://images.steamusercontent.com/ugc/10906157335592745173/9319BA876167E15A4DB8CAFB006A975D624781A1/' },
   { name: 'kz_kiwibridge',   tier: 1, img: 'https://images.steamusercontent.com/ugc/9818932234126897412/789A9870A81F2713810B667E7BEDB70C5A504F77/' },
   { name: 'kz_hillside',     tier: 1, img: 'https://images.steamusercontent.com/ugc/18408480818730942506/EAA87D3A2C0169E53EF65D4B9EFC36F16CAA20EB/' },
