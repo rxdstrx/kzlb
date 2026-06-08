@@ -519,9 +519,43 @@
   color: rgba(255,255,255,0.3);
 }
 
+/* ══ ACTION COLUMNS ══ */
+.action-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .action-columns { grid-template-columns: 1fr; }
+}
+
+.update-records-box {
+  background: rgba(52,211,153,0.04);
+  border: 1px solid rgba(52,211,153,0.15);
+  border-radius: 14px;
+  padding: 16px 20px;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.2s;
+}
+
+.update-records-box:hover {
+  border-color: rgba(52,211,153,0.3);
+}
+
+.update-records-box .add-yourself-header span {
+  color: rgba(255,255,255,0.55);
+}
+
+.update-submit {
+  background: linear-gradient(135deg, #34d399, #059669) !important;
+}
+
 /* ══ ADD YOURSELF BOX ══ */
 .add-yourself-box {
-  margin: 0 0 20px;
+  margin: 0;
   background: rgba(56,189,248,0.04);
   border: 1px solid rgba(56,189,248,0.15);
   border-radius: 16px;

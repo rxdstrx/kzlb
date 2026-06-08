@@ -210,8 +210,29 @@
         </form>
       </div>
 
-      <!-- Add yourself box -->
-      <div class="add-yourself-box" id="addYourselfBox">
+      <!-- Two column layout -->
+      <div class="action-columns">
+
+        <!-- Left: Update records -->
+        <div class="update-records-box">
+          <div class="add-yourself-header">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M3 9a6 6 0 1 0 1.5-3.9" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M3 5v4h4" stroke="#34d399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Update your records</span>
+          </div>
+          <div class="add-yourself-body">
+            <input class="add-yourself-input" id="updateInput" type="text"
+              placeholder="Paste your Steam, Faceit or Cybershoke link…"
+              autocomplete="off" spellcheck="false" />
+            <button class="add-yourself-submit update-submit" id="updateSubmit">Update my records</button>
+            <div class="add-yourself-status hidden" id="updateStatus"></div>
+          </div>
+        </div>
+
+        <!-- Right: Add yourself box -->
+        <div class="add-yourself-box" id="addYourselfBox">
         <div class="add-yourself-header">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <circle cx="9" cy="9" r="8" stroke="#38bdf8" stroke-width="1.5"/>
@@ -246,6 +267,8 @@
           <div class="add-yourself-status hidden" id="addYourselfStatus"></div>
         </div>
       </div>
+
+      </div> <!-- end action-columns -->
 
       <!-- Filter bar -->
       <div class="filter-bar">
