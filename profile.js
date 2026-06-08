@@ -1,4 +1,4 @@
-const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const API_BASE = 'https://kzlb.vercel.app';
 
 const CIRCUMFERENCE = 264;
@@ -183,7 +183,7 @@ function renderMaps(mapList) {
     const tier    = row.tier ?? '—';
     const runs    = row.completions ?? '—';
     const time    = row.time_record ?? '—';
-    const pos     = (row.place_num ?? '—').replace(/ /g, ' ');
+    const pos     = (row.place_num ?? '—').replace(/ /g, ' ');
     const pts     = row.points != null ? Number(row.points).toFixed(4) : '—';
     const d = row.unixtime_record ? new Date(row.unixtime_record * 1000) : null;
     const date = d

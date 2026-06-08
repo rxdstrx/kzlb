@@ -1,4 +1,4 @@
-const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const PAGE_SIZE = 100;
 
 let allPlayers = [];
@@ -30,42 +30,11 @@ function timeToSeconds(t) {
   return parseFloat(t);
 }
 
-// Manually add strxng666 if not in list
-const MANUAL_PLAYERS = [
-  {
-    steamid: '76561199381926813',
-    nickname: 'strxng666',
-    country: 'pt',
-    kz_points: 1186,
-    kz_place: 9330,
-    kz_maps: '14 (8.44%)',
-    avatar: 'https://avatars.steamstatic.com/87383322bc3f13e6e9622c74b942957fc1b6db45_full.jpg',
-    maps_list: [],
-  }
-];
-
 async function init() {
   try {
     const res  = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
     const data = await res.json();
     allPlayers = data.players || [];
-
-    // Add manual players if not already in list
-    MANUAL_PLAYERS.forEach(mp => {
-      if (!allPlayers.find(p => p.steamid === mp.steamid)) {
-        allPlayers.push(mp);
-      }
-    });
-
-    // Load strxng666's maps from individual cache
-    const strx = allPlayers.find(p => p.steamid === '76561199381926813');
-    if (strx && !strx.maps_list?.length) {
-      try {
-        const r = await fetch(`${CACHE_BASE}/76561199381926813.json`);
-        const d = await r.json();
-        strx.maps_list = d.maps?.list || [];
-      } catch {}
-    }
 
     ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(data.updated_at))} ago`;
     loadingState.classList.add('hidden');
@@ -196,7 +165,7 @@ function renderByMap(mapName) {
         </div>
       </td>
       <td><span class="time-cell">${p.entry.time_record}</span></td>
-      <td><span class="pos-cell">${(p.entry.place_num || '').replace(/ /g, ' ')}</span></td>
+      <td><span class="pos-cell">${(p.entry.place_num || '').replace(/ /g, ' ')}</span></td>
       <td><span class="runs-cell">${p.entry.completions}</span></td>
     `;
     ptBody.appendChild(tr);
