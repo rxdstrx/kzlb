@@ -59,10 +59,6 @@ function countryToFlag(code) {
   return code.toUpperCase().replace(/./g, c => String.fromCodePoint(c.charCodeAt(0) + 127397));
 }
 
-if (urlCountry) {
-  const flagEl = document.getElementById('playerFlag');
-  if (flagEl) flagEl.textContent = ' ' + countryToFlag(urlCountry);
-}
 
 const loadingState   = document.getElementById('loadingState');
 const errorState     = document.getElementById('errorState');
@@ -125,6 +121,10 @@ async function loadProfile(sid) {
     document.getElementById('playerSteamId').textContent = sid;
     document.getElementById('playerAvatar').src          = avatar;
     document.title = `KZ — ${name}`;
+
+    const country = urlCountry || data.country || null;
+    const flagEl = document.getElementById('playerFlag');
+    if (flagEl && country) flagEl.textContent = ' ' + countryToFlag(country);
 
     const csLink = `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}`;
     const cybLink = document.getElementById('cybershokeLink');
