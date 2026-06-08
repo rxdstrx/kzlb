@@ -738,45 +738,10 @@ document.querySelectorAll('.tier-chip').forEach(chip => {
 });
 
 // ── Maps button ──
-const mapsBtn      = document.getElementById('mapsBtn');
-const mapsOptions  = document.getElementById('mapsOptions');
-const mapsSearch   = document.getElementById('mapsSearch');
-const mapsList     = document.getElementById('mapsList');
-const mapsChevron  = document.getElementById('mapsChevron');
-
-function buildMapsList(filter) {
-  mapsList.innerHTML = '';
-  const q = (filter || '').toLowerCase();
-  const maps = typeof ALL_MAPS !== 'undefined' ? ALL_MAPS : [];
-  const filtered = maps.filter(m => m.name.toLowerCase().includes(q));
-  if (!filtered.length) {
-    mapsList.innerHTML = '<div style="padding:8px 12px;color:rgba(255,255,255,0.3);font-size:0.8rem">No maps found</div>';
-    return;
-  }
-  filtered.forEach(m => {
-    const div = document.createElement('div');
-    div.className = 'map-list-item';
-    div.innerHTML = `
-      <span class="map-list-name">${m.name}</span>
-      <span class="tier-badge tier-${m.tier}" style="font-size:0.65rem;padding:2px 7px">T${m.tier}</span>
-    `;
-    div.addEventListener('click', () => {
-      window.location.href = `map.html?map=${encodeURIComponent(m.name)}`;
-    });
-    mapsList.appendChild(div);
-  });
-}
-
-mapsBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  const open = !mapsOptions.classList.contains('hidden');
-  mapsOptions.classList.toggle('hidden', open);
-  mapsChevron.style.transform = open ? '' : 'rotate(180deg)';
-  if (!open) { buildMapsList(''); mapsSearch.focus(); }
+const mapsBtn = document.getElementById('mapsBtn');
+mapsBtn.addEventListener('click', () => {
+  window.location.href = 'maps.html';
 });
-
-mapsSearch.addEventListener('input', () => buildMapsList(mapsSearch.value));
-mapsSearch.addEventListener('click', e => e.stopPropagation());
 
 // ── Add yourself ──
 
