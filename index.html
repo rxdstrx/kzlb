@@ -292,7 +292,13 @@
             <button class="country-chip" data-country="tr">🇹🇷 Turkey</button>
             <button class="country-chip" data-country="ru">🇷🇺 Russia</button>
             <button class="country-chip" data-country="gb">🇬🇧 United Kingdom</button>
-            <button class="country-chip" data-country="xx">Other</button>
+            <div class="add-country-other-wrap">
+              <button class="country-chip" id="otherCountryBtn" data-country="">Other ▾</button>
+              <div class="add-country-dropdown hidden" id="addCountryDropdown">
+                <input class="add-country-search" id="addCountrySearch" type="text" placeholder="Search country…" autocomplete="off" />
+                <div class="add-country-options" id="addCountryOptions"></div>
+              </div>
+            </div>
           </div>
           <button class="add-yourself-submit" id="addYourselfSubmit">Add me to the leaderboard</button>
           <div class="add-yourself-status hidden" id="addYourselfStatus"></div>
@@ -377,6 +383,6 @@
   </div>
 
   <script src="maps-data.js"></script>
-  <script src="script.js"></script>
+  <script>document.write('<script src="script.js?v=' + Date.now() + '"><\/script>')</script>
 </body>
 </html>
