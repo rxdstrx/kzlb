@@ -697,7 +697,8 @@ function renderCountries(filter = '') {
     item.className = 'country-item' + (selectedCountry?.code === c.code ? ' active' : '');
     item.innerHTML = `<span class="country-flag">${c.flag}</span><span>${c.name}</span>`;
     item.addEventListener('click', () => {
-      window.location.assign(`${c.code}.html`);
+      if (c.code === 'pt') window.location.assign('portugal.html');
+      else window.location.assign(`${c.code}.html`);
     });
     countryList.appendChild(item);
   });
