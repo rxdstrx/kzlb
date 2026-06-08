@@ -584,15 +584,95 @@ mapsBtn.addEventListener('click', () => {
 });
 
 // ── Add yourself ──
+const ALL_COUNTRIES = [
+  { code: 'pt', name: 'Portugal', flag: '🇵🇹' },
+  { code: 'es', name: 'Spain', flag: '🇪🇸' },
+  { code: 'fr', name: 'France', flag: '🇫🇷' },
+  { code: 'de', name: 'Germany', flag: '🇩🇪' },
+  { code: 'br', name: 'Brazil', flag: '🇧🇷' },
+  { code: 'pl', name: 'Poland', flag: '🇵🇱' },
+  { code: 'tr', name: 'Turkey', flag: '🇹🇷' },
+  { code: 'ru', name: 'Russia', flag: '🇷🇺' },
+  { code: 'gb', name: 'United Kingdom', flag: '🇬🇧' },
+  { code: 'us', name: 'United States', flag: '🇺🇸' },
+  { code: 'se', name: 'Sweden', flag: '🇸🇪' },
+  { code: 'fi', name: 'Finland', flag: '🇫🇮' },
+  { code: 'dk', name: 'Denmark', flag: '🇩🇰' },
+  { code: 'no', name: 'Norway', flag: '🇳🇴' },
+  { code: 'nl', name: 'Netherlands', flag: '🇳🇱' },
+  { code: 'ua', name: 'Ukraine', flag: '🇺🇦' },
+  { code: 'cz', name: 'Czech Republic', flag: '🇨🇿' },
+  { code: 'sk', name: 'Slovakia', flag: '🇸🇰' },
+  { code: 'hu', name: 'Hungary', flag: '🇭🇺' },
+  { code: 'ro', name: 'Romania', flag: '🇷🇴' },
+  { code: 'bg', name: 'Bulgaria', flag: '🇧🇬' },
+  { code: 'hr', name: 'Croatia', flag: '🇭🇷' },
+  { code: 'rs', name: 'Serbia', flag: '🇷🇸' },
+  { code: 'kz', name: 'Kazakhstan', flag: '🇰🇿' },
+  { code: 'cn', name: 'China', flag: '🇨🇳' },
+  { code: 'au', name: 'Australia', flag: '🇦🇺' },
+  { code: 'ca', name: 'Canada', flag: '🇨🇦' },
+  { code: 'ar', name: 'Argentina', flag: '🇦🇷' },
+  { code: 'cl', name: 'Chile', flag: '🇨🇱' },
+  { code: 'mx', name: 'Mexico', flag: '🇲🇽' },
+  { code: 'it', name: 'Italy', flag: '🇮🇹' },
+  { code: 'lt', name: 'Lithuania', flag: '🇱🇹' },
+  { code: 'lv', name: 'Latvia', flag: '🇱🇻' },
+  { code: 'ee', name: 'Estonia', flag: '🇪🇪' },
+  { code: 'gr', name: 'Greece', flag: '🇬🇷' },
+  { code: 'il', name: 'Israel', flag: '🇮🇱' },
+  { code: 'xx', name: 'Other', flag: '🌍' },
+];
+
 let addSelectedCountry = 'pt';
 
-document.querySelectorAll('.country-chip').forEach(chip => {
+document.querySelectorAll('#addCountryList .country-chip').forEach(chip => {
   chip.addEventListener('click', () => {
-    document.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('#addCountryList .country-chip').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
     addSelectedCountry = chip.dataset.country;
+    document.getElementById('addCountryDropdown').classList.add('hidden');
   });
 });
+
+// Other dropdown
+const otherBtn       = document.getElementById('otherCountryBtn');
+const addDropdown    = document.getElementById('addCountryDropdown');
+const addSearch      = document.getElementById('addCountrySearch');
+const addOptions     = document.getElementById('addCountryOptions');
+
+function renderAddCountryOptions(filter = '') {
+  addOptions.innerHTML = '';
+  ALL_COUNTRIES.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'add-country-option' + (addSelectedCountry === c.code ? ' active' : '');
+      el.textContent = `${c.flag} ${c.name}`;
+      el.addEventListener('click', () => {
+        addSelectedCountry = c.code;
+        otherBtn.textContent = `${c.flag} ${c.name} ▾`;
+        otherBtn.classList.add('active');
+        document.querySelectorAll('#addCountryList .country-chip').forEach(ch => ch.classList.remove('active'));
+        addDropdown.classList.add('hidden');
+      });
+      addOptions.appendChild(el);
+    });
+}
+
+otherBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  addDropdown.classList.toggle('hidden');
+  if (!addDropdown.classList.contains('hidden')) {
+    renderAddCountryOptions();
+    addSearch.focus();
+  }
+});
+
+addSearch.addEventListener('input', () => renderAddCountryOptions(addSearch.value));
+addSearch.addEventListener('click', e => e.stopPropagation());
+addOptions.addEventListener('click', e => e.stopPropagation());
+
+document.addEventListener('click', () => addDropdown.classList.add('hidden'));
 
 document.getElementById('addYourselfSubmit').addEventListener('click', async () => {
   const input = document.getElementById('addSteamInput').value.trim();
