@@ -1,0 +1,67 @@
+name: Scan PT Players
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_offset:
+        description: 'Faceit offset to start from (e.g. 5000 = position 5001)'
+        required: true
+        default: '5000'
+      end_offset:
+        description: 'Faceit offset to stop at (e.g. 5100 = 100 players)'
+        required: true
+        default: '5100'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-scraper-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-scraper-
+
+      - name: Install dependencies
+        run: |
+          if [ ! -d "node_modules/puppeteer-core" ]; then
+            npm install puppeteer-core @sparticuz/chromium puppeteer-extra puppeteer-extra-plugin-stealth
+          else
+            echo "Using cached node_modules"
+          fi
+
+      - name: Fetch PT players from Faceit
+        env:
+          FACEIT_KEY: ${{ secrets.FACEIT_KEY }}
+        run: node scripts/fetch-pt-players.js ${{ github.event.inputs.start_offset }} ${{ github.event.inputs.end_offset }}
+
+      - name: Scrape KZ stats from Cybershoke
+        run: node scripts/batch-scrape-pt.js
+
+      - name: Normalize place totals
+        run: node scripts/normalize-place-totals.js
+
+      - name: Commit results
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add cache/
+          git diff --staged --quiet || git commit -m "scan PT players offset ${{ github.event.inputs.start_offset }}-${{ github.event.inputs.end_offset }}"
+          git pull --rebase=false origin main
+          node scripts/rebuild-world.js
+          git add cache/world-kz-players.json
+          git diff --staged --quiet || git commit -m "rebuild world after PT scan"
+          git push origin HEAD:main
