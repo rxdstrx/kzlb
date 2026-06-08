@@ -1,0 +1,68 @@
+{
+  "steamid": "76561199213709220",
+  "country": "pt",
+  "cached_at": "2026-06-08T20:17:45.948Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_woodstock_v2",
+        "points": "10.9176",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "55 301 / 70 603",
+        "time_record": "08:13.3282",
+        "unixtime_record": 1768247902
+      }
+    ],
+    "header": {
+      "title": "AURAGORNN",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/7b2e4aff867e0f36e60c9398cd49b806277f47bd_full.jpg",
+      "desc": {
+        "{{Position}}": 296452,
+        "{{Points}}": 10,
+        "{{COMPLETIONS-MAP}}": "1 (0.61%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}
