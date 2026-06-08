@@ -96,6 +96,16 @@ async function main() {
     }
   }
 
+  // Rebuild world leaderboard
+  const allPlayers = [];
+  const allFiles = fs.readdirSync(CACHE_DIR).filter(f => f.endsWith('-kz-players.json') && f !== 'world-kz-players.json');
+  for (const f of allFiles) {
+    const d = JSON.parse(fs.readFileSync(path.join(CACHE_DIR, f), 'utf8'));
+    allPlayers.push(...(d.players || []));
+  }
+  allPlayers.sort((a, b) => b.kz_points - a.kz_points);
+  fs.writeFileSync(path.join(CACHE_DIR, 'world-kz-players.json'), JSON.stringify({ updated_at: new Date().toISOString(), players: allPlayers }, null, 2));
+
   console.log(`Moved ${moves.length} player(s). Updated leaderboards: ${[...changed].join(', ')}`);
 }
 
