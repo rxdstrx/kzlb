@@ -533,6 +533,7 @@
 }
 
 .update-records-box {
+  position: relative;
   background: rgba(52,211,153,0.04);
   border: 1px solid rgba(52,211,153,0.15);
   border-radius: 14px;
@@ -693,10 +694,9 @@
 }
 
 .readme-wrap {
-  position: relative;
-  display: inline-block;
-  align-self: flex-end;
-  margin-top: 4px;
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
 }
 
 .readme-btn {
