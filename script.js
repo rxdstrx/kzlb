@@ -863,6 +863,21 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     return;
   }
 
+  // Check if player already exists in world leaderboard
+  showAddStatus('loading', 'Checking if you\'re already on the leaderboard…');
+  try {
+    const worldRes = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`);
+    if (worldRes.ok) {
+      const worldData = await worldRes.json();
+      const exists = (worldData.players || []).find(p => p.steamid === steamid);
+      if (exists) {
+        showAddStatus('error', `Player "${exists.nickname}" is already on the leaderboard! Use "Update your records" to refresh your stats.`);
+        submitBtn.disabled = false;
+        return;
+      }
+    }
+  } catch {}
+
   showAddStatus('loading', 'Submitting… this may take a few minutes while we fetch your stats.');
 
   try {
