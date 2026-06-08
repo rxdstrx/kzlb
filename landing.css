@@ -726,8 +726,9 @@
   display: none;
   position: absolute;
   bottom: calc(100% + 16px);
-  right: 0;
+  left: 0;
   width: 300px;
+  text-align: left;
   background: rgba(15,15,20,0.96);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
