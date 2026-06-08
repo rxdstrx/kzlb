@@ -536,16 +536,11 @@ function renderCountries(filter = '') {
     item.className = 'country-item' + (selectedCountry?.code === c.code ? ' active' : '');
     item.innerHTML = `<span class="country-flag">${c.flag}</span><span>${c.name}</span>`;
     item.addEventListener('click', () => {
-      const countryPages = { pt: 'portugal.html' };
-      if (countryPages[c.code]) {
+      if (c.code === 'pt') {
         window.location.assign('portugal.html');
-        return;
+      } else {
+        window.location.assign(`country.html?code=${c.code}`);
       }
-      selectedCountry = selectedCountry?.code === c.code ? null : c;
-      countryBtn.querySelector('span').textContent = selectedCountry ? selectedCountry.name : 'Country';
-      renderCountries(countrySearch.value);
-      if (selectedCountry) loadCountryPlayers(selectedCountry.code);
-      else { lbPlayers = []; renderLeaderboard(); }
     });
     countryList.appendChild(item);
   });
