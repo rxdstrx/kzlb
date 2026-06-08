@@ -622,7 +622,7 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
   showAddStatus('loading', 'Submitting… this may take a few minutes while we fetch your stats.');
 
   try {
-    const res = await fetch(`/api/add-player?steamid=${steamid}&country=${addSelectedCountry}`);
+    const res = await fetch(`https://kzlb.vercel.app/api/add-player?steamid=${steamid}&country=${addSelectedCountry}`);
     const data = await res.json();
 
     if (data.ok) {
