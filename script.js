@@ -1115,4 +1115,17 @@ function showAddStatus(type, msg) {
   el.className = `add-yourself-status ${type}`;
   el.textContent = msg;
   el.classList.remove('hidden');
+  // Move Read me button below the status box so it doesn't overlap
+  const readmeWrap = document.querySelector('#addYourselfBox .readme-wrap');
+  if (readmeWrap) {
+    if (msg) {
+      readmeWrap.style.position = 'static';
+      readmeWrap.style.marginTop = '8px';
+      readmeWrap.style.textAlign = 'right';
+    } else {
+      readmeWrap.style.position = '';
+      readmeWrap.style.marginTop = '';
+      readmeWrap.style.textAlign = '';
+    }
+  }
 }
