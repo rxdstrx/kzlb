@@ -574,6 +574,7 @@ const ALL_COUNTRIES = [
   { code: 'ht', name: 'Haiti', flag: '🇭🇹' },
   { code: 'hn', name: 'Honduras', flag: '🇭🇳' },
   { code: 'hu', name: 'Hungary', flag: '🇭🇺' },
+  { code: 'hk', name: 'Hong Kong', flag: '🇭🇰' },
   { code: 'is', name: 'Iceland', flag: '🇮🇸' },
   { code: 'in', name: 'India', flag: '🇮🇳' },
   { code: 'id', name: 'Indonesia', flag: '🇮🇩' },
