@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KZ — Honduras Leaderboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="maps.css" />
+  <link rel="stylesheet" href="profile.css" />
+  <link rel="stylesheet" href="portugal.css" />
+</head>
+<body>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+
+  <div class="container">
+    <a class="back-btn" href="index.html">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </a>
+
+    <div class="pt-header">
+      <span class="pt-flag" id="countryFlag"></span>
+      <div>
+        <h1 class="pt-title"><span id="countryName"></span> <span>KZ Leaderboard</span></h1>
+        <p class="pt-sub" id="ptSub">Loading...</p>
+      </div>
+    </div>
+
+    <div class="pt-tabs">
+      <button class="pt-tab active" id="tabOverall">Overall</button>
+      <button class="pt-tab" id="tabMap">By Map</button>
+    </div>
+
+    <div class="pt-map-selector hidden" id="mapSelector">
+      <input class="country-search-input" id="ptMapSearch" type="text" placeholder="Search map..." autocomplete="off" />
+      <div class="pt-map-list" id="ptMapList"></div>
+    </div>
+
+    <div class="profile-loading" id="loadingState">
+      <div class="spinner"></div>
+      <p id="loadingText">Loading leaderboard...</p>
+    </div>
+
+    <div class="table-wrapper hidden" id="tableWrapper" style="margin-top:24px">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-rank">#</th>
+            <th>Player</th>
+            <th id="thPoints">Points</th>
+            <th id="thPlace">Global Rank</th>
+            <th id="thMaps">Maps</th>
+          </tr>
+        </thead>
+        <tbody id="ptBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="noData">No data found.</div>
+    </div>
+  </div>
+
+  <script>window.COUNTRY_CODE = 'hn';</script>
+  <script src="maps-data.js"></script>
+  <script>document.write('<script src="country.js?v=' + Date.now() + '"><\/script>')</script>
+</body>
+</html>
