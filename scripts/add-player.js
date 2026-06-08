@@ -53,7 +53,21 @@ function getLeaderboardFile(c) {
   await page.setCookie(...cookies);
   await page.setExtraHTTPHeaders({ 'Accept-Language': 'ru-RU,ru;q=0.9' });
 
-  // If country unknown, try Faceit lookup automatically
+  // If player already has a manually-pinned country in cache, always use that
+  const indFile = path.join(cacheDir, `${steamid}.json`);
+  if (fs.existsSync(indFile)) {
+    try {
+      const cached = JSON.parse(fs.readFileSync(indFile, 'utf8'));
+      if (cached.country && cached.country !== 'xx') {
+        if (cached.country !== country) {
+          console.log(`Overriding country ${country} → ${cached.country} (manually pinned in cache)`);
+        }
+        country = cached.country;
+      }
+    } catch {}
+  }
+
+  // If country still unknown, try Faceit lookup automatically
   if (country === 'xx') {
     console.log('Country unknown — trying Faceit lookup...');
     const faceitCountry = await getFaceitCountry(steamid);
