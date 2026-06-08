@@ -701,19 +701,23 @@
 
 .readme-btn {
   font-size: 0.72rem;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.45);
   cursor: default;
-  border-bottom: 1px dashed rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 5px 10px;
   user-select: none;
+  white-space: nowrap;
 }
 
 .readme-tooltip {
   display: none;
   position: absolute;
-  bottom: calc(100% + 8px);
+  top: calc(100% + 8px);
   right: 0;
-  width: 240px;
-  background: rgba(15,15,20,0.95);
+  width: 220px;
+  background: rgba(15,15,20,0.96);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
   padding: 12px 14px;
@@ -721,7 +725,7 @@
   color: rgba(255,255,255,0.65);
   line-height: 1.5;
   backdrop-filter: blur(12px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
   z-index: 100;
 }
 
