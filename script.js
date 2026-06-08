@@ -621,8 +621,9 @@ const ALL_COUNTRIES = [
   { code: 'ee', name: 'Estonia', flag: '🇪🇪' },
   { code: 'gr', name: 'Greece', flag: '🇬🇷' },
   { code: 'il', name: 'Israel', flag: '🇮🇱' },
-  { code: 'xx', name: 'Other', flag: '🌍' },
 ];
+
+const CHIP_COUNTRIES = ['pt','es','fr','de','br','pl','tr','ru','gb'];
 
 let addSelectedCountry = 'pt';
 
@@ -643,7 +644,7 @@ const addOptions     = document.getElementById('addCountryOptions');
 
 function renderAddCountryOptions(filter = '') {
   addOptions.innerHTML = '';
-  ALL_COUNTRIES.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+  ALL_COUNTRIES.filter(c => !CHIP_COUNTRIES.includes(c.code) && c.name.toLowerCase().includes(filter.toLowerCase()))
     .forEach(c => {
       const el = document.createElement('div');
       el.className = 'add-country-option' + (addSelectedCountry === c.code ? ' active' : '');
