@@ -49,7 +49,11 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
   if (raw.includes('faceit.com')) {
     const faceit = await resolveFaceit(raw);
     if (faceit?.steamid) {
-      const q = faceit.country ? `&country=${faceit.country}` : '';
+      const country = faceit.country?.toLowerCase();
+      const q = country ? `&country=${country}` : '';
+      if (country) {
+        fetch(`https://kzlb.vercel.app/api/add-player?steamid=${faceit.steamid}&country=${country}`).catch(() => {});
+      }
       window.location.href = `profile.html?steamid=${faceit.steamid}${q}`;
     } else {
       showError('Could not find this Faceit profile.');
