@@ -42,15 +42,14 @@ function clearAuth() {
   if (payload && payload.steamid === steamid) {
     localStorage.setItem('kz_steam_token', token);
     localStorage.setItem('kz_steam_id', steamid);
-    // Fetch nickname + avatar from playerdb
-    fetch(`https://playerdb.co/api/player/steam/${steamid}`)
+    // Fetch nickname + avatar from Steam API via our Vercel proxy
+    fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${steamid}`)
       .then(r => r.json())
       .then(d => {
-        const p = d?.data?.player;
-        if (p) {
-          localStorage.setItem('kz_steam_nick', p.username || '');
-          localStorage.setItem('kz_steam_avatar', p.avatar || '');
-        }
+        if (d.nickname) localStorage.setItem('kz_steam_nick', d.nickname);
+        if (d.avatar) localStorage.setItem('kz_steam_avatar', d.avatar);
+        // Refresh navbar
+        updateNavAuth();
       }).catch(() => {});
   }
   history.replaceState(null, '', window.location.pathname + window.location.search);
