@@ -11,14 +11,16 @@ export default async function handler(req, res) {
   const token = process.env.GH_TOKEN;
   if (!token) return res.status(500).json({ error: 'No token configured' });
 
-  const response = await fetch('https://api.github.com/repos/rxdstrx/kzlb/actions/workflows/scrape-kz.yml/dispatches', {
+  // Trigger add-player.yml (not scrape-kz.yml) — add-player also adds the player
+  // to their country leaderboard and rebuilds world. Country 'xx' = auto-detect via Faceit.
+  const response = await fetch('https://api.github.com/repos/rxdstrx/kzlb/actions/workflows/add-player.yml/dispatches', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/vnd.github+json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ ref: 'main', inputs: { steamid } }),
+    body: JSON.stringify({ ref: 'main', inputs: { steamid, country: 'xx', nickname: '' } }),
   });
 
   if (response.status === 204) return res.status(200).json({ ok: true });
