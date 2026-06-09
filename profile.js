@@ -479,20 +479,64 @@ function initSteamUI() {
   const auth = typeof getAuth === 'function' ? getAuth() : null;
   const token = auth ? auth.token : null;
   const loggedInSteamId = auth ? auth.steamid : null;
-  const ownProfileActions = document.getElementById('ownProfileActions');
-  const steamLoginBtn     = document.getElementById('steamLoginBtn');
-  const steamLogoutBtn    = document.getElementById('steamLogoutBtn');
-  const flagChangeSelect  = document.getElementById('flagChangeSelect');
-  const flagChangeBtn     = document.getElementById('flagChangeBtn');
-  const flagChangeStatus  = document.getElementById('flagChangeStatus');
+  const ownProfileActions  = document.getElementById('ownProfileActions');
+  const steamLoginBtn      = document.getElementById('steamLoginBtn');
+  const steamLogoutBtn     = document.getElementById('steamLogoutBtn');
+  const flagChangeBtn      = document.getElementById('flagChangeBtn');
+  const flagChangeStatus   = document.getElementById('flagChangeStatus');
+  const flagDropdown       = document.getElementById('flagDropdown');
+  const flagDropdownTrigger= document.getElementById('flagDropdownTrigger');
+  const flagDropdownLabel  = document.getElementById('flagDropdownLabel');
+  const flagDropdownPanel  = document.getElementById('flagDropdownPanel');
+  const flagSearchInput    = document.getElementById('flagSearchInput');
+  const flagOptionsList    = document.getElementById('flagOptionsList');
 
   if (!ownProfileActions || !steamLoginBtn) return;
 
-  // Populate country select
-  if (flagChangeSelect && !flagChangeSelect.options.length) {
-    flagChangeSelect.innerHTML = ALL_COUNTRIES_PROFILE.map(c =>
-      `<option value="${c.code}">${c.name}</option>`
-    ).join('');
+  // ── Build custom flag dropdown ──
+  let selectedFlagCode = 'xx';
+
+  function buildFlagOptions(filter = '') {
+    if (!flagOptionsList) return;
+    const q = filter.toLowerCase();
+    flagOptionsList.innerHTML = '';
+    ALL_COUNTRIES_PROFILE
+      .filter(c => !q || c.name.toLowerCase().includes(q) || c.code.includes(q))
+      .forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'flag-option' + (c.code === selectedFlagCode ? ' selected' : '');
+        div.dataset.code = c.code;
+        const flagImg = c.code !== 'xx'
+          ? `<img src="https://flagcdn.com/w20/${c.code}.png" style="height:14px;border-radius:2px;flex-shrink:0">`
+          : `<span style="opacity:0.4;font-size:0.9em">🏳️</span>`;
+        div.innerHTML = `${flagImg}<span>${c.name}</span>`;
+        div.addEventListener('click', () => {
+          selectedFlagCode = c.code;
+          const flagImgLabel = c.code !== 'xx'
+            ? `<img src="https://flagcdn.com/w20/${c.code}.png" style="height:14px;border-radius:2px;vertical-align:middle;margin-right:4px">${c.name}`
+            : c.name;
+          if (flagDropdownLabel) flagDropdownLabel.innerHTML = flagImgLabel;
+          flagDropdownPanel.classList.add('hidden');
+          flagOptionsList.querySelectorAll('.flag-option').forEach(el => el.classList.remove('selected'));
+          div.classList.add('selected');
+        });
+        flagOptionsList.appendChild(div);
+      });
+  }
+
+  if (flagDropdownTrigger && !flagDropdownTrigger._bound) {
+    flagDropdownTrigger._bound = true;
+    buildFlagOptions();
+    flagDropdownTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      flagDropdownPanel.classList.toggle('hidden');
+      if (!flagDropdownPanel.classList.contains('hidden')) {
+        flagSearchInput?.focus();
+      }
+    });
+    flagSearchInput?.addEventListener('input', () => buildFlagOptions(flagSearchInput.value));
+    document.addEventListener('click', () => flagDropdownPanel?.classList.add('hidden'));
+    flagDropdownPanel?.addEventListener('click', e => e.stopPropagation());
   }
 
   if (token && loggedInSteamId && loggedInSteamId === steamid) {
@@ -516,7 +560,7 @@ function initSteamUI() {
   if (flagChangeBtn && !flagChangeBtn._bound) {
     flagChangeBtn._bound = true;
     flagChangeBtn.addEventListener('click', async () => {
-      const country = flagChangeSelect.value;
+      const country = selectedFlagCode;
       const currentToken = getStoredToken();
       if (!currentToken) return;
 
