@@ -186,7 +186,8 @@ async function loadProfile(sid) {
     if (!name) name = 'Unknown Player';
 
     const desc    = header.desc || {};
-    const country = urlCountry || data.country || null;
+    // Prefer cache country over URL param (URL param may be stale after flag change)
+    const country = data.country || urlCountry || null;
 
     // ── Basic info ──
     document.getElementById('playerSteamId').textContent = sid;
@@ -577,6 +578,12 @@ function initSteamUI() {
         if (r.ok && data.ok) {
           flagChangeStatus.textContent = '✅ Flag updated!';
           flagChangeStatus.className = 'flag-change-status success';
+
+          // ── Update URL param so refresh also shows correct flag ──
+          const url = new URL(window.location.href);
+          if (country === 'xx') url.searchParams.delete('country');
+          else url.searchParams.set('country', country);
+          history.replaceState(null, '', url.toString());
 
           // ── Instant UI update — no need to wait for GitHub Action ──
           const flagEl = document.getElementById('playerFlag');
