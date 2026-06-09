@@ -100,6 +100,18 @@
       </div>
     </div>
 
+    <!-- ── TABS ── -->
+    <div class="profile-tabs-wrap">
+      <div class="profile-tabs">
+        <button class="profile-tab active" data-tab="profile">Profile</button>
+        <button class="profile-tab" data-tab="friends">Friends</button>
+        <div class="profile-tab-indicator"></div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: PROFILE ══ -->
+    <div class="tab-panel" id="tab-profile">
+
     <!-- ── STATS BAR ── -->
     <div class="profile-stats-bar">
       <div class="stat-card">
@@ -192,6 +204,24 @@
         <tbody id="statsBody"></tbody>
       </table>
       <div class="empty-state hidden" id="noStats">No completed maps found.</div>
+    </div>
+
+    </div><!-- end #tab-profile -->
+
+    <!-- ══ TAB: FRIENDS ══ -->
+    <div class="tab-panel hidden" id="tab-friends">
+      <div class="friends-empty-wrap">
+        <div class="friends-empty-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <p class="friends-empty-title">No friends to show</p>
+        <p class="friends-empty-sub">Friends list integration coming soon.</p>
+      </div>
     </div>
 
   </div>
