@@ -43,12 +43,9 @@ function clearAuth() {
     localStorage.setItem('kz_steam_token', token);
     localStorage.setItem('kz_steam_id', steamid);
 
-    // Auto-trigger scrape if this player has no cache yet
-    fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/${steamid}.json`)
-      .then(r => { if (!r.ok) fetch(`https://kzlb.vercel.app/api/trigger-scrape?steamid=${steamid}`).catch(() => {}); })
-      .catch(() => {});
-
-    // Look up avatar + nickname from world cache (same source as all other players)
+    // Look up avatar + nickname from world cache.
+    // If player is NOT in the world leaderboard, also trigger add-player
+    // (which scrapes their stats AND adds them to country + world files).
     fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json`)
       .then(r => r.json())
       .then(d => {
@@ -56,9 +53,13 @@ function clearAuth() {
         if (player?.avatar) localStorage.setItem('kz_steam_avatar', player.avatar);
         if (player?.nickname) localStorage.setItem('kz_steam_nick', player.nickname);
         updateNavAuth();
-        // Fallback: try Vercel proxy if not found in cache
+
         if (!player) {
-          return fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${steamid}`)
+          // Not in world leaderboard yet — trigger add-player to scrape + register them
+          fetch(`https://kzlb.vercel.app/api/trigger-scrape?steamid=${steamid}`).catch(() => {});
+
+          // Also fetch avatar/nickname from Steam via Vercel proxy as fallback
+          fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${steamid}`)
             .then(r => r.json())
             .then(d2 => {
               if (d2.nickname) localStorage.setItem('kz_steam_nick', d2.nickname);
@@ -67,7 +68,8 @@ function clearAuth() {
             }).catch(() => {});
         }
       }).catch(() => {
-        // Cache fetch failed, try Vercel proxy
+        // World cache fetch failed — trigger add-player and try Steam proxy
+        fetch(`https://kzlb.vercel.app/api/trigger-scrape?steamid=${steamid}`).catch(() => {});
         fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${steamid}`)
           .then(r => r.json())
           .then(d => {
@@ -147,7 +149,9 @@ function fetchMissingAvatar() {
         if (player?.nickname) localStorage.setItem('kz_steam_nick', player.nickname);
         updateNavAuth();
       } else {
-        // Not in cache, try Vercel proxy
+        // Not in world leaderboard — trigger add-player to get them registered
+        fetch(`https://kzlb.vercel.app/api/trigger-scrape?steamid=${auth.steamid}`).catch(() => {});
+        // Try Steam proxy for avatar while we wait
         return fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${auth.steamid}`)
           .then(r => r.json())
           .then(d2 => {
