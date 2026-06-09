@@ -36,6 +36,8 @@ jobs:
 
       - name: Scrape stats
         run: node scripts/scrape.js ${{ github.event.inputs.steamid }}
+        env:
+          CYBERSHOKE_COOKIE: ${{ secrets.CYBERSHOKE_COOKIE }}
 
       - name: Commit cache
         run: |

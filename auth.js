@@ -42,6 +42,12 @@ function clearAuth() {
   if (payload && payload.steamid === steamid) {
     localStorage.setItem('kz_steam_token', token);
     localStorage.setItem('kz_steam_id', steamid);
+
+    // Auto-trigger scrape if this player has no cache yet
+    fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/${steamid}.json`)
+      .then(r => { if (!r.ok) fetch(`https://kzlb.vercel.app/api/trigger-scrape?steamid=${steamid}`).catch(() => {}); })
+      .catch(() => {});
+
     // Look up avatar + nickname from world cache (same source as all other players)
     fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json`)
       .then(r => r.json())
