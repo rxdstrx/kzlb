@@ -51,6 +51,6 @@ export default async function handler(req, res) {
   // Create JWT valid for 30 days
   const token = createJWT({ steamid, iat: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + 86400 * 30 }, secret);
 
-  // Redirect back to GitHub Pages with token in URL fragment (never sent to server)
-  res.redirect(`https://rxdstrx.github.io/kzlb/index.html#token=${token}:${steamid}`);
+  // Redirect back to GitHub Pages login page with token in URL fragment (never sent to server)
+  res.redirect(`https://rxdstrx.github.io/kzlb/login.html#token=${token}:${steamid}`);
 }
