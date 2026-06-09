@@ -28,8 +28,42 @@
     <ul class="nav-links">
       <li><a href="about.html">About Us</a></li>
       <li><a href="partners.html">Partners</a></li>
+      <!-- shown when logged in -->
+      <li class="nav-profile-item hidden" id="navProfileItem">
+        <a href="#" id="navProfileLink" class="nav-profile-link">
+          <img id="navProfileAvatar" src="" alt="" class="nav-profile-avatar" />
+          <span id="navProfileName">Profile</span>
+        </a>
+      </li>
     </ul>
+    <!-- Login button (shown when not logged in) -->
+    <a class="nav-steam-login hidden" id="navSteamLogin" href="https://kzlb.vercel.app/api/steam-auth">
+      <svg width="14" height="14" viewBox="0 0 36 36" fill="none" style="opacity:0.7"><rect width="36" height="36" rx="10" fill="rgba(56,189,248,0.2)"/><text x="4" y="24" font-family="system-ui" font-weight="800" font-size="14" fill="#38bdf8">KZ</text></svg>
+      Login with Steam
+    </a>
+    <!-- Logged-in avatar + logout -->
+    <div class="nav-user hidden" id="navUser">
+      <img id="navUserAvatar" src="" alt="" class="nav-profile-avatar" />
+      <span id="navUserName"></span>
+      <button class="nav-logout-btn" id="navLogoutBtn">Log out</button>
+    </div>
   </nav>
+
+  <!-- ══ STEAM LOGIN MODAL ══ -->
+  <div class="steam-modal-overlay hidden" id="steamModalOverlay">
+    <div class="steam-modal">
+      <div class="steam-modal-logo">
+        <svg width="40" height="40" viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="10" fill="rgba(56,189,248,0.15)"/><text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#38bdf8">KZ</text><line x1="27" y1="10" x2="27" y2="26" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/><line x1="19" y1="18" x2="35" y2="18" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <span>KZplus</span>
+      </div>
+      <div class="steam-modal-title">Welcome to KZplus</div>
+      <div class="steam-modal-sub">Login with Steam to access your profile, view your KZ stats and set your country flag.</div>
+      <a class="steam-modal-login-btn" href="https://kzlb.vercel.app/api/steam-auth">
+        <img src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png" alt="Sign in through Steam" height="40" />
+      </a>
+      <button class="steam-modal-skip" id="steamModalSkip">Continue without account</button>
+    </div>
+  </div>
 
   <!-- ══ VIEW: HOME ══ -->
   <div id="view-home">
@@ -431,6 +465,7 @@
   </div>
 
   <script src="maps-data.js"></script>
+  <script src="auth.js"></script>
   <script>document.write('<script src="script.js?v=' + Date.now() + '"><\/script>')</script>
 </body>
 </html>

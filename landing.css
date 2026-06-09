@@ -50,6 +50,120 @@
 
 .nav-links a:hover { color: #fff; }
 
+/* Nav profile link */
+.nav-profile-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.8) !important;
+}
+.nav-profile-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(56,189,248,0.4);
+}
+.nav-steam-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.25);
+  border-radius: 8px;
+  color: #38bdf8;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.nav-steam-login:hover { background: rgba(56,189,248,0.18); }
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-user span {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.75);
+  font-weight: 500;
+}
+.nav-logout-btn {
+  padding: 5px 11px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 7px;
+  color: rgba(255,255,255,0.35);
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.nav-logout-btn:hover { color: #f87171; border-color: rgba(248,113,113,0.3); }
+
+/* ══ STEAM LOGIN MODAL ══ */
+.steam-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.steam-modal {
+  background: #0e0e14;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 40px 36px;
+  width: 360px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.steam-modal-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f0f0f5;
+}
+.steam-modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 4px;
+}
+.steam-modal-sub {
+  font-size: 0.83rem;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.5;
+}
+.steam-modal-login-btn {
+  display: inline-block;
+  margin-top: 4px;
+  opacity: 0.9;
+  transition: opacity 0.15s;
+}
+.steam-modal-login-btn:hover { opacity: 1; }
+.steam-modal-skip {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.25);
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: underline;
+  padding: 0;
+}
+.steam-modal-skip:hover { color: rgba(255,255,255,0.5); }
+
 /* ══ HERO SECTION ══ */
 .hero {
   min-height: 100vh;

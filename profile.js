@@ -315,7 +315,7 @@ function timeSince(date) {
   return `${Math.floor(seconds / 86400)}d`;
 }
 
-// ── Steam Login / Flag Change ──────────────────────────────────────────────────
+// ── Steam Login / Flag Change (uses auth.js getAuth()) ────────────────────────
 
 const ALL_COUNTRIES_PROFILE = [
   { code: 'xx', name: 'No flag' },
@@ -349,37 +349,10 @@ const ALL_COUNTRIES_PROFILE = [
   { code: 'vn', name: 'Vietnam' },
 ];
 
-function getStoredToken() {
-  return localStorage.getItem('kz_steam_token');
-}
-
-function getStoredSteamId() {
-  return localStorage.getItem('kz_steam_id');
-}
-
-function parseJWTPayload(token) {
-  try {
-    const payload = token.split('.')[1];
-    return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-  } catch { return null; }
-}
-
-// Check if token arrived in URL hash (after Steam callback)
-const hash = window.location.hash;
-if (hash.startsWith('#token=')) {
-  const token = hash.slice(7);
-  const payload = parseJWTPayload(token);
-  if (payload && payload.steamid) {
-    localStorage.setItem('kz_steam_token', token);
-    localStorage.setItem('kz_steam_id', payload.steamid);
-  }
-  // Clean up URL
-  history.replaceState(null, '', window.location.pathname + window.location.search);
-}
-
 function initSteamUI() {
-  const token = getStoredToken();
-  const loggedInSteamId = getStoredSteamId();
+  const auth = typeof getAuth === 'function' ? getAuth() : null;
+  const token = auth ? auth.token : null;
+  const loggedInSteamId = auth ? auth.steamid : null;
   const ownProfileActions = document.getElementById('ownProfileActions');
   const steamLoginBtn = document.getElementById('steamLoginBtn');
   const steamLogoutBtn = document.getElementById('steamLogoutBtn');
@@ -410,8 +383,7 @@ function initSteamUI() {
   // Logout
   if (steamLogoutBtn) {
     steamLogoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('kz_steam_token');
-      localStorage.removeItem('kz_steam_id');
+      if (typeof clearAuth === 'function') clearAuth();
       ownProfileActions.classList.add('hidden');
       steamLoginBtn.classList.remove('hidden');
     });
@@ -443,8 +415,7 @@ function initSteamUI() {
           flagChangeStatus.textContent = '✗ ' + (data.error || 'Failed');
           flagChangeStatus.className = 'flag-change-status error';
           if (r.status === 401) {
-            localStorage.removeItem('kz_steam_token');
-            localStorage.removeItem('kz_steam_id');
+            if (typeof clearAuth === 'function') clearAuth();
             ownProfileActions.classList.add('hidden');
             steamLoginBtn.classList.remove('hidden');
           }
