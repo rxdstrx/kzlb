@@ -1181,7 +1181,7 @@ searchInput.addEventListener('input', async () => {
       <img class="search-suggestion-avatar" src="${avatarSrc}" onerror="this.src='https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg'">
       <div class="search-suggestion-info">
         <div class="search-suggestion-nick">${highlightMatch(p.nickname, q)}</div>
-        <div class="search-suggestion-meta">${flagHtml} ${p.kz_points ? Number(p.kz_points).toLocaleString() + ' pts' : ''}</div>
+        <div class="search-suggestion-meta">${flagHtml} ${p.kz_points != null ? Number(p.kz_points).toLocaleString() + ' pts' : '0 pts'}</div>
       </div>
     </div>`;
   }).join('');
