@@ -125,8 +125,8 @@ function renderOverall() {
         </div>
       </td>
       <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
-      <td><span class="pos-cell">#${p.kz_place?.toLocaleString() || '—'}</span></td>
-      <td><span class="runs-cell">${p.kz_maps || p.maps_list?.length || '—'}</span></td>
+      <td><span class="pos-cell">${fmtPlace(p.kz_place)}</span></td>
+      <td><span class="runs-cell">${fmtMaps(p.kz_maps, p.maps_list)}</span></td>
     `;
     ptBody.appendChild(tr);
   });

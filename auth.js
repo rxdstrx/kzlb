@@ -1,6 +1,22 @@
 // auth.js — Steam login state management, runs on every page
 // ─────────────────────────────────────────────────────────────
 
+// ── Shared display helpers (used by all leaderboard pages) ──
+
+// Format global rank: null/0/9999+ → '—', otherwise '#1,234'
+function fmtPlace(kz_place) {
+  const v = Number(kz_place);
+  if (!kz_place || v === 0 || v >= 9999) return '—';
+  return '#' + v.toLocaleString();
+}
+
+// Format maps done: always returns a string like '14 (8%)' or '0 (0%)'
+function fmtMaps(kz_maps, maps_list) {
+  if (kz_maps && kz_maps !== '0' && kz_maps !== 0) return String(kz_maps);
+  const count = (maps_list || []).length;
+  return count > 0 ? String(count) : '0 (0%)';
+}
+
 function parseJWTPayload(token) {
   try {
     const payload = token.split('.')[1];
