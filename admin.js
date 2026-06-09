@@ -2,7 +2,7 @@
 const WORLD_CACHE = 'https://rxdstrx.github.io/kzlb/cache/world-kz-players.json';
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:3000/api'
-  : '/api';
+  : 'https://kzlb.vercel.app/api';
 
 const ALL_COUNTRIES = [
   { code: 'xx', name: 'No flag', flag: '' },
