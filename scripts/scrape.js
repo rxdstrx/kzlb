@@ -13,6 +13,10 @@ if (!steamid || !/^\d{17}$/.test(steamid)) {
 }
 
 const COOKIE = process.env.CYBERSHOKE_COOKIE;
+if (!COOKIE) {
+  console.error('CYBERSHOKE_COOKIE env var is not set — aborting');
+  process.exit(1);
+}
 
 (async () => {
   const browser = await puppeteer.launch({
