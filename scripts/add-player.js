@@ -16,7 +16,7 @@ if (!steamid || !/^\d{17}$/.test(steamid)) {
 }
 
 const FACEIT_KEY = process.env.FACEIT_KEY;
-const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv4pjmnJVyhKQk3oYa5q65yHTyVmNYroRvWumE0Km; multitoken_created=1; cookie_read=1; lang_g=ru; current-game=2; vip=true; vip-group=LITE`;
+const COOKIE = process.env.CYBERSHOKE_COOKIE;
 
 async function getFaceitCountry(sid) {
   if (!FACEIT_KEY) return null;

@@ -30,6 +30,8 @@ jobs:
           fi
 
       - name: Batch scrape KZ stats
+        env:
+          CYBERSHOKE_COOKIE: ${{ secrets.CYBERSHOKE_COOKIE }}
         run: node scripts/batch-scrape-pt.js
 
       - name: Commit results
