@@ -192,10 +192,17 @@
   display: inline-flex;
   align-items: center;
   margin-top: 10px;
-  opacity: 0.85;
-  transition: opacity 0.15s;
+  padding: 7px 14px;
+  background: rgba(56,189,248,0.08);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 8px;
+  color: #38bdf8;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
 }
-.steam-login-btn:hover { opacity: 1; }
+.steam-login-btn:hover { background: rgba(56,189,248,0.15); }
 
 .own-profile-actions {
   display: flex;
