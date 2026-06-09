@@ -594,3 +594,48 @@ function initSteamUI() {
     });
   }
 }
+
+// ── Profile Tabs ──
+function initTabs() {
+  const tabs      = document.querySelectorAll('.profile-tab');
+  const indicator = document.querySelector('.profile-tab-indicator');
+  const panels    = { profile: document.getElementById('tab-profile'), friends: document.getElementById('tab-friends') };
+
+  function moveIndicator(activeTab) {
+    if (!indicator) return;
+    indicator.style.width     = activeTab.offsetWidth + 'px';
+    indicator.style.transform = `translateX(${activeTab.offsetLeft}px)`;
+  }
+
+  function switchTab(name, pushState = true) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    Object.entries(panels).forEach(([k, el]) => { if (el) el.classList.toggle('hidden', k !== name); });
+    const activeTab = [...tabs].find(t => t.dataset.tab === name);
+    if (activeTab) moveIndicator(activeTab);
+
+    if (pushState) {
+      const url = new URL(window.location.href);
+      if (name === 'profile') url.searchParams.delete('tab');
+      else url.searchParams.set('tab', name);
+      history.pushState({ tab: name }, '', url.toString());
+    }
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+
+  // Handle browser back/forward
+  window.addEventListener('popstate', (e) => {
+    const tab = e.state?.tab || new URLSearchParams(window.location.search).get('tab') || 'profile';
+    switchTab(tab, false);
+  });
+
+  // Init from URL on load
+  const initTab = new URLSearchParams(window.location.search).get('tab') || 'profile';
+  // Wait for layout so indicator width is correct
+  requestAnimationFrame(() => switchTab(initTab, false));
+}
+
+// Run tabs after DOM is ready
+document.addEventListener('DOMContentLoaded', initTabs);
