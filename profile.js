@@ -595,6 +595,10 @@ function initSteamUI() {
           flagChangeStatus.textContent = '✅ Flag updated!';
           flagChangeStatus.className = 'flag-change-status success';
 
+          // ── Store country in localStorage so leaderboards show glow immediately ──
+          if (country && country !== 'xx') localStorage.setItem('kz_country', country);
+          else localStorage.removeItem('kz_country');
+
           // ── Update URL param so refresh also shows correct flag ──
           const url = new URL(window.location.href);
           if (country === 'xx') url.searchParams.delete('country');
