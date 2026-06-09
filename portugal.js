@@ -132,6 +132,40 @@ function renderOverall() {
   });
 
   renderPagination(sorted.length);
+  renderPinnedSelf(sorted);
+}
+
+function renderPinnedSelf(sorted) {
+  const existing = document.getElementById('pinned-self-row');
+  if (existing) existing.remove();
+
+  const auth = typeof getAuth === 'function' ? getAuth() : null;
+  if (!auth) return;
+
+  const idx = sorted.findIndex(p => p.steamid === auth.steamid);
+  if (idx === -1) return; // not in this country leaderboard
+
+  const p = sorted[idx];
+  const rank = idx + 1;
+  const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+
+  const tr = document.createElement('tr');
+  tr.id = 'pinned-self-row';
+  tr.className = 'pinned-self-row';
+  tr.innerHTML = `
+    <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+    <td>
+      <div class="player-cell">
+        <img class="player-thumb" src="${p.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
+        <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=pt">${p.nickname}</a>
+        <span class="pinned-self-badge">📍 You</span>
+      </div>
+    </td>
+    <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
+    <td><span class="pos-cell">#${p.kz_place?.toLocaleString() || '—'}</span></td>
+    <td><span class="runs-cell">${p.kz_maps || p.maps_list?.length || '—'}</span></td>
+  `;
+  ptBody.insertBefore(tr, ptBody.firstChild);
 }
 
 function renderByMap(mapName) {

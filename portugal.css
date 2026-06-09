@@ -187,6 +187,39 @@ tbody tr:has(.rank-badge.top3) {
   box-shadow: inset 3px 0 0 rgba(180,83,9,0.55);
 }
 
+/* ── Pinned self row ── */
+.pinned-self-row {
+  border-bottom: none !important;
+}
+.pinned-self-row td {
+  background: rgba(251,191,36,0.07);
+  border-top: 1.5px solid rgba(251,191,36,0.55);
+  border-bottom: 1.5px solid rgba(251,191,36,0.55);
+  animation: pinnedGlow 2.5s ease-in-out infinite;
+}
+.pinned-self-row td:first-child {
+  border-left: 1.5px solid rgba(251,191,36,0.55);
+  border-radius: 10px 0 0 10px;
+}
+.pinned-self-row td:last-child {
+  border-right: 1.5px solid rgba(251,191,36,0.55);
+  border-radius: 0 10px 10px 0;
+}
+.pinned-self-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: #fbbf24;
+  background: rgba(251,191,36,0.12);
+  border: 1px solid rgba(251,191,36,0.35);
+  border-radius: 6px; padding: 2px 8px;
+  margin-left: 8px; white-space: nowrap; vertical-align: middle;
+}
+@keyframes pinnedGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(251,191,36,0.2)); }
+  50%       { filter: drop-shadow(0 0 10px rgba(251,191,36,0.5)); }
+}
+
 .pagination {
   display: flex;
   align-items: center;
