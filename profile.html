@@ -51,20 +51,22 @@
     </div>
 
     <!-- ── BANNER ── -->
-    <div class="profile-banner" id="profileBanner">
-      <div class="banner-overlay"></div>
-      <!-- Owner-only: change banner -->
-      <div class="banner-owner-controls hidden" id="bannerOwnerControls">
-        <button class="banner-edit-btn" id="bannerEditBtn">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-            <path d="M9.5 1.5L11.5 3.5L4.5 10.5H2.5V8.5L9.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
-          </svg>
-          Change Banner
-        </button>
-        <div class="banner-edit-panel hidden" id="bannerEditPanel">
-          <input class="banner-url-input" id="bannerUrlInput" type="text" placeholder="Paste an image URL…" />
-          <button class="banner-save-btn" id="bannerSaveBtn">Save</button>
-          <button class="banner-remove-btn" id="bannerRemoveBtn">Remove</button>
+    <div class="profile-banner-container">
+      <div class="profile-banner" id="profileBanner">
+        <div class="banner-overlay"></div>
+        <!-- Drop zone hint (owner only, shown when dragging) -->
+        <div class="banner-drop-hint hidden" id="bannerDropHint">Drop image here</div>
+        <!-- Owner-only controls -->
+        <div class="banner-owner-controls hidden" id="bannerOwnerControls">
+          <button class="banner-edit-btn" id="bannerEditBtn">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <path d="M9.5 1.5L11.5 3.5L4.5 10.5H2.5V8.5L9.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+            Change Banner
+          </button>
+          <button class="banner-remove-btn hidden" id="bannerRemoveBtn">Remove</button>
+          <!-- Hidden file input -->
+          <input type="file" id="bannerFileInput" accept="image/*" style="display:none" />
         </div>
       </div>
     </div>

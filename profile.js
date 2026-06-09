@@ -404,35 +404,73 @@ function getStoredToken() {
 
 // ── Banner edit (owner only) ──
 function initBannerUI(ownerSteamId) {
-  const controls  = document.getElementById('bannerOwnerControls');
-  const editBtn   = document.getElementById('bannerEditBtn');
-  const editPanel = document.getElementById('bannerEditPanel');
-  const urlInput  = document.getElementById('bannerUrlInput');
-  const saveBtn   = document.getElementById('bannerSaveBtn');
-  const removeBtn = document.getElementById('bannerRemoveBtn');
-  const banner    = document.getElementById('profileBanner');
-  if (!controls) return;
+  const controls   = document.getElementById('bannerOwnerControls');
+  const editBtn    = document.getElementById('bannerEditBtn');
+  const removeBtn  = document.getElementById('bannerRemoveBtn');
+  const fileInput  = document.getElementById('bannerFileInput');
+  const dropHint   = document.getElementById('bannerDropHint');
+  const banner     = document.getElementById('profileBanner');
+  if (!controls || ownerSteamId !== steamid) return;
 
-  if (ownerSteamId !== steamid) return;
   controls.classList.remove('hidden');
+  if (localStorage.getItem(`kz_banner_${steamid}`)) removeBtn.classList.remove('hidden');
 
-  editBtn.addEventListener('click', () => {
-    editPanel.classList.toggle('hidden');
-    if (!editPanel.classList.contains('hidden')) urlInput.focus();
-  });
+  function applyImage(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      // Compress via canvas
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxW = 1600, maxH = 400;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        try {
+          localStorage.setItem(`kz_banner_${steamid}`, dataUrl);
+        } catch {
+          alert('Image too large. Try a smaller file.');
+          return;
+        }
+        banner.style.backgroundImage = `url(${dataUrl})`;
+        removeBtn.classList.remove('hidden');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
 
-  saveBtn.addEventListener('click', () => {
-    const url = urlInput.value.trim();
-    if (!url) return;
-    localStorage.setItem(`kz_banner_${steamid}`, url);
-    banner.style.backgroundImage = `url(${url})`;
-    editPanel.classList.add('hidden');
-  });
+  // Click to open file picker
+  editBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => applyImage(fileInput.files[0]));
 
+  // Remove banner
   removeBtn.addEventListener('click', () => {
     localStorage.removeItem(`kz_banner_${steamid}`);
     banner.style.backgroundImage = '';
-    editPanel.classList.add('hidden');
+    removeBtn.classList.add('hidden');
+  });
+
+  // Drag & drop onto the banner
+  banner.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    banner.classList.add('drag-over');
+    if (dropHint) dropHint.classList.remove('hidden');
+  });
+  banner.addEventListener('dragleave', () => {
+    banner.classList.remove('drag-over');
+    if (dropHint) dropHint.classList.add('hidden');
+  });
+  banner.addEventListener('drop', (e) => {
+    e.preventDefault();
+    banner.classList.remove('drag-over');
+    if (dropHint) dropHint.classList.add('hidden');
+    const file = e.dataTransfer.files[0];
+    applyImage(file);
   });
 }
 
