@@ -314,3 +314,156 @@ function timeSince(date) {
   if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
   return `${Math.floor(seconds / 86400)}d`;
 }
+
+// ── Steam Login / Flag Change ──────────────────────────────────────────────────
+
+const ALL_COUNTRIES_PROFILE = [
+  { code: 'xx', name: 'No flag' },
+  { code: 'af', name: 'Afghanistan' }, { code: 'al', name: 'Albania' }, { code: 'dz', name: 'Algeria' },
+  { code: 'ar', name: 'Argentina' }, { code: 'am', name: 'Armenia' }, { code: 'au', name: 'Australia' },
+  { code: 'at', name: 'Austria' }, { code: 'az', name: 'Azerbaijan' }, { code: 'by', name: 'Belarus' },
+  { code: 'be', name: 'Belgium' }, { code: 'ba', name: 'Bosnia & Herzegovina' }, { code: 'br', name: 'Brazil' },
+  { code: 'bg', name: 'Bulgaria' }, { code: 'ca', name: 'Canada' }, { code: 'cl', name: 'Chile' },
+  { code: 'cn', name: 'China' }, { code: 'co', name: 'Colombia' }, { code: 'hr', name: 'Croatia' },
+  { code: 'cy', name: 'Cyprus' }, { code: 'cz', name: 'Czechia' }, { code: 'dk', name: 'Denmark' },
+  { code: 'eg', name: 'Egypt' }, { code: 'ee', name: 'Estonia' }, { code: 'fi', name: 'Finland' },
+  { code: 'fr', name: 'France' }, { code: 'ge', name: 'Georgia' }, { code: 'de', name: 'Germany' },
+  { code: 'gr', name: 'Greece' }, { code: 'hu', name: 'Hungary' }, { code: 'in', name: 'India' },
+  { code: 'id', name: 'Indonesia' }, { code: 'ir', name: 'Iran' }, { code: 'ie', name: 'Ireland' },
+  { code: 'il', name: 'Israel' }, { code: 'it', name: 'Italy' }, { code: 'jp', name: 'Japan' },
+  { code: 'kz', name: 'Kazakhstan' }, { code: 'ke', name: 'Kenya' }, { code: 'kr', name: 'South Korea' },
+  { code: 'kw', name: 'Kuwait' }, { code: 'lv', name: 'Latvia' }, { code: 'lt', name: 'Lithuania' },
+  { code: 'lu', name: 'Luxembourg' }, { code: 'my', name: 'Malaysia' }, { code: 'mx', name: 'Mexico' },
+  { code: 'md', name: 'Moldova' }, { code: 'me', name: 'Montenegro' }, { code: 'ma', name: 'Morocco' },
+  { code: 'nl', name: 'Netherlands' }, { code: 'nz', name: 'New Zealand' }, { code: 'ng', name: 'Nigeria' },
+  { code: 'mk', name: 'North Macedonia' }, { code: 'no', name: 'Norway' }, { code: 'pk', name: 'Pakistan' },
+  { code: 'pa', name: 'Panama' }, { code: 'pe', name: 'Peru' }, { code: 'ph', name: 'Philippines' },
+  { code: 'pl', name: 'Poland' }, { code: 'pt', name: 'Portugal' }, { code: 'qa', name: 'Qatar' },
+  { code: 'ro', name: 'Romania' }, { code: 'ru', name: 'Russia' }, { code: 'sa', name: 'Saudi Arabia' },
+  { code: 'rs', name: 'Serbia' }, { code: 'sg', name: 'Singapore' }, { code: 'sk', name: 'Slovakia' },
+  { code: 'si', name: 'Slovenia' }, { code: 'za', name: 'South Africa' }, { code: 'es', name: 'Spain' },
+  { code: 'se', name: 'Sweden' }, { code: 'ch', name: 'Switzerland' }, { code: 'tw', name: 'Taiwan' },
+  { code: 'th', name: 'Thailand' }, { code: 'tr', name: 'Turkey' }, { code: 'ua', name: 'Ukraine' },
+  { code: 'ae', name: 'United Arab Emirates' }, { code: 'gb', name: 'United Kingdom' },
+  { code: 'us', name: 'United States' }, { code: 'uz', name: 'Uzbekistan' }, { code: 've', name: 'Venezuela' },
+  { code: 'vn', name: 'Vietnam' },
+];
+
+function getStoredToken() {
+  return localStorage.getItem('kz_steam_token');
+}
+
+function getStoredSteamId() {
+  return localStorage.getItem('kz_steam_id');
+}
+
+function parseJWTPayload(token) {
+  try {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+  } catch { return null; }
+}
+
+// Check if token arrived in URL hash (after Steam callback)
+const hash = window.location.hash;
+if (hash.startsWith('#token=')) {
+  const token = hash.slice(7);
+  const payload = parseJWTPayload(token);
+  if (payload && payload.steamid) {
+    localStorage.setItem('kz_steam_token', token);
+    localStorage.setItem('kz_steam_id', payload.steamid);
+  }
+  // Clean up URL
+  history.replaceState(null, '', window.location.pathname + window.location.search);
+}
+
+function initSteamUI() {
+  const token = getStoredToken();
+  const loggedInSteamId = getStoredSteamId();
+  const ownProfileActions = document.getElementById('ownProfileActions');
+  const steamLoginBtn = document.getElementById('steamLoginBtn');
+  const steamLogoutBtn = document.getElementById('steamLogoutBtn');
+  const flagChangeSelect = document.getElementById('flagChangeSelect');
+  const flagChangeBtn = document.getElementById('flagChangeBtn');
+  const flagChangeStatus = document.getElementById('flagChangeStatus');
+
+  if (!ownProfileActions || !steamLoginBtn) return;
+
+  // Populate country select
+  if (flagChangeSelect) {
+    flagChangeSelect.innerHTML = ALL_COUNTRIES_PROFILE.map(c =>
+      `<option value="${c.code}">${c.code !== 'xx' ? '🏳️ ' : ''}${c.name}</option>`
+    ).join('');
+  }
+
+  if (token && loggedInSteamId && loggedInSteamId === steamid) {
+    // Logged in and viewing own profile
+    ownProfileActions.classList.remove('hidden');
+    steamLoginBtn.classList.add('hidden');
+  } else if (!token) {
+    // Not logged in — show login button only on this profile page
+    steamLoginBtn.classList.remove('hidden');
+    ownProfileActions.classList.add('hidden');
+  }
+  // If logged in but viewing someone else's profile — show nothing
+
+  // Logout
+  if (steamLogoutBtn) {
+    steamLogoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('kz_steam_token');
+      localStorage.removeItem('kz_steam_id');
+      ownProfileActions.classList.add('hidden');
+      steamLoginBtn.classList.remove('hidden');
+    });
+  }
+
+  // Save flag
+  if (flagChangeBtn) {
+    flagChangeBtn.addEventListener('click', async () => {
+      const country = flagChangeSelect.value;
+      const currentToken = getStoredToken();
+      if (!currentToken) return;
+
+      flagChangeBtn.disabled = true;
+      flagChangeStatus.textContent = '⏳ Saving…';
+      flagChangeStatus.className = 'flag-change-status loading';
+      flagChangeStatus.classList.remove('hidden');
+
+      try {
+        const r = await fetch('https://kzlb.vercel.app/api/change-flag', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: currentToken, country }),
+        });
+        const data = await r.json();
+        if (r.ok && data.ok) {
+          flagChangeStatus.textContent = '✅ Flag updated! Changes appear in ~2 min.';
+          flagChangeStatus.className = 'flag-change-status success';
+        } else {
+          flagChangeStatus.textContent = '✗ ' + (data.error || 'Failed');
+          flagChangeStatus.className = 'flag-change-status error';
+          if (r.status === 401) {
+            localStorage.removeItem('kz_steam_token');
+            localStorage.removeItem('kz_steam_id');
+            ownProfileActions.classList.add('hidden');
+            steamLoginBtn.classList.remove('hidden');
+          }
+        }
+      } catch (err) {
+        flagChangeStatus.textContent = '✗ Network error';
+        flagChangeStatus.className = 'flag-change-status error';
+      }
+      flagChangeBtn.disabled = false;
+    });
+  }
+}
+
+// Init after profile loads (so steamid is set)
+// We call it both immediately and after profile content shows
+initSteamUI();
+profileContent && new MutationObserver((_, obs) => {
+  if (!profileContent.classList.contains('hidden')) {
+    initSteamUI();
+    obs.disconnect();
+  }
+}).observe(profileContent, { attributes: true, attributeFilter: ['class'] });
