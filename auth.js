@@ -126,8 +126,35 @@ function updateNavAuth() {
 // No modal — login is handled by login.html
 function maybeShowLoginModal() {}
 
+// If already logged in but avatar is missing, fetch it from world cache
+function fetchMissingAvatar() {
+  const auth = getAuth();
+  if (!auth) return;
+  if (auth.avatar) return; // already have it
+
+  fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json`)
+    .then(r => r.json())
+    .then(d => {
+      const player = (d.players || []).find(p => p.steamid === auth.steamid);
+      if (player?.avatar) {
+        localStorage.setItem('kz_steam_avatar', player.avatar);
+        if (player?.nickname) localStorage.setItem('kz_steam_nick', player.nickname);
+        updateNavAuth();
+      } else {
+        // Not in cache, try Vercel proxy
+        return fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${auth.steamid}`)
+          .then(r => r.json())
+          .then(d2 => {
+            if (d2.avatar) { localStorage.setItem('kz_steam_avatar', d2.avatar); updateNavAuth(); }
+            if (d2.nickname) localStorage.setItem('kz_steam_nick', d2.nickname);
+          }).catch(() => {});
+      }
+    }).catch(() => {});
+}
+
 // Run on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   updateNavAuth();
+  fetchMissingAvatar();
   maybeShowLoginModal();
 });
