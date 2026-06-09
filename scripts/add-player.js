@@ -124,9 +124,11 @@ function getLeaderboardFile(c) {
   };
 
   // Save individual cache file
+  // NOTE: userData always returns the cookie-owner's stats, not the queried player's.
+  // Save user: {} to prevent contamination. Stats come from mapsData.header.desc.
   fs.writeFileSync(
     path.join(cacheDir, `${steamid}.json`),
-    JSON.stringify({ steamid, country, cached_at: new Date().toISOString(), user: userData, maps: mapsData }, null, 2)
+    JSON.stringify({ steamid, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData }, null, 2)
   );
   console.log(`Saved cache/${steamid}.json`);
 
