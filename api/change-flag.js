@@ -43,16 +43,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid country code' });
   }
 
-  // Check player exists in leaderboard
-  let exists = false;
-  try {
-    const r = await fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/${steamid}.json`);
-    exists = r.ok;
-  } catch {}
-
-  if (!exists) {
-    return res.status(404).json({ error: 'Player not found in leaderboard. Add yourself first.' });
-  }
+  // Allow flag change even if player cache doesn't exist yet (new player, scrape pending)
+  // move-player-country.js handles the new-player case gracefully
 
   // Trigger GitHub Action to move player
   const ghToken = process.env.GH_TOKEN;

@@ -31,7 +31,34 @@ for (const f of allFiles) {
   } catch {}
 }
 
-if (!player) { console.error('Player not found'); process.exit(1); }
+// If not in any country file yet (new player), build from their individual cache
+if (!player) {
+  const indPath = path.join(cacheDir, `${steamid}.json`);
+  if (fs.existsSync(indPath)) {
+    try {
+      const ind = JSON.parse(fs.readFileSync(indPath, 'utf8'));
+      const header = ind.maps?.header || {};
+      const kzUser = ind.user?.['18'] || {};
+      player = {
+        steamid,
+        nickname: header.title || kzUser.name || steamid,
+        avatar:   header.avatar || kzUser.avatar || '',
+        country:  newCountry,
+        kz_points: Number(ind.kz_points || kzUser.points || 0),
+        kz_place:  ind.kz_place  || kzUser.place  || null,
+        kz_maps:   ind.kz_maps   || 0,
+        maps_list: ind.maps?.list || [],
+      };
+      console.log(`New player — built from ${steamid}.json`);
+    } catch (e) {
+      console.error('Player not found and cache unreadable:', e.message);
+      process.exit(1);
+    }
+  } else {
+    console.error('Player not found in any country file and no individual cache exists');
+    process.exit(1);
+  }
+}
 
 // Add to new country file
 const newFile = path.join(cacheDir, `${newCountry}-kz-players.json`);
