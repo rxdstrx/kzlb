@@ -102,26 +102,8 @@ function updateNavAuth() {
   }
 }
 
-// Show login modal on first visit (index page only)
-function maybeShowLoginModal() {
-  if (!document.getElementById('steamModalOverlay')) return;
-  const auth = getAuth();
-  const skipped = sessionStorage.getItem('kz_login_skipped');
-  if (auth || skipped) return;
-
-  const overlay = document.getElementById('steamModalOverlay');
-  const skipBtn = document.getElementById('steamModalSkip');
-  if (!overlay) return;
-
-  overlay.classList.remove('hidden');
-
-  if (skipBtn) {
-    skipBtn.addEventListener('click', () => {
-      sessionStorage.setItem('kz_login_skipped', '1');
-      overlay.classList.add('hidden');
-    });
-  }
-}
+// No modal — login is handled by login.html
+function maybeShowLoginModal() {}
 
 // Run on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
