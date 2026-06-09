@@ -62,28 +62,33 @@ function updateNavAuth() {
 
   const navSteamLogin = document.getElementById('navSteamLogin');
   const navUser = document.getElementById('navUser');
-  const navProfileItem = document.getElementById('navProfileItem');
-  const navProfileLink = document.getElementById('navProfileLink');
-  const navProfileAvatar = document.getElementById('navProfileAvatar');
-  const navProfileName = document.getElementById('navProfileName');
   const navUserAvatar = document.getElementById('navUserAvatar');
-  const navUserName = document.getElementById('navUserName');
+  const navDropdown = document.getElementById('navDropdown');
+  const navDropdownAvatar = document.getElementById('navDropdownAvatar');
+  const navDropdownName = document.getElementById('navDropdownName');
+  const navDropdownProfile = document.getElementById('navDropdownProfile');
   const navLogoutBtn = document.getElementById('navLogoutBtn');
 
   if (auth) {
-    // Logged in
     if (navSteamLogin) navSteamLogin.classList.add('hidden');
     if (navUser) navUser.classList.remove('hidden');
-    if (navProfileItem) navProfileItem.classList.remove('hidden');
 
     const avatar = auth.avatar || '';
     const nick = auth.nickname || 'My Profile';
 
-    if (navProfileLink) navProfileLink.href = `profile.html?steamid=${auth.steamid}`;
-    if (navProfileAvatar && avatar) navProfileAvatar.src = avatar;
-    if (navProfileName) navProfileName.textContent = nick;
     if (navUserAvatar && avatar) navUserAvatar.src = avatar;
-    if (navUserName) navUserName.textContent = nick;
+    if (navDropdownAvatar && avatar) navDropdownAvatar.src = avatar;
+    if (navDropdownName) navDropdownName.textContent = nick;
+    if (navDropdownProfile) navDropdownProfile.href = `profile.html?steamid=${auth.steamid}`;
+
+    // Toggle dropdown on avatar click
+    if (navUserAvatar && navDropdown) {
+      navUserAvatar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navDropdown.classList.toggle('hidden');
+      });
+      document.addEventListener('click', () => navDropdown.classList.add('hidden'));
+    }
 
     if (navLogoutBtn) {
       navLogoutBtn.addEventListener('click', () => {
@@ -92,10 +97,8 @@ function updateNavAuth() {
       });
     }
   } else {
-    // Not logged in
     if (navSteamLogin) navSteamLogin.classList.remove('hidden');
     if (navUser) navUser.classList.add('hidden');
-    if (navProfileItem) navProfileItem.classList.add('hidden');
   }
 }
 

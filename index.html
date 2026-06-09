@@ -28,24 +28,29 @@
     <ul class="nav-links">
       <li><a href="about.html">About Us</a></li>
       <li><a href="partners.html">Partners</a></li>
-      <!-- shown when logged in -->
-      <li class="nav-profile-item hidden" id="navProfileItem">
-        <a href="#" id="navProfileLink" class="nav-profile-link">
-          <img id="navProfileAvatar" src="" alt="" class="nav-profile-avatar" />
-          <span id="navProfileName">Profile</span>
-        </a>
-      </li>
     </ul>
+
     <!-- Login button (shown when not logged in) -->
-    <a class="nav-steam-login hidden" id="navSteamLogin" href="login.html">
-      <svg width="14" height="14" viewBox="0 0 36 36" fill="none" style="opacity:0.7"><rect width="36" height="36" rx="10" fill="rgba(56,189,248,0.2)"/><text x="4" y="24" font-family="system-ui" font-weight="800" font-size="14" fill="#38bdf8">KZ</text></svg>
-      Login with Steam
-    </a>
-    <!-- Logged-in avatar + logout -->
-    <div class="nav-user hidden" id="navUser">
-      <img id="navUserAvatar" src="" alt="" class="nav-profile-avatar" />
-      <span id="navUserName"></span>
-      <button class="nav-logout-btn" id="navLogoutBtn">Log out</button>
+    <a class="nav-steam-login hidden" id="navSteamLogin" href="login.html">Login with Steam</a>
+
+    <!-- Logged-in avatar with dropdown -->
+    <div class="nav-avatar-wrap hidden" id="navUser">
+      <img id="navUserAvatar" src="" alt="" class="nav-avatar-btn" id="navAvatarBtn" />
+      <div class="nav-dropdown hidden" id="navDropdown">
+        <div class="nav-dropdown-info">
+          <img id="navDropdownAvatar" src="" alt="" class="nav-dropdown-avatar" />
+          <span id="navDropdownName"></span>
+        </div>
+        <div class="nav-dropdown-divider"></div>
+        <a href="#" class="nav-dropdown-item" id="navDropdownProfile">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          Open Profile
+        </a>
+        <button class="nav-dropdown-item nav-dropdown-logout" id="navLogoutBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Log out
+        </button>
+      </div>
     </div>
   </nav>
 
