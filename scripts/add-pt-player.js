@@ -14,7 +14,7 @@ if (!steamid || !/^\d{17}$/.test(steamid)) {
   process.exit(1);
 }
 
-const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv4pjmnJVyhKQk3oYa5q65yHTyVmNYroRvWumE0Km; multitoken_created=1; cookie_read=1; lang_g=ru; current-game=2; vip=true; vip-group=LITE`;
+const COOKIE = process.env.CYBERSHOKE_COOKIE;
 
 const cacheDir = path.join(__dirname, '..', 'cache');
 const ptKzFile = path.join(cacheDir, 'pt-kz-players.json');

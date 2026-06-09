@@ -40,6 +40,8 @@ jobs:
           fi
 
       - name: Add player to PT leaderboard
+        env:
+          CYBERSHOKE_COOKIE: ${{ secrets.CYBERSHOKE_COOKIE }}
         run: node scripts/add-pt-player.js "${{ github.event.inputs.steamid }}" "${{ github.event.inputs.nickname }}"
 
       - name: Commit results

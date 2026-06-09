@@ -20,7 +20,7 @@ puppeteer.use(StealthPlugin());
 const FACEIT_KEY = process.env.FACEIT_KEY;
 const HOW_MANY   = parseInt(process.argv[2] || '100', 10);
 const CONCURRENCY = 10;
-const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv4pjmnJVyhKQk3oYa5q65yHTyVmNYroRvWumE0Km; multitoken_created=1; cookie_read=1; lang_g=ru; current-game=2; vip=true; vip-group=LITE`;
+const COOKIE = process.env.CYBERSHOKE_COOKIE;
 
 const cacheDir = path.join(__dirname, '..', 'cache');
 const ptFile   = path.join(cacheDir, 'pt-players.json');
