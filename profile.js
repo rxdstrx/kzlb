@@ -186,8 +186,9 @@ async function loadProfile(sid) {
     if (!name) name = 'Unknown Player';
 
     const desc    = header.desc || {};
-    // Prefer cache country over URL param (URL param may be stale after flag change)
-    const country = data.country || urlCountry || null;
+    // Prefer cache country over URL param; treat 'xx' as unset
+    const rawCountry = data.country || urlCountry || null;
+    let country = (rawCountry && rawCountry !== 'xx') ? rawCountry : null;
 
     // ── Basic info ──
     document.getElementById('playerSteamId').textContent = sid;
@@ -196,7 +197,28 @@ async function loadProfile(sid) {
     document.title = `KZ — ${name}`;
 
     const flagEl = document.getElementById('playerFlag');
-    if (flagEl && country) flagEl.innerHTML = countryToFlag(country);
+    const statCountryEl = document.getElementById('statCountryDisplay');
+
+    function applyCountry(c) {
+      if (c && c !== 'xx') {
+        if (flagEl) flagEl.innerHTML = countryToFlag(c);
+        if (statCountryEl) statCountryEl.innerHTML =
+          `<img src="https://flagcdn.com/w40/${c}.png" style="height:22px;border-radius:3px;vertical-align:middle"> ${c.toUpperCase()}`;
+      } else {
+        if (flagEl) flagEl.innerHTML = '';
+        if (statCountryEl) statCountryEl.textContent = '—';
+      }
+    }
+
+    applyCountry(country);
+
+    // If no country set, try Steam API (returns loccountrycode)
+    if (!country) {
+      fetch(`${API_BASE}/api/steam-user?steamid=${sid}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(d => { if (d?.country) applyCountry(d.country); })
+        .catch(() => {});
+    }
 
     // Steam social link
     const steamLink = document.getElementById('steamSocialLink');
@@ -225,12 +247,6 @@ async function loadProfile(sid) {
     // ── Stats bar ──
     const worldRank = data.kz_place ? `#${Number(data.kz_place).toLocaleString()}` : (desc['{{Position}}'] ?? kzUser.place ?? '—');
     setStatIfExists('statWorldRank', worldRank);
-
-    const countryDisplay = (country && country !== 'xx')
-      ? `<img src="https://flagcdn.com/w40/${country}.png" style="height:22px;border-radius:3px;vertical-align:middle"> ${country.toUpperCase()}`
-      : '—';
-    const statCountryEl = document.getElementById('statCountryDisplay');
-    if (statCountryEl) statCountryEl.innerHTML = countryDisplay;
 
     const kzPoints = data.kz_points ? Number(data.kz_points).toFixed(0) : (desc['{{Points}}'] ?? kzUser.points ?? '—');
     setStatIfExists('statPoints', kzPoints);

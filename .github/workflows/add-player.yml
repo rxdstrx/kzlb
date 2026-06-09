@@ -47,6 +47,7 @@ jobs:
         env:
           FACEIT_KEY: ${{ secrets.FACEIT_KEY }}
           CYBERSHOKE_COOKIE: ${{ secrets.CYBERSHOKE_COOKIE }}
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
         run: node scripts/add-player.js "${{ github.event.inputs.steamid }}" "${{ github.event.inputs.country }}" "${{ github.event.inputs.nickname }}"
 
       - name: Normalize place totals and rebuild world

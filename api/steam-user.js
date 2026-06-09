@@ -19,6 +19,7 @@ export default async function handler(req, res) {
         return res.json({
           nickname: player.personaname || '',
           avatar: player.avatarfull || player.avatarmedium || player.avatar || '',
+          country: player.loccountrycode?.toLowerCase() || '',
         });
       }
     } catch {}

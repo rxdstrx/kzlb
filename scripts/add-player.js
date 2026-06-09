@@ -53,7 +53,7 @@ function getLeaderboardFile(c) {
   await page.setCookie(...cookies);
   await page.setExtraHTTPHeaders({ 'Accept-Language': 'ru-RU,ru;q=0.9' });
 
-  // If country still unknown, try Faceit lookup automatically
+  // If country still unknown, try Faceit then Steam API
   if (country === 'xx') {
     console.log('Country unknown — trying Faceit lookup...');
     const faceitCountry = await getFaceitCountry(steamid);
@@ -61,7 +61,18 @@ function getLeaderboardFile(c) {
       country = faceitCountry;
       console.log(`Found country via Faceit: ${country}`);
     } else {
-      console.log('No Faceit account found — player will be added without a flag (xx).');
+      // Fallback: Steam GetPlayerSummaries returns loccountrycode
+      console.log('No Faceit account — trying Steam API for country...');
+      try {
+        const STEAM_KEY = process.env.STEAM_API_KEY;
+        if (STEAM_KEY) {
+          const sr = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_KEY}&steamids=${steamid}`);
+          const sd = await sr.json();
+          const loc = sd?.response?.players?.[0]?.loccountrycode?.toLowerCase();
+          if (loc) { country = loc; console.log(`Found country via Steam API: ${country}`); }
+          else console.log('No country in Steam profile — using xx.');
+        }
+      } catch (e) { console.log('Steam API lookup failed:', e.message); }
     }
   }
 
