@@ -1005,27 +1005,20 @@
 }
 
 /* ══ PINNED SELF ROW (logged-in player at top of leaderboard) ══ */
-.pinned-self-row {
-  background: rgba(56,189,248,0.06) !important;
-  outline: 2px solid rgba(56,189,248,0.45);
-  outline-offset: -2px;
-  border-radius: 10px;
-  position: relative;
+.pinned-self-row td {
+  background: rgba(56,189,248,0.07);
+  border-top: 1.5px solid rgba(56,189,248,0.5);
+  border-bottom: 1.5px solid rgba(56,189,248,0.5);
   animation: pinnedGlow 2.5s ease-in-out infinite;
 }
 
-.pinned-self-row td {
-  border-top: 1px solid rgba(56,189,248,0.25);
-  border-bottom: 1px solid rgba(56,189,248,0.25);
-}
-
 .pinned-self-row td:first-child {
-  border-left: 1px solid rgba(56,189,248,0.25);
+  border-left: 1.5px solid rgba(56,189,248,0.5);
   border-radius: 10px 0 0 10px;
 }
 
 .pinned-self-row td:last-child {
-  border-right: 1px solid rgba(56,189,248,0.25);
+  border-right: 1.5px solid rgba(56,189,248,0.5);
   border-radius: 0 10px 10px 0;
 }
 
@@ -1038,15 +1031,16 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #38bdf8;
-  background: rgba(56,189,248,0.12);
-  border: 1px solid rgba(56,189,248,0.3);
+  background: rgba(56,189,248,0.15);
+  border: 1px solid rgba(56,189,248,0.4);
   border-radius: 6px;
-  padding: 2px 7px;
+  padding: 2px 8px;
   margin-left: 8px;
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 @keyframes pinnedGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(56,189,248,0); }
-  50%       { box-shadow: 0 0 18px 4px rgba(56,189,248,0.18); }
+  0%, 100% { box-shadow: inset 0 0 0 0 rgba(56,189,248,0); }
+  50%       { box-shadow: inset 0 0 20px 2px rgba(56,189,248,0.08); }
 }
