@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KZplus — Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="landing.css" />
+  <style>
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .login-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 24px 60px;
+    }
+
+    .login-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 52px 48px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .login-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      margin-bottom: 32px;
+    }
+
+    .login-logo-text {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #f0f0f5;
+      letter-spacing: -0.02em;
+    }
+
+    .login-logo-text span { color: #38bdf8; }
+
+    .login-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .login-sub {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    .login-steam-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 14px;
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 14px;
+      transition: background 0.18s, border-color 0.18s;
+      text-decoration: none;
+      margin-bottom: 16px;
+    }
+
+    .login-steam-btn:hover {
+      background: rgba(56,189,248,0.14);
+      border-color: rgba(56,189,248,0.35);
+    }
+
+    .login-steam-btn img {
+      height: 44px;
+    }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0 16px;
+      color: rgba(255,255,255,0.15);
+      font-size: 0.75rem;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .login-skip {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.85rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .login-skip:hover {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .login-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 36px;
+      text-align: left;
+    }
+
+    .login-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.83rem;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .login-feature-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(56,189,248,0.1);
+      border: 1px solid rgba(56,189,248,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .login-footer-note {
+      margin-top: 24px;
+      font-size: 0.73rem;
+      color: rgba(255,255,255,0.18);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+
+  <div class="login-page">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+      <a href="index.html" class="nav-logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="10" fill="rgba(56,189,248,0.12)"/>
+          <text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#38bdf8">KZ</text>
+          <line x1="27" y1="10" x2="27" y2="26" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="19" y1="18" x2="35" y2="18" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <span class="nav-logo-text">KZ<span>plus</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="partners.html">Partners</a></li>
+      </ul>
+    </nav>
+
+    <!-- Login card -->
+    <div class="login-body">
+      <div class="login-card">
+
+        <a href="index.html" class="login-logo">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="10" fill="rgba(56,189,248,0.15)"/>
+            <text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#38bdf8">KZ</text>
+            <line x1="27" y1="10" x2="27" y2="26" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="19" y1="18" x2="35" y2="18" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+          <span class="login-logo-text">KZ<span>plus</span></span>
+        </a>
+
+        <div class="login-title">Sign in to KZplus</div>
+        <div class="login-sub">Connect your Steam account to unlock your personal profile and manage your leaderboard presence.</div>
+
+        <div class="login-features">
+          <div class="login-feature">
+            <div class="login-feature-icon">🏆</div>
+            View your KZ stats and completed maps
+          </div>
+          <div class="login-feature">
+            <div class="login-feature-icon">🏳️</div>
+            Set your country flag on the leaderboard
+          </div>
+          <div class="login-feature">
+            <div class="login-feature-icon">⚡</div>
+            Update your records with one click
+          </div>
+        </div>
+
+        <a class="login-steam-btn" href="https://kzlb.vercel.app/api/steam-auth">
+          <img src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png" alt="Sign in through Steam" />
+        </a>
+
+        <div class="login-divider">or</div>
+
+        <a class="login-skip" href="index.html">Continue without account</a>
+
+        <div class="login-footer-note">We only access your public Steam profile. No passwords stored.</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // auth.js handles token from hash — if already logged in after that, go to index
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof getAuth === 'function' && getAuth()) {
+        window.location.href = 'index.html';
+      }
+    });
+    // Also check immediately after auth.js runs (token may have just been stored)
+    setTimeout(() => {
+      if (typeof getAuth === 'function' && getAuth()) {
+        window.location.href = 'index.html';
+      }
+    }, 500);
+  </script>
+</body>
+</html>
