@@ -151,7 +151,6 @@ if (updateRecordBtn && steamid) {
 
 async function loadProfile(sid) {
   try {
-    // Try to load cached data from GitHub
     const cacheRes = await fetch(`${CACHE_BASE}/${sid}.json?bust=${Date.now()}`);
 
     if (!cacheRes.ok) {
@@ -168,13 +167,11 @@ async function loadProfile(sid) {
 
     const data = await cacheRes.json();
 
-    // Player info from maps.header or user mode 18
     const header = data.maps?.header || {};
     const kzUser = data.user?.['18'] || {};
     let name   = header.title || kzUser.name || '';
     let avatar = header.avatar || kzUser.avatar || '';
 
-    // Fallback to Steam/playerdb if no name or avatar
     if (!name || !avatar) {
       try {
         const pdb = await fetch(`https://playerdb.co/api/player/steam/${sid}`);
@@ -187,43 +184,93 @@ async function loadProfile(sid) {
       } catch {}
     }
     if (!name) name = 'Unknown Player';
-    const desc   = header.desc || {};
 
+    const desc    = header.desc || {};
+    const country = urlCountry || data.country || null;
+
+    // ── Basic info ──
     document.getElementById('playerSteamId').textContent = sid;
-    document.getElementById('playerAvatar').src          = avatar;
+    document.getElementById('playerAvatar').src = avatar;
+    document.getElementById('playerName').textContent = name;
     document.title = `KZ — ${name}`;
 
-    const country = urlCountry || data.country || null;
     const flagEl = document.getElementById('playerFlag');
-    const nameEl = document.getElementById('playerName');
-    nameEl.childNodes[0].textContent = name;
     if (flagEl && country) flagEl.innerHTML = countryToFlag(country);
 
-    const csLink = `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}`;
+    // Steam social link
+    const steamLink = document.getElementById('steamSocialLink');
+    if (steamLink) steamLink.href = `https://steamcommunity.com/profiles/${sid}`;
+
+    // Last seen
+    const lastSeenEl = document.getElementById('profileLastSeen');
+    if (lastSeenEl) {
+      const seenKey = `kz_seen_${sid}`;
+      const lastSeen = localStorage.getItem(seenKey);
+      if (lastSeen) lastSeenEl.textContent = `Last active on site ${timeSince(new Date(Number(lastSeen)))} ago`;
+      localStorage.setItem(seenKey, Date.now().toString());
+    }
+
+    // ── Banner ──
+    const banner = document.getElementById('profileBanner');
+    if (banner) {
+      const bannerUrl = localStorage.getItem(`kz_banner_${sid}`);
+      if (bannerUrl) {
+        banner.style.backgroundImage = `url(${bannerUrl})`;
+      }
+    }
+
+    // ── Cybershoke link ──
     const cybLink = document.getElementById('cybershokeLink');
-    if (cybLink) cybLink.href = csLink;
+    if (cybLink) cybLink.href = `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}`;
 
-    // Header stats
-    setStatIfExists('statPosition',   desc['{{Position}}']        ?? kzUser.place   ?? '—');
-    setStatIfExists('statPoints',     desc['{{Points}}']           ?? kzUser.points  ?? '—');
-    setStatIfExists('statMaps',       desc['{{COMPLETIONS-MAP}}']  ?? '—');
-    setStatIfExists('statBonus',      desc['{{COMPLETIONS-BONUS}}'] ?? '—');
-    setStatIfExists('statWR',         desc['WR']                   ?? '—');
-    setStatIfExists('statPBTop100',   desc['PB {{TOP-1}} 100']     ?? '—');
+    // ── Stats bar ──
+    const worldRank = data.kz_place ? `#${Number(data.kz_place).toLocaleString()}` : (desc['{{Position}}'] ?? kzUser.place ?? '—');
+    setStatIfExists('statWorldRank', worldRank);
 
-    // Maps table
+    const countryDisplay = country
+      ? `<img src="https://flagcdn.com/w40/${country}.png" style="height:22px;border-radius:3px;vertical-align:middle"> ${country.toUpperCase()}`
+      : '—';
+    const statCountryEl = document.getElementById('statCountryDisplay');
+    if (statCountryEl) statCountryEl.innerHTML = countryDisplay;
+
+    const kzPoints = data.kz_points ? Number(data.kz_points).toFixed(0) : (desc['{{Points}}'] ?? kzUser.points ?? '—');
+    setStatIfExists('statPoints', kzPoints);
+
+    const mapsCount = data.kz_maps || data.maps?.list?.length || desc['{{COMPLETIONS-MAP}}'] || '—';
+    setStatIfExists('statMaps', mapsCount);
+
+    // Faceit ELO — fetch async
+    setStatIfExists('statFaceitElo', '…');
+    fetch(`${API_BASE}/api/faceit-stats?steamid=${sid}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(f => {
+        if (f?.elo) {
+          setStatIfExists('statFaceitElo', f.elo.toLocaleString());
+          const faceitLink = document.getElementById('faceitSocialLink');
+          if (faceitLink && f.faceit_url) {
+            faceitLink.href = f.faceit_url;
+            faceitLink.classList.remove('hidden');
+          }
+        } else {
+          setStatIfExists('statFaceitElo', 'No profile');
+        }
+      }).catch(() => setStatIfExists('statFaceitElo', 'No profile'));
+
+    // ── Maps table ──
     const mapList = (data.maps?.list || []).sort((a, b) => Number(a.tier) - Number(b.tier));
     renderMaps(mapList);
 
-    // Cached time
+    // ── Cached note ──
     if (data.cached_at) {
-      const ago = timeSince(new Date(data.cached_at));
       const el = document.getElementById('cachedAt');
-      if (el) el.textContent = `Stats cached ${ago} ago`;
+      if (el) el.textContent = `Stats cached ${timeSince(new Date(data.cached_at))} ago`;
     }
 
     loadingState.classList.add('hidden');
     profileContent.classList.remove('hidden');
+
+    // Init Steam UI after content is visible
+    initSteamUI();
 
   } catch (e) {
     showError('Failed to load profile. ' + e.message);
@@ -349,39 +396,78 @@ const ALL_COUNTRIES_PROFILE = [
   { code: 'vn', name: 'Vietnam' },
 ];
 
+
+function getStoredToken() {
+  const auth = typeof getAuth === 'function' ? getAuth() : null;
+  return auth ? auth.token : null;
+}
+
+// ── Banner edit (owner only) ──
+function initBannerUI(ownerSteamId) {
+  const controls  = document.getElementById('bannerOwnerControls');
+  const editBtn   = document.getElementById('bannerEditBtn');
+  const editPanel = document.getElementById('bannerEditPanel');
+  const urlInput  = document.getElementById('bannerUrlInput');
+  const saveBtn   = document.getElementById('bannerSaveBtn');
+  const removeBtn = document.getElementById('bannerRemoveBtn');
+  const banner    = document.getElementById('profileBanner');
+  if (!controls) return;
+
+  if (ownerSteamId !== steamid) return;
+  controls.classList.remove('hidden');
+
+  editBtn.addEventListener('click', () => {
+    editPanel.classList.toggle('hidden');
+    if (!editPanel.classList.contains('hidden')) urlInput.focus();
+  });
+
+  saveBtn.addEventListener('click', () => {
+    const url = urlInput.value.trim();
+    if (!url) return;
+    localStorage.setItem(`kz_banner_${steamid}`, url);
+    banner.style.backgroundImage = `url(${url})`;
+    editPanel.classList.add('hidden');
+  });
+
+  removeBtn.addEventListener('click', () => {
+    localStorage.removeItem(`kz_banner_${steamid}`);
+    banner.style.backgroundImage = '';
+    editPanel.classList.add('hidden');
+  });
+}
+
+// ── Steam UI (flag change, logout, login prompt) ──
 function initSteamUI() {
   const auth = typeof getAuth === 'function' ? getAuth() : null;
   const token = auth ? auth.token : null;
   const loggedInSteamId = auth ? auth.steamid : null;
   const ownProfileActions = document.getElementById('ownProfileActions');
-  const steamLoginBtn = document.getElementById('steamLoginBtn');
-  const steamLogoutBtn = document.getElementById('steamLogoutBtn');
-  const flagChangeSelect = document.getElementById('flagChangeSelect');
-  const flagChangeBtn = document.getElementById('flagChangeBtn');
-  const flagChangeStatus = document.getElementById('flagChangeStatus');
+  const steamLoginBtn     = document.getElementById('steamLoginBtn');
+  const steamLogoutBtn    = document.getElementById('steamLogoutBtn');
+  const flagChangeSelect  = document.getElementById('flagChangeSelect');
+  const flagChangeBtn     = document.getElementById('flagChangeBtn');
+  const flagChangeStatus  = document.getElementById('flagChangeStatus');
 
   if (!ownProfileActions || !steamLoginBtn) return;
 
   // Populate country select
-  if (flagChangeSelect) {
+  if (flagChangeSelect && !flagChangeSelect.options.length) {
     flagChangeSelect.innerHTML = ALL_COUNTRIES_PROFILE.map(c =>
-      `<option value="${c.code}">${c.code !== 'xx' ? '🏳️ ' : ''}${c.name}</option>`
+      `<option value="${c.code}">${c.name}</option>`
     ).join('');
   }
 
   if (token && loggedInSteamId && loggedInSteamId === steamid) {
-    // Logged in and viewing own profile
     ownProfileActions.classList.remove('hidden');
     steamLoginBtn.classList.add('hidden');
+    initBannerUI(loggedInSteamId);
   } else if (!token) {
-    // Not logged in — show login button only on this profile page
     steamLoginBtn.classList.remove('hidden');
     ownProfileActions.classList.add('hidden');
   }
-  // If logged in but viewing someone else's profile — show nothing
 
-  // Logout
-  if (steamLogoutBtn) {
+  if (steamLogoutBtn && !steamLogoutBtn._bound) {
+    steamLogoutBtn._bound = true;
     steamLogoutBtn.addEventListener('click', () => {
       if (typeof clearAuth === 'function') clearAuth();
       ownProfileActions.classList.add('hidden');
@@ -389,8 +475,8 @@ function initSteamUI() {
     });
   }
 
-  // Save flag
-  if (flagChangeBtn) {
+  if (flagChangeBtn && !flagChangeBtn._bound) {
+    flagChangeBtn._bound = true;
     flagChangeBtn.addEventListener('click', async () => {
       const country = flagChangeSelect.value;
       const currentToken = getStoredToken();
@@ -414,13 +500,13 @@ function initSteamUI() {
         } else {
           flagChangeStatus.textContent = '✗ ' + (data.error || 'Failed');
           flagChangeStatus.className = 'flag-change-status error';
-          if (r.status === 401) {
-            if (typeof clearAuth === 'function') clearAuth();
+          if (r.status === 401 && typeof clearAuth === 'function') {
+            clearAuth();
             ownProfileActions.classList.add('hidden');
             steamLoginBtn.classList.remove('hidden');
           }
         }
-      } catch (err) {
+      } catch {
         flagChangeStatus.textContent = '✗ Network error';
         flagChangeStatus.className = 'flag-change-status error';
       }
@@ -428,13 +514,3 @@ function initSteamUI() {
     });
   }
 }
-
-// Init after profile loads (so steamid is set)
-// We call it both immediately and after profile content shows
-initSteamUI();
-profileContent && new MutationObserver((_, obs) => {
-  if (!profileContent.classList.contains('hidden')) {
-    initSteamUI();
-    obs.disconnect();
-  }
-}).observe(profileContent, { attributes: true, attributeFilter: ['class'] });
