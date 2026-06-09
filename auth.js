@@ -31,13 +31,18 @@ function clearAuth() {
   localStorage.removeItem('kz_steam_avatar');
 }
 
-// Fire the add-player GitHub Action once per session (rate-limited to 1 per 10 min)
+// Register new player — rate-limited to once per 10 min per account
 function triggerAddPlayer(steamid) {
-  const key = `kz_registered_${steamid}`;
+  const key  = `kz_registered_${steamid}`;
   const last = parseInt(localStorage.getItem(key) || '0', 10);
   const now  = Date.now();
   if (now - last < 10 * 60 * 1000) return; // already triggered in last 10 min
   localStorage.setItem(key, String(now));
+
+  // Fast path: write directly to GitHub JSON via Vercel (takes ~5 sec, no Action queue)
+  fetch(`https://kzlb.vercel.app/api/register-player?steamid=${steamid}`).catch(() => {});
+
+  // Background: full Cybershoke scrape via Action (picks up actual stats if they have any)
   fetch(`https://kzlb.vercel.app/api/trigger-scrape?steamid=${steamid}`).catch(() => {});
 }
 
