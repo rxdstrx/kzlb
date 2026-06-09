@@ -118,7 +118,8 @@ function updateNavAuth() {
     if (navDropdownName)             navDropdownName.textContent = nick;
     if (navDropdownProfile)          navDropdownProfile.href = `profile.html?steamid=${auth.steamid}`;
 
-    if (navUserAvatar && navDropdown) {
+    if (navUserAvatar && navDropdown && !navUserAvatar._dropdownBound) {
+      navUserAvatar._dropdownBound = true;
       navUserAvatar.addEventListener('click', (e) => {
         e.stopPropagation();
         navDropdown.classList.toggle('hidden');
