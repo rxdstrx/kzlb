@@ -68,6 +68,14 @@ function fetchSteamProfile(steamid) {
   const payload = parseJWTPayload(token);
 
   if (payload && payload.steamid === steamid) {
+    // If switching accounts, clear stale nick/avatar from the old account
+    const prevSteamid = localStorage.getItem('kz_steam_id');
+    if (prevSteamid && prevSteamid !== steamid) {
+      localStorage.removeItem('kz_steam_nick');
+      localStorage.removeItem('kz_steam_avatar');
+      if (prevSteamid) localStorage.removeItem(`kz_registered_${prevSteamid}`);
+    }
+
     localStorage.setItem('kz_steam_token', token);
     localStorage.setItem('kz_steam_id', steamid);
 
