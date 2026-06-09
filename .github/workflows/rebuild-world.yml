@@ -1,0 +1,29 @@
+name: Rebuild World Leaderboard
+
+on:
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Rebuild world from all country files
+        run: node scripts/rebuild-world.js
+
+      - name: Commit
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add cache/world-kz-players.json
+          git diff --staged --quiet || git commit -m "rebuild world leaderboard"
+          git pull --rebase=false --strategy-option=ours origin main
+          git push origin HEAD:main
