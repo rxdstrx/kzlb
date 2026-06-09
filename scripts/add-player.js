@@ -61,18 +61,29 @@ function getLeaderboardFile(c) {
       country = faceitCountry;
       console.log(`Found country via Faceit: ${country}`);
     } else {
-      // Fallback: Steam GetPlayerSummaries returns loccountrycode
+      // Fallback 1: Steam GetPlayerSummaries (needs STEAM_API_KEY secret)
       console.log('No Faceit account — trying Steam API for country...');
+      let foundCountry = false;
       try {
         const STEAM_KEY = process.env.STEAM_API_KEY;
         if (STEAM_KEY) {
           const sr = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_KEY}&steamids=${steamid}`);
           const sd = await sr.json();
           const loc = sd?.response?.players?.[0]?.loccountrycode?.toLowerCase();
-          if (loc) { country = loc; console.log(`Found country via Steam API: ${country}`); }
-          else console.log('No country in Steam profile — using xx.');
+          if (loc) { country = loc; foundCountry = true; console.log(`Found country via Steam API: ${country}`); }
         }
       } catch (e) { console.log('Steam API lookup failed:', e.message); }
+
+      // Fallback 2: playerdb.co (free, no key needed)
+      if (!foundCountry) {
+        try {
+          const pr = await fetch(`https://playerdb.co/api/player/steam/${steamid}`);
+          const pd = await pr.json();
+          const loc = pd?.data?.player?.meta?.loccountrycode?.toLowerCase();
+          if (loc) { country = loc; foundCountry = true; console.log(`Found country via playerdb: ${country}`); }
+          else console.log('No country found anywhere — using xx.');
+        } catch (e) { console.log('playerdb lookup failed:', e.message); }
+      }
     }
   }
 
