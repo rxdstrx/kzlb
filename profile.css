@@ -1,294 +1,374 @@
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 28px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 10px;
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.82rem;
-  font-family: inherit;
-  font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  backdrop-filter: blur(12px);
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-  letter-spacing: 0.02em;
-}
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.85);
-}
+.hidden { display: none !important; }
 
-/* ── Loading / Error ── */
+/* ── Loading ── */
 .profile-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 80px 0;
+  padding: 120px 0;
   color: rgba(255,255,255,0.3);
   font-size: 0.9rem;
 }
 .progress-ring-wrap {
   position: relative;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100px; height: 100px;
+  display: flex; align-items: center; justify-content: center;
 }
-
 .progress-ring { transform: rotate(-90deg); }
-
-.progress-ring-bg {
-  fill: none;
-  stroke: rgba(255,255,255,0.06);
-  stroke-width: 6;
-}
-
+.progress-ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 6; }
 .progress-ring-fill {
-  fill: none;
-  stroke: #818cf8;
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-dasharray: 264;
-  stroke-dashoffset: 264;
+  fill: none; stroke: #818cf8; stroke-width: 6; stroke-linecap: round;
+  stroke-dasharray: 264; stroke-dashoffset: 264;
   transition: stroke-dashoffset 0.8s ease, stroke 0.4s ease;
   filter: drop-shadow(0 0 6px rgba(129,140,248,0.6));
 }
-
-.progress-pct {
-  position: absolute;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #f0f0f5;
-  font-variant-numeric: tabular-nums;
-}
-
-.loading-step {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: rgba(255,255,255,0.85);
-  margin: 0;
-}
-
-.loading-sub {
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.3);
-  margin: 4px 0 0;
-}
+.progress-pct { position: absolute; font-size: 1rem; font-weight: 700; color: #f0f0f5; }
+.loading-step { font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.85); margin: 0; }
+.loading-sub  { font-size: 0.78rem; color: rgba(255,255,255,0.3); margin: 4px 0 0; }
 
 .profile-error {
-  text-align: center;
-  padding: 80px 0;
-  color: rgba(255,255,255,0.35);
-  font-size: 0.9rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center; padding: 80px 0;
+  color: rgba(255,255,255,0.35); font-size: 0.9rem;
+  display: flex; flex-direction: column; align-items: center;
 }
 
-.hidden { display: none !important; }
+/* ── Back button ── */
+.profile-back-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 24px 0;
+}
+.back-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 10px;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.82rem; font-family: inherit; font-weight: 500;
+  text-decoration: none; cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.back-btn:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.85);
+}
 
-/* ── Player card ── */
-.player-card {
+/* ── Banner ── */
+.profile-banner {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  margin-top: 16px;
+  background: linear-gradient(135deg, #0f1923 0%, #1a1033 40%, #0c1a2e 100%);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+.banner-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(6,6,8,0) 40%, rgba(6,6,8,0.85) 100%);
+  pointer-events: none;
+}
+.banner-owner-controls {
+  position: absolute; top: 14px; right: 16px;
+  display: flex; align-items: center; gap: 10px; z-index: 10;
+}
+.banner-edit-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.78rem; font-weight: 600; font-family: inherit;
+  cursor: pointer; backdrop-filter: blur(8px);
+  transition: background 0.15s, color 0.15s;
+}
+.banner-edit-btn:hover { background: rgba(0,0,0,0.7); color: #fff; }
+.banner-edit-panel {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(6,6,8,0.85);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 8px 12px;
+  backdrop-filter: blur(12px);
+}
+.banner-url-input {
+  width: 260px; padding: 6px 10px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 7px;
+  color: #f0f0f5; font-size: 0.82rem; font-family: inherit;
+  outline: none;
+}
+.banner-url-input::placeholder { color: rgba(255,255,255,0.25); }
+.banner-url-input:focus { border-color: rgba(129,140,248,0.4); }
+.banner-save-btn {
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+  border: none; border-radius: 7px;
+  color: #fff; font-size: 0.8rem; font-weight: 600; font-family: inherit;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.banner-save-btn:hover { opacity: 0.85; }
+.banner-remove-btn {
+  padding: 6px 12px;
+  background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.2);
+  border-radius: 7px;
+  color: #f87171; font-size: 0.8rem; font-family: inherit;
+  cursor: pointer; transition: background 0.15s;
+}
+.banner-remove-btn:hover { background: rgba(248,113,113,0.2); }
+
+/* ── Profile header ── */
+.profile-header-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  margin-top: -56px;
+}
+.profile-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 20px;
-  padding: 24px 28px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  backdrop-filter: blur(24px);
-  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+}
+.profile-avatar-outer {
+  flex-shrink: 0;
+  width: 100px; height: 100px;
+  border-radius: 16px;
+  border: 3px solid rgba(6,6,8,0.9);
+  background: rgba(255,255,255,0.05);
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+.profile-avatar-lg {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.profile-header-info {
+  flex: 1; min-width: 0;
+  padding-bottom: 4px;
+}
+.profile-name-row {
+  display: flex; align-items: center; gap: 10px;
   flex-wrap: wrap;
 }
-
-.player-avatar {
-  width: 72px; height: 72px;
-  border-radius: 14px;
-  border: 2px solid rgba(255,255,255,0.1);
-  object-fit: cover;
-  flex-shrink: 0;
-  background: rgba(255,255,255,0.05);
+.profile-name {
+  font-size: 1.7rem; font-weight: 800;
+  letter-spacing: -0.03em; color: #f0f0f5;
+  margin: 0; line-height: 1.1;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
 }
-
-.player-info {
-  flex: 1;
-  min-width: 0;
+.profile-flag img { height: 20px; border-radius: 3px; vertical-align: middle; }
+.profile-steamid {
+  font-size: 0.72rem; color: rgba(255,255,255,0.25);
+  font-family: "SF Mono", monospace; letter-spacing: 0.04em;
+  margin-top: 4px;
 }
-
-.player-name {
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #f0f0f5;
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.profile-lastseen {
+  font-size: 0.78rem; color: rgba(255,255,255,0.35);
+  margin-top: 3px;
 }
-
-.player-id {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.25);
-  font-family: "SF Mono", monospace;
-  letter-spacing: 0.04em;
+.profile-socials {
+  display: flex; gap: 8px; margin-top: 10px;
 }
-
-.cybershoke-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  background: rgba(129,140,248,0.12);
-  border: 1px solid rgba(129,140,248,0.25);
-  border-radius: 10px;
-  color: #a5b4fc;
-  font-size: 0.82rem;
-  font-weight: 500;
+.social-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 9px;
+  color: rgba(255,255,255,0.55);
   text-decoration: none;
-  transition: background 0.15s, border-color 0.15s;
-  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.cybershoke-btn:hover {
-  background: rgba(129,140,248,0.22);
-  border-color: rgba(129,140,248,0.45);
-}
-.update-record-profile-btn {
-  display: inline-flex;
-  align-items: center;
-  padding: 9px 18px;
-  background: linear-gradient(135deg, #34d399, #059669);
-  border: none;
-  border-radius: 10px;
+.social-icon-btn:hover {
+  background: rgba(255,255,255,0.13);
+  border-color: rgba(255,255,255,0.2);
   color: #fff;
-  font-size: 0.82rem;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: opacity 0.15s;
 }
-.update-record-profile-btn:hover { opacity: 0.85; }
-.update-record-profile-btn:disabled { opacity: 0.5; cursor: default; }
-.update-record-status {
-  font-size: 0.8rem;
-  margin-top: 6px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-weight: 500;
-}
-.update-record-status.loading { color: rgba(255,255,255,0.6); }
-.update-record-status.success { color: #34d399; }
-.update-record-status.error { color: #f87171; }
+.faceit-btn { color: #ff5500; border-color: rgba(255,85,0,0.2); background: rgba(255,85,0,0.06); }
+.faceit-btn:hover { background: rgba(255,85,0,0.14); border-color: rgba(255,85,0,0.35); color: #ff6a1a; }
 
-/* ── Steam login / flag change ── */
-.steam-login-btn {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 10px;
-  padding: 7px 14px;
-  background: rgba(56,189,248,0.08);
-  border: 1px solid rgba(56,189,248,0.2);
-  border-radius: 8px;
-  color: #38bdf8;
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.15s;
+/* ── Stats bar ── */
+.profile-stats-bar {
+  max-width: 960px;
+  margin: 20px auto 0;
+  padding: 0 24px;
+  display: flex;
+  align-items: stretch;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  overflow: hidden;
 }
-.steam-login-btn:hover { background: rgba(56,189,248,0.15); }
+.stat-card {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 20px 12px;
+  text-align: center;
+}
+.stat-card-sep {
+  width: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 14px 0;
+  flex-shrink: 0;
+}
+.stat-card-value {
+  font-size: 1.25rem; font-weight: 700;
+  color: #f0f0f5; letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.stat-card-label {
+  font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.3);
+  margin-top: 5px;
+}
+
+/* ── Actions bar ── */
+.profile-actions-bar {
+  max-width: 960px;
+  margin: 14px auto 0;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.profile-actions-left,
+.profile-actions-right {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+
+.action-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-size: 0.82rem; font-weight: 600; font-family: inherit;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: opacity 0.15s, background 0.15s;
+}
+.action-cybershoke {
+  background: rgba(129,140,248,0.1);
+  border: 1px solid rgba(129,140,248,0.22);
+  color: #a5b4fc;
+}
+.action-cybershoke:hover { background: rgba(129,140,248,0.2); border-color: rgba(129,140,248,0.4); }
+.action-update {
+  background: linear-gradient(135deg, #34d399, #059669);
+  border: none; color: #fff;
+}
+.action-update:hover { opacity: 0.85; }
+.action-update:disabled { opacity: 0.5; cursor: default; }
 
 .own-profile-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
 .flag-change-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
 .flag-change-select {
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 8px;
-  padding: 7px 10px;
-  color: #fff;
-  font-size: 0.82rem;
-  font-family: inherit;
-  outline: none;
-  max-width: 160px;
+  border-radius: 9px;
+  padding: 8px 10px;
+  color: #fff; font-size: 0.82rem; font-family: inherit;
+  outline: none; max-width: 160px;
 }
 .flag-change-select:focus { border-color: rgba(129,140,248,0.4); }
 .flag-change-select option { background: #1a1a2e; }
 .flag-change-btn {
-  padding: 7px 14px;
+  padding: 8px 16px;
   background: linear-gradient(135deg, #34d399, #059669);
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
+  border: none; border-radius: 9px;
+  color: #fff; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  transition: opacity 0.15s;
 }
 .flag-change-btn:hover { opacity: 0.85; }
 .flag-change-btn:disabled { opacity: 0.5; cursor: default; }
 .flag-change-status { font-size: 0.78rem; }
 .flag-change-status.loading { color: rgba(255,255,255,0.5); }
 .flag-change-status.success { color: #34d399; }
-.flag-change-status.error { color: #f87171; }
+.flag-change-status.error   { color: #f87171; }
+
 .steam-logout-btn {
-  padding: 7px 12px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 9px;
   color: rgba(255,255,255,0.4);
-  font-size: 0.78rem;
-  cursor: pointer;
-  font-family: inherit;
+  font-size: 0.78rem; cursor: pointer; font-family: inherit;
+  transition: background 0.15s, color 0.15s;
 }
 .steam-logout-btn:hover { background: rgba(255,255,255,0.09); color: #fff; }
 
+.steam-login-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px;
+  background: rgba(56,189,248,0.08);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 9px;
+  color: #38bdf8; font-size: 0.82rem; font-weight: 600;
+  text-decoration: none; transition: background 0.15s;
+}
+.steam-login-btn:hover { background: rgba(56,189,248,0.15); }
+
+/* Update status */
+.update-record-status {
+  max-width: 960px;
+  margin: 8px auto 0;
+  padding: 0 24px;
+  font-size: 0.8rem; font-weight: 500;
+}
+.update-record-status.loading { color: rgba(255,255,255,0.6); }
+.update-record-status.success { color: #34d399; }
+.update-record-status.error   { color: #f87171; }
+
+/* Cached note */
+.cached-at-note {
+  max-width: 960px;
+  margin: 6px auto 0;
+  padding: 0 24px;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.18);
+}
+
+/* ── Maps table ── */
+.table-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+}
+
 /* ── Stats table columns ── */
-.col-tier-sm { width: 55px; }
-.col-mapname { min-width: 160px; }
-.col-date { width: 160px; min-width: 160px; white-space: nowrap; }
+.col-tier-sm  { width: 55px; }
+.col-mapname  { min-width: 160px; }
+.col-date     { width: 160px; min-width: 160px; white-space: nowrap; }
+.pos-cell     { font-size: 0.8rem; color: rgba(255,255,255,0.75); font-variant-numeric: tabular-nums; }
+.runs-cell    { font-size: 0.82rem; color: rgba(255,255,255,0.75); font-variant-numeric: tabular-nums; }
+.time-cell    { color: rgba(255,255,255,0.75); font-variant-numeric: tabular-nums; }
+.date-cell    { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
+.empty-state  { text-align: center; padding: 40px; color: rgba(255,255,255,0.2); font-size: 0.85rem; }
 
-.pos-cell {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.75);
-  font-variant-numeric: tabular-nums;
-}
-
-.runs-cell {
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.75);
-  font-variant-numeric: tabular-nums;
-}
-
-.time-cell {
-  color: rgba(255,255,255,0.75);
-  font-variant-numeric: tabular-nums;
-}
-
-.date-cell {
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.65);
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px;
-  color: rgba(255,255,255,0.2);
-  font-size: 0.85rem;
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .profile-banner { height: 150px; }
+  .profile-header-wrap { margin-top: -44px; }
+  .profile-avatar-outer { width: 80px; height: 80px; border-radius: 12px; }
+  .profile-name { font-size: 1.3rem; }
+  .profile-stats-bar { flex-wrap: wrap; }
+  .stat-card-sep { display: none; }
+  .stat-card { flex: 0 0 calc(50% - 1px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .profile-actions-bar { flex-direction: column; align-items: flex-start; }
+  .banner-url-input { width: 160px; }
 }

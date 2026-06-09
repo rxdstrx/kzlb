@@ -12,61 +12,137 @@
   <div class="bg-orb orb1"></div>
   <div class="bg-orb orb2"></div>
 
-  <div class="container">
-    <a class="back-btn" href="#" onclick="history.back(); return false;">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Loading state -->
+  <div class="profile-loading" id="loadingState">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="100" height="100" viewBox="0 0 100 100">
+        <circle class="progress-ring-bg" cx="50" cy="50" r="42"/>
+        <circle class="progress-ring-fill" id="progressCircle" cx="50" cy="50" r="42"/>
       </svg>
-      Back
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <p class="loading-step" id="loadingStep">Connecting…</p>
+    <p class="loading-sub" id="loadingSub">This takes about 60 seconds</p>
+    <a class="cybershoke-btn hidden" id="loadingCybershokeLink" href="#" target="_blank" rel="noopener" style="margin-top:16px">
+      View on Cybershoke
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+        <path d="M2 9L9 2M9 2H4M9 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </a>
+  </div>
 
-    <!-- Loading state -->
-    <div class="profile-loading" id="loadingState">
-      <div class="progress-ring-wrap">
-        <svg class="progress-ring" width="100" height="100" viewBox="0 0 100 100">
-          <circle class="progress-ring-bg" cx="50" cy="50" r="42"/>
-          <circle class="progress-ring-fill" id="progressCircle" cx="50" cy="50" r="42"/>
+  <!-- Error state -->
+  <div class="profile-error hidden" id="errorState">
+    <p id="errorMsg">Could not load profile.</p>
+    <a href="#" onclick="history.back(); return false;" class="back-btn" style="margin-top:16px">← Go back</a>
+  </div>
+
+  <!-- Profile content -->
+  <div class="profile-content hidden" id="profileContent">
+
+    <!-- Back button -->
+    <div class="profile-back-wrap">
+      <a class="back-btn" href="#" onclick="history.back(); return false;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="progress-pct" id="progressPct">0%</span>
-      </div>
-      <p class="loading-step" id="loadingStep">Connecting…</p>
-      <p class="loading-sub" id="loadingSub">This takes about 60 seconds</p>
-      <a class="cybershoke-btn hidden" id="loadingCybershokeLink" href="#" target="_blank" rel="noopener" style="margin-top:16px">
-        View on Cybershoke
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-          <path d="M2 9L9 2M9 2H4M9 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        Back
       </a>
     </div>
 
-    <!-- Error state -->
-    <div class="profile-error hidden" id="errorState">
-      <p id="errorMsg">Could not load profile.</p>
-      <a href="#" onclick="history.back(); return false;" class="back-btn" style="margin-top:16px">← Go back</a>
+    <!-- ── BANNER ── -->
+    <div class="profile-banner" id="profileBanner">
+      <div class="banner-overlay"></div>
+      <!-- Owner-only: change banner -->
+      <div class="banner-owner-controls hidden" id="bannerOwnerControls">
+        <button class="banner-edit-btn" id="bannerEditBtn">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M9.5 1.5L11.5 3.5L4.5 10.5H2.5V8.5L9.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+          Change Banner
+        </button>
+        <div class="banner-edit-panel hidden" id="bannerEditPanel">
+          <input class="banner-url-input" id="bannerUrlInput" type="text" placeholder="Paste an image URL…" />
+          <button class="banner-save-btn" id="bannerSaveBtn">Save</button>
+          <button class="banner-remove-btn" id="bannerRemoveBtn">Remove</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Profile content -->
-    <div class="profile-content hidden" id="profileContent">
-
-      <!-- Player card -->
-      <div class="player-card">
-        <img class="player-avatar" id="playerAvatar" src="" alt="avatar" />
-        <div class="player-info">
-          <h2 class="player-name" id="playerName">—<span class="player-flag" id="playerFlag"></span></h2>
-          <span class="player-id" id="playerSteamId">—</span>
+    <!-- ── PROFILE HEADER ── -->
+    <div class="profile-header-wrap">
+      <div class="profile-header">
+        <div class="profile-avatar-outer">
+          <img class="profile-avatar-lg" id="playerAvatar" src="" alt="avatar" />
         </div>
-        <a class="cybershoke-btn" id="cybershokeLink" href="#" target="_blank" rel="noopener">
+        <div class="profile-header-info">
+          <div class="profile-name-row">
+            <h1 class="profile-name" id="playerName">—</h1>
+            <span class="profile-flag" id="playerFlag"></span>
+          </div>
+          <div class="profile-steamid" id="playerSteamId">—</div>
+          <div class="profile-lastseen" id="profileLastSeen"></div>
+          <div class="profile-socials">
+            <!-- Steam -->
+            <a class="social-icon-btn" id="steamSocialLink" href="#" target="_blank" rel="noopener" title="Steam Profile">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
+              </svg>
+            </a>
+            <!-- Faceit -->
+            <a class="social-icon-btn faceit-btn hidden" id="faceitSocialLink" href="#" target="_blank" rel="noopener" title="Faceit Profile">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M5.61 0L0 4.34l7.31 5.42L2.56 13H8.5l2.19-3.24L5.61 0zm7.07 10.24L10.5 13.76 14.39 24 24 19.66 16.69 14.24 21.44 11H15.5l-2.82-0.76z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STATS BAR ── -->
+    <div class="profile-stats-bar">
+      <div class="stat-card">
+        <div class="stat-card-value" id="statWorldRank">—</div>
+        <div class="stat-card-label">World Rank</div>
+      </div>
+      <div class="stat-card-sep"></div>
+      <div class="stat-card">
+        <div class="stat-card-value" id="statCountryDisplay">—</div>
+        <div class="stat-card-label">Country</div>
+      </div>
+      <div class="stat-card-sep"></div>
+      <div class="stat-card">
+        <div class="stat-card-value" id="statFaceitElo">—</div>
+        <div class="stat-card-label">Faceit ELO</div>
+      </div>
+      <div class="stat-card-sep"></div>
+      <div class="stat-card">
+        <div class="stat-card-value" id="statPoints">—</div>
+        <div class="stat-card-label">KZ Points</div>
+      </div>
+      <div class="stat-card-sep"></div>
+      <div class="stat-card">
+        <div class="stat-card-value" id="statMaps">—</div>
+        <div class="stat-card-label">Maps Done</div>
+      </div>
+    </div>
+
+    <!-- ── ACTIONS BAR ── -->
+    <div class="profile-actions-bar">
+      <div class="profile-actions-left">
+        <a class="action-btn action-cybershoke" id="cybershokeLink" href="#" target="_blank" rel="noopener">
           View on Cybershoke
           <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
             <path d="M2 9L9 2M9 2H4M9 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
-        <button class="update-record-profile-btn" id="updateRecordBtn">Update Records</button>
-        <div class="update-record-status hidden" id="updateRecordStatus"></div>
-
-        <!-- Steam login / flag change (shown only when viewing own profile) -->
+        <button class="action-btn action-update" id="updateRecordBtn">Update Records</button>
+      </div>
+      <div class="profile-actions-right">
+        <!-- Own profile only -->
         <div class="own-profile-actions hidden" id="ownProfileActions">
-          <div class="flag-change-wrap" id="flagChangeWrap">
+          <div class="flag-change-wrap">
             <select class="flag-change-select" id="flagChangeSelect"></select>
             <button class="flag-change-btn" id="flagChangeBtn">Save Flag</button>
             <span class="flag-change-status hidden" id="flagChangeStatus"></span>
@@ -74,29 +150,38 @@
           <button class="steam-logout-btn" id="steamLogoutBtn">Log out</button>
         </div>
         <a class="steam-login-btn hidden" id="steamLoginBtn" href="login.html">
-          Login with Steam to edit your profile
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7">
+            <path d="M12 0C5.373 0 0 5.373 0 12l6.39 2.647A3.37 3.37 0 0 1 9 14.25a3.375 3.375 0 0 1 3.375-3.375l2.894-4.122A4.5 4.5 0 1 1 19.5 11.25a4.488 4.488 0 0 1-2.36-.67L13.5 13.5a3.375 3.375 0 1 1-6.11 1.875L2.042 13.42C3.076 19.385 7.983 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
+          </svg>
+          Login with Steam
         </a>
       </div>
-
-      <!-- Stats table -->
-      <div class="table-wrapper" id="statsTable" style="margin-top:24px">
-        <table>
-          <thead>
-            <tr>
-              <th class="col-mapname">Map</th>
-              <th class="col-tier-sm">Tier</th>
-              <th>Runs</th>
-              <th>Time</th>
-              <th>Position</th>
-              <th class="col-date">Date</th>
-            </tr>
-          </thead>
-          <tbody id="statsBody"></tbody>
-        </table>
-        <div class="empty-state hidden" id="noStats">No completed maps found.</div>
-      </div>
-
     </div>
+
+    <!-- Update status -->
+    <div class="update-record-status hidden" id="updateRecordStatus"></div>
+
+    <!-- Cached note -->
+    <p class="cached-at-note" id="cachedAt"></p>
+
+    <!-- ── MAPS TABLE ── -->
+    <div class="table-wrapper" id="statsTable" style="margin-top:8px">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-mapname">Map</th>
+            <th class="col-tier-sm">Tier</th>
+            <th>Runs</th>
+            <th>Time</th>
+            <th>Position</th>
+            <th class="col-date">Date</th>
+          </tr>
+        </thead>
+        <tbody id="statsBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="noStats">No completed maps found.</div>
+    </div>
+
   </div>
 
   <script src="maps-data.js"></script>
