@@ -63,6 +63,19 @@
         </a>
         <button class="update-record-profile-btn" id="updateRecordBtn">Update Records</button>
         <div class="update-record-status hidden" id="updateRecordStatus"></div>
+
+        <!-- Steam login / flag change (shown only when viewing own profile) -->
+        <div class="own-profile-actions hidden" id="ownProfileActions">
+          <div class="flag-change-wrap" id="flagChangeWrap">
+            <select class="flag-change-select" id="flagChangeSelect"></select>
+            <button class="flag-change-btn" id="flagChangeBtn">Save Flag</button>
+            <span class="flag-change-status hidden" id="flagChangeStatus"></span>
+          </div>
+          <button class="steam-logout-btn" id="steamLogoutBtn">Log out</button>
+        </div>
+        <a class="steam-login-btn hidden" id="steamLoginBtn" href="/api/steam-auth">
+          <img src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png" alt="Sign in through Steam" height="28" />
+        </a>
       </div>
 
       <!-- Stats table -->
