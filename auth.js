@@ -99,6 +99,9 @@ function updateNavAuth() {
     if (navSteamLogin) navSteamLogin.classList.remove('hidden');
     if (navUser) navUser.classList.add('hidden');
   }
+
+  // Refresh pinned self row if leaderboard is visible
+  if (typeof renderPinnedSelf === 'function') renderPinnedSelf();
 }
 
 // No modal — login is handled by login.html

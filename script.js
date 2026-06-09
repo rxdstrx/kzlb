@@ -436,10 +436,10 @@ function renderPagination(totalRows) {
     requestAnimationFrame(step);
   };
 
-  document.getElementById('lbPrevBtnTop').addEventListener('click', () => { lbPage--; renderLeaderboard(); });
-  document.getElementById('lbNextBtnTop').addEventListener('click', () => { lbPage++; renderLeaderboard(); });
-  document.getElementById('lbPrevBtnBot').addEventListener('click', () => { lbPage--; renderLeaderboard(); scrollToTop(); });
-  document.getElementById('lbNextBtnBot').addEventListener('click', () => { lbPage++; renderLeaderboard(); scrollToTop(); });
+  document.getElementById('lbPrevBtnTop').addEventListener('click', () => { lbPage--; renderLeaderboard(); renderPinnedSelf(); });
+  document.getElementById('lbNextBtnTop').addEventListener('click', () => { lbPage++; renderLeaderboard(); renderPinnedSelf(); });
+  document.getElementById('lbPrevBtnBot').addEventListener('click', () => { lbPage--; renderLeaderboard(); renderPinnedSelf(); scrollToTop(); });
+  document.getElementById('lbNextBtnBot').addEventListener('click', () => { lbPage++; renderLeaderboard(); renderPinnedSelf(); scrollToTop(); });
 }
 
 function renderLeaderboard() {
@@ -538,6 +538,49 @@ async function loadCountryPlayers(code) {
   lbPlayers = COUNTRY_CACHE[code];
   lbPage = 1;
   renderLeaderboard();
+  renderPinnedSelf();
+}
+
+// ── Pinned self row ──
+function renderPinnedSelf() {
+  // Remove any existing pinned row
+  const existing = document.getElementById('pinned-self-row');
+  if (existing) existing.remove();
+
+  // Only in overall (points) view, not map view
+  if (lbSelectedMap) return;
+
+  const auth = typeof getAuth === 'function' ? getAuth() : null;
+  if (!auth) return;
+
+  // Find the logged-in player in lbPlayers (sorted by points = global rank)
+  const sorted = [...lbPlayers].sort((a, b) => b.kz_points - a.kz_points);
+  const idx = sorted.findIndex(p => p.steamid === auth.steamid);
+  if (idx === -1) return; // player not in this leaderboard
+
+  const p = sorted[idx];
+  const rank = idx + 1;
+  const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+
+  const tr = document.createElement('tr');
+  tr.id = 'pinned-self-row';
+  tr.className = 'pinned-self-row';
+  tr.innerHTML = `
+    <td><span class="rank ${rankClass}">${rank}</span></td>
+    <td>
+      <div class="player-cell">
+        <img class="player-thumb" src="${p.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
+        ${flagImg(p.country)}<a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${p.country || ''}">${p.nickname}</a>
+        <span class="pinned-self-badge">📍 You</span>
+      </div>
+    </td>
+    <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
+    <td><span class="pos-cell">#${p.kz_place?.toLocaleString() || '—'}</span></td>
+    <td><span class="runs-cell">${p.kz_maps || p.maps_list?.length || '—'}</span></td>
+  `;
+
+  // Insert at very top of lbBody
+  lbBody.insertBefore(tr, lbBody.firstChild);
 }
 
 // Load world leaderboard on startup
