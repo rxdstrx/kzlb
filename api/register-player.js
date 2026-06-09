@@ -83,36 +83,34 @@ export default async function handler(req, res) {
     kz_points: 0, kz_place: null, kz_maps: 0, maps_list: [],
   };
 
-  // ── 3. Write individual cache file ──
+  // ── 3. Write individual cache file (only if it doesn't already exist) ──
   const indPath = `cache/${steamid}.json`;
   const indExisting = await ghGet(indPath, ghToken);
-  if (indExisting) {
-    // Already has a cache file — don't overwrite existing stats, just update country if xx
-    const existing = indExisting.content;
-    if (existing.country && existing.country !== 'xx') {
-      // Player already registered with a real country — just trigger scrape for stats refresh
-      // Check if they're in the world leaderboard already
-      const world = await ghGet('cache/world-kz-players.json', ghToken);
-      const inWorld = world?.content?.players?.find(p => p.steamid === steamid);
-      if (inWorld) return res.status(200).json({ ok: true, already: true });
-    }
-  }
 
-  // Write individual cache
-  const indContent = {
-    steamid, country,
-    cached_at: new Date().toISOString(),
-    user: {},
-    maps: {
-      list: [],
-      header: {
-        title: nickname,
-        avatar,
-        desc: { '{{Position}}': 9999, '{{Points}}': 0, '{{COMPLETIONS-MAP}}': '0 (0%)', '{{COMPLETIONS-BONUS}}': '0', WR: 0 },
+  if (indExisting) {
+    // Cache already exists — player was scraped before.
+    // Check if they're already in the world leaderboard too.
+    const world = await ghGet('cache/world-kz-players.json', ghToken);
+    const inWorld = world?.content?.players?.find(p => p.steamid === steamid);
+    if (inWorld) return res.status(200).json({ ok: true, already: true });
+    // In cache but not in world — fall through to add them to country + rebuild world.
+    // Do NOT overwrite their existing cache file (may contain real scraped stats).
+  } else {
+    // Brand new player — create a minimal cache file so the profile page loads
+    const indContent = {
+      steamid, country,
+      cached_at: new Date().toISOString(),
+      user: {},
+      maps: {
+        list: [],
+        header: {
+          title: nickname, avatar,
+          desc: { '{{Position}}': 9999, '{{Points}}': 0, '{{COMPLETIONS-MAP}}': '0 (0%)', '{{COMPLETIONS-BONUS}}': '0', WR: 0 },
+        },
       },
-    },
-  };
-  await ghPut(indPath, indContent, indExisting?.sha || null, `register: ${nickname} (${steamid})`, ghToken);
+    };
+    await ghPut(indPath, indContent, null, `register: ${nickname} (${steamid})`, ghToken);
+  }
 
   // ── 4. Write to country leaderboard file ──
   const countryPath = `cache/${country}-kz-players.json`;
