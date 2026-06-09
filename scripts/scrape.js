@@ -81,10 +81,15 @@ if (!COOKIE) {
 
   await browser.close();
 
+  // NOTE: userData (/api/v1/leaderboard/user) always returns the authenticated
+  // cookie-owner's stats, NOT the queried player's stats. We deliberately do
+  // not persist it to avoid contaminating other players' cache files.
+  // All KZ stats are sourced from mapsData (/api/v2/leaderboard/data) which
+  // correctly filters by steamid64.
   const result = {
     steamid,
     cached_at: new Date().toISOString(),
-    user: userData,
+    user: {},
     maps: mapsData,
   };
 
