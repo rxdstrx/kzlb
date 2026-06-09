@@ -1,0 +1,536 @@
+// KZ Admin Panel JS
+const WORLD_CACHE = 'https://rxdstrx.github.io/kzlb/cache/world-kz-players.json';
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3000/api'
+  : '/api';
+
+const ALL_COUNTRIES = [
+  { code: 'xx', name: 'No flag', flag: '' },
+  { code: 'af', name: 'Afghanistan', flag: '🇦🇫' },
+  { code: 'al', name: 'Albania', flag: '🇦🇱' },
+  { code: 'dz', name: 'Algeria', flag: '🇩🇿' },
+  { code: 'ad', name: 'Andorra', flag: '🇦🇩' },
+  { code: 'ao', name: 'Angola', flag: '🇦🇴' },
+  { code: 'ag', name: 'Antigua & Barbuda', flag: '🇦🇬' },
+  { code: 'ar', name: 'Argentina', flag: '🇦🇷' },
+  { code: 'am', name: 'Armenia', flag: '🇦🇲' },
+  { code: 'au', name: 'Australia', flag: '🇦🇺' },
+  { code: 'at', name: 'Austria', flag: '🇦🇹' },
+  { code: 'az', name: 'Azerbaijan', flag: '🇦🇿' },
+  { code: 'bs', name: 'Bahamas', flag: '🇧🇸' },
+  { code: 'bh', name: 'Bahrain', flag: '🇧🇭' },
+  { code: 'bd', name: 'Bangladesh', flag: '🇧🇩' },
+  { code: 'bb', name: 'Barbados', flag: '🇧🇧' },
+  { code: 'by', name: 'Belarus', flag: '🇧🇾' },
+  { code: 'be', name: 'Belgium', flag: '🇧🇪' },
+  { code: 'bz', name: 'Belize', flag: '🇧🇿' },
+  { code: 'bj', name: 'Benin', flag: '🇧🇯' },
+  { code: 'bt', name: 'Bhutan', flag: '🇧🇹' },
+  { code: 'bo', name: 'Bolivia', flag: '🇧🇴' },
+  { code: 'ba', name: 'Bosnia & Herzegovina', flag: '🇧🇦' },
+  { code: 'bw', name: 'Botswana', flag: '🇧🇼' },
+  { code: 'br', name: 'Brazil', flag: '🇧🇷' },
+  { code: 'bn', name: 'Brunei', flag: '🇧🇳' },
+  { code: 'bg', name: 'Bulgaria', flag: '🇧🇬' },
+  { code: 'bf', name: 'Burkina Faso', flag: '🇧🇫' },
+  { code: 'bi', name: 'Burundi', flag: '🇧🇮' },
+  { code: 'cv', name: 'Cabo Verde', flag: '🇨🇻' },
+  { code: 'kh', name: 'Cambodia', flag: '🇰🇭' },
+  { code: 'cm', name: 'Cameroon', flag: '🇨🇲' },
+  { code: 'ca', name: 'Canada', flag: '🇨🇦' },
+  { code: 'cf', name: 'Central African Republic', flag: '🇨🇫' },
+  { code: 'td', name: 'Chad', flag: '🇹🇩' },
+  { code: 'cl', name: 'Chile', flag: '🇨🇱' },
+  { code: 'cn', name: 'China', flag: '🇨🇳' },
+  { code: 'co', name: 'Colombia', flag: '🇨🇴' },
+  { code: 'km', name: 'Comoros', flag: '🇰🇲' },
+  { code: 'cd', name: 'Congo (DRC)', flag: '🇨🇩' },
+  { code: 'cg', name: 'Congo (Republic)', flag: '🇨🇬' },
+  { code: 'cr', name: 'Costa Rica', flag: '🇨🇷' },
+  { code: 'hr', name: 'Croatia', flag: '🇭🇷' },
+  { code: 'cu', name: 'Cuba', flag: '🇨🇺' },
+  { code: 'cy', name: 'Cyprus', flag: '🇨🇾' },
+  { code: 'cz', name: 'Czechia', flag: '🇨🇿' },
+  { code: 'dk', name: 'Denmark', flag: '🇩🇰' },
+  { code: 'dj', name: 'Djibouti', flag: '🇩🇯' },
+  { code: 'dm', name: 'Dominica', flag: '🇩🇲' },
+  { code: 'do', name: 'Dominican Republic', flag: '🇩🇴' },
+  { code: 'ec', name: 'Ecuador', flag: '🇪🇨' },
+  { code: 'eg', name: 'Egypt', flag: '🇪🇬' },
+  { code: 'sv', name: 'El Salvador', flag: '🇸🇻' },
+  { code: 'gq', name: 'Equatorial Guinea', flag: '🇬🇶' },
+  { code: 'er', name: 'Eritrea', flag: '🇪🇷' },
+  { code: 'ee', name: 'Estonia', flag: '🇪🇪' },
+  { code: 'sz', name: 'Eswatini', flag: '🇸🇿' },
+  { code: 'et', name: 'Ethiopia', flag: '🇪🇹' },
+  { code: 'fj', name: 'Fiji', flag: '🇫🇯' },
+  { code: 'fi', name: 'Finland', flag: '🇫🇮' },
+  { code: 'fr', name: 'France', flag: '🇫🇷' },
+  { code: 'ga', name: 'Gabon', flag: '🇬🇦' },
+  { code: 'gm', name: 'Gambia', flag: '🇬🇲' },
+  { code: 'ge', name: 'Georgia', flag: '🇬🇪' },
+  { code: 'de', name: 'Germany', flag: '🇩🇪' },
+  { code: 'gh', name: 'Ghana', flag: '🇬🇭' },
+  { code: 'gr', name: 'Greece', flag: '🇬🇷' },
+  { code: 'gd', name: 'Grenada', flag: '🇬🇩' },
+  { code: 'gt', name: 'Guatemala', flag: '🇬🇹' },
+  { code: 'gn', name: 'Guinea', flag: '🇬🇳' },
+  { code: 'gw', name: 'Guinea-Bissau', flag: '🇬🇼' },
+  { code: 'gy', name: 'Guyana', flag: '🇬🇾' },
+  { code: 'ht', name: 'Haiti', flag: '🇭🇹' },
+  { code: 'hn', name: 'Honduras', flag: '🇭🇳' },
+  { code: 'hu', name: 'Hungary', flag: '🇭🇺' },
+  { code: 'is', name: 'Iceland', flag: '🇮🇸' },
+  { code: 'in', name: 'India', flag: '🇮🇳' },
+  { code: 'id', name: 'Indonesia', flag: '🇮🇩' },
+  { code: 'ir', name: 'Iran', flag: '🇮🇷' },
+  { code: 'iq', name: 'Iraq', flag: '🇮🇶' },
+  { code: 'ie', name: 'Ireland', flag: '🇮🇪' },
+  { code: 'il', name: 'Israel', flag: '🇮🇱' },
+  { code: 'it', name: 'Italy', flag: '🇮🇹' },
+  { code: 'jm', name: 'Jamaica', flag: '🇯🇲' },
+  { code: 'jp', name: 'Japan', flag: '🇯🇵' },
+  { code: 'jo', name: 'Jordan', flag: '🇯🇴' },
+  { code: 'kz', name: 'Kazakhstan', flag: '🇰🇿' },
+  { code: 'ke', name: 'Kenya', flag: '🇰🇪' },
+  { code: 'ki', name: 'Kiribati', flag: '🇰🇮' },
+  { code: 'kp', name: 'North Korea', flag: '🇰🇵' },
+  { code: 'kr', name: 'South Korea', flag: '🇰🇷' },
+  { code: 'kw', name: 'Kuwait', flag: '🇰🇼' },
+  { code: 'kg', name: 'Kyrgyzstan', flag: '🇰🇬' },
+  { code: 'la', name: 'Laos', flag: '🇱🇦' },
+  { code: 'lv', name: 'Latvia', flag: '🇱🇻' },
+  { code: 'lb', name: 'Lebanon', flag: '🇱🇧' },
+  { code: 'ls', name: 'Lesotho', flag: '🇱🇸' },
+  { code: 'lr', name: 'Liberia', flag: '🇱🇷' },
+  { code: 'ly', name: 'Libya', flag: '🇱🇾' },
+  { code: 'li', name: 'Liechtenstein', flag: '🇱🇮' },
+  { code: 'lt', name: 'Lithuania', flag: '🇱🇹' },
+  { code: 'lu', name: 'Luxembourg', flag: '🇱🇺' },
+  { code: 'mg', name: 'Madagascar', flag: '🇲🇬' },
+  { code: 'mw', name: 'Malawi', flag: '🇲🇼' },
+  { code: 'my', name: 'Malaysia', flag: '🇲🇾' },
+  { code: 'mv', name: 'Maldives', flag: '🇲🇻' },
+  { code: 'ml', name: 'Mali', flag: '🇲🇱' },
+  { code: 'mt', name: 'Malta', flag: '🇲🇹' },
+  { code: 'mh', name: 'Marshall Islands', flag: '🇲🇭' },
+  { code: 'mr', name: 'Mauritania', flag: '🇲🇷' },
+  { code: 'mu', name: 'Mauritius', flag: '🇲🇺' },
+  { code: 'mx', name: 'Mexico', flag: '🇲🇽' },
+  { code: 'fm', name: 'Micronesia', flag: '🇫🇲' },
+  { code: 'md', name: 'Moldova', flag: '🇲🇩' },
+  { code: 'mc', name: 'Monaco', flag: '🇲🇨' },
+  { code: 'mn', name: 'Mongolia', flag: '🇲🇳' },
+  { code: 'me', name: 'Montenegro', flag: '🇲🇪' },
+  { code: 'ma', name: 'Morocco', flag: '🇲🇦' },
+  { code: 'mz', name: 'Mozambique', flag: '🇲🇿' },
+  { code: 'mm', name: 'Myanmar', flag: '🇲🇲' },
+  { code: 'na', name: 'Namibia', flag: '🇳🇦' },
+  { code: 'nr', name: 'Nauru', flag: '🇳🇷' },
+  { code: 'np', name: 'Nepal', flag: '🇳🇵' },
+  { code: 'nl', name: 'Netherlands', flag: '🇳🇱' },
+  { code: 'nz', name: 'New Zealand', flag: '🇳🇿' },
+  { code: 'ni', name: 'Nicaragua', flag: '🇳🇮' },
+  { code: 'ne', name: 'Niger', flag: '🇳🇪' },
+  { code: 'ng', name: 'Nigeria', flag: '🇳🇬' },
+  { code: 'mk', name: 'North Macedonia', flag: '🇲🇰' },
+  { code: 'no', name: 'Norway', flag: '🇳🇴' },
+  { code: 'om', name: 'Oman', flag: '🇴🇲' },
+  { code: 'pk', name: 'Pakistan', flag: '🇵🇰' },
+  { code: 'pw', name: 'Palau', flag: '🇵🇼' },
+  { code: 'pa', name: 'Panama', flag: '🇵🇦' },
+  { code: 'pg', name: 'Papua New Guinea', flag: '🇵🇬' },
+  { code: 'py', name: 'Paraguay', flag: '🇵🇾' },
+  { code: 'pe', name: 'Peru', flag: '🇵🇪' },
+  { code: 'ph', name: 'Philippines', flag: '🇵🇭' },
+  { code: 'pl', name: 'Poland', flag: '🇵🇱' },
+  { code: 'pt', name: 'Portugal', flag: '🇵🇹' },
+  { code: 'qa', name: 'Qatar', flag: '🇶🇦' },
+  { code: 'ro', name: 'Romania', flag: '🇷🇴' },
+  { code: 'ru', name: 'Russia', flag: '🇷🇺' },
+  { code: 'rw', name: 'Rwanda', flag: '🇷🇼' },
+  { code: 'kn', name: 'Saint Kitts & Nevis', flag: '🇰🇳' },
+  { code: 'lc', name: 'Saint Lucia', flag: '🇱🇨' },
+  { code: 'vc', name: 'Saint Vincent & Grenadines', flag: '🇻🇨' },
+  { code: 'ws', name: 'Samoa', flag: '🇼🇸' },
+  { code: 'sm', name: 'San Marino', flag: '🇸🇲' },
+  { code: 'st', name: 'São Tomé & Príncipe', flag: '🇸🇹' },
+  { code: 'sa', name: 'Saudi Arabia', flag: '🇸🇦' },
+  { code: 'sn', name: 'Senegal', flag: '🇸🇳' },
+  { code: 'rs', name: 'Serbia', flag: '🇷🇸' },
+  { code: 'sc', name: 'Seychelles', flag: '🇸🇨' },
+  { code: 'sl', name: 'Sierra Leone', flag: '🇸🇱' },
+  { code: 'sg', name: 'Singapore', flag: '🇸🇬' },
+  { code: 'sk', name: 'Slovakia', flag: '🇸🇰' },
+  { code: 'si', name: 'Slovenia', flag: '🇸🇮' },
+  { code: 'sb', name: 'Solomon Islands', flag: '🇸🇧' },
+  { code: 'so', name: 'Somalia', flag: '🇸🇴' },
+  { code: 'za', name: 'South Africa', flag: '🇿🇦' },
+  { code: 'ss', name: 'South Sudan', flag: '🇸🇸' },
+  { code: 'es', name: 'Spain', flag: '🇪🇸' },
+  { code: 'lk', name: 'Sri Lanka', flag: '🇱🇰' },
+  { code: 'sd', name: 'Sudan', flag: '🇸🇩' },
+  { code: 'sr', name: 'Suriname', flag: '🇸🇷' },
+  { code: 'se', name: 'Sweden', flag: '🇸🇪' },
+  { code: 'ch', name: 'Switzerland', flag: '🇨🇭' },
+  { code: 'sy', name: 'Syria', flag: '🇸🇾' },
+  { code: 'tw', name: 'Taiwan', flag: '🇹🇼' },
+  { code: 'tj', name: 'Tajikistan', flag: '🇹🇯' },
+  { code: 'tz', name: 'Tanzania', flag: '🇹🇿' },
+  { code: 'th', name: 'Thailand', flag: '🇹🇭' },
+  { code: 'tl', name: 'Timor-Leste', flag: '🇹🇱' },
+  { code: 'tg', name: 'Togo', flag: '🇹🇬' },
+  { code: 'to', name: 'Tonga', flag: '🇹🇴' },
+  { code: 'tt', name: 'Trinidad & Tobago', flag: '🇹🇹' },
+  { code: 'tn', name: 'Tunisia', flag: '🇹🇳' },
+  { code: 'tr', name: 'Turkey', flag: '🇹🇷' },
+  { code: 'tm', name: 'Turkmenistan', flag: '🇹🇲' },
+  { code: 'tv', name: 'Tuvalu', flag: '🇹🇻' },
+  { code: 'ug', name: 'Uganda', flag: '🇺🇬' },
+  { code: 'ua', name: 'Ukraine', flag: '🇺🇦' },
+  { code: 'ae', name: 'United Arab Emirates', flag: '🇦🇪' },
+  { code: 'gb', name: 'United Kingdom', flag: '🇬🇧' },
+  { code: 'us', name: 'United States', flag: '🇺🇸' },
+  { code: 'uy', name: 'Uruguay', flag: '🇺🇾' },
+  { code: 'uz', name: 'Uzbekistan', flag: '🇺🇿' },
+  { code: 'vu', name: 'Vanuatu', flag: '🇻🇺' },
+  { code: 've', name: 'Venezuela', flag: '🇻🇪' },
+  { code: 'vn', name: 'Vietnam', flag: '🇻🇳' },
+  { code: 'ye', name: 'Yemen', flag: '🇾🇪' },
+  { code: 'zm', name: 'Zambia', flag: '🇿🇲' },
+  { code: 'zw', name: 'Zimbabwe', flag: '🇿🇼' },
+];
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let adminPassword = '';
+let allPlayers = [];
+let filteredPlayers = [];
+
+// ── DOM refs ──────────────────────────────────────────────────────────────────
+const loginWrap = document.getElementById('loginWrap');
+const adminWrap = document.getElementById('adminWrap');
+const loginPassword = document.getElementById('loginPassword');
+const loginBtn = document.getElementById('loginBtn');
+const loginError = document.getElementById('loginError');
+const logoutBtn = document.getElementById('logoutBtn');
+const adminSub = document.getElementById('adminSub');
+const adminSearch = document.getElementById('adminSearch');
+const adminTableBody = document.getElementById('adminTableBody');
+const addSteamId = document.getElementById('addSteamId');
+const addCountry = document.getElementById('addCountry');
+const addPlayerBtn = document.getElementById('addPlayerBtn');
+const addStatus = document.getElementById('addStatus');
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+populateCountrySelect(addCountry);
+
+const saved = sessionStorage.getItem('kz_admin_pw');
+if (saved) {
+  adminPassword = saved;
+  showAdmin();
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+loginBtn.addEventListener('click', doLogin);
+loginPassword.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function doLogin() {
+  const pw = loginPassword.value.trim();
+  if (!pw) return;
+  adminPassword = pw;
+  sessionStorage.setItem('kz_admin_pw', pw);
+  loginError.classList.add('hidden');
+  showAdmin();
+}
+
+function showAdmin() {
+  loginWrap.style.display = 'none';
+  adminWrap.classList.add('visible');
+  loadPlayers();
+}
+
+logoutBtn.addEventListener('click', () => {
+  sessionStorage.removeItem('kz_admin_pw');
+  adminPassword = '';
+  allPlayers = [];
+  filteredPlayers = [];
+  adminWrap.classList.remove('visible');
+  loginWrap.style.display = '';
+  loginPassword.value = '';
+  adminTableBody.innerHTML = '<tr class="loading-row"><td colspan="6">Loading players…</td></tr>';
+});
+
+// ── Load players ──────────────────────────────────────────────────────────────
+async function loadPlayers() {
+  adminSub.textContent = 'Loading players…';
+  try {
+    const r = await fetch(WORLD_CACHE + '?bust=' + Date.now());
+    const data = await r.json();
+    allPlayers = data.players || [];
+    allPlayers.sort((a, b) => b.kz_points - a.kz_points);
+    filteredPlayers = [...allPlayers];
+    updateStats();
+    renderTable(filteredPlayers);
+    adminSub.textContent = `${allPlayers.length} players loaded`;
+  } catch (err) {
+    adminSub.textContent = 'Failed to load players';
+    adminTableBody.innerHTML = '<tr class="loading-row"><td colspan="6">Failed to load world cache.</td></tr>';
+  }
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('statTotal').textContent = allPlayers.length;
+  const countries = new Set(allPlayers.map(p => p.country).filter(c => c && c !== 'xx'));
+  document.getElementById('statCountries').textContent = countries.size;
+  const top = allPlayers[0];
+  document.getElementById('statTop').textContent = top ? (top.nickname || top.steamid) : '—';
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+adminSearch.addEventListener('input', () => {
+  const q = adminSearch.value.trim().toLowerCase();
+  if (!q) {
+    filteredPlayers = [...allPlayers];
+  } else {
+    filteredPlayers = allPlayers.filter(p =>
+      (p.nickname || '').toLowerCase().includes(q) ||
+      (p.steamid || '').includes(q) ||
+      (p.country || '').includes(q) ||
+      countryName(p.country).toLowerCase().includes(q)
+    );
+  }
+  renderTable(filteredPlayers);
+});
+
+// ── Render table ──────────────────────────────────────────────────────────────
+function renderTable(players) {
+  if (!players.length) {
+    adminTableBody.innerHTML = '<tr class="loading-row"><td colspan="6">No players found.</td></tr>';
+    return;
+  }
+
+  const rows = players.map((p) => {
+    const rank = allPlayers.indexOf(p) + 1;
+    const avatar = p.avatar_url
+      ? `<img class="player-row-avatar" src="${p.avatar_url}" alt="" onerror="this.style.display='none'">`
+      : '';
+    const flagSrc = p.country && p.country !== 'xx'
+      ? `https://flagcdn.com/16x12/${p.country}.png`
+      : '';
+    const flagImg = flagSrc ? `<img class="flag-img" src="${flagSrc}" alt="">` : '';
+    const points = (p.kz_points || 0).toLocaleString();
+    const maps = p.map_count || 0;
+
+    const selectId = `cs_${p.steamid}`;
+    const statusId = `rs_${p.steamid}`;
+
+    return `<tr data-steamid="${p.steamid}">
+      <td>${rank}</td>
+      <td>${avatar}<span class="player-row-nick">${escHtml(p.nickname || p.steamid)}</span></td>
+      <td>
+        ${flagImg}
+        <select class="country-select-inline" id="${selectId}" data-original="${p.country || 'xx'}">
+          ${countryOptions(p.country || 'xx')}
+        </select>
+      </td>
+      <td>${points}</td>
+      <td>${maps}</td>
+      <td>
+        <div class="action-btns">
+          <button class="btn-save" onclick="saveCountry('${p.steamid}', '${selectId}', '${statusId}')">Save flag</button>
+          <button class="btn-update" onclick="updatePlayer('${p.steamid}', '${statusId}')">Update</button>
+          <button class="btn-remove" onclick="removePlayer('${p.steamid}', '${statusId}')">Remove</button>
+          <span class="row-status hidden" id="${statusId}"></span>
+        </div>
+      </td>
+    </tr>`;
+  });
+
+  adminTableBody.innerHTML = rows.join('');
+}
+
+// ── Country helpers ───────────────────────────────────────────────────────────
+function populateCountrySelect(sel) {
+  sel.innerHTML = ALL_COUNTRIES.map(c =>
+    `<option value="${c.code}">${c.flag ? c.flag + ' ' : ''}${c.name}</option>`
+  ).join('');
+}
+
+function countryOptions(selected) {
+  return ALL_COUNTRIES.map(c =>
+    `<option value="${c.code}"${c.code === selected ? ' selected' : ''}>${c.flag ? c.flag + ' ' : ''}${c.name}</option>`
+  ).join('');
+}
+
+function countryName(code) {
+  const c = ALL_COUNTRIES.find(x => x.code === code);
+  return c ? c.name : code || '';
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────────
+async function saveCountry(steamid, selectId, statusId) {
+  const sel = document.getElementById(selectId);
+  const country = sel.value;
+  const original = sel.dataset.original;
+  if (country === original) { showRowStatus(statusId, 'Already saved', 'success'); return; }
+
+  setRowBusy(statusId, true);
+  showRowStatus(statusId, '⏳ Moving…', 'loading');
+
+  const ok = await callAdminApi({ action: 'move', steamid, country });
+  if (ok) {
+    sel.dataset.original = country;
+    const p = allPlayers.find(x => x.steamid === steamid);
+    if (p) p.country = country;
+    showRowStatus(statusId, '✓ Queued!', 'success');
+    toast('Country change queued — GitHub Action running', 'success');
+    const row = document.querySelector(`tr[data-steamid="${steamid}"]`);
+    if (row) {
+      const flagCell = row.cells[2];
+      const flagImg = flagCell.querySelector('.flag-img');
+      const newFlag = country !== 'xx' ? `https://flagcdn.com/16x12/${country}.png` : '';
+      if (newFlag) {
+        if (flagImg) { flagImg.src = newFlag; }
+        else {
+          const img = document.createElement('img');
+          img.className = 'flag-img';
+          img.src = newFlag;
+          img.alt = '';
+          flagCell.insertBefore(img, flagCell.querySelector('select'));
+        }
+      } else if (flagImg) flagImg.remove();
+    }
+  } else {
+    showRowStatus(statusId, '✗ Failed', 'error');
+  }
+  setRowBusy(statusId, false);
+}
+
+async function updatePlayer(steamid, statusId) {
+  if (!confirm(`Update stats for ${steamid}?`)) return;
+  setRowBusy(statusId, true);
+  showRowStatus(statusId, '⏳ Queuing…', 'loading');
+  const ok = await callAdminApi({ action: 'update', steamid });
+  if (ok) {
+    showRowStatus(statusId, '✓ Queued!', 'success');
+    toast('Stats update queued — GitHub Action running', 'success');
+  } else {
+    showRowStatus(statusId, '✗ Failed', 'error');
+  }
+  setRowBusy(statusId, false);
+}
+
+async function removePlayer(steamid, statusId) {
+  const p = allPlayers.find(x => x.steamid === steamid);
+  const nick = p ? (p.nickname || steamid) : steamid;
+  if (!confirm(`Remove "${nick}" permanently from leaderboard?`)) return;
+  setRowBusy(statusId, true);
+  showRowStatus(statusId, '⏳ Removing…', 'loading');
+  const ok = await callAdminApi({ action: 'remove', steamid });
+  if (ok) {
+    allPlayers = allPlayers.filter(x => x.steamid !== steamid);
+    filteredPlayers = filteredPlayers.filter(x => x.steamid !== steamid);
+    updateStats();
+    const row = document.querySelector(`tr[data-steamid="${steamid}"]`);
+    if (row) {
+      row.style.opacity = '0.3';
+      setTimeout(() => row.remove(), 600);
+    }
+    toast(`"${nick}" removed — GitHub Action running`, 'success');
+  } else {
+    showRowStatus(statusId, '✗ Failed', 'error');
+    setRowBusy(statusId, false);
+  }
+}
+
+// ── Add player ────────────────────────────────────────────────────────────────
+addPlayerBtn.addEventListener('click', async () => {
+  const steamid = addSteamId.value.trim();
+  const country = addCountry.value;
+
+  if (!/^\d{17}$/.test(steamid)) {
+    showEl(addStatus, '✗ Invalid Steam ID64 (must be 17 digits)', 'error');
+    return;
+  }
+
+  if (allPlayers.find(x => x.steamid === steamid)) {
+    showEl(addStatus, '✗ Player already in leaderboard. Use Update instead.', 'error');
+    return;
+  }
+
+  addPlayerBtn.disabled = true;
+  showEl(addStatus, '⏳ Adding…', 'loading');
+
+  const ok = await callAdminApi({ action: 'add', steamid, country });
+  if (ok) {
+    showEl(addStatus, '✓ Queued! GitHub Action running.', 'success');
+    toast('Add player queued — will appear after workflow completes', 'success');
+    addSteamId.value = '';
+    addCountry.value = 'xx';
+  } else {
+    showEl(addStatus, '✗ Failed to queue. Check password & API.', 'error');
+  }
+  addPlayerBtn.disabled = false;
+});
+
+// ── API call ──────────────────────────────────────────────────────────────────
+async function callAdminApi(body) {
+  try {
+    const r = await fetch(`${API_BASE}/admin-action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...body, password: adminPassword }),
+    });
+    if (r.status === 401) {
+      toast('Wrong password — please log out and try again', 'error');
+      return false;
+    }
+    const data = await r.json();
+    if (!r.ok) {
+      toast('API error: ' + (data.error || r.status), 'error');
+      return false;
+    }
+    return true;
+  } catch (err) {
+    toast('Network error: ' + err.message, 'error');
+    return false;
+  }
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function showRowStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = `row-status ${type}`;
+  el.classList.remove('hidden');
+  if (type === 'success' || type === 'error') {
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.add('hidden'), 4000);
+  }
+}
+
+function showEl(el, msg, type) {
+  el.textContent = msg;
+  el.className = `row-status ${type}`;
+  el.classList.remove('hidden');
+}
+
+function setRowBusy(statusId, busy) {
+  const row = document.getElementById(statusId)?.closest('tr');
+  if (!row) return;
+  row.querySelectorAll('button').forEach(b => b.disabled = busy);
+}
+
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}

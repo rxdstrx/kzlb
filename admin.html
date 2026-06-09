@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KZ Admin Panel</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+  <!-- Login gate -->
+  <div class="login-wrap" id="loginWrap">
+    <div class="login-box">
+      <div class="login-title">🔐 KZ Admin Panel</div>
+      <div class="login-sub">Enter your admin password to continue</div>
+      <input class="login-input" id="loginPassword" type="password" placeholder="Password…" autocomplete="off" />
+      <button class="login-btn" id="loginBtn">Enter</button>
+      <div class="login-error hidden" id="loginError">Wrong password.</div>
+    </div>
+  </div>
+
+  <!-- Admin panel -->
+  <div class="admin-wrap" id="adminWrap">
+
+    <div class="admin-header">
+      <div>
+        <div class="admin-header-title">⚙️ KZ Leaderboard Admin</div>
+        <div class="admin-header-sub" id="adminSub">Loading players…</div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Log out</button>
+    </div>
+
+    <div class="admin-body">
+
+      <!-- Stats -->
+      <div class="admin-stats">
+        <div class="admin-stat">
+          <div class="admin-stat-val" id="statTotal">—</div>
+          <div class="admin-stat-label">Total Players</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-val" id="statCountries">—</div>
+          <div class="admin-stat-label">Countries</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-val" id="statTop">—</div>
+          <div class="admin-stat-label">Top Player</div>
+        </div>
+      </div>
+
+      <!-- Add player -->
+      <div class="add-player-form">
+        <div class="form-group">
+          <div class="form-label">Steam ID64</div>
+          <input class="form-input" id="addSteamId" type="text" placeholder="76561198xxxxxxxxx" autocomplete="off" />
+        </div>
+        <div class="form-group">
+          <div class="form-label">Country</div>
+          <select class="form-select" id="addCountry"></select>
+        </div>
+        <button class="btn-add" id="addPlayerBtn">＋ Add Player</button>
+        <span class="row-status hidden" id="addStatus"></span>
+      </div>
+
+      <!-- Search -->
+      <input class="admin-search" id="adminSearch" type="text" placeholder="🔍 Search by nickname, steamid or country…" autocomplete="off" />
+
+      <!-- Table -->
+      <div class="admin-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Player</th>
+              <th>Country</th>
+              <th>Points</th>
+              <th>Maps</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody">
+            <tr class="loading-row"><td colspan="6">Loading players…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
