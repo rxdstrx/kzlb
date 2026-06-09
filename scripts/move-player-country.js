@@ -37,16 +37,19 @@ if (!player) {
   if (fs.existsSync(indPath)) {
     try {
       const ind = JSON.parse(fs.readFileSync(indPath, 'utf8'));
+      // Use mapsData header/desc — this endpoint queries by steamid64, so it returns
+      // the correct player's stats. The userData endpoint returns the authenticated
+      // user's (cookie owner's) stats and must not be used for points/place.
       const header = ind.maps?.header || {};
-      const kzUser = ind.user?.['18'] || {};
+      const desc   = header.desc || {};
       player = {
         steamid,
-        nickname: header.title || kzUser.name || steamid,
-        avatar:   header.avatar || kzUser.avatar || '',
-        country:  newCountry,
-        kz_points: Number(ind.kz_points || kzUser.points || 0),
-        kz_place:  ind.kz_place  || kzUser.place  || null,
-        kz_maps:   ind.kz_maps   || 0,
+        nickname:  header.name || header.title || steamid,
+        avatar:    header.avatar || '',
+        country:   newCountry,
+        kz_points: Number(desc['{{Points}}'] || ind.kz_points || 0),
+        kz_place:  desc['{{Position}}']       || ind.kz_place  || null,
+        kz_maps:   desc['{{COMPLETIONS-MAP}}'] || ind.kz_maps   || 0,
         maps_list: ind.maps?.list || [],
       };
       console.log(`New player — built from ${steamid}.json`);
