@@ -19,7 +19,8 @@ function getAuth() {
     clearAuth();
     return null;
   }
-  return { token, steamid, nickname, avatar };
+  const country = localStorage.getItem('kz_country') || '';
+  return { token, steamid, nickname, avatar, country };
 }
 
 function clearAuth() {
@@ -29,6 +30,7 @@ function clearAuth() {
   localStorage.removeItem('kz_steam_id');
   localStorage.removeItem('kz_steam_nick');
   localStorage.removeItem('kz_steam_avatar');
+  localStorage.removeItem('kz_country');
 }
 
 // Register new player — rate-limited to once per 10 min per account
@@ -53,6 +55,7 @@ function fetchSteamProfile(steamid) {
     .then(d => {
       if (d.nickname) localStorage.setItem('kz_steam_nick', d.nickname);
       if (d.avatar)   localStorage.setItem('kz_steam_avatar', d.avatar);
+      if (d.country && d.country !== 'xx') localStorage.setItem('kz_country', d.country);
     }).catch(() => {});
 }
 
@@ -148,6 +151,7 @@ function updateNavAuth() {
 
   // Refresh pinned self row if leaderboard is visible
   if (typeof renderPinnedSelf === 'function') renderPinnedSelf();
+  if (typeof renderPinnedSelfCountry === 'function') renderPinnedSelfCountry();
 }
 
 // No modal — login is handled by login.html
@@ -163,9 +167,10 @@ function syncPlayerData() {
     .then(d => {
       const player = (d.players || []).find(p => p.steamid === auth.steamid);
 
-      // Update avatar/nickname if world cache has them
+      // Update avatar/nickname/country if world cache has them
       if (player?.avatar)   localStorage.setItem('kz_steam_avatar', player.avatar);
       if (player?.nickname) localStorage.setItem('kz_steam_nick',   player.nickname);
+      if (player?.country && player.country !== 'xx') localStorage.setItem('kz_country', player.country);
       updateNavAuth();
 
       if (!player) {

@@ -197,37 +197,63 @@ function renderOverall() {
   renderPinnedSelfCountry(sorted);
 }
 
+let _lastSortedCountry = [];
+
 function renderPinnedSelfCountry(sorted) {
+  // Allow no-arg call (re-render with cached data, e.g. from updateNavAuth)
+  if (sorted) _lastSortedCountry = sorted;
+  const activeSorted = _lastSortedCountry;
+
   const existing = document.getElementById('pinned-self-row-country');
   if (existing) existing.remove();
 
   const auth = typeof getAuth === 'function' ? getAuth() : null;
   if (!auth) return;
 
-  const idx = sorted.findIndex(p => p.steamid === auth.steamid);
-  // Only pin on this country's leaderboard if the player actually belongs here
-  if (idx === -1) return;
+  const idx = activeSorted.findIndex(p => p.steamid === auth.steamid);
 
-  const p = sorted[idx];
-  const rank = idx + 1;
-  const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
-
-  const tr = document.createElement('tr');
-  tr.id = 'pinned-self-row-country';
-  tr.className = 'pinned-self-row';
-  tr.innerHTML = `
-    <td><span class="rank-badge ${rankClass}">${rank}</span></td>
-    <td>
-      <div class="player-cell">
-        <img class="player-thumb" src="${p.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
-        <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${countryCode}">${p.nickname}</a>
+  let tr;
+  if (idx === -1) {
+    // Player not in this country's cache yet — show placeholder only if their
+    // stored country matches this leaderboard (e.g. flag was just saved)
+    if (!auth.country || auth.country !== countryCode) return;
+    const nick   = auth.nickname || 'You';
+    const avatar = auth.avatar   || '';
+    tr = document.createElement('tr');
+    tr.id = 'pinned-self-row-country';
+    tr.className = 'pinned-self-row';
+    tr.innerHTML = `
+      <td><span class="rank">—</span></td>
+      <td><div class="player-cell">
+        <img class="player-thumb" src="${avatar}" onerror="this.style.display='none'" />
+        <a class="player-nick" href="profile.html?steamid=${auth.steamid}&country=${countryCode}">${nick}</a>
         <span class="pinned-self-badge">📍 You</span>
-      </div>
-    </td>
-    <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
-    <td><span class="pos-cell">#${p.kz_place?.toLocaleString() || '—'}</span></td>
-    <td><span class="runs-cell">${p.kz_maps || p.maps_list?.length || '—'}</span></td>
-  `;
+      </div></td>
+      <td><span class="pts-cell">0</span></td>
+      <td><span class="pos-cell">—</span></td>
+      <td><span class="runs-cell">0 (0%)</span></td>
+    `;
+  } else {
+    const p = activeSorted[idx];
+    const rank = idx + 1;
+    const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+    tr = document.createElement('tr');
+    tr.id = 'pinned-self-row-country';
+    tr.className = 'pinned-self-row';
+    tr.innerHTML = `
+      <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+      <td>
+        <div class="player-cell">
+          <img class="player-thumb" src="${p.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
+          <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${countryCode}">${p.nickname}</a>
+          <span class="pinned-self-badge">📍 You</span>
+        </div>
+      </td>
+      <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
+      <td><span class="pos-cell">#${p.kz_place?.toLocaleString() || '—'}</span></td>
+      <td><span class="runs-cell">${p.kz_maps || p.maps_list?.length || '—'}</span></td>
+    `;
+  }
   ptBody.insertBefore(tr, ptBody.firstChild);
 }
 
