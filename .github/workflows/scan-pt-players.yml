@@ -42,6 +42,7 @@ jobs:
       - name: Fetch & scrape new PT players
         env:
           FACEIT_KEY: ${{ secrets.FACEIT_KEY }}
+          CYBERSHOKE_COOKIE: ${{ secrets.CYBERSHOKE_COOKIE }}
         run: node scripts/scan-new-pt.js ${{ github.event.inputs.how_many }}
 
       - name: Normalize place totals

@@ -7,7 +7,7 @@ const https = require('https');
 
 puppeteer.use(StealthPlugin());
 
-const COOKIE = `multitoken=YoXQFm1ka9utDYaGPCmx9wrHJp1772321827628t9yzf0GAdiUoGv4pjmnJVyhKQk3oYa5q65yHTyVmNYroRvWumE0Km; multitoken_created=1; cookie_read=1; lang_g=ru; current-game=2; vip=true; vip-group=LITE`;
+const COOKIE = process.env.CYBERSHOKE_COOKIE;
 
 const CONCURRENCY = 10; // parallel requests at once
 

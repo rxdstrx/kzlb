@@ -39,6 +39,7 @@ jobs:
       - name: Scrape top 100 KZ players
         env:
           FACEIT_KEY: ${{ secrets.FACEIT_KEY }}
+          CYBERSHOKE_COOKIE: ${{ secrets.CYBERSHOKE_COOKIE }}
         run: node scripts/scrape-top100.js
 
       - name: Commit results
