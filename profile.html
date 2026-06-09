@@ -143,7 +143,19 @@
         <!-- Own profile only -->
         <div class="own-profile-actions hidden" id="ownProfileActions">
           <div class="flag-change-wrap">
-            <select class="flag-change-select" id="flagChangeSelect"></select>
+            <!-- Custom glassmorphism flag dropdown -->
+            <div class="flag-dropdown" id="flagDropdown">
+              <button class="flag-dropdown-trigger" id="flagDropdownTrigger">
+                <span id="flagDropdownLabel">No flag</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="flag-dropdown-panel hidden" id="flagDropdownPanel">
+                <div class="flag-search-wrap">
+                  <input class="flag-search-input" id="flagSearchInput" type="text" placeholder="Search country…" autocomplete="off" />
+                </div>
+                <div class="flag-options-list" id="flagOptionsList"></div>
+              </div>
+            </div>
             <button class="flag-change-btn" id="flagChangeBtn">Save Flag</button>
             <span class="flag-change-status hidden" id="flagChangeStatus"></span>
           </div>
