@@ -205,46 +205,29 @@ function renderPinnedSelfCountry(sorted) {
   if (!auth) return;
 
   const idx = sorted.findIndex(p => p.steamid === auth.steamid);
+  // Only pin on this country's leaderboard if the player actually belongs here
+  if (idx === -1) return;
+
+  const p = sorted[idx];
+  const rank = idx + 1;
+  const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
 
   const tr = document.createElement('tr');
   tr.id = 'pinned-self-row-country';
   tr.className = 'pinned-self-row';
-
-  if (idx === -1) {
-    // Player has no records in this country yet — show placeholder
-    const nick = auth.nickname || 'You';
-    const avatar = auth.avatar || '';
-    tr.innerHTML = `
-      <td><span class="rank-badge">—</span></td>
-      <td>
-        <div class="player-cell">
-          <img class="player-thumb" src="${avatar}" onerror="this.style.display='none'" />
-          <a class="player-nick" href="profile.html?steamid=${auth.steamid}">${nick}</a>
-          <span class="pinned-self-badge">📍 You</span>
-        </div>
-      </td>
-      <td><span class="pts-cell">0</span></td>
-      <td><span class="pos-cell">—</span></td>
-      <td><span class="runs-cell">0 (0%)</span></td>
-    `;
-  } else {
-    const p = sorted[idx];
-    const rank = idx + 1;
-    const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
-    tr.innerHTML = `
-      <td><span class="rank-badge ${rankClass}">${rank}</span></td>
-      <td>
-        <div class="player-cell">
-          <img class="player-thumb" src="${p.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
-          <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${countryCode}">${p.nickname}</a>
-          <span class="pinned-self-badge">📍 You</span>
-        </div>
-      </td>
-      <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
-      <td><span class="pos-cell">#${p.kz_place?.toLocaleString() || '—'}</span></td>
-      <td><span class="runs-cell">${p.kz_maps || p.maps_list?.length || '—'}</span></td>
-    `;
-  }
+  tr.innerHTML = `
+    <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+    <td>
+      <div class="player-cell">
+        <img class="player-thumb" src="${p.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
+        <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${countryCode}">${p.nickname}</a>
+        <span class="pinned-self-badge">📍 You</span>
+      </div>
+    </td>
+    <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
+    <td><span class="pos-cell">#${p.kz_place?.toLocaleString() || '—'}</span></td>
+    <td><span class="runs-cell">${p.kz_maps || p.maps_list?.length || '—'}</span></td>
+  `;
   ptBody.insertBefore(tr, ptBody.firstChild);
 }
 
