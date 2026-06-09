@@ -1005,25 +1005,38 @@
 }
 
 /* ══ PINNED SELF ROW (logged-in player at top of leaderboard) ══ */
+/* border-collapse:collapse kills border-radius on td, so we use box-shadow instead */
 .pinned-self-row {
-  border-bottom: none !important; /* remove default squared tr border */
+  border-bottom: none !important;
 }
 
 .pinned-self-row td {
   background: rgba(251,191,36,0.07);
-  border-top: 1.5px solid rgba(251,191,36,0.55);
-  border-bottom: 1.5px solid rgba(251,191,36,0.55);
+  /* top + bottom shadow on every cell */
+  box-shadow:
+    0 -1.5px 0 rgba(251,191,36,0.55),
+    0  1.5px 0 rgba(251,191,36,0.55);
   animation: pinnedGlow 2.5s ease-in-out infinite;
 }
 
+/* left border + rounded left corners on first cell */
 .pinned-self-row td:first-child {
-  border-left: 1.5px solid rgba(251,191,36,0.55);
   border-radius: 10px 0 0 10px;
+  box-shadow:
+    0 -1.5px 0 rgba(251,191,36,0.55),
+    0  1.5px 0 rgba(251,191,36,0.55),
+    -1.5px 0 0 rgba(251,191,36,0.55);
+  clip-path: inset(0 0 0 0 round 10px 0 0 10px);
 }
 
+/* right border + rounded right corners on last cell */
 .pinned-self-row td:last-child {
-  border-right: 1.5px solid rgba(251,191,36,0.55);
   border-radius: 0 10px 10px 0;
+  box-shadow:
+    0 -1.5px 0 rgba(251,191,36,0.55),
+    0  1.5px 0 rgba(251,191,36,0.55),
+    1.5px 0 0 rgba(251,191,36,0.55);
+  clip-path: inset(0 0 0 0 round 0 10px 10px 0);
 }
 
 .pinned-self-badge {
@@ -1045,6 +1058,6 @@
 }
 
 @keyframes pinnedGlow {
-  0%, 100% { box-shadow: inset 0 0 0 0 rgba(251,191,36,0); }
-  50%       { box-shadow: inset 0 0 24px 4px rgba(251,191,36,0.1); }
+  0%, 100% { box-shadow: 0 -1.5px 0 rgba(251,191,36,0.55), 0 1.5px 0 rgba(251,191,36,0.55); }
+  50%       { box-shadow: 0 -1.5px 0 rgba(251,191,36,0.55), 0 1.5px 0 rgba(251,191,36,0.55), 0 0 18px 4px rgba(251,191,36,0.18); }
 }
