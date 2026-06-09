@@ -210,13 +210,11 @@ async function loadProfile(sid) {
       localStorage.setItem(seenKey, Date.now().toString());
     }
 
-    // ── Banner ──
+    // ── Banner: apply custom if set, otherwise CSS default (CS2 hero) shows ──
     const banner = document.getElementById('profileBanner');
     if (banner) {
       const bannerUrl = localStorage.getItem(`kz_banner_${sid}`);
-      if (bannerUrl) {
-        banner.style.backgroundImage = `url(${bannerUrl})`;
-      }
+      if (bannerUrl) banner.style.backgroundImage = `url(${bannerUrl})`;
     }
 
     // ── Cybershoke link ──
