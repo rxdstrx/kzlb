@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     } catch {}
   }
 
-  // Fallback: playerdb
+  // Fallback: playerdb (returns nickname, avatar, and country code)
   try {
     const r = await fetch(`https://playerdb.co/api/player/steam/${steamid}`);
     const d = await r.json();
@@ -33,7 +33,8 @@ export default async function handler(req, res) {
     if (p) {
       return res.json({
         nickname: p.username || '',
-        avatar: p.avatar || '',
+        avatar:   p.avatar   || '',
+        country:  p.meta?.loccountrycode?.toLowerCase() || '',
       });
     }
   } catch {}
