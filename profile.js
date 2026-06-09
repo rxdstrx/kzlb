@@ -575,8 +575,21 @@ function initSteamUI() {
         });
         const data = await r.json();
         if (r.ok && data.ok) {
-          flagChangeStatus.textContent = '✅ Flag updated! Changes appear in ~2 min.';
+          flagChangeStatus.textContent = '✅ Flag updated!';
           flagChangeStatus.className = 'flag-change-status success';
+
+          // ── Instant UI update — no need to wait for GitHub Action ──
+          const flagEl = document.getElementById('playerFlag');
+          const countryEl = document.getElementById('statCountryDisplay');
+          if (country === 'xx') {
+            if (flagEl) flagEl.innerHTML = '';
+            if (countryEl) countryEl.innerHTML = '—';
+          } else {
+            const flagHtml = `<img src="https://flagcdn.com/w40/${country}.png" style="height:18px;border-radius:2px;vertical-align:middle;margin-left:6px">`;
+            if (flagEl) flagEl.innerHTML = flagHtml;
+            if (countryEl) countryEl.innerHTML =
+              `<img src="https://flagcdn.com/w40/${country}.png" style="height:22px;border-radius:3px;vertical-align:middle"> ${country.toUpperCase()}`;
+          }
         } else {
           flagChangeStatus.textContent = '✗ ' + (data.error || 'Failed');
           flagChangeStatus.className = 'flag-change-status error';
