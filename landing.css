@@ -1005,20 +1005,24 @@
 }
 
 /* ══ PINNED SELF ROW (logged-in player at top of leaderboard) ══ */
+.pinned-self-row {
+  border-bottom: none !important; /* remove default squared tr border */
+}
+
 .pinned-self-row td {
-  background: rgba(56,189,248,0.07);
-  border-top: 1.5px solid rgba(56,189,248,0.5);
-  border-bottom: 1.5px solid rgba(56,189,248,0.5);
+  background: rgba(251,191,36,0.07);
+  border-top: 1.5px solid rgba(251,191,36,0.55);
+  border-bottom: 1.5px solid rgba(251,191,36,0.55);
   animation: pinnedGlow 2.5s ease-in-out infinite;
 }
 
 .pinned-self-row td:first-child {
-  border-left: 1.5px solid rgba(56,189,248,0.5);
+  border-left: 1.5px solid rgba(251,191,36,0.55);
   border-radius: 10px 0 0 10px;
 }
 
 .pinned-self-row td:last-child {
-  border-right: 1.5px solid rgba(56,189,248,0.5);
+  border-right: 1.5px solid rgba(251,191,36,0.55);
   border-radius: 0 10px 10px 0;
 }
 
@@ -1030,9 +1034,9 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #38bdf8;
-  background: rgba(56,189,248,0.15);
-  border: 1px solid rgba(56,189,248,0.4);
+  color: #fbbf24;
+  background: rgba(251,191,36,0.15);
+  border: 1px solid rgba(251,191,36,0.4);
   border-radius: 6px;
   padding: 2px 8px;
   margin-left: 8px;
@@ -1041,6 +1045,6 @@
 }
 
 @keyframes pinnedGlow {
-  0%, 100% { box-shadow: inset 0 0 0 0 rgba(56,189,248,0); }
-  50%       { box-shadow: inset 0 0 20px 2px rgba(56,189,248,0.08); }
+  0%, 100% { box-shadow: inset 0 0 0 0 rgba(251,191,36,0); }
+  50%       { box-shadow: inset 0 0 24px 4px rgba(251,191,36,0.1); }
 }
