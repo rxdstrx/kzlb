@@ -42,15 +42,34 @@ function clearAuth() {
   if (payload && payload.steamid === steamid) {
     localStorage.setItem('kz_steam_token', token);
     localStorage.setItem('kz_steam_id', steamid);
-    // Fetch nickname + avatar from Steam API via our Vercel proxy
-    fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${steamid}`)
+    // Look up avatar + nickname from world cache (same source as all other players)
+    fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json`)
       .then(r => r.json())
       .then(d => {
-        if (d.nickname) localStorage.setItem('kz_steam_nick', d.nickname);
-        if (d.avatar) localStorage.setItem('kz_steam_avatar', d.avatar);
-        // Refresh navbar
+        const player = (d.players || []).find(p => p.steamid === steamid);
+        if (player?.avatar) localStorage.setItem('kz_steam_avatar', player.avatar);
+        if (player?.nickname) localStorage.setItem('kz_steam_nick', player.nickname);
         updateNavAuth();
-      }).catch(() => {});
+        // Fallback: try Vercel proxy if not found in cache
+        if (!player) {
+          return fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${steamid}`)
+            .then(r => r.json())
+            .then(d2 => {
+              if (d2.nickname) localStorage.setItem('kz_steam_nick', d2.nickname);
+              if (d2.avatar) localStorage.setItem('kz_steam_avatar', d2.avatar);
+              updateNavAuth();
+            }).catch(() => {});
+        }
+      }).catch(() => {
+        // Cache fetch failed, try Vercel proxy
+        fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${steamid}`)
+          .then(r => r.json())
+          .then(d => {
+            if (d.nickname) localStorage.setItem('kz_steam_nick', d.nickname);
+            if (d.avatar) localStorage.setItem('kz_steam_avatar', d.avatar);
+            updateNavAuth();
+          }).catch(() => {});
+      });
   }
   history.replaceState(null, '', window.location.pathname + window.location.search);
 })();
