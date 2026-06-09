@@ -55,7 +55,7 @@ const steamid = params.get('steamid');
 const urlCountry = params.get('country');
 
 function countryToFlag(code) {
-  if (!code || code.length !== 2) return '';
+  if (!code || code.length !== 2 || code === 'xx') return '';
   return `<img src="https://flagcdn.com/w40/${code.toLowerCase()}.png" alt="${code}" style="height:18px;border-radius:2px;vertical-align:middle;margin-left:6px;">`;
 }
 
@@ -226,7 +226,7 @@ async function loadProfile(sid) {
     const worldRank = data.kz_place ? `#${Number(data.kz_place).toLocaleString()}` : (desc['{{Position}}'] ?? kzUser.place ?? '—');
     setStatIfExists('statWorldRank', worldRank);
 
-    const countryDisplay = country
+    const countryDisplay = (country && country !== 'xx')
       ? `<img src="https://flagcdn.com/w40/${country}.png" style="height:22px;border-radius:3px;vertical-align:middle"> ${country.toUpperCase()}`
       : '—';
     const statCountryEl = document.getElementById('statCountryDisplay');
