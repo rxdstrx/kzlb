@@ -270,4 +270,34 @@ function getLeaderboardFile(c) {
   console.log(`World rebuilt: ${worldPlayers.length} players`);
 
   console.log(`Done! ${resolvedNickname} — ${mapList.length} maps, ${player.kz_points} pts, rank #${player.kz_place}`);
+
+  // ── Sync this player to Supabase immediately ──
+  const sbUrl = process.env.SUPABASE_URL;
+  const sbKey = process.env.SUPABASE_SERVICE_KEY;
+  if (sbUrl && sbKey) {
+    try {
+      const sbRow = {
+        steamid:   player.steamid,
+        nickname:  player.nickname  || resolvedNickname || '',
+        avatar:    player.avatar    || '',
+        country:   player.country   || country || 'xx',
+        kz_points: Number(player.kz_points) || 0,
+        kz_place:  Number(player.kz_place)  || 0,
+        kz_maps:   mapList.length,
+        cached_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      const r = await fetch(`${sbUrl}/rest/v1/players`, {
+        method: 'POST',
+        headers: {
+          apikey: sbKey, Authorization: `Bearer ${sbKey}`,
+          'Content-Type': 'application/json',
+          Prefer: 'resolution=merge-duplicates,return=minimal',
+        },
+        body: JSON.stringify(sbRow),
+      });
+      if (r.ok) console.log(`Supabase: player ${resolvedNickname} synced`);
+      else console.warn(`Supabase sync failed: ${r.status} ${await r.text()}`);
+    } catch (e) { console.warn('Supabase sync error:', e.message); }
+  }
 })();

@@ -17,6 +17,9 @@ jobs:
           node-version: '20'
 
       - name: Rebuild world from all country files
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node scripts/rebuild-world.js
 
       - name: Commit
