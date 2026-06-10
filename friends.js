@@ -160,8 +160,7 @@ function subscribeRealtime(auth) {
 
 function startPolling(auth) {
   if (_pollInterval) return;
-  // Poll every 15 seconds — catches anything real-time misses
-  _pollInterval = setInterval(() => pollNotifications(auth.steamid), 15000);
+  _pollInterval = setInterval(() => pollNotifications(auth.steamid), 5000);
 }
 
 async function pollNotifications(steamid) {
