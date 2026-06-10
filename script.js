@@ -989,7 +989,7 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
       // Try to get country from Faceit using steamid
       showAddStatus('loading', 'Looking up country…');
       try {
-        const fcRes = await fetch(`https://kzlb.vercel.app/api/faceit-country?steamid=${steamid}`);
+        const fcRes = await fetch(`https://kzlb.vercel.app/api/faceit?action=country&steamid=${steamid}`);
         if (fcRes.ok) {
           const fcData = await fcRes.json();
           if (fcData.country) autoCountry = fcData.country;
@@ -1238,7 +1238,7 @@ document.addEventListener('click', e => {
 
 async function resolveFaceit(input) {
   try {
-    const res = await fetch(`https://kzlb.vercel.app/api/faceit-resolve?input=${encodeURIComponent(input)}`);
+    const res = await fetch(`https://kzlb.vercel.app/api/faceit?action=resolve&input=${encodeURIComponent(input)}`);
     if (!res.ok) return null;
     return await res.json();
   } catch { return null; }
