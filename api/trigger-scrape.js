@@ -11,6 +11,15 @@ export default async function handler(req, res) {
   const token = process.env.GH_TOKEN;
   if (!token) return res.status(500).json({ error: 'No token configured' });
 
+  // Block scraping if player was removed by admin
+  try {
+    const check = await fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/${steamid}.json`);
+    if (check.ok) {
+      const d = await check.json();
+      if (d.removed) return res.status(200).json({ ok: true, removed: true });
+    }
+  } catch {}
+
   // Trigger add-player.yml (not scrape-kz.yml) — add-player also adds the player
   // to their country leaderboard and rebuilds world. Country 'xx' = auto-detect via Faceit.
   const response = await fetch('https://api.github.com/repos/rxdstrx/kzlb/actions/workflows/add-player.yml/dispatches', {
