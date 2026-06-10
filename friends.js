@@ -325,10 +325,11 @@ async function friendRespond(requestId, action, btn) {
     _pendingRequests = _pendingRequests.filter(r => r.id !== requestId);
 
     if (action === 'accept') {
+      console.log('[notif] accepted, will fetch notifs in 800ms, auth.steamid:', auth?.steamid);
       showToast('Friend request accepted!');
       refreshFriendsTabIfOpen(auth.steamid);
       // Small delay so DB commit is visible, then fetch fresh notifications
-      setTimeout(() => loadAcceptedNotifs(auth), 800);
+      setTimeout(() => { console.log('[notif] firing loadAcceptedNotifs'); loadAcceptedNotifs(auth); }, 800);
     } else {
       renderNotifList();
     }
