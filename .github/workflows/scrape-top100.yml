@@ -53,3 +53,10 @@ jobs:
           git add cache/world-kz-players.json
           git diff --staged --quiet || git commit -m "rebuild world after top100 scrape"
           git push origin HEAD:main
+
+      - name: Purge jsDelivr cache
+        run: |
+          BASE="https://purge.jsdelivr.net/gh/rxdstrx/kzlb@main/cache"
+          curl -s "$BASE/world-kz-players.json" &
+          curl -s "$BASE/pt-kz-players.json" &
+          wait

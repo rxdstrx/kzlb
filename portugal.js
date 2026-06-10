@@ -1,4 +1,4 @@
-﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+﻿const CACHE_BASE = 'https://cdn.jsdelivr.net/gh/rxdstrx/kzlb@main/cache';
 const PAGE_SIZE = 100;
 
 let allPlayers = [];

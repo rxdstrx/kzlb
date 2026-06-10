@@ -43,3 +43,13 @@ jobs:
           git diff --staged --quiet || git commit -m "admin: ${{ github.event.inputs.action }} ${{ github.event.inputs.steamid }}"
           git pull --rebase=false origin main
           git push origin HEAD:main
+
+      - name: Purge jsDelivr cache
+        run: |
+          STEAMID="${{ github.event.inputs.steamid }}"
+          COUNTRY="${{ github.event.inputs.country }}"
+          BASE="https://purge.jsdelivr.net/gh/rxdstrx/kzlb@main/cache"
+          curl -s "$BASE/${STEAMID}.json" &
+          curl -s "$BASE/world-kz-players.json" &
+          [ -n "$COUNTRY" ] && curl -s "$BASE/${COUNTRY}-kz-players.json" &
+          wait
