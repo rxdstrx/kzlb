@@ -220,6 +220,21 @@ async function loadProfile(sid) {
 
     applyCountry(country);
 
+    // ── Always fetch latest country from Supabase (change-flag updates it instantly) ──
+    fetch(
+      `https://btcufotfvfnuoiokghjm.supabase.co/rest/v1/players?steamid=eq.${sid}&select=country&limit=1`,
+      { headers: { apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4', Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4` } }
+    ).then(r => r.ok ? r.json() : null)
+     .then(rows => {
+       if (rows?.length && rows[0].country && rows[0].country !== 'xx') {
+         applyCountry(rows[0].country);
+         // Also update localStorage if this is own profile
+         if (sid === localStorage.getItem('kz_steam_id')) {
+           localStorage.setItem('kz_country', rows[0].country);
+         }
+       }
+     }).catch(() => {});
+
     // If no country set, try Steam API (returns loccountrycode)
     if (!country) {
       fetch(`${API_BASE}/api/steam-user?steamid=${sid}`)
