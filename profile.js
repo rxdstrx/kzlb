@@ -192,9 +192,10 @@ async function loadProfile(sid) {
     if (!name) name = 'Unknown Player';
 
     const desc    = header.desc || {};
-    // Prefer cache country over URL param; treat 'xx' as unset
+    // For the logged-in player's own profile, use localStorage country (updates instantly on flag change)
+    const lsCountry = (sid === localStorage.getItem('kz_steam_id')) ? localStorage.getItem('kz_country') : null;
     const cacheCountry = (data.country && data.country !== 'xx') ? data.country : null;
-    const rawCountry = cacheCountry || urlCountry || null;
+    const rawCountry = lsCountry || cacheCountry || urlCountry || null;
     let country = (rawCountry && rawCountry !== 'xx') ? rawCountry : null;
 
     // ── Basic info ──
