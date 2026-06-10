@@ -259,6 +259,74 @@ function renderPage() {
   });
 
   renderPagination(filtered.length);
+  renderPinnedSelf();
+}
+
+function renderPinnedSelf() {
+  const existing = document.getElementById('pinned-self-row');
+  if (existing) existing.remove();
+
+  const auth = typeof getAuth === 'function' ? getAuth() : null;
+  if (!auth) return;
+
+  // Find the player's record among the currently filtered list (for rank)
+  const idxFiltered = filtered.findIndex(r => r.steamid === auth.steamid);
+  // Also check if they have a record at all (in "all" records)
+  const selfRecord = allRecords.find(r => r.steamid === auth.steamid);
+
+  const tr = document.createElement('tr');
+  tr.id = 'pinned-self-row';
+  tr.className = 'pinned-self-row';
+
+  if (idxFiltered !== -1) {
+    // Player has a record and is visible in the current filter
+    const r = filtered[idxFiltered];
+    const rank = idxFiltered + 1;
+    const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+    tr.innerHTML = `
+      <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+      <td><div class="player-cell">
+        <img class="player-thumb" src="${r.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
+        <a class="player-nick" href="profile.html?steamid=${r.steamid}&country=${r.country}">${r.nickname}</a>
+        <img src="https://flagcdn.com/w20/${r.country}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-left:4px" onerror="this.style.display='none'">
+        <span class="pinned-self-badge">📍 You</span>
+      </div></td>
+      <td><span class="time-cell">${r.time_record}</span></td>
+      <td><span class="pos-cell">${(r.place_num || '').replace(/ /g, ' ')}</span></td>
+      <td><span class="runs-cell">${r.completions}</span></td>
+    `;
+  } else if (selfRecord && activeCountry !== 'all') {
+    // Player has a record but is filtered out by country — show their global rank with note
+    const idxAll = allRecords.findIndex(r => r.steamid === auth.steamid);
+    const rank = idxAll + 1;
+    const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+    tr.innerHTML = `
+      <td><span class="rank-badge ${rankClass}">#${rank} all</span></td>
+      <td><div class="player-cell">
+        <img class="player-thumb" src="${selfRecord.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
+        <a class="player-nick" href="profile.html?steamid=${selfRecord.steamid}&country=${selfRecord.country}">${selfRecord.nickname}</a>
+        <img src="https://flagcdn.com/w20/${selfRecord.country}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-left:4px" onerror="this.style.display='none'">
+        <span class="pinned-self-badge">📍 You</span>
+      </div></td>
+      <td><span class="time-cell">${selfRecord.time_record}</span></td>
+      <td><span class="pos-cell">${(selfRecord.place_num || '').replace(/ /g, ' ')}</span></td>
+      <td><span class="runs-cell">${selfRecord.completions}</span></td>
+    `;
+  } else {
+    // Player has no record on this map
+    tr.innerHTML = `
+      <td><span class="rank-badge">—</span></td>
+      <td><div class="player-cell">
+        <img class="player-thumb" src="${auth.avatar || ''}" onerror="this.style.display='none'" />
+        <a class="player-nick" href="profile.html?steamid=${auth.steamid}">${auth.nickname || 'You'}</a>
+        <span class="pinned-self-badge">📍 You</span>
+      </div></td>
+      <td><span class="time-cell">—</span></td>
+      <td><span class="pos-cell">—</span></td>
+      <td><span class="runs-cell">—</span></td>
+    `;
+  }
+  mapBody.insertBefore(tr, mapBody.firstChild);
 }
 
 function renderPagination(total) {
