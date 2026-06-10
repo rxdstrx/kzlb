@@ -453,7 +453,7 @@ async function saveBannerToSupabase(token, bannerUrl) {
   if (removeBtn) removeBtn.disabled = true;
 
   try {
-    const res = await fetch('https://kzlb-banner.vercel.app/api/friend-action', {
+    const res = await fetch('https://kzlb.vercel.app/api/friend-action', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, action: 'set-banner', banner_url: bannerUrl }),
@@ -511,6 +511,7 @@ function initBannerUI(ownerSteamId) {
         if (auth?.token) {
           saveBannerToSupabase(auth.token, dataUrl);
         }
+
       };
       img.src = e.target.result;
     };
