@@ -224,29 +224,10 @@ function renderPinnedSelfCountry(sorted) {
   if (!auth) return;
 
   const idx = activeSorted.findIndex(p => p.steamid === auth.steamid);
+  if (idx === -1) return;
 
   let tr;
-  if (idx === -1) {
-    // Player not in this country's cache yet — show placeholder only if their
-    // stored country matches this leaderboard (e.g. flag was just saved)
-    if (!auth.country || auth.country !== countryCode) return;
-    const nick   = auth.nickname || 'You';
-    const avatar = auth.avatar   || '';
-    tr = document.createElement('tr');
-    tr.id = 'pinned-self-row-country';
-    tr.className = 'pinned-self-row';
-    tr.innerHTML = `
-      <td><span class="rank">—</span></td>
-      <td><div class="player-cell">
-        <img class="player-thumb" src="${avatar}" onerror="this.style.display='none'" />
-        <a class="player-nick" href="profile.html?steamid=${auth.steamid}&country=${countryCode}">${nick}</a>
-        <span class="pinned-self-badge">📍 You</span>
-      </div></td>
-      <td><span class="pts-cell">0</span></td>
-      <td><span class="pos-cell">—</span></td>
-      <td><span class="runs-cell">0 (0%)</span></td>
-    `;
-  } else {
+  {
     const p = activeSorted[idx];
     const rank = idx + 1;
     const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
@@ -322,20 +303,9 @@ function renderPinnedSelfByMap(sorted, mapName) {
   tr.id = 'pinned-self-row-country';
   tr.className = 'pinned-self-row';
 
-  if (idx === -1) {
-    if (auth.country && auth.country !== countryCode) return;
-    tr.innerHTML = `
-      <td><span class="rank-badge">—</span></td>
-      <td><div class="player-cell">
-        <img class="player-thumb" src="${auth.avatar || ''}" onerror="this.style.display='none'" />
-        <a class="player-nick" href="profile.html?steamid=${auth.steamid}&country=${countryCode}">${auth.nickname || 'You'}</a>
-        <span class="pinned-self-badge">📍 You</span>
-      </div></td>
-      <td><span class="time-cell">—</span></td>
-      <td><span class="pos-cell">—</span></td>
-      <td><span class="runs-cell">—</span></td>
-    `;
-  } else {
+  if (idx === -1) return;
+
+  {
     const p = sorted[idx];
     const rank = idx + 1;
     const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
