@@ -330,8 +330,9 @@ async function friendRespond(requestId, action, btn) {
       if (req) {
         const profileSteamid = getProfileSteamid();
         if (profileSteamid === req.from_steamid) {
-          const btn2 = document.getElementById('kzAddFriendBtn');
-          if (btn2) setFriendBtnState(btn2, 'friends');
+          const wrap2 = document.getElementById('kzFriendBtnWrap');
+          const btn2  = document.getElementById('kzAddFriendBtn');
+          if (wrap2 && btn2) setFriendBtnState(wrap2, btn2, 'friends', auth, profileSteamid);
         }
       }
     }
@@ -449,6 +450,8 @@ function setFriendBtnState(wrap, btn, status, auth, profileSteamid) {
   }
 }
 
+function getWrap() { return document.getElementById('kzFriendBtnWrap'); }
+
 async function sendFriendRequest(auth, profileSteamid, btn) {
   btn.disabled = true;
   btn.textContent = 'Sending…';
@@ -460,7 +463,7 @@ async function sendFriendRequest(auth, profileSteamid, btn) {
     });
     const data = await res.json();
     if (data.ok) {
-      setFriendBtnState(btn, 'sent');
+      setFriendBtnState(getWrap(), btn, 'sent', auth, profileSteamid);
     } else {
       btn.disabled = false;
       btn.textContent = 'Add Friend';
@@ -482,9 +485,9 @@ async function acceptIncomingFromProfile(auth, profileSteamid, btn) {
       { headers: SB_HEADERS }
     );
     const rows = await res.json();
-    if (!rows.length) { setFriendBtnState(btn, 'none'); return; }
+    if (!rows.length) { setFriendBtnState(getWrap(), btn, 'none', auth, profileSteamid); return; }
     await friendRespond(rows[0].id, 'accept', btn);
-    setFriendBtnState(btn, 'friends');
+    setFriendBtnState(getWrap(), btn, 'friends', auth, profileSteamid);
   } catch {
     btn.disabled = false;
     btn.textContent = 'Accept Request';
