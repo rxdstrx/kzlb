@@ -116,7 +116,7 @@ export default async function handler(req, res) {
     const steamid = payload.steamid;
     // Allow empty string to remove banner; limit base64 size (~400KB)
     if (banner_url !== '' && typeof banner_url !== 'string') return res.status(400).json({ error: 'Invalid banner_url' });
-    if (banner_url.length > 500000) return res.status(400).json({ error: 'Banner too large (max ~375KB)' });
+    if (banner_url.length > 2000000) return res.status(400).json({ error: 'Banner too large (max ~1.5MB)' });
 
     const upsertRes = await fetch(`${sbUrl}/rest/v1/player_profiles`, {
       method: 'POST',
