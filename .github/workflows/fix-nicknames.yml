@@ -1,0 +1,31 @@
+name: Fix All Nicknames (Steam)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fix all nicknames from Steam API
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+        run: node scripts/fix-nicknames.js
+
+      - name: Commit updated nicknames
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add cache/
+          git diff --staged --quiet || git commit -m "fix: update all player nicknames to Steam personanames"
+          git pull --rebase=false origin main
+          git push origin HEAD:main
