@@ -611,17 +611,18 @@ function initSteamUI() {
           else url.searchParams.set('country', country);
           history.replaceState(null, '', url.toString());
 
-          // ── Instant UI update — no need to wait for GitHub Action ──
-          const flagEl = document.getElementById('playerFlag');
-          const countryEl = document.getElementById('statCountryDisplay');
-          if (country === 'xx') {
+          // ── Redirect to country leaderboard after a short delay ──
+          if (country && country !== 'xx') {
+            flagChangeStatus.textContent = '✅ Flag updated! Redirecting…';
+            setTimeout(() => {
+              window.location.href = country === 'pt' ? 'portugal.html' : `${country}.html`;
+            }, 1200);
+          } else {
+            // No flag — just update the UI in place
+            const flagEl = document.getElementById('playerFlag');
+            const countryEl = document.getElementById('statCountryDisplay');
             if (flagEl) flagEl.innerHTML = '';
             if (countryEl) countryEl.innerHTML = '—';
-          } else {
-            const flagHtml = `<img src="https://flagcdn.com/w40/${country}.png" style="height:18px;border-radius:2px;vertical-align:middle;margin-left:6px">`;
-            if (flagEl) flagEl.innerHTML = flagHtml;
-            if (countryEl) countryEl.innerHTML =
-              `<img src="https://flagcdn.com/w40/${country}.png" style="height:22px;border-radius:3px;vertical-align:middle"> ${country.toUpperCase()}`;
           }
         } else {
           flagChangeStatus.textContent = '✗ ' + (data.error || 'Failed');
