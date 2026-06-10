@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-06-10T16:50:14.664Z",
+  "updated_at": "2026-06-10T17:46:12.111Z",
   "players": [
     {
       "steamid": "76561199156021617",
       "nickname": "ДеВо4Ка x_X ТуCоВка",
       "country": "mo",
-      "cached_at": "2026-06-09T16:20:14.854Z",
-      "kz_points": 24276,
+      "cached_at": "2026-06-10T17:45:31.635Z",
+      "kz_points": 24267,
       "kz_place": 13,
       "kz_maps": "150 (90.37%)",
       "avatar": "https://avatars.steamstatic.com/4c1bb8c49d5c4dec2ff636cdbcaccf06aae20336_full.jpg",
@@ -43,7 +43,7 @@
           "points": "177.5984",
           "completions": "9",
           "tier": "3",
-          "place_num": "10 / 2 442",
+          "place_num": "11 / 2 442",
           "time_record": "01:32.2344",
           "unixtime_record": 1764190268
         },
@@ -64,15 +64,6 @@
           "place_num": "13 / 8 365",
           "time_record": "03:57.9219",
           "unixtime_record": 1778062749
-        },
-        {
-          "map": "kz_spire",
-          "points": "134.3311",
-          "completions": "7",
-          "tier": "2",
-          "place_num": "14 / 10 408",
-          "time_record": "04:47.0157",
-          "unixtime_record": 1776930392
         },
         {
           "map": "kz_drunkards",
@@ -102,8 +93,17 @@
           "unixtime_record": 1772820602
         },
         {
+          "map": "kz_spire",
+          "points": "134.3311",
+          "completions": "7",
+          "tier": "2",
+          "place_num": "15 / 10 408",
+          "time_record": "04:47.0157",
+          "unixtime_record": 1776930392
+        },
+        {
           "map": "kz_shift",
-          "points": "198.0629",
+          "points": "189.9007",
           "completions": "6",
           "tier": "3",
           "place_num": "16 / 1 297",
@@ -112,7 +112,7 @@
         },
         {
           "map": "kz_alien_city",
-          "points": "714.5694",
+          "points": "316.0585",
           "completions": "11",
           "tier": "6",
           "place_num": "18 / 322",
@@ -133,7 +133,7 @@
           "points": "139.2212",
           "completions": "2",
           "tier": "3",
-          "place_num": "21 / 985",
+          "place_num": "21 / 1 005",
           "time_record": "04:54.3125",
           "unixtime_record": 1780680448
         },
@@ -210,15 +210,6 @@
           "unixtime_record": 1780605068
         },
         {
-          "map": "kz_colors",
-          "points": "186.2589",
-          "completions": "2",
-          "tier": "3",
-          "place_num": "29 / 823",
-          "time_record": "24:51.1094",
-          "unixtime_record": 1780266602
-        },
-        {
           "map": "kz_mess",
           "points": "207.1338",
           "completions": "2",
@@ -235,6 +226,15 @@
           "place_num": "29 / 1 135",
           "time_record": "13:08.6563",
           "unixtime_record": 1769798852
+        },
+        {
+          "map": "kz_colors",
+          "points": "186.2589",
+          "completions": "2",
+          "tier": "3",
+          "place_num": "30 / 823",
+          "time_record": "24:51.1094",
+          "unixtime_record": 1780266602
         },
         {
           "map": "kz_slowerrun",
@@ -259,7 +259,7 @@
           "points": "173.2805",
           "completions": "6",
           "tier": "3",
-          "place_num": "31 / 3 788",
+          "place_num": "32 / 3 788",
           "time_record": "02:44.0313",
           "unixtime_record": 1777371046
         },
@@ -355,21 +355,12 @@
         },
         {
           "map": "kz_hex",
-          "points": "199.2038",
+          "points": "198.8073",
           "completions": "5",
           "tier": "3",
           "place_num": "46 / 1 727",
           "time_record": "01:23.1875",
           "unixtime_record": 1780182541
-        },
-        {
-          "map": "kz_unmake",
-          "points": "173.3122",
-          "completions": "4",
-          "tier": "7",
-          "place_num": "47 / 139",
-          "time_record": "26:14.1719",
-          "unixtime_record": 1775349726
         },
         {
           "map": "kz_rectangle",
@@ -381,13 +372,13 @@
           "unixtime_record": 1752897658
         },
         {
-          "map": "kz_overworld_a2",
-          "points": "115.2996",
-          "completions": "3",
-          "tier": "2",
-          "place_num": "52 / 3 246",
-          "time_record": "04:20.7032",
-          "unixtime_record": 1765781769
+          "map": "kz_unmake",
+          "points": "173.3122",
+          "completions": "4",
+          "tier": "7",
+          "place_num": "49 / 139",
+          "time_record": "26:14.1719",
+          "unixtime_record": 1775349726
         },
         {
           "map": "kz_okaychamp",
@@ -399,24 +390,6 @@
           "unixtime_record": 1765047475
         },
         {
-          "map": "kz_epiphany_v2",
-          "points": "251.7471",
-          "completions": "5",
-          "tier": "5",
-          "place_num": "53 / 1 305",
-          "time_record": "04:36.0625",
-          "unixtime_record": 1764066958
-        },
-        {
-          "map": "kz_kiwi_hym",
-          "points": "22.5620",
-          "completions": "1",
-          "tier": "8",
-          "place_num": "53 / 70",
-          "time_record": "01:31:32.8594",
-          "unixtime_record": 1780717542
-        },
-        {
           "map": "kz_dethroned",
           "points": "147.7765",
           "completions": "5",
@@ -426,13 +399,13 @@
           "unixtime_record": 1765989619
         },
         {
-          "map": "kz_monstrosity",
-          "points": "129.3550",
-          "completions": "3",
-          "tier": "6",
-          "place_num": "54 / 160",
-          "time_record": "07:25.8907",
-          "unixtime_record": 1766406225
+          "map": "kz_epiphany_v2",
+          "points": "251.7471",
+          "completions": "5",
+          "tier": "5",
+          "place_num": "54 / 1 305",
+          "time_record": "04:36.0625",
+          "unixtime_record": 1764066958
         },
         {
           "map": "kz_kiwideath",
@@ -444,6 +417,24 @@
           "unixtime_record": 1776741517
         },
         {
+          "map": "kz_overworld_a2",
+          "points": "115.2996",
+          "completions": "3",
+          "tier": "2",
+          "place_num": "55 / 3 246",
+          "time_record": "04:20.7032",
+          "unixtime_record": 1765781769
+        },
+        {
+          "map": "kz_kiwi_hym",
+          "points": "22.5620",
+          "completions": "1",
+          "tier": "8",
+          "place_num": "55 / 70",
+          "time_record": "01:31:32.8594",
+          "unixtime_record": 1780717542
+        },
+        {
           "map": "kz_kiwi_lars",
           "points": "240.1622",
           "completions": "3",
@@ -451,6 +442,15 @@
           "place_num": "55 / 1 591",
           "time_record": "03:07.1094",
           "unixtime_record": 1776936806
+        },
+        {
+          "map": "kz_monstrosity",
+          "points": "129.3550",
+          "completions": "3",
+          "tier": "6",
+          "place_num": "55 / 160",
+          "time_record": "07:25.8907",
+          "unixtime_record": 1766406225
         },
         {
           "map": "kz_village",
@@ -475,7 +475,7 @@
           "points": "178.5313",
           "completions": "33",
           "tier": "3",
-          "place_num": "57 / 6 467",
+          "place_num": "59 / 6 467",
           "time_record": "01:44.7188",
           "unixtime_record": 1776272360
         },
@@ -511,7 +511,7 @@
           "points": "177.2059",
           "completions": "7",
           "tier": "5",
-          "place_num": "62 / 588",
+          "place_num": "63 / 588",
           "time_record": "03:28.8438",
           "unixtime_record": 1764985215
         },
@@ -520,7 +520,7 @@
           "points": "213.6617",
           "completions": "9",
           "tier": "5",
-          "place_num": "62 / 497",
+          "place_num": "63 / 497",
           "time_record": "04:07.1407",
           "unixtime_record": 1766041187
         },
@@ -534,20 +534,11 @@
           "unixtime_record": 1780410644
         },
         {
-          "map": "kz_sanctum",
-          "points": "171.8610",
-          "completions": "3",
-          "tier": "3",
-          "place_num": "65 / 1 092",
-          "time_record": "02:20.6563",
-          "unixtime_record": 1780273633
-        },
-        {
           "map": "kz_pendulum",
           "points": "142.9345",
           "completions": "4",
           "tier": "6",
-          "place_num": "65 / 177",
+          "place_num": "66 / 177",
           "time_record": "16:54.2969",
           "unixtime_record": 1775511333
         },
@@ -559,6 +550,15 @@
           "place_num": "67 / 806",
           "time_record": "12:53.1719",
           "unixtime_record": 1778869184
+        },
+        {
+          "map": "kz_sanctum",
+          "points": "171.8610",
+          "completions": "3",
+          "tier": "3",
+          "place_num": "67 / 1 092",
+          "time_record": "02:20.6563",
+          "unixtime_record": 1780273633
         },
         {
           "map": "kz_16pillars",
@@ -574,7 +574,7 @@
           "points": "219.1789",
           "completions": "10",
           "tier": "6",
-          "place_num": "67 / 422",
+          "place_num": "68 / 422",
           "time_record": "05:22.8907",
           "unixtime_record": 1777082878
         },
@@ -646,7 +646,7 @@
           "points": "178.7874",
           "completions": "2",
           "tier": "3",
-          "place_num": "72 / 4 977",
+          "place_num": "73 / 4 977",
           "time_record": "01:48.8594",
           "unixtime_record": 1764343537
         },
@@ -669,15 +669,6 @@
           "unixtime_record": 1776378947
         },
         {
-          "map": "kz_igneous",
-          "points": "208.6033",
-          "completions": "14",
-          "tier": "3",
-          "place_num": "75 / 44 117",
-          "time_record": "01:43.7500",
-          "unixtime_record": 1778070196
-        },
-        {
           "map": "kz_kiwionerous",
           "points": "109.1798",
           "completions": "1",
@@ -691,18 +682,18 @@
           "points": "188.0519",
           "completions": "2",
           "tier": "3",
-          "place_num": "75 / 2 755",
+          "place_num": "76 / 2 755",
           "time_record": "01:18.5313",
           "unixtime_record": 1780250790
         },
         {
-          "map": "bkz_evanstep",
-          "points": "156.2855",
-          "completions": "3",
-          "tier": "4",
-          "place_num": "77 / 788",
-          "time_record": "02:36.0157",
-          "unixtime_record": 1753004997
+          "map": "kz_igneous",
+          "points": "208.6033",
+          "completions": "14",
+          "tier": "3",
+          "place_num": "77 / 44 117",
+          "time_record": "01:43.7500",
+          "unixtime_record": 1778070196
         },
         {
           "map": "kz_breezeblocks",
@@ -736,27 +727,18 @@
           "points": "110.4907",
           "completions": "10",
           "tier": "6",
-          "place_num": "79 / 216",
+          "place_num": "80 / 216",
           "time_record": "06:52.3907",
           "unixtime_record": 1772239520
         },
         {
-          "map": "kz_why",
-          "points": "227.5226",
+          "map": "bkz_evanstep",
+          "points": "156.2855",
           "completions": "3",
           "tier": "4",
-          "place_num": "80 / 1 006",
-          "time_record": "01:12.5625",
-          "unixtime_record": 1780172235
-        },
-        {
-          "map": "kz_mandelbrot",
-          "points": "214.8245",
-          "completions": "7",
-          "tier": "4",
-          "place_num": "80 / 1 769",
-          "time_record": "02:37.4375",
-          "unixtime_record": 1765878383
+          "place_num": "81 / 788",
+          "time_record": "02:36.0157",
+          "unixtime_record": 1753004997
         },
         {
           "map": "kz_slide_deee",
@@ -768,22 +750,13 @@
           "unixtime_record": 1770594814
         },
         {
-          "map": "kz_itz_updown",
-          "points": "192.6399",
-          "completions": "6",
+          "map": "kz_why",
+          "points": "227.5226",
+          "completions": "3",
           "tier": "4",
-          "place_num": "81 / 785",
-          "time_record": "03:33.1407",
-          "unixtime_record": 1770098550
-        },
-        {
-          "map": "kz_cheese",
-          "points": "127.1361",
-          "completions": "7",
-          "tier": "2",
-          "place_num": "81 / 8 202",
-          "time_record": "01:35.7500",
-          "unixtime_record": 1776364823
+          "place_num": "82 / 1 006",
+          "time_record": "01:12.5625",
+          "unixtime_record": 1780172235
         },
         {
           "map": "kz_wasabi",
@@ -795,13 +768,40 @@
           "unixtime_record": 1768901970
         },
         {
+          "map": "kz_mandelbrot",
+          "points": "214.8245",
+          "completions": "7",
+          "tier": "4",
+          "place_num": "82 / 1 769",
+          "time_record": "02:37.4375",
+          "unixtime_record": 1765878383
+        },
+        {
+          "map": "kz_cheese",
+          "points": "127.1361",
+          "completions": "7",
+          "tier": "2",
+          "place_num": "82 / 8 202",
+          "time_record": "01:35.7500",
+          "unixtime_record": 1776364823
+        },
+        {
           "map": "kz_dzy_beyond_v2",
           "points": "139.7277",
           "completions": "12",
           "tier": "2",
-          "place_num": "83 / 17 847",
+          "place_num": "84 / 17 847",
           "time_record": "02:50.8125",
           "unixtime_record": 1755101505
+        },
+        {
+          "map": "kz_itz_updown",
+          "points": "192.6399",
+          "completions": "6",
+          "tier": "4",
+          "place_num": "84 / 785",
+          "time_record": "03:33.1407",
+          "unixtime_record": 1770098550
         },
         {
           "map": "kz_slide_era",
@@ -822,24 +822,6 @@
           "unixtime_record": 1776722468
         },
         {
-          "map": "kz_oloramasa",
-          "points": "192.1113",
-          "completions": "6",
-          "tier": "6",
-          "place_num": "90 / 353",
-          "time_record": "07:04.2813",
-          "unixtime_record": 1765087393
-        },
-        {
-          "map": "kz_devon",
-          "points": "187.6816",
-          "completions": "2",
-          "tier": "3",
-          "place_num": "90 / 2 122",
-          "time_record": "01:50.0625",
-          "unixtime_record": 1780058982
-        },
-        {
           "map": "kz_ladderhell",
           "points": "136.6134",
           "completions": "6",
@@ -856,6 +838,24 @@
           "place_num": "90 / 15 945",
           "time_record": "00:52.3282",
           "unixtime_record": 1765959560
+        },
+        {
+          "map": "kz_oloramasa",
+          "points": "192.1113",
+          "completions": "6",
+          "tier": "6",
+          "place_num": "91 / 353",
+          "time_record": "07:04.2813",
+          "unixtime_record": 1765087393
+        },
+        {
+          "map": "kz_devon",
+          "points": "187.6816",
+          "completions": "2",
+          "tier": "3",
+          "place_num": "91 / 2 122",
+          "time_record": "01:50.0625",
+          "unixtime_record": 1780058982
         },
         {
           "map": "kz_aether_fix",
@@ -880,7 +880,7 @@
           "points": "178.0691",
           "completions": "2",
           "tier": "3",
-          "place_num": "94 / 1 550",
+          "place_num": "95 / 1 550",
           "time_record": "05:04.6407",
           "unixtime_record": 1767132006
         },
@@ -916,7 +916,7 @@
           "points": "178.2531",
           "completions": "3",
           "tier": "3",
-          "place_num": "99 / 6 434",
+          "place_num": "100 / 6 434",
           "time_record": "13:39.5000",
           "unixtime_record": 1766045873
         },
@@ -939,15 +939,6 @@
           "unixtime_record": 1765964328
         },
         {
-          "map": "kz_kzro_mountainroad",
-          "points": "291.6887",
-          "completions": "2",
-          "tier": "5",
-          "place_num": "103 / 812",
-          "time_record": "03:26.2032",
-          "unixtime_record": 1767128741
-        },
-        {
           "map": "kz_blockhardy2k",
           "points": "183.2727",
           "completions": "7",
@@ -961,18 +952,9 @@
           "points": "135.9681",
           "completions": "17",
           "tier": "2",
-          "place_num": "104 / 190 079",
+          "place_num": "105 / 190 079",
           "time_record": "01:58.8125",
           "unixtime_record": 1775154063
-        },
-        {
-          "map": "kz_moorerutan",
-          "points": "117.1766",
-          "completions": "1",
-          "tier": "2",
-          "place_num": "104 / 9 187",
-          "time_record": "02:40.9219",
-          "unixtime_record": 1768575927
         },
         {
           "map": "skz_bananaysoda_2",
@@ -982,6 +964,24 @@
           "place_num": "105 / 680",
           "time_record": "03:48.7813",
           "unixtime_record": 1757438223
+        },
+        {
+          "map": "kz_moorerutan",
+          "points": "117.1766",
+          "completions": "1",
+          "tier": "2",
+          "place_num": "105 / 9 187",
+          "time_record": "02:40.9219",
+          "unixtime_record": 1768575927
+        },
+        {
+          "map": "kz_kzro_mountainroad",
+          "points": "291.6887",
+          "completions": "2",
+          "tier": "5",
+          "place_num": "106 / 812",
+          "time_record": "03:26.2032",
+          "unixtime_record": 1767128741
         },
         {
           "map": "kz_dejavu",
@@ -997,7 +997,7 @@
           "points": "57.9187",
           "completions": "4",
           "tier": "1",
-          "place_num": "111 / 15 854",
+          "place_num": "112 / 15 854",
           "time_record": "01:52.6719",
           "unixtime_record": 1753147095
         },
@@ -1029,15 +1029,6 @@
           "unixtime_record": 1753360105
         },
         {
-          "map": "kz_sp1_bloodyljs_v2",
-          "points": "222.1223",
-          "completions": "1",
-          "tier": "6",
-          "place_num": "117 / 288",
-          "time_record": "06:22.3282",
-          "unixtime_record": 1770602377
-        },
-        {
           "map": "kz_grotto",
           "points": "123.8620",
           "completions": "18",
@@ -1047,13 +1038,13 @@
           "unixtime_record": 1778099249
         },
         {
-          "map": "kz_combobreaker",
-          "points": "118.9444",
-          "completions": "15",
-          "tier": "2",
-          "place_num": "118 / 14 408",
-          "time_record": "01:34.3125",
-          "unixtime_record": 1744992579
+          "map": "kz_sp1_bloodyljs_v2",
+          "points": "222.1223",
+          "completions": "1",
+          "tier": "6",
+          "place_num": "118 / 288",
+          "time_record": "06:22.3282",
+          "unixtime_record": 1770602377
         },
         {
           "map": "kz_zoomer_fix",
@@ -1065,11 +1056,20 @@
           "unixtime_record": 1754925519
         },
         {
+          "map": "kz_combobreaker",
+          "points": "118.9444",
+          "completions": "15",
+          "tier": "2",
+          "place_num": "119 / 14 408",
+          "time_record": "01:34.3125",
+          "unixtime_record": 1744992579
+        },
+        {
           "map": "kz_demonhours",
           "points": "214.1760",
           "completions": "6",
           "tier": "5",
-          "place_num": "119 / 1 325",
+          "place_num": "120 / 1 325",
           "time_record": "01:47.5157",
           "unixtime_record": 1776722783
         },
@@ -1078,7 +1078,7 @@
           "points": "109.3600",
           "completions": "7",
           "tier": "2",
-          "place_num": "120 / 12 811",
+          "place_num": "121 / 12 811",
           "time_record": "01:30.9375",
           "unixtime_record": 1764326799
         },
@@ -1105,7 +1105,7 @@
           "points": "130.9291",
           "completions": "3",
           "tier": "5",
-          "place_num": "131 / 439",
+          "place_num": "131 / 9 999",
           "time_record": "08:57.1875",
           "unixtime_record": 1777085939
         },
@@ -1132,7 +1132,7 @@
           "points": "70.2099",
           "completions": "2",
           "tier": "1",
-          "place_num": "134 / 23 262",
+          "place_num": "137 / 23 262",
           "time_record": "01:02.5782",
           "unixtime_record": 1774882850
         },
@@ -1141,7 +1141,7 @@
           "points": "119.0613",
           "completions": "3",
           "tier": "2",
-          "place_num": "141 / 8 821",
+          "place_num": "143 / 8 821",
           "time_record": "02:09.8282",
           "unixtime_record": 1755127844
         },
@@ -1150,18 +1150,9 @@
           "points": "217.7930",
           "completions": "8",
           "tier": "4",
-          "place_num": "145 / 2 647",
+          "place_num": "146 / 2 647",
           "time_record": "03:57.0000",
           "unixtime_record": 1765355964
-        },
-        {
-          "map": "kz_haste",
-          "points": "262.4234",
-          "completions": "4",
-          "tier": "4",
-          "place_num": "146 / 4 061",
-          "time_record": "01:47.5469",
-          "unixtime_record": 1765954954
         },
         {
           "map": "kz_sxb2_remake",
@@ -1171,6 +1162,15 @@
           "place_num": "147 / 1 395",
           "time_record": "04:08.6094",
           "unixtime_record": 1755299567
+        },
+        {
+          "map": "kz_haste",
+          "points": "262.4234",
+          "completions": "4",
+          "tier": "4",
+          "place_num": "147 / 4 061",
+          "time_record": "01:47.5469",
+          "unixtime_record": 1765954954
         },
         {
           "map": "kz_2fast",
@@ -1222,7 +1222,7 @@
           "points": "65.2328",
           "completions": "3",
           "tier": "1",
-          "place_num": "166 / 19 965",
+          "place_num": "167 / 19 965",
           "time_record": "02:11.5625",
           "unixtime_record": 1765960743
         },
@@ -1258,7 +1258,7 @@
           "points": "123.6390",
           "completions": "9",
           "tier": "2",
-          "place_num": "189 / 110 720",
+          "place_num": "190 / 110 720",
           "time_record": "00:58.4688",
           "unixtime_record": 1776380302
         },
@@ -1276,7 +1276,7 @@
           "points": "119.2636",
           "completions": "3",
           "tier": "2",
-          "place_num": "207 / 13 088",
+          "place_num": "208 / 13 088",
           "time_record": "02:50.8907",
           "unixtime_record": 1764267727
         },
@@ -1285,7 +1285,7 @@
           "points": "173.9697",
           "completions": "3",
           "tier": "3",
-          "place_num": "225 / 2 422",
+          "place_num": "226 / 2 422",
           "time_record": "00:53.4844",
           "unixtime_record": 1755041712
         },
@@ -1312,7 +1312,7 @@
           "points": "61.0576",
           "completions": "14",
           "tier": "1",
-          "place_num": "376 / 57 168",
+          "place_num": "378 / 57 168",
           "time_record": "00:48.1719",
           "unixtime_record": 1755112069
         },
@@ -1321,7 +1321,7 @@
           "points": "101.6522",
           "completions": "1",
           "tier": "2",
-          "place_num": "520 / 8 203",
+          "place_num": "523 / 8 203",
           "time_record": "00:41.4063",
           "unixtime_record": 1776365627
         },
@@ -1330,7 +1330,7 @@
           "points": "112.1128",
           "completions": "6",
           "tier": "2",
-          "place_num": "531 / 18 285",
+          "place_num": "530 / 18 285",
           "time_record": "00:53.6250",
           "unixtime_record": 1753141877
         },
@@ -1339,7 +1339,7 @@
           "points": "101.7755",
           "completions": "1",
           "tier": "2",
-          "place_num": "660 / 4 472",
+          "place_num": "664 / 4 472",
           "time_record": "01:28.7032",
           "unixtime_record": 1776737031
         },
@@ -1348,7 +1348,7 @@
           "points": "60.5789",
           "completions": "1",
           "tier": "1",
-          "place_num": "1 157 / 13 554",
+          "place_num": "1 179 / 13 554",
           "time_record": "00:13.1407",
           "unixtime_record": 1775503248
         },
@@ -1357,7 +1357,7 @@
           "points": "184.1339",
           "completions": "71",
           "tier": "4",
-          "place_num": "1 356 / 27 421",
+          "place_num": "1 363 / 27 421",
           "time_record": "11:54.5782",
           "unixtime_record": 1763827970
         }
