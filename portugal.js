@@ -38,7 +38,7 @@ async function init() {
     let loaded = false;
     try {
       const res = await fetch(
-        `${SB_LB_URL}/rest/v1/players?country=eq.pt&kz_maps=gt.0&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
+        `${SB_LB_URL}/rest/v1/players?country=eq.pt&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
         { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
       );
       if (res.ok) {

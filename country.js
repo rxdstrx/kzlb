@@ -1,4 +1,6 @@
-﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+﻿const CACHE_BASE  = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+const SB_LB_URL   = 'https://btcufotfvfnuoiokghjm.supabase.co';
+const SB_LB_ANON  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
 const PAGE_SIZE = 100;
 
 // These may also be defined in auth.js (portugal.html loads both) — safe to redefine
@@ -106,12 +108,32 @@ function timeToSeconds(t) {
 
 async function init() {
   try {
-    const res = await fetch(`${CACHE_BASE}/${countryCode}-kz-players.json?bust=${Date.now()}`);
-    if (!res.ok) throw new Error('No data');
-    const data = await res.json();
-    allPlayers = data.players || [];
+    // Try Supabase first (instant)
+    let loaded = false;
+    try {
+      const res = await fetch(
+        `${SB_LB_URL}/rest/v1/players?country=eq.${countryCode}&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
+        { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
+      );
+      if (res.ok) {
+        const rows = await res.json();
+        if (Array.isArray(rows) && rows.length > 0) {
+          allPlayers = rows;
+          ptSub.textContent = `${allPlayers.length} players`;
+          loaded = true;
+        }
+      }
+    } catch {}
 
-    ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(data.updated_at))} ago`;
+    // Fallback to GitHub
+    if (!loaded) {
+      const res = await fetch(`${CACHE_BASE}/${countryCode}-kz-players.json?bust=${Date.now()}`);
+      if (!res.ok) throw new Error('No data');
+      const data = await res.json();
+      allPlayers = data.players || [];
+      ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(data.updated_at))} ago`;
+    }
+
     loadingState.classList.add('hidden');
     tableWrapper.classList.remove('hidden');
     renderOverall();
