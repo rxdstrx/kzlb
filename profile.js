@@ -822,7 +822,7 @@ function renderNotifications(items) {
 
   list.innerHTML = items.map(n => {
     const msg = n.type === 'friend_accepted'
-      ? `<strong>${n.from_nickname || 'Someone'}</strong> accepted your friend request`
+      ? `<strong>${n.from_nickname || 'Someone'}</strong> accepted your friend request and has been added to your friends list`
       : n.type;
     return `
       <div class="notif-item ${n.read ? '' : 'unread'}">
@@ -835,13 +835,17 @@ function renderNotifications(items) {
   }).join('');
 }
 
-async function loadNotifications(steamid) {
+async function loadNotifications(steamid, token) {
   try {
-    const res = await fetch(
-      `${SB_NOTIF_URL}/rest/v1/notifications?steamid=eq.${steamid}&order=created_at.desc&limit=10`,
-      { headers: { apikey: SB_NOTIF_ANON, Authorization: `Bearer ${SB_NOTIF_ANON}` } }
-    );
-    if (res.ok) renderNotifications(await res.json());
+    const res = await fetch('https://kzlb.vercel.app/api/friend-action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, action: 'get-notifications' }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.notifications) renderNotifications(data.notifications);
+    }
   } catch {}
 }
 
@@ -854,7 +858,7 @@ function initNotifications(auth) {
   wrap.style.display = 'block';
 
   // Initial load
-  loadNotifications(auth.steamid);
+  loadNotifications(auth.steamid, auth.token);
 
   // Real-time: new notification → refresh
   if (window.sbClient) {
@@ -865,7 +869,7 @@ function initNotifications(auth) {
         schema: 'public',
         table: 'notifications',
         filter: `steamid=eq.${auth.steamid}`,
-      }, () => loadNotifications(auth.steamid))
+      }, () => loadNotifications(auth.steamid, auth.token))
       .subscribe();
   }
 
@@ -886,7 +890,7 @@ function initNotifications(auth) {
         // Optimistically clear badge
         document.getElementById('notifBadge')?.classList.add('hidden');
         // Re-render as all read
-        setTimeout(() => loadNotifications(auth.steamid), 500);
+        setTimeout(() => loadNotifications(auth.steamid, auth.token), 500);
       }
     }
   });
