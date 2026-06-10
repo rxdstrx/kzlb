@@ -183,11 +183,14 @@ async function loadAcceptedNotifs(auth) {
       body: JSON.stringify({ token: auth.token, action: 'get-notifications' }),
     });
     const data = await res.json();
+    console.log('[notif] get-notifications status:', res.status, 'count:', data.notifications?.length, 'data:', JSON.stringify(data.notifications));
     if (res.ok && data.notifications) {
       _acceptedNotifs = data.notifications;
       renderNotifList();
     }
-  } catch {}
+  } catch (e) {
+    console.error('[notif] loadAcceptedNotifs error:', e);
+  }
 }
 
 async function markNotifsRead(auth) {
