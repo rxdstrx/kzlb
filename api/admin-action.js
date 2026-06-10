@@ -16,6 +16,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid steamid' });
   }
 
+  const sbUrl = process.env.SUPABASE_URL;
+  const sbKey = process.env.SUPABASE_SERVICE_KEY;
+  const sbH   = { apikey: sbKey, Authorization: `Bearer ${sbKey}`, 'Content-Type': 'application/json' };
+
   const token = process.env.GH_TOKEN;
   if (!token) return res.status(500).json({ error: 'No GH_TOKEN configured' });
 
@@ -23,9 +27,24 @@ export default async function handler(req, res) {
 
   if (action === 'move') {
     if (!country || !/^[a-z]{2}$/.test(country)) return res.status(400).json({ error: 'Invalid country' });
+    // Also update Supabase instantly
+    if (sbUrl && sbKey) {
+      fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
+        method: 'PATCH',
+        headers: { ...sbH, Prefer: 'return=minimal' },
+        body: JSON.stringify({ country, updated_at: new Date().toISOString() }),
+      }).catch(() => {});
+    }
     workflow = 'admin-action.yml';
     inputs = { action: 'move', steamid, country };
   } else if (action === 'remove') {
+    // Delete from Supabase immediately — leaderboard updates instantly
+    if (sbUrl && sbKey) {
+      await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
+        method: 'DELETE',
+        headers: { ...sbH, Prefer: 'return=minimal' },
+      });
+    }
     workflow = 'admin-action.yml';
     inputs = { action: 'remove', steamid, country: '' };
   } else if (action === 'update') {
