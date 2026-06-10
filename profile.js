@@ -176,7 +176,10 @@ async function fetchPlayerData(sid) {
 
 async function loadProfile(sid) {
   try {
-    const { ok, data: cachedData } = await fetchPlayerData(sid);
+    const [{ ok, data: cachedData }] = await Promise.all([
+      fetchPlayerData(sid),
+      loadMapTotals(),
+    ]);
     const cacheRes = { ok, json: async () => cachedData };
 
     if (!cacheRes.ok) {
@@ -387,6 +390,15 @@ function setStatIfExists(id, value) {
   if (el) el.textContent = value;
 }
 
+// Global map totals — loaded once, used to show correct totals for all players
+let _mapTotals = {};
+async function loadMapTotals() {
+  try {
+    const r = await fetch(`${CACHE_BASE}/map-totals.json?bust=${Date.now()}`);
+    if (r.ok) _mapTotals = await r.json();
+  } catch {}
+}
+
 function renderMaps(mapList) {
   const statsBody = document.getElementById('statsBody');
   const noStats   = document.getElementById('noStats');
@@ -407,7 +419,15 @@ function renderMaps(mapList) {
     const tier    = row.tier ?? '—';
     const runs    = row.completions ?? '—';
     const time    = row.time_record ?? '—';
-    const pos     = (row.place_num ?? '—').replace(/\u00c2\u00a0|\u00a0/g, ' ');
+    let pos = (row.place_num ?? '—').replace(/Â | /g, ' ');
+    if (_mapTotals[mapName] && pos !== '—') {
+      const parts = pos.split('/');
+      if (parts.length === 2) {
+        const rank = parts[0].trim();
+        const total = String(_mapTotals[mapName]).replace(/B(?=(d{3})+(?!d))/g, ' ');
+        pos = rank + ' / ' + total;
+      }
+    }
     const pts     = row.points != null ? Number(row.points).toFixed(4) : '—';
     const d = row.unixtime_record ? new Date(row.unixtime_record * 1000) : null;
     const date = d

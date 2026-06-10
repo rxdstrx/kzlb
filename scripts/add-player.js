@@ -253,6 +253,17 @@ function getLeaderboardFile(c) {
     } catch {}
   }
 
+  // Save map-totals.json — used by profile page to show correct totals for all players
+  const totalsFile = path.join(cacheDir, 'map-totals.json');
+  let existingTotals = {};
+  try { existingTotals = JSON.parse(fs.readFileSync(totalsFile, 'utf8')); } catch {}
+  let totalsMerged = { ...existingTotals };
+  for (const [map, total] of Object.entries(mapMaxTotal)) {
+    if (total > (totalsMerged[map] || 0)) totalsMerged[map] = total;
+  }
+  fs.writeFileSync(totalsFile, JSON.stringify(totalsMerged, null, 2));
+  console.log(`Saved map-totals.json (${Object.keys(totalsMerged).length} maps)`);
+
   // Apply normalized place_num back to individual cache file + mapsData in memory
   if (Object.keys(mapMaxTotal).length) {
     for (const m of (mapsData?.list || [])) {
