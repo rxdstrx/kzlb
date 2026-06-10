@@ -183,14 +183,11 @@ async function loadAcceptedNotifs(auth) {
       body: JSON.stringify({ token: auth.token, action: 'get-notifications' }),
     });
     const data = await res.json();
-    console.log('[notif] get-notifications status:', res.status, 'count:', data.notifications?.length, 'data:', JSON.stringify(data.notifications));
     if (res.ok && data.notifications) {
       _acceptedNotifs = data.notifications;
       renderNotifList();
     }
-  } catch (e) {
-    console.error('[notif] loadAcceptedNotifs error:', e);
-  }
+  } catch {}
 }
 
 async function markNotifsRead(auth) {
@@ -327,11 +324,9 @@ async function friendRespond(requestId, action, btn) {
     _pendingRequests = _pendingRequests.filter(r => r.id !== requestId);
 
     if (action === 'accept') {
-      console.log('[notif] accepted, will fetch notifs in 800ms, auth.steamid:', auth?.steamid);
-      showToast('Friend request accepted!');
+        showToast('Friend request accepted!');
       refreshFriendsTabIfOpen(auth.steamid);
-      // Small delay so DB commit is visible, then fetch fresh notifications
-      setTimeout(() => { console.log('[notif] firing loadAcceptedNotifs'); loadAcceptedNotifs(auth); }, 800);
+      setTimeout(() => loadAcceptedNotifs(auth), 800);
     } else {
       renderNotifList();
     }
