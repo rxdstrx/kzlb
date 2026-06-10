@@ -104,6 +104,8 @@
 }
 .kz-notif-item:last-child { border-bottom: none; }
 .kz-notif-item:hover { background: rgba(255,255,255,0.04); }
+.kz-notif-item.kz-notif-unread { background: rgba(99,102,241,0.09); }
+.kz-notif-time { font-size: 11px; color: rgba(255,255,255,0.28); margin-top: 2px; }
 
 .kz-notif-avatar {
   width: 40px;
