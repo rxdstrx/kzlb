@@ -600,10 +600,6 @@ function renderPinnedSelf() {
 
   // Insert at very top of lbBody
   lbBody.insertBefore(tr, lbBody.firstChild);
-
-  // Remove the duplicate regular row so the player doesn't appear twice
-  const duplicate = lbBody.querySelector(`tr[data-steamid="${auth.steamid}"]`);
-  if (duplicate) duplicate.remove();
 }
 
 // Load world leaderboard on startup
