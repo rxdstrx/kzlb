@@ -183,7 +183,7 @@ async function fetchPlayerData(sid) {
     }
   } catch {}
 
-  // 2. Try GitHub API — always fresh, no CDN caching
+  // 2. Try GitHub API — always fresh, no CDN caching (used as fast fallback)
   try {
     const ghRes = await fetch(`https://api.github.com/repos/rxdstrx/kzlb/contents/cache/${sid}.json`);
     if (ghRes.ok) {
@@ -193,7 +193,16 @@ async function fetchPlayerData(sid) {
     }
   } catch {}
 
-  // 3. Last resort: raw CDN
+  // 3. jsDelivr CDN — no rate limit, ~5 min cache, purged after each scrape
+  try {
+    const jsdRes = await fetch(`https://cdn.jsdelivr.net/gh/rxdstrx/kzlb@main/cache/${sid}.json`);
+    if (jsdRes.ok) {
+      const data = await jsdRes.json();
+      return { ok: true, data };
+    }
+  } catch {}
+
+  // 4. Last resort: raw CDN
   const cacheRes = await fetch(`${CACHE_BASE}/${sid}.json`);
   if (!cacheRes.ok) return { ok: false };
   const data = await cacheRes.json();
