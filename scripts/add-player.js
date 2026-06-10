@@ -334,15 +334,7 @@ function getLeaderboardFile(c) {
       else console.warn(`Supabase players sync failed: ${r.status} ${await r.text()}`);
     } catch (e) { console.warn('Supabase players sync error:', e.message); }
 
-    // 3. Delete from player_cache — GitHub file is now committed, CDN will serve it
-    //    player_cache was only needed to bridge the CDN delay window
-    try {
-      const dr = await fetch(`${sbUrl}/rest/v1/player_cache?steamid=eq.${steamid}`, {
-        method: 'DELETE',
-        headers: { ...sbH, Prefer: 'return=minimal' },
-      });
-      if (dr.ok) console.log(`Supabase: player_cache cleaned up for ${steamid}`);
-      else console.warn(`Supabase player_cache delete failed: ${dr.status}`);
-    } catch (e) { console.warn('Supabase player_cache delete error:', e.message); }
+    // player_cache is cleaned up automatically by Supabase cron job every 5 min
+    // (deletes rows older than 10 minutes) — gives profile page time to read it
   }
 })();
