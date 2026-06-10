@@ -443,6 +443,37 @@ function getStoredToken() {
   return auth ? auth.token : null;
 }
 
+// ── Save banner to Supabase with visible feedback ──
+async function saveBannerToSupabase(token, bannerUrl) {
+  // Show saving indicator
+  const editBtn = document.getElementById('bannerEditBtn');
+  const removeBtn = document.getElementById('bannerRemoveBtn');
+  const origEditText = editBtn ? editBtn.textContent : '';
+  if (editBtn) { editBtn.textContent = '⏳ Saving…'; editBtn.disabled = true; }
+  if (removeBtn) removeBtn.disabled = true;
+
+  try {
+    const res = await fetch('https://kzlb-banner.vercel.app/api/friend-action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, action: 'set-banner', banner_url: bannerUrl }),
+    });
+    const data = await res.json();
+    if (res.ok && data.ok) {
+      if (editBtn) { editBtn.textContent = '✅ Saved!'; }
+      setTimeout(() => { if (editBtn) { editBtn.textContent = origEditText; editBtn.disabled = false; } if (removeBtn) removeBtn.disabled = false; }, 1500);
+    } else {
+      alert('Banner save failed: ' + (data.error || res.status + ' - check Vercel logs'));
+      if (editBtn) { editBtn.textContent = origEditText; editBtn.disabled = false; }
+      if (removeBtn) removeBtn.disabled = false;
+    }
+  } catch (e) {
+    alert('Banner save failed (network error): ' + e.message);
+    if (editBtn) { editBtn.textContent = origEditText; editBtn.disabled = false; }
+    if (removeBtn) removeBtn.disabled = false;
+  }
+}
+
 // ── Banner edit (owner only) ──
 function initBannerUI(ownerSteamId) {
   const controls   = document.getElementById('bannerOwnerControls');
@@ -478,11 +509,7 @@ function initBannerUI(ownerSteamId) {
         // Save to Supabase so others can see it
         const auth = typeof getAuth === 'function' ? getAuth() : null;
         if (auth?.token) {
-          fetch('https://kzlb-banner.vercel.app/api/friend-action', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: auth.token, action: 'set-banner', banner_url: dataUrl }),
-          }).catch(() => {});
+          saveBannerToSupabase(auth.token, dataUrl);
         }
       };
       img.src = e.target.result;
@@ -501,11 +528,7 @@ function initBannerUI(ownerSteamId) {
     removeBtn.classList.add('hidden');
     const auth = typeof getAuth === 'function' ? getAuth() : null;
     if (auth?.token) {
-      fetch('https://kzlb-banner.vercel.app/api/friend-action', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: auth.token, action: 'set-banner', banner_url: '' }),
-      }).catch(() => {});
+      saveBannerToSupabase(auth.token, '');
     }
   });
 
