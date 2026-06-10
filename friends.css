@@ -216,7 +216,7 @@
 .kz-friend-card-bg {
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,0.03);
+  background: linear-gradient(135deg, rgba(56,189,248,0.06) 0%, rgba(167,139,250,0.06) 100%);
   z-index: 0;
 }
 .kz-friend-card-bg.has-banner {
