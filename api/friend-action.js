@@ -117,41 +117,42 @@ export default async function handler(req, res) {
     }
     if (!updateRes.ok) return res.status(500).json({ error: await updateRes.text() });
 
-    // ── Insert notification to the sender when accepted ──
+    // ── Insert notifications for both players when accepted ──
     if (respond === 'accept') {
-      let acceptorNickname = '';
-      let acceptorAvatar   = '';
+      // Fetch both players' info in parallel
+      let acceptorNickname = '', acceptorAvatar = '';
+      let senderNickname   = '', senderAvatar   = '';
       try {
-        const pRes = await fetch(
-          `${sbUrl}/rest/v1/players?steamid=eq.${payload.steamid}&select=nickname,avatar&limit=1`,
-          { headers: sbH }
-        );
-        const pRows = await pRes.json();
-        if (Array.isArray(pRows) && pRows.length) {
-          acceptorNickname = pRows[0].nickname || '';
-          acceptorAvatar   = pRows[0].avatar   || '';
-        }
+        const [aRes, sRes] = await Promise.all([
+          fetch(`${sbUrl}/rest/v1/players?steamid=eq.${payload.steamid}&select=nickname,avatar&limit=1`, { headers: sbH }),
+          fetch(`${sbUrl}/rest/v1/players?steamid=eq.${row.from_steamid}&select=nickname,avatar&limit=1`, { headers: sbH }),
+        ]);
+        const aRows = await aRes.json();
+        const sRows = await sRes.json();
+        if (aRows.length) { acceptorNickname = aRows[0].nickname || ''; acceptorAvatar = aRows[0].avatar || ''; }
+        if (sRows.length) { senderNickname   = sRows[0].nickname || ''; senderAvatar   = sRows[0].avatar || ''; }
       } catch {}
 
-      console.log('[notifications] inserting for steamid:', row.from_steamid, 'from:', payload.steamid, 'sbUrl:', sbUrl ? 'set' : 'MISSING', 'sbKey:', sbKey ? 'set' : 'MISSING');
-
-      const notifBody = {
-        steamid:       row.from_steamid,
-        type:          'friend_accepted',
-        from_steamid:  payload.steamid,
-        from_nickname: acceptorNickname,
-        from_avatar:   acceptorAvatar,
-      };
-      const notifRes = await fetch(`${sbUrl}/rest/v1/notifications`, {
-        method: 'POST',
-        headers: { ...sbH, Prefer: 'return=minimal' },
-        body: JSON.stringify(notifBody),
-      });
-      const notifText = await notifRes.text();
-      console.log('[notifications] insert response:', notifRes.status, notifText);
-      if (!notifRes.ok) {
-        return res.status(200).json({ ok: true, notif_error: `${notifRes.status}: ${notifText}` });
-      }
+      // Notify sender: "[Acceptor] accepted your friend request"
+      // Notify acceptor: "You accepted [Sender]'s friend request"
+      await Promise.all([
+        fetch(`${sbUrl}/rest/v1/notifications`, {
+          method: 'POST',
+          headers: { ...sbH, Prefer: 'return=minimal' },
+          body: JSON.stringify({
+            steamid: row.from_steamid, type: 'friend_accepted',
+            from_steamid: payload.steamid, from_nickname: acceptorNickname, from_avatar: acceptorAvatar,
+          }),
+        }),
+        fetch(`${sbUrl}/rest/v1/notifications`, {
+          method: 'POST',
+          headers: { ...sbH, Prefer: 'return=minimal' },
+          body: JSON.stringify({
+            steamid: payload.steamid, type: 'friend_you_accepted',
+            from_steamid: row.from_steamid, from_nickname: senderNickname, from_avatar: senderAvatar,
+          }),
+        }),
+      ]);
     }
 
     return res.status(200).json({ ok: true });
