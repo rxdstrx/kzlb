@@ -307,6 +307,51 @@ function renderByMap(mapName) {
   });
 
   renderPagination(sorted.length);
+  renderPinnedSelfByMap(sorted, mapName);
+}
+
+function renderPinnedSelfByMap(sorted, mapName) {
+  const existing = document.getElementById('pinned-self-row-country');
+  if (existing) existing.remove();
+
+  const auth = typeof getAuth === 'function' ? getAuth() : null;
+  if (!auth) return;
+
+  const idx = sorted.findIndex(p => p.steamid === auth.steamid);
+  const tr = document.createElement('tr');
+  tr.id = 'pinned-self-row-country';
+  tr.className = 'pinned-self-row';
+
+  if (idx === -1) {
+    if (auth.country && auth.country !== countryCode) return;
+    tr.innerHTML = `
+      <td><span class="rank-badge">—</span></td>
+      <td><div class="player-cell">
+        <img class="player-thumb" src="${auth.avatar || ''}" onerror="this.style.display='none'" />
+        <a class="player-nick" href="profile.html?steamid=${auth.steamid}&country=${countryCode}">${auth.nickname || 'You'}</a>
+        <span class="pinned-self-badge">📍 You</span>
+      </div></td>
+      <td><span class="time-cell">—</span></td>
+      <td><span class="pos-cell">—</span></td>
+      <td><span class="runs-cell">—</span></td>
+    `;
+  } else {
+    const p = sorted[idx];
+    const rank = idx + 1;
+    const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+    tr.innerHTML = `
+      <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+      <td><div class="player-cell">
+        <img class="player-thumb" src="${p.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
+        <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${countryCode}">${p.nickname}</a>
+        <span class="pinned-self-badge">📍 You</span>
+      </div></td>
+      <td><span class="time-cell">${p.entry.time_record}</span></td>
+      <td><span class="pos-cell">${(p.entry.place_num || '').replace(/ /g, ' ')}</span></td>
+      <td><span class="runs-cell">${p.entry.completions}</span></td>
+    `;
+  }
+  ptBody.insertBefore(tr, ptBody.firstChild);
 }
 
 function buildMapList() {
