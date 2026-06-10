@@ -271,10 +271,29 @@ function getLeaderboardFile(c) {
 
   console.log(`Done! ${resolvedNickname} — ${mapList.length} maps, ${player.kz_points} pts, rank #${player.kz_place}`);
 
-  // ── Sync this player to Supabase immediately ──
+  // ── Sync to Supabase ──
   const sbUrl = process.env.SUPABASE_URL;
   const sbKey = process.env.SUPABASE_SERVICE_KEY;
   if (sbUrl && sbKey) {
+    const sbH = {
+      apikey: sbKey, Authorization: `Bearer ${sbKey}`,
+      'Content-Type': 'application/json',
+    };
+
+    // 1. Write full profile JSON to player_cache immediately
+    //    Profile page reads this first — instant update, no CDN delay
+    try {
+      const fullData = { steamid, nickname: resolvedNickname, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData };
+      const cr = await fetch(`${sbUrl}/rest/v1/player_cache`, {
+        method: 'POST',
+        headers: { ...sbH, Prefer: 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify({ steamid, data: fullData, updated_at: new Date().toISOString() }),
+      });
+      if (cr.ok) console.log(`Supabase: player_cache written for ${resolvedNickname}`);
+      else console.warn(`Supabase player_cache write failed: ${cr.status} ${await cr.text()}`);
+    } catch (e) { console.warn('Supabase player_cache error:', e.message); }
+
+    // 2. Sync leaderboard summary to players table
     try {
       const sbRow = {
         steamid:   player.steamid,
@@ -289,15 +308,22 @@ function getLeaderboardFile(c) {
       };
       const r = await fetch(`${sbUrl}/rest/v1/players`, {
         method: 'POST',
-        headers: {
-          apikey: sbKey, Authorization: `Bearer ${sbKey}`,
-          'Content-Type': 'application/json',
-          Prefer: 'resolution=merge-duplicates,return=minimal',
-        },
+        headers: { ...sbH, Prefer: 'resolution=merge-duplicates,return=minimal' },
         body: JSON.stringify(sbRow),
       });
-      if (r.ok) console.log(`Supabase: player ${resolvedNickname} synced`);
-      else console.warn(`Supabase sync failed: ${r.status} ${await r.text()}`);
-    } catch (e) { console.warn('Supabase sync error:', e.message); }
+      if (r.ok) console.log(`Supabase: players synced for ${resolvedNickname}`);
+      else console.warn(`Supabase players sync failed: ${r.status} ${await r.text()}`);
+    } catch (e) { console.warn('Supabase players sync error:', e.message); }
+
+    // 3. Delete from player_cache — GitHub file is now committed, CDN will serve it
+    //    player_cache was only needed to bridge the CDN delay window
+    try {
+      const dr = await fetch(`${sbUrl}/rest/v1/player_cache?steamid=eq.${steamid}`, {
+        method: 'DELETE',
+        headers: { ...sbH, Prefer: 'return=minimal' },
+      });
+      if (dr.ok) console.log(`Supabase: player_cache cleaned up for ${steamid}`);
+      else console.warn(`Supabase player_cache delete failed: ${dr.status}`);
+    } catch (e) { console.warn('Supabase player_cache delete error:', e.message); }
   }
 })();
