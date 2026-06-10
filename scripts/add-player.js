@@ -166,6 +166,33 @@ function getLeaderboardFile(c) {
     maps_list: mapList,
   };
 
+  // ── Sync to Supabase IMMEDIATELY after scrape — before file ops ──
+  // This updates leaderboard + player_cache right away, not at the end
+  const sbUrl = process.env.SUPABASE_URL;
+  const sbKey = process.env.SUPABASE_SERVICE_KEY;
+  if (sbUrl && sbKey) {
+    const sbH = { apikey: sbKey, Authorization: `Bearer ${sbKey}`, 'Content-Type': 'application/json' };
+    const fullData = { steamid, nickname: resolvedNickname, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData };
+    await Promise.all([
+      // Write full JSON to player_cache — profile reads this instantly
+      fetch(`${sbUrl}/rest/v1/player_cache`, {
+        method: 'POST',
+        headers: { ...sbH, Prefer: 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify({ steamid, data: fullData, updated_at: new Date().toISOString() }),
+      }).then(r => r.ok ? console.log(`Supabase: player_cache written for ${resolvedNickname}`) : r.text().then(t => console.warn(`Supabase player_cache failed: ${t}`))),
+      // Write summary to players table — leaderboard reads this instantly
+      fetch(`${sbUrl}/rest/v1/players`, {
+        method: 'POST',
+        headers: { ...sbH, Prefer: 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify({
+          steamid, nickname: resolvedNickname, avatar: player.avatar || '', country,
+          kz_points: Number(player.kz_points) || 0, kz_place: Number(player.kz_place) || 0,
+          kz_maps: mapList.length, cached_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+        }),
+      }).then(r => r.ok ? console.log(`Supabase: players synced for ${resolvedNickname}`) : r.text().then(t => console.warn(`Supabase players failed: ${t}`))),
+    ]).catch(e => console.warn('Supabase early sync error:', e.message));
+  }
+
   // Save individual cache file
   // NOTE: userData always returns the cookie-owner's stats, not the queried player's.
   // Save user: {} to prevent contamination. Stats come from mapsData.header.desc.
@@ -300,52 +327,5 @@ function getLeaderboardFile(c) {
   console.log(`World rebuilt: ${worldPlayers.length} players`);
 
   console.log(`Done! ${resolvedNickname} — ${mapList.length} maps, ${player.kz_points} pts, rank #${player.kz_place}`);
-
-  // ── Sync to Supabase ──
-  const sbUrl = process.env.SUPABASE_URL;
-  const sbKey = process.env.SUPABASE_SERVICE_KEY;
-  if (sbUrl && sbKey) {
-    const sbH = {
-      apikey: sbKey, Authorization: `Bearer ${sbKey}`,
-      'Content-Type': 'application/json',
-    };
-
-    // 1. Write full profile JSON to player_cache immediately
-    //    Profile page reads this first — instant update, no CDN delay
-    try {
-      const fullData = { steamid, nickname: resolvedNickname, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData };
-      const cr = await fetch(`${sbUrl}/rest/v1/player_cache`, {
-        method: 'POST',
-        headers: { ...sbH, Prefer: 'resolution=merge-duplicates,return=minimal' },
-        body: JSON.stringify({ steamid, data: fullData, updated_at: new Date().toISOString() }),
-      });
-      if (cr.ok) console.log(`Supabase: player_cache written for ${resolvedNickname}`);
-      else console.warn(`Supabase player_cache write failed: ${cr.status} ${await cr.text()}`);
-    } catch (e) { console.warn('Supabase player_cache error:', e.message); }
-
-    // 2. Sync leaderboard summary to players table
-    try {
-      const sbRow = {
-        steamid:   player.steamid,
-        nickname:  player.nickname  || resolvedNickname || '',
-        avatar:    player.avatar    || '',
-        country:   player.country   || country || 'xx',
-        kz_points: Number(player.kz_points) || 0,
-        kz_place:  Number(player.kz_place)  || 0,
-        kz_maps:   mapList.length,
-        cached_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      const r = await fetch(`${sbUrl}/rest/v1/players`, {
-        method: 'POST',
-        headers: { ...sbH, Prefer: 'resolution=merge-duplicates,return=minimal' },
-        body: JSON.stringify(sbRow),
-      });
-      if (r.ok) console.log(`Supabase: players synced for ${resolvedNickname}`);
-      else console.warn(`Supabase players sync failed: ${r.status} ${await r.text()}`);
-    } catch (e) { console.warn('Supabase players sync error:', e.message); }
-
-    // player_cache is cleaned up automatically by Supabase cron job every 5 min
-    // (deletes rows older than 10 minutes) — gives profile page time to read it
-  }
+  // player_cache cleaned up by Supabase cron every 5 min (rows older than 10 min)
 })();
