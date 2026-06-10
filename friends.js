@@ -20,8 +20,9 @@ function initFriends() {
 
   // Bell + notifications only for logged-in users
   if (auth) {
-    injectBell();
+    injectBell(auth);
     loadNotifications(auth.steamid);
+    loadAcceptedNotifs(auth);
     subscribeRealtime(auth);
   }
 
@@ -45,7 +46,7 @@ function getProfileSteamid() {
 //  NOTIFICATION BELL
 // ══════════════════════════════════════════
 
-function injectBell() {
+function injectBell(auth) {
   if (document.getElementById('kz-notif-bell')) return;
   const navUser = document.getElementById('navUser');
   if (!navUser) return;
@@ -70,8 +71,6 @@ function injectBell() {
   `;
   // Insert inside navUser (avatar wrap) so bell + avatar stay grouped at nav right
   navUser.insertBefore(wrap, navUser.firstChild);
-
-  const auth = typeof getAuth === 'function' ? getAuth() : null;
 
   document.getElementById('kzNotifBtn').addEventListener('click', e => {
     e.stopPropagation();
