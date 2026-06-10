@@ -1,7 +1,6 @@
 ﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const API_BASE = 'https://kzlb.vercel.app';
-const SB_URL = 'https://btcufotfvfnuoiokghjm.supabase.co';
-const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzIwMTksImV4cCI6MjA2MTk0ODAxOX0.xBcCOKBIqeRSBnPCvHiSgaE4BOKIkyuAPaWKqfVGBpA';
+// SB_URL and SB_ANON are declared in friends.js (loaded before this file)
 
 const CIRCUMFERENCE = 264;
 const STEPS = [
