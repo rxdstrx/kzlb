@@ -171,7 +171,7 @@ function getLeaderboardFile(c) {
   // Save user: {} to prevent contamination. Stats come from mapsData.header.desc.
   fs.writeFileSync(
     path.join(cacheDir, `${steamid}.json`),
-    JSON.stringify({ steamid, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData }, null, 2)
+    JSON.stringify({ steamid, nickname: resolvedNickname, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData }, null, 2)
   );
   console.log(`Saved cache/${steamid}.json`);
 
