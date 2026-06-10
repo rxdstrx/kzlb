@@ -237,6 +237,8 @@ function subscribeRealtime(auth) {
       if (payload.new.from_steamid !== auth.steamid) return;
       if (payload.new.status === 'accepted') {
         refreshFriendsTabIfOpen(auth.steamid);
+        // Sender gets notified: fetch their new 'friend_accepted' notification
+        setTimeout(() => { loadAcceptedNotifs(auth); flashBell(); }, 1000);
       }
     })
     // ── Real-time: new accepted/you_accepted notification ──
