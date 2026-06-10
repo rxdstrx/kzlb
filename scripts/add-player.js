@@ -122,15 +122,36 @@ function getLeaderboardFile(c) {
   const mapList = mapsData?.list || [];
   const desc = mapsData?.header?.desc || {};
 
-  let resolvedNickname = nickname || mapsData?.header?.name || '';
+  // Always prefer Steam nickname — Cybershoke may show Faceit nickname instead
+  let resolvedNickname = nickname || '';
+
+  // 1. Try Steam API (most reliable)
+  if (!resolvedNickname) {
+    try {
+      const STEAM_KEY = process.env.STEAM_API_KEY;
+      if (STEAM_KEY) {
+        const sr = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_KEY}&steamids=${steamid}`);
+        const sd = await sr.json();
+        const steamName = sd?.response?.players?.[0]?.personaname;
+        if (steamName) { resolvedNickname = steamName; console.log(`Nickname from Steam API: ${resolvedNickname}`); }
+      }
+    } catch (e) { console.log('Steam API nickname lookup failed:', e.message); }
+  }
+
+  // 2. Fallback: playerdb.co (free, no key needed)
   if (!resolvedNickname) {
     try {
       const steamRes = await fetch(`https://playerdb.co/api/player/steam/${steamid}`);
       const steamData = await steamRes.json();
-      resolvedNickname = steamData?.data?.player?.username || steamid;
-    } catch {
-      resolvedNickname = steamid;
-    }
+      resolvedNickname = steamData?.data?.player?.username || '';
+      if (resolvedNickname) console.log(`Nickname from playerdb: ${resolvedNickname}`);
+    } catch (e) { console.log('playerdb nickname lookup failed:', e.message); }
+  }
+
+  // 3. Last resort: Cybershoke display name (may be Faceit nickname)
+  if (!resolvedNickname) {
+    resolvedNickname = mapsData?.header?.name || steamid;
+    console.log(`Nickname fallback (Cybershoke/steamid): ${resolvedNickname}`);
   }
 
   const player = {
