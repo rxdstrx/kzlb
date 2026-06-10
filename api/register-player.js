@@ -142,5 +142,20 @@ export default async function handler(req, res) {
   // ── 5. Trigger lightweight world rebuild Action ──
   await triggerRebuildWorld(ghToken);
 
+  // ── Sync to Supabase immediately so leaderboard shows without CDN delay ──
+  const sbUrl = process.env.SUPABASE_URL;
+  const sbKey = process.env.SUPABASE_SERVICE_KEY;
+  if (sbUrl && sbKey) {
+    fetch(`${sbUrl}/rest/v1/players`, {
+      method: 'POST',
+      headers: {
+        apikey: sbKey, Authorization: `Bearer ${sbKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify({ steamid, nickname, avatar, country, kz_points: 0, kz_place: 0, kz_maps: 0, updated_at: new Date().toISOString() }),
+    }).catch(() => {});
+  }
+
   return res.status(200).json({ ok: wrote, nickname, country, avatar });
 }

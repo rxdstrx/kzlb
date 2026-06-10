@@ -386,11 +386,35 @@ document.getElementById('startBtn')?.addEventListener('click', () => {
 
 // ── Leaderboard data ──
 const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+const SB_LB_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
+const SB_LB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
 const COUNTRY_CACHE = { pt: null };
 let lbPlayers = [];
 let lbSelectedMap = null;
 let lbPage = 1;
 const LB_PAGE_SIZE = 100;
+
+// Fetch players from Supabase (fast, no CDN delay), fallback to GitHub
+async function fetchLeaderboardPlayers(countryCode) {
+  try {
+    const filter = (countryCode && countryCode !== 'world')
+      ? `&country=eq.${countryCode}&kz_maps=gt.0`
+      : `&kz_maps=gt.0`;
+    const res = await fetch(
+      `${SB_LB_URL}/rest/v1/players?order=kz_points.desc${filter}&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
+      { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
+    );
+    if (res.ok) {
+      const rows = await res.json();
+      if (Array.isArray(rows) && rows.length > 0) return rows;
+    }
+  } catch {}
+  // Fallback to GitHub raw
+  const file = (countryCode && countryCode !== 'world') ? `${countryCode}-kz-players.json` : 'world-kz-players.json';
+  const res = await fetch(`${CACHE_BASE}/${file}?bust=${Date.now()}`);
+  const data = await res.json();
+  return data.players || [];
+}
 
 const lbBody   = document.getElementById('leaderboard-body');
 const lbEmpty  = document.getElementById('lbEmpty');
@@ -530,12 +554,9 @@ function renderLeaderboard() {
 }
 
 async function loadCountryPlayers(code) {
-  const file = code === 'world' ? 'world-kz-players.json' : `${code}-kz-players.json`;
   if (!COUNTRY_CACHE[code]) {
     lbBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:rgba(255,255,255,0.3)">Loading...</td></tr>';
-    const res = await fetch(`${CACHE_BASE}/${file}?bust=${Date.now()}`);
-    const data = await res.json();
-    COUNTRY_CACHE[code] = data.players || [];
+    COUNTRY_CACHE[code] = await fetchLeaderboardPlayers(code);
   }
   lbPlayers = COUNTRY_CACHE[code];
   lbPage = 1;
@@ -1045,11 +1066,14 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
   // Check if player already exists in world leaderboard
   showAddStatus('loading', 'Checking if you\'re already on the leaderboard…');
   try {
-    const worldRes = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`);
-    if (worldRes.ok) {
-      const worldData = await worldRes.json();
-      const exists = (worldData.players || []).find(p => p.steamid === steamid);
-      if (exists) {
+    const existsRes = await fetch(
+      `${SB_LB_URL}/rest/v1/players?steamid=eq.${steamid}&select=steamid,nickname`,
+      { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
+    );
+    if (existsRes.ok) {
+      const existsRows = await existsRes.json();
+      const exists = Array.isArray(existsRows) ? existsRows[0] : null;
+      if (exists && exists.steamid) {
         showAddStatus('error', `Player "${exists.nickname}" is already on the leaderboard! Use "Update your records" to refresh your stats.`);
         submitBtn.disabled = false;
         return;
@@ -1177,11 +1201,7 @@ const searchSuggestions = document.getElementById('searchSuggestions');
 
 async function getAllPlayers() {
   if (allPlayersCache) return allPlayersCache;
-  try {
-    const res = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`);
-    const data = await res.json();
-    allPlayersCache = data.players || [];
-  } catch { allPlayersCache = []; }
+  allPlayersCache = await fetchLeaderboardPlayers('world');
   return allPlayersCache;
 }
 

@@ -37,3 +37,48 @@ const out = JSON.stringify({ updated_at: new Date().toISOString(), players }, nu
 fs.writeFileSync(path.join(cacheDir, 'world-kz-players.json'), Buffer.from(out, 'utf8'));
 
 console.log(`Done — ${players.length} players written to world-kz-players.json`);
+
+// ── Sync to Supabase (instant leaderboard updates) ──
+async function syncToSupabase(allPlayers) {
+  const sbUrl = process.env.SUPABASE_URL;
+  const sbKey = process.env.SUPABASE_SERVICE_KEY;
+  if (!sbUrl || !sbKey) { console.log('SUPABASE_URL/SUPABASE_SERVICE_KEY not set — skipping Supabase sync'); return; }
+
+  const headers = {
+    apikey: sbKey,
+    Authorization: `Bearer ${sbKey}`,
+    'Content-Type': 'application/json',
+    Prefer: 'resolution=merge-duplicates,return=minimal',
+  };
+
+  const rows = allPlayers.map(p => ({
+    steamid:   p.steamid,
+    nickname:  p.nickname  || '',
+    avatar:    p.avatar    || '',
+    country:   p.country   || 'xx',
+    kz_points: Number(p.kz_points) || 0,
+    kz_place:  Number(p.kz_place)  || 0,
+    kz_maps:   Number(p.kz_maps)   || (p.maps_list?.length) || 0,
+    cached_at: p.cached_at || new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }));
+
+  // Batch upsert in chunks of 500
+  const CHUNK = 500;
+  for (let i = 0; i < rows.length; i += CHUNK) {
+    const chunk = rows.slice(i, i + CHUNK);
+    const res = await fetch(`${sbUrl}/rest/v1/players`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(chunk),
+    });
+    if (!res.ok) {
+      console.warn(`Supabase upsert chunk ${i}-${i+CHUNK} failed: ${res.status} ${await res.text()}`);
+    } else {
+      console.log(`Supabase: synced players ${i+1}–${Math.min(i+CHUNK, rows.length)}`);
+    }
+  }
+  console.log(`Supabase sync complete — ${rows.length} players`);
+}
+
+syncToSupabase(players).catch(e => console.warn('Supabase sync error:', e.message));
