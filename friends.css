@@ -1,0 +1,241 @@
+/* ── Notification Bell ── */
+.kz-notif-bell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.kz-notif-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: color 0.2s, background 0.2s;
+}
+.kz-notif-btn:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
+
+.kz-notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  min-width: 16px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  padding: 0 4px;
+  pointer-events: none;
+}
+.kz-notif-badge.hidden { display: none; }
+
+@keyframes kzBellFlash {
+  0%,100% { color: #94a3b8; }
+  50% { color: #a78bfa; }
+}
+.kz-bell-flash { animation: kzBellFlash 0.3s ease 2; }
+
+/* ── Notification Dropdown ── */
+.kz-notif-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  background: #1e1e2e;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  z-index: 9999;
+  overflow: hidden;
+}
+.kz-notif-dropdown.hidden { display: none; }
+
+.kz-notif-header {
+  padding: 12px 16px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.kz-notif-list { max-height: 360px; overflow-y: auto; }
+
+.kz-notif-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.kz-notif-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
+}
+.kz-notif-item:last-child { border-bottom: none; }
+.kz-notif-item:hover { background: rgba(255,255,255,0.03); }
+
+.kz-notif-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+}
+
+.kz-notif-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.kz-notif-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kz-notif-name:hover { color: #a78bfa; }
+.kz-notif-text { font-size: 0.75rem; color: #64748b; }
+
+.kz-notif-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.kz-notif-accept,
+.kz-notif-decline {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.kz-notif-accept:hover,.kz-notif-decline:hover { opacity: 0.85; transform: scale(1.08); }
+.kz-notif-accept:disabled,.kz-notif-decline:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.kz-notif-accept { background: rgba(52,211,153,0.15); color: #34d399; }
+.kz-notif-decline { background: rgba(239,68,68,0.12); color: #f87171; }
+
+/* ── Add Friend Button ── */
+.kz-friend-btn {
+  background: rgba(167,139,250,0.12);
+  color: #a78bfa;
+  border: 1px solid rgba(167,139,250,0.25);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+.kz-friend-btn:hover:not(:disabled) { background: rgba(167,139,250,0.22); }
+.kz-friend-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.kz-friend-btn--friends { background: rgba(52,211,153,0.1); color: #34d399; border-color: rgba(52,211,153,0.2); }
+.kz-friend-btn--pending { background: rgba(148,163,184,0.08); color: #64748b; border-color: rgba(148,163,184,0.15); }
+.kz-friend-btn--incoming { background: rgba(251,191,36,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.25); }
+
+/* ── Friends List (Friends Tab) ── */
+.kz-friends-loading {
+  padding: 32px;
+  text-align: center;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.kz-friends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 0;
+}
+
+.kz-friend-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.15s;
+}
+.kz-friend-row:hover { background: rgba(255,255,255,0.06); }
+
+.kz-friend-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.kz-friend-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kz-friend-name:hover { color: #a78bfa; }
+
+.kz-friend-remove {
+  background: none;
+  border: none;
+  color: #475569;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 4px 6px;
+  border-radius: 5px;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+.kz-friend-remove:hover { color: #f87171; background: rgba(239,68,68,0.1); }
+
+/* ── Toast notification ── */
+.kz-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1e1e2e;
+  border: 1px solid rgba(167,139,250,0.3);
+  color: #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+}
+.kz-toast--show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.kz-toast--error { border-color: rgba(239,68,68,0.35); color: #f87171; }
