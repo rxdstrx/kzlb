@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer-extra');
+﻿const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const chromium = require('@sparticuz/chromium');
 const fs = require('fs');
@@ -86,14 +86,15 @@ if (!COOKIE) {
   // not persist it to avoid contaminating other players' cache files.
   // All KZ stats are sourced from mapsData (/api/v2/leaderboard/data) which
   // correctly filters by steamid64.
-  // Normalize place_num: fix double-UTF-8 encoding of non-breaking spaces
-  if (mapsData?.list) {
-    mapsData.list = mapsData.list.map(entry => ({
-      ...entry,
-      place_num: (entry.place_num || '').replace(/Â /g, ' ').replace(/ /g, ' '),
-    }));
+    // Normalize place_num: fix double-UTF-8 non-breaking space encoding
+  if (mapsData && mapsData.list) {
+    mapsData.list = mapsData.list.map(function(entry) {
+      var pos = (entry.place_num || '');
+      // Replace double-encoded NBSP (\u00c2\u00a0) then plain NBSP (\u00a0)
+      pos = pos.replace(/\u00c2\u00a0/g, ' ').replace(/\u00a0/g, ' ').trim();
+      return Object.assign({}, entry, { place_num: pos });
+    });
   }
-
   const result = {
     steamid,
     cached_at: new Date().toISOString(),

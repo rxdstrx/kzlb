@@ -252,7 +252,7 @@ function renderPage() {
         </div>
       </td>
       <td><span class="time-cell">${r.time_record}</span></td>
-      <td><span class="pos-cell">${(r.place_num || '').replace(/\u00a0/g, ' ')}</span></td>
+      <td><span class="pos-cell">${(r.place_num || '').replace(/\u00c2\u00a0|\u00a0/g, ' ')}</span></td>
       <td><span class="runs-cell">${r.completions}</span></td>
     `;
     mapBody.appendChild(tr);
@@ -292,7 +292,7 @@ function renderPinnedSelf() {
         <span class="pinned-self-badge">📍 You</span>
       </div></td>
       <td><span class="time-cell">${r.time_record}</span></td>
-      <td><span class="pos-cell">${(r.place_num || '').replace(/ /g, ' ')}</span></td>
+      <td><span class="pos-cell">${(r.place_num || '').replace(/\u00c2\u00a0|\u00a0/g, ' ')}</span></td>
       <td><span class="runs-cell">${r.completions}</span></td>
     `;
   } else if (selfRecord && activeCountry !== 'all') {
@@ -309,7 +309,7 @@ function renderPinnedSelf() {
         <span class="pinned-self-badge">📍 You</span>
       </div></td>
       <td><span class="time-cell">${selfRecord.time_record}</span></td>
-      <td><span class="pos-cell">${(selfRecord.place_num || '').replace(/ /g, ' ')}</span></td>
+      <td><span class="pos-cell">${(selfRecord.place_num || '').replace(/\u00c2\u00a0|\u00a0/g, ' ')}</span></td>
       <td><span class="runs-cell">${selfRecord.completions}</span></td>
     `;
   } else {
