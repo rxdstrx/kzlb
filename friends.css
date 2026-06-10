@@ -222,21 +222,21 @@
 .kz-friend-card-bg.has-banner {
   background-image: var(--friend-banner);
   background-size: cover;
-  background-position: center;
+  background-position: center right;
 }
-/* Glassy overlay: dark on left (for text), fade to transparent on right */
+/* Glassy overlay: dark on left (for text), slow fade to transparent on right (banner visible) */
 .kz-friend-card-bg::after {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to right,
-    rgba(10,10,20,0.88) 0%,
-    rgba(10,10,20,0.72) 55%,
-    rgba(10,10,20,0.15) 100%
+    rgba(10,10,20,0.92) 0%,
+    rgba(10,10,20,0.85) 30%,
+    rgba(10,10,20,0.50) 60%,
+    rgba(10,10,20,0.10) 85%,
+    rgba(10,10,20,0.00) 100%
   );
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
 }
 
 .kz-friend-card-avatar {
