@@ -116,13 +116,17 @@ function renderNotifList() {
 function subscribeRealtime(auth) {
   if (!window.sbClient) return;
 
+  // No column-level filters — filter client-side instead.
+  // Column filters require REPLICA IDENTITY FULL which may not be set.
   _realtimeChannel = sbClient.channel(`friends_${auth.steamid}`)
     .on('postgres_changes', {
       event: 'INSERT',
       schema: 'public',
       table: 'friend_requests',
-      filter: `to_steamid=eq.${auth.steamid}`,
     }, payload => {
+      if (payload.new.to_steamid !== auth.steamid) return;
+      // Avoid duplicates
+      if (_pendingRequests.find(r => r.id === payload.new.id)) return;
       _pendingRequests.unshift(payload.new);
       renderNotifList();
       flashBell();
@@ -131,21 +135,21 @@ function subscribeRealtime(auth) {
       event: 'UPDATE',
       schema: 'public',
       table: 'friend_requests',
-      filter: `from_steamid=eq.${auth.steamid}`,
     }, payload => {
+      if (payload.new.from_steamid !== auth.steamid) return;
       if (payload.new.status === 'accepted') {
         showToast(`${escHtml(payload.new.to_nickname || payload.new.to_steamid)} accepted your friend request!`);
-        // Refresh friend button state if on their profile
         const profileSteamid = getProfileSteamid();
         if (profileSteamid === payload.new.to_steamid) {
           const btn = document.getElementById('kzAddFriendBtn');
           if (btn) setFriendBtnState(btn, 'friends');
         }
-        // Refresh friends tab if open
         refreshFriendsTabIfOpen(auth.steamid);
       }
     })
-    .subscribe();
+    .subscribe((status, err) => {
+      if (err) console.warn('[friends] realtime subscribe error:', err);
+    });
 }
 
 // ══════════════════════════════════════════
@@ -158,8 +162,13 @@ async function loadNotifications(steamid) {
       `${SB_URL}/rest/v1/friend_requests?to_steamid=eq.${steamid}&status=eq.pending&order=created_at.desc`,
       { headers: SB_HEADERS }
     );
-    _pendingRequests = await res.json();
-  } catch { _pendingRequests = []; }
+    const json = await res.json();
+    _pendingRequests = Array.isArray(json) ? json : [];
+    if (!Array.isArray(json)) console.warn('[friends] loadNotifications unexpected response:', json);
+  } catch (e) {
+    console.warn('[friends] loadNotifications error:', e);
+    _pendingRequests = [];
+  }
   renderNotifList();
 }
 
