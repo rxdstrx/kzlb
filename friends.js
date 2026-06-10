@@ -324,8 +324,8 @@ async function friendRespond(requestId, action, btn) {
     if (action === 'accept') {
       showToast('Friend request accepted!');
       refreshFriendsTabIfOpen(auth.steamid);
-      // Immediately fetch notifications so bell updates right away (don't wait for real-time)
-      await loadAcceptedNotifs(auth);
+      // Small delay so DB commit is visible, then fetch fresh notifications
+      setTimeout(() => loadAcceptedNotifs(auth), 800);
     } else {
       renderNotifList();
     }
