@@ -518,14 +518,14 @@ function initBannerUI(ownerSteamId) {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const maxW = 1600, maxH = 400;
+        const maxW = 1920, maxH = 1080;
         let w = img.width, h = img.height;
         if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
         if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
-        if (dataUrl.length > 500000) { alert('Image too large. Try a smaller or less detailed file.'); return; }
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        if (dataUrl.length > 2000000) { alert('Image too large. Try a smaller file.'); return; }
         localStorage.setItem(`kz_banner_${steamid}`, dataUrl);
         banner.style.backgroundImage = `url(${dataUrl})`;
         removeBtn.classList.remove('hidden');
