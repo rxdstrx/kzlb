@@ -10,20 +10,24 @@ let _pendingRequests = [];
 let _realtimeChannel = null;
 let _friendsInitDone = false;
 
-// ── Entry point — called once auth is available ──
+// ── Entry point ──
 function initFriends() {
-  const auth = typeof getAuth === 'function' ? getAuth() : null;
-  if (!auth || _friendsInitDone) return;
+  if (_friendsInitDone) return;
   _friendsInitDone = true;
 
-  injectBell();
-  loadNotifications(auth.steamid);
-  subscribeRealtime(auth);
+  const auth = typeof getAuth === 'function' ? getAuth() : null;
 
-  // Profile page: add friend button + friends tab
+  // Bell + notifications only for logged-in users
+  if (auth) {
+    injectBell();
+    loadNotifications(auth.steamid);
+    subscribeRealtime(auth);
+  }
+
+  // Friends tab is public — visible to everyone (no login needed)
   const profileSteamid = getProfileSteamid();
   if (profileSteamid) {
-    if (profileSteamid !== auth.steamid) {
+    if (auth && profileSteamid !== auth.steamid) {
       initAddFriendBtn(auth, profileSteamid);
     }
     initFriendsTab(profileSteamid, auth);
@@ -517,17 +521,17 @@ function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── Hook into auth system ──
-// Try immediately, then wait for auth to be set (auth.js calls updateNavAuth after login)
+// ── Bootstrap — runs for everyone, auth optional ──
 (function bootstrap() {
   const tryInit = () => {
-    const auth = typeof getAuth === 'function' ? getAuth() : null;
-    if (auth) { initFriends(); return; }
-    // Poll briefly until auth is ready (max 5s)
+    // Always init (friends tab is public); wait briefly for auth to settle
     let attempts = 0;
     const iv = setInterval(() => {
-      const a = typeof getAuth === 'function' ? getAuth() : null;
-      if (a || ++attempts > 50) { clearInterval(iv); if (a) initFriends(); }
+      const ready = typeof getAuth === 'function';
+      if (ready || ++attempts > 20) {
+        clearInterval(iv);
+        initFriends();
+      }
     }, 100);
   };
   if (document.readyState === 'loading') {
