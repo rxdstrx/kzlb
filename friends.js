@@ -214,7 +214,7 @@ function subscribeRealtime(auth) {
     return;
   }
 
-  _realtimeChannel = sbClient.channel(`friends_${auth.steamid}`)
+  _realtimeChannel = window.sbClient.channel(`friends_${auth.steamid}`)
     .on('postgres_changes', {
       event: 'INSERT',
       schema: 'public',
@@ -233,14 +233,18 @@ function subscribeRealtime(auth) {
     }, payload => {
       if (payload.new.from_steamid !== auth.steamid) return;
       if (payload.new.status === 'accepted') {
-        showToast(`${escHtml(payload.new.to_nickname || payload.new.to_steamid)} accepted your friend request!`);
-        const profileSteamid = getProfileSteamid();
-        if (profileSteamid === payload.new.to_steamid) {
-          const btn = document.getElementById('kzAddFriendBtn');
-          if (btn) setFriendBtnState(btn, 'friends');
-        }
         refreshFriendsTabIfOpen(auth.steamid);
       }
+    })
+    // ── Real-time: new accepted/you_accepted notification ──
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'notifications',
+      filter: `steamid=eq.${auth.steamid}`,
+    }, () => {
+      loadAcceptedNotifs(auth);
+      flashBell();
     })
     .subscribe((status, err) => {
       if (err) console.warn('[friends] realtime error:', err);
@@ -345,39 +349,36 @@ async function initAddFriendBtn(auth, profileSteamid) {
   const actionsLeft = document.querySelector('.profile-actions-left');
   if (!actionsLeft) return;
 
+  // Wrapper holds both the button and unfriend dropdown
+  const wrap = document.createElement('div');
+  wrap.id = 'kzFriendBtnWrap';
+  wrap.className = 'kz-friend-btn-wrap';
+
   const btn = document.createElement('button');
   btn.id = 'kzAddFriendBtn';
   btn.className = 'action-btn kz-friend-btn';
   btn.textContent = '…';
   btn.disabled = true;
-  actionsLeft.appendChild(btn);
+  wrap.appendChild(btn);
+  actionsLeft.appendChild(wrap);
 
   const status = await getFriendStatus(auth.steamid, profileSteamid);
-  setFriendBtnState(btn, status);
+  setFriendBtnState(wrap, btn, status, auth, profileSteamid);
 
-  // Real-time: instantly update button when friendship is deleted (removed)
+  // Real-time: instantly update when friendship deleted or updated
   const sbClient = window.sbClient;
   if (sbClient) {
     sbClient.channel(`friend_btn_${auth.steamid}_${profileSteamid}`)
-      .on('postgres_changes', {
-        event: 'DELETE',
-        schema: 'public',
-        table: 'friend_requests',
-      }, (payload) => {
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'friend_requests' }, (payload) => {
         const old = payload.old || {};
         const involves =
           (old.from_steamid === auth.steamid && old.to_steamid === profileSteamid) ||
           (old.from_steamid === profileSteamid && old.to_steamid === auth.steamid);
-        if (involves) setFriendBtnState(btn, 'none'); // Back to "Add Friend"
+        if (involves) setFriendBtnState(wrap, btn, 'none', auth, profileSteamid);
       })
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'friend_requests',
-      }, async () => {
-        // Re-check status on any update (e.g. accept)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'friend_requests' }, async () => {
         const newStatus = await getFriendStatus(auth.steamid, profileSteamid);
-        setFriendBtnState(btn, newStatus);
+        setFriendBtnState(wrap, btn, newStatus, auth, profileSteamid);
       })
       .subscribe();
   }
@@ -392,14 +393,47 @@ async function initAddFriendBtn(auth, profileSteamid) {
   });
 }
 
-function setFriendBtnState(btn, status) {
+function setFriendBtnState(wrap, btn, status, auth, profileSteamid) {
+  // Remove any existing unfriend dropdown
+  const existing = wrap.querySelector('.kz-unfriend-dropdown');
+  if (existing) existing.remove();
+
   btn.disabled = false;
   btn.className = 'action-btn kz-friend-btn';
+
   if (status === 'friends') {
-    btn.textContent = '✓ Friends';
-    btn.disabled = true;
+    btn.innerHTML = '✓ Friends <span class="kz-friend-chevron">▾</span>';
     btn.classList.add('kz-friend-btn--friends');
     btn.dataset.action = '';
+    btn.disabled = false; // keep enabled so dropdown works
+
+    // Build unfriend dropdown
+    const drop = document.createElement('div');
+    drop.className = 'kz-unfriend-dropdown';
+    drop.innerHTML = `<button class="kz-unfriend-btn">✕ Unfriend</button>`;
+    wrap.appendChild(drop);
+
+    drop.querySelector('.kz-unfriend-btn').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (!confirm('Remove this friend?')) return;
+      // Find request id
+      try {
+        const res = await fetch(
+          `${SB_URL}/rest/v1/friend_requests?or=(and(from_steamid.eq.${auth.steamid},to_steamid.eq.${profileSteamid}),and(from_steamid.eq.${profileSteamid},to_steamid.eq.${auth.steamid}))&select=id&limit=1`,
+          { headers: SB_HEADERS }
+        );
+        const rows = await res.json();
+        if (!rows.length) return;
+        const removeRes = await fetch(`${FRIENDS_API}/friend-action`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: auth.token, action: 'respond', request_id: rows[0].id, respond: 'decline' }),
+        });
+        const data = await removeRes.json();
+        if (data.ok) setFriendBtnState(wrap, btn, 'none', auth, profileSteamid);
+      } catch {}
+    });
+
   } else if (status === 'sent') {
     btn.textContent = 'Request Sent';
     btn.disabled = true;

@@ -177,9 +177,44 @@
 }
 .kz-friend-btn:hover:not(:disabled) { background: rgba(167,139,250,0.22); }
 .kz-friend-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.kz-friend-btn--friends { background: rgba(52,211,153,0.1); color: #34d399; border-color: rgba(52,211,153,0.2); }
+.kz-friend-btn--friends { background: rgba(52,211,153,0.1); color: #34d399; border-color: rgba(52,211,153,0.2); cursor: pointer; }
+.kz-friend-btn--friends:hover { background: rgba(52,211,153,0.18) !important; }
 .kz-friend-btn--pending { background: rgba(148,163,184,0.08); color: #64748b; border-color: rgba(148,163,184,0.15); }
 .kz-friend-btn--incoming { background: rgba(251,191,36,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.25); }
+.kz-friend-chevron { font-size: 10px; margin-left: 4px; opacity: 0.7; }
+
+/* ── Unfriend dropdown ── */
+.kz-friend-btn-wrap {
+  position: relative;
+  display: inline-block;
+}
+/* Bridge gap with padding-top so mouse can move from button to dropdown */
+.kz-unfriend-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding-top: 6px;
+  z-index: 100;
+  min-width: 100%;
+}
+.kz-friend-btn-wrap:hover .kz-unfriend-dropdown {
+  display: block;
+}
+.kz-unfriend-btn {
+  width: 100%;
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.25);
+  color: #f87171;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.kz-unfriend-btn:hover { background: rgba(239,68,68,0.25); }
 
 /* ── Friends List (Friends Tab) ── */
 .kz-friends-loading {
