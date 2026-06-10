@@ -86,6 +86,14 @@ if (!COOKIE) {
   // not persist it to avoid contaminating other players' cache files.
   // All KZ stats are sourced from mapsData (/api/v2/leaderboard/data) which
   // correctly filters by steamid64.
+  // Normalize place_num: fix double-UTF-8 encoding of non-breaking spaces
+  if (mapsData?.list) {
+    mapsData.list = mapsData.list.map(entry => ({
+      ...entry,
+      place_num: (entry.place_num || '').replace(/Â /g, ' ').replace(/ /g, ' '),
+    }));
+  }
+
   const result = {
     steamid,
     cached_at: new Date().toISOString(),
