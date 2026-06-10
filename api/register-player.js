@@ -95,7 +95,7 @@ export default async function handler(req, res) {
     // Check if they're already in the world leaderboard too.
     const world = await ghGet('cache/world-kz-players.json', ghToken);
     const inWorld = world?.content?.players?.find(p => p.steamid === steamid);
-    if (inWorld) return res.status(200).json({ ok: true, already: true });
+    if (inWorld) return res.status(200).json({ ok: true, already: true, country: inWorld.country, nickname: inWorld.nickname, avatar: inWorld.avatar });
     // In cache but not in world — fall through to add them to country + rebuild world.
     // Do NOT overwrite their existing cache file (may contain real scraped stats).
   } else {
@@ -122,10 +122,11 @@ export default async function handler(req, res) {
 
   if (countryFile) {
     const players = countryFile.content.players || [];
-    if (players.find(p => p.steamid === steamid)) {
+    const existingInCountry = players.find(p => p.steamid === steamid);
+    if (existingInCountry) {
       // Already in this country — skip country write, trigger world rebuild
       await triggerRebuildWorld(ghToken);
-      return res.status(200).json({ ok: true, already: true });
+      return res.status(200).json({ ok: true, already: true, country: existingInCountry.country, nickname: existingInCountry.nickname, avatar: existingInCountry.avatar });
     }
     players.push(player);
     players.sort((a, b) => b.kz_points - a.kz_points);

@@ -510,6 +510,7 @@ function renderLeaderboard() {
       const rank = startO + i + 1;
       const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
       const tr = document.createElement('tr');
+      tr.dataset.steamid = p.steamid;
       tr.innerHTML = `
         <td><span class="rank ${rankClass}">${rank}</span></td>
         <td>
@@ -599,6 +600,10 @@ function renderPinnedSelf() {
 
   // Insert at very top of lbBody
   lbBody.insertBefore(tr, lbBody.firstChild);
+
+  // Remove the duplicate regular row so the player doesn't appear twice
+  const duplicate = lbBody.querySelector(`tr[data-steamid="${auth.steamid}"]`);
+  if (duplicate) duplicate.remove();
 }
 
 // Load world leaderboard on startup

@@ -190,6 +190,7 @@ function renderOverall() {
     const rank = start + i + 1;
     const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
     const tr = document.createElement('tr');
+    tr.dataset.steamid = p.steamid;
     tr.innerHTML = `
       <td><span class="rank-badge ${rankClass}">${rank}</span></td>
       <td>
@@ -267,6 +268,10 @@ function renderPinnedSelfCountry(sorted) {
     `;
   }
   ptBody.insertBefore(tr, ptBody.firstChild);
+
+  // Remove the duplicate regular row so the player doesn't appear twice
+  const duplicate = ptBody.querySelector(`tr[data-steamid="${auth.steamid}"]`);
+  if (duplicate) duplicate.remove();
 }
 
 function renderByMap(mapName) {
