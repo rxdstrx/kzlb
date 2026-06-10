@@ -4,7 +4,7 @@ const PAGE_SIZE = 100;
 // These may also be defined in auth.js (portugal.html loads both) — safe to redefine
 function fmtPlace(kz_place) {
   const v = Number(kz_place);
-  if (!kz_place || v === 0 || v >= 9999) return '—';
+  if (!kz_place || v === 0 || v === 9999) return '—';
   return '#' + v.toLocaleString();
 }
 function fmtMaps(kz_maps, maps_list) {
