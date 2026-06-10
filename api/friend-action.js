@@ -172,14 +172,26 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: await upsertRes.text() });
   }
 
+  // ── GET NOTIFICATIONS ──
+  if (action === 'get-notifications') {
+    const steamid = payload.steamid;
+    const notifRes = await fetch(
+      `${sbUrl}/rest/v1/notifications?steamid=eq.${steamid}&order=created_at.desc&limit=10`,
+      { headers: sbH }
+    );
+    if (!notifRes.ok) return res.status(500).json({ error: await notifRes.text() });
+    const items = await notifRes.json();
+    return res.status(200).json({ ok: true, notifications: items });
+  }
+
   // ── MARK NOTIFICATIONS AS READ ──
   if (action === 'notifications-read') {
     const steamid = payload.steamid;
-    fetch(`${sbUrl}/rest/v1/notifications?steamid=eq.${steamid}&read=eq.false`, {
+    await fetch(`${sbUrl}/rest/v1/notifications?steamid=eq.${steamid}&read=eq.false`, {
       method: 'PATCH',
       headers: { ...sbH, Prefer: 'return=minimal' },
       body: JSON.stringify({ read: true }),
-    }).catch(() => {});
+    });
     return res.status(200).json({ ok: true });
   }
 
