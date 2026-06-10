@@ -235,18 +235,19 @@ function subscribeRealtime(auth) {
       if (payload.new.status === 'accepted') {
         refreshFriendsTabIfOpen(auth.steamid);
         // Sender gets notified: fetch their new 'friend_accepted' notification
-        setTimeout(() => { loadAcceptedNotifs(auth); flashBell(); }, 1000);
+        setTimeout(() => { loadAcceptedNotifs(auth); flashBell(); }, 1500);
       }
     })
-    // ── Real-time: new accepted/you_accepted notification ──
+    // ── Real-time: new notification inserted (client-side filter) ──
     .on('postgres_changes', {
       event: 'INSERT',
       schema: 'public',
       table: 'notifications',
-      filter: `steamid=eq.${auth.steamid}`,
-    }, () => {
-      loadAcceptedNotifs(auth);
-      flashBell();
+    }, (payload) => {
+      if (payload.new?.steamid === auth.steamid) {
+        loadAcceptedNotifs(auth);
+        flashBell();
+      }
     })
     .subscribe((status, err) => {
       if (err) console.warn('[friends] realtime error:', err);
