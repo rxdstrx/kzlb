@@ -434,19 +434,21 @@ async function renderFriendsList(profileSteamid, auth) {
       (world.players || []).forEach((p, i) => { rankMap[p.steamid] = i + 1; });
     } catch {}
 
+    const DEFAULT_BANNER = 'https://cdn.akamai.steamstatic.com/steam/apps/730/library_hero.jpg';
+
     const html = rows.map(row => {
       const isFrom = row.from_steamid === profileSteamid;
       const friendSteamid  = isFrom ? row.to_steamid  : row.from_steamid;
       const friendNickname = isFrom ? (row.to_nickname || friendSteamid) : (row.from_nickname || friendSteamid);
       const friendAvatar   = isFrom ? row.to_avatar    : row.from_avatar;
-      const banner = bannerMap[friendSteamid] || '';
+      const banner = bannerMap[friendSteamid] || DEFAULT_BANNER;
       const rank   = rankMap[friendSteamid] ? `#${Number(rankMap[friendSteamid]).toLocaleString()}` : '';
       const removeBtn = isOwnProfile
         ? `<button class="kz-friend-remove" onclick="removeFriend('${row.id}', this)" title="Remove friend">✕</button>`
         : '';
       return `
-        <div class="kz-friend-card" id="kz-friend-row-${row.id}" style="${banner ? `--friend-banner:url(${banner})` : ''}">
-          <div class="kz-friend-card-bg ${banner ? 'has-banner' : ''}"></div>
+        <div class="kz-friend-card" id="kz-friend-row-${row.id}" style="--friend-banner:url(${banner})">
+          <div class="kz-friend-card-bg has-banner"></div>
           <img class="kz-friend-card-avatar" src="${friendAvatar || ''}" onerror="this.style.display='none'" />
           <div class="kz-friend-card-info">
             ${rank ? `<span class="kz-friend-card-rank">${rank}</span>` : ''}

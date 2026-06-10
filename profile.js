@@ -241,28 +241,51 @@ async function loadProfile(sid) {
       localStorage.setItem(seenKey, Date.now().toString());
     }
 
-    // ── Banner: load from Supabase (visible to all), fall back to localStorage ──
+    // ── Banner: load from Supabase (visible to all) ──
     const banner = document.getElementById('profileBanner');
+    const SB_URL_P  = 'https://btcufotfvfnuoiokghjm.supabase.co';
+    const SB_ANON_P = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+    const SB_HDR_P  = { apikey: SB_ANON_P, Authorization: `Bearer ${SB_ANON_P}` };
+
+    function applyBanner(url) {
+      if (!banner) return;
+      if (url) {
+        banner.style.backgroundImage = `url(${url})`;
+        localStorage.setItem(`kz_banner_${sid}`, url);
+      } else {
+        banner.style.removeProperty('background-image'); // Let CSS default show
+        localStorage.removeItem(`kz_banner_${sid}`);
+      }
+    }
+
     if (banner) {
+      // 1. Show localStorage instantly (no flicker)
+      const cached = localStorage.getItem(`kz_banner_${sid}`);
+      if (cached) applyBanner(cached);
+
+      // 2. Fetch from Supabase (source of truth for all viewers)
       try {
         const sbRes = await fetch(
-          `https://btcufotfvfnuoiokghjm.supabase.co/rest/v1/player_profiles?steamid=eq.${sid}&select=banner_url`,
-          { headers: { apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4', Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4' } }
+          `${SB_URL_P}/rest/v1/player_profiles?steamid=eq.${sid}&select=banner_url`,
+          { headers: SB_HDR_P }
         );
         const rows = await sbRes.json();
-        const sbBanner = rows?.[0]?.banner_url;
-        if (sbBanner) {
-          banner.style.backgroundImage = `url(${sbBanner})`;
-          // Keep localStorage in sync for own profile
-          localStorage.setItem(`kz_banner_${sid}`, sbBanner);
-        } else {
-          // Fall back to localStorage (own profile before first Supabase save)
-          const localBanner = localStorage.getItem(`kz_banner_${sid}`);
-          if (localBanner) banner.style.backgroundImage = `url(${localBanner})`;
-        }
-      } catch {
-        const localBanner = localStorage.getItem(`kz_banner_${sid}`);
-        if (localBanner) banner.style.backgroundImage = `url(${localBanner})`;
+        const sbBanner = Array.isArray(rows) ? rows?.[0]?.banner_url : null;
+        applyBanner(sbBanner || null);
+      } catch {}
+
+      // 3. Real-time: instantly update banner for ALL viewers when owner changes it
+      if (window.sbClient) {
+        window.sbClient.channel(`profile_banner_${sid}`)
+          .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'player_profiles',
+          }, payload => {
+            if (payload.new?.steamid !== sid) return;
+            applyBanner(payload.new?.banner_url || null);
+          })
+          .subscribe();
       }
     }
 
