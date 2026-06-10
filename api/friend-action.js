@@ -119,29 +119,37 @@ export default async function handler(req, res) {
 
     // ── Insert notification to the sender when accepted ──
     if (respond === 'accept') {
-      // Fetch accepter's nickname/avatar from Supabase players table
-      let acceptorNickname = payload.nickname || '';
-      let acceptorAvatar   = payload.avatar   || '';
+      let acceptorNickname = '';
+      let acceptorAvatar   = '';
       try {
         const pRes = await fetch(
           `${sbUrl}/rest/v1/players?steamid=eq.${payload.steamid}&select=nickname,avatar&limit=1`,
           { headers: sbH }
         );
         const pRows = await pRes.json();
-        if (pRows.length) { acceptorNickname = pRows[0].nickname || ''; acceptorAvatar = pRows[0].avatar || ''; }
+        if (Array.isArray(pRows) && pRows.length) {
+          acceptorNickname = pRows[0].nickname || '';
+          acceptorAvatar   = pRows[0].avatar   || '';
+        }
       } catch {}
 
-      fetch(`${sbUrl}/rest/v1/notifications`, {
+      const notifRes = await fetch(`${sbUrl}/rest/v1/notifications`, {
         method: 'POST',
         headers: { ...sbH, Prefer: 'return=minimal' },
         body: JSON.stringify({
-          steamid:      row.from_steamid,   // sender receives the notification
-          type:         'friend_accepted',
-          from_steamid: payload.steamid,    // the one who accepted
+          steamid:       row.from_steamid,
+          type:          'friend_accepted',
+          from_steamid:  payload.steamid,
           from_nickname: acceptorNickname,
           from_avatar:   acceptorAvatar,
         }),
-      }).catch(() => {});
+      });
+      if (!notifRes.ok) {
+        const errText = await notifRes.text();
+        console.error('[notifications] insert failed:', notifRes.status, errText);
+        // Still return ok — friend was accepted, notification is secondary
+        return res.status(200).json({ ok: true, notif_error: errText });
+      }
     }
 
     return res.status(200).json({ ok: true });
