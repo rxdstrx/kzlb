@@ -41,7 +41,7 @@ jobs:
           git config user.name "GitHub Action"
           git add cache/
           git diff --staged --quiet || git commit -m "admin: ${{ github.event.inputs.action }} ${{ github.event.inputs.steamid }}"
-          git pull --rebase=false origin main
+          git pull --rebase origin main
           git push origin HEAD:main
 
       - name: Purge jsDelivr cache
