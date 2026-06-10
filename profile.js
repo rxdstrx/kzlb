@@ -193,7 +193,8 @@ async function loadProfile(sid) {
 
     const desc    = header.desc || {};
     // Prefer cache country over URL param; treat 'xx' as unset
-    const rawCountry = data.country || urlCountry || null;
+    const cacheCountry = (data.country && data.country !== 'xx') ? data.country : null;
+    const rawCountry = cacheCountry || urlCountry || null;
     let country = (rawCountry && rawCountry !== 'xx') ? rawCountry : null;
 
     // ── Basic info ──
