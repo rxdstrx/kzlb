@@ -110,5 +110,22 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: await updateRes.text() });
   }
 
+  // ── SET BANNER ──
+  if (action === 'set-banner') {
+    const { banner_url } = req.body;
+    const steamid = payload.steamid;
+    // Allow empty string to remove banner; limit base64 size (~400KB)
+    if (banner_url !== '' && typeof banner_url !== 'string') return res.status(400).json({ error: 'Invalid banner_url' });
+    if (banner_url.length > 500000) return res.status(400).json({ error: 'Banner too large (max ~375KB)' });
+
+    const upsertRes = await fetch(`${sbUrl}/rest/v1/player_profiles`, {
+      method: 'POST',
+      headers: { ...sbH, Prefer: 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ steamid, banner_url, updated_at: new Date().toISOString() }),
+    });
+    if (upsertRes.ok) return res.status(200).json({ ok: true });
+    return res.status(500).json({ error: await upsertRes.text() });
+  }
+
   return res.status(400).json({ error: 'Unknown action' });
 }

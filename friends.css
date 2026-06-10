@@ -187,56 +187,111 @@
   font-size: 0.85rem;
 }
 
-.kz-friends-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.kz-friends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
   padding: 16px 0;
 }
 
-.kz-friend-row {
+/* ── Friend Card ── */
+.kz-friend-card {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
-  border-radius: 10px;
+  padding: 14px 14px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: transform 0.15s, border-color 0.15s;
+  cursor: default;
+}
+.kz-friend-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.14);
+}
+
+/* Banner background layer */
+.kz-friend-card-bg {
+  position: absolute;
+  inset: 0;
   background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.05);
-  transition: background 0.15s;
+  z-index: 0;
 }
-.kz-friend-row:hover { background: rgba(255,255,255,0.06); }
+.kz-friend-card-bg.has-banner {
+  background-image: var(--friend-banner);
+  background-size: cover;
+  background-position: center;
+}
+/* Glassy overlay: dark on left (for text), fade to transparent on right */
+.kz-friend-card-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(10,10,20,0.88) 0%,
+    rgba(10,10,20,0.72) 55%,
+    rgba(10,10,20,0.15) 100%
+  );
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
 
-.kz-friend-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+.kz-friend-card-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   object-fit: cover;
-  background: rgba(255,255,255,0.05);
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.12);
 }
 
-.kz-friend-name {
+.kz-friend-card-info {
   flex: 1;
-  font-size: 0.9rem;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kz-friend-card-rank {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba(165,180,252,0.8);
+  letter-spacing: 0.04em;
+}
+
+.kz-friend-card-name {
+  font-size: 0.88rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: rgba(255,255,255,0.92);
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
-.kz-friend-name:hover { color: #a78bfa; }
+.kz-friend-card-name:hover { color: #c4b5fd; }
 
 .kz-friend-remove {
   background: none;
   border: none;
-  color: #475569;
+  color: rgba(255,255,255,0.2);
   cursor: pointer;
-  font-size: 0.8rem;
-  padding: 4px 6px;
+  font-size: 0.75rem;
+  padding: 4px 5px;
   border-radius: 5px;
   transition: color 0.15s, background 0.15s;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 .kz-friend-remove:hover { color: #f87171; background: rgba(239,68,68,0.1); }
 
