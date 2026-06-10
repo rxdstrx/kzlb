@@ -267,6 +267,33 @@ async function initAddFriendBtn(auth, profileSteamid) {
   const status = await getFriendStatus(auth.steamid, profileSteamid);
   setFriendBtnState(btn, status);
 
+  // Real-time: instantly update button when friendship is deleted (removed)
+  const sbClient = window.sbClient;
+  if (sbClient) {
+    sbClient.channel(`friend_btn_${auth.steamid}_${profileSteamid}`)
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'friend_requests',
+      }, (payload) => {
+        const old = payload.old || {};
+        const involves =
+          (old.from_steamid === auth.steamid && old.to_steamid === profileSteamid) ||
+          (old.from_steamid === profileSteamid && old.to_steamid === auth.steamid);
+        if (involves) setFriendBtnState(btn, 'none'); // Back to "Add Friend"
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'friend_requests',
+      }, async () => {
+        // Re-check status on any update (e.g. accept)
+        const newStatus = await getFriendStatus(auth.steamid, profileSteamid);
+        setFriendBtnState(btn, newStatus);
+      })
+      .subscribe();
+  }
+
   btn.addEventListener('click', async () => {
     const currentAction = btn.dataset.action;
     if (currentAction === 'send') {
