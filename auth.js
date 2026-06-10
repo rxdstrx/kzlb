@@ -113,7 +113,7 @@ function fetchSteamProfile(steamid) {
     triggerAddPlayer(steamid);
 
     // Fetch avatar + nickname from world cache, then fall back to Steam proxy
-    fetch(`https://cdn.jsdelivr.net/gh/rxdstrx/kzlb@main/cache/world-kz-players.json`)
+    fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json`)
       .then(r => r.json())
       .then(d => {
         const player = (d.players || []).find(p => p.steamid === steamid);
@@ -187,7 +187,7 @@ function syncPlayerData() {
   const auth = getAuth();
   if (!auth) return;
 
-  fetch(`https://cdn.jsdelivr.net/gh/rxdstrx/kzlb@main/cache/world-kz-players.json`)
+  fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json`)
     .then(r => r.json())
     .then(d => {
       const player = (d.players || []).find(p => p.steamid === auth.steamid);
