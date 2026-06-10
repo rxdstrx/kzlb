@@ -111,14 +111,17 @@ function renderNotifList() {
 }
 
 // ══════════════════════════════════════════
-//  REAL-TIME
+//  REAL-TIME + POLLING FALLBACK
 // ══════════════════════════════════════════
 
-function subscribeRealtime(auth) {
-  if (!window.sbClient) return;
+let _pollInterval = null;
 
-  // No column-level filters — filter client-side instead.
-  // Column filters require REPLICA IDENTITY FULL which may not be set.
+function subscribeRealtime(auth) {
+  if (!window.sbClient) {
+    startPolling(auth);
+    return;
+  }
+
   _realtimeChannel = sbClient.channel(`friends_${auth.steamid}`)
     .on('postgres_changes', {
       event: 'INSERT',
@@ -126,7 +129,6 @@ function subscribeRealtime(auth) {
       table: 'friend_requests',
     }, payload => {
       if (payload.new.to_steamid !== auth.steamid) return;
-      // Avoid duplicates
       if (_pendingRequests.find(r => r.id === payload.new.id)) return;
       _pendingRequests.unshift(payload.new);
       renderNotifList();
@@ -149,8 +151,36 @@ function subscribeRealtime(auth) {
       }
     })
     .subscribe((status, err) => {
-      if (err) console.warn('[friends] realtime subscribe error:', err);
+      if (err) console.warn('[friends] realtime error:', err);
     });
+
+  // Always run polling alongside real-time as a reliable fallback
+  startPolling(auth);
+}
+
+function startPolling(auth) {
+  if (_pollInterval) return;
+  // Poll every 15 seconds — catches anything real-time misses
+  _pollInterval = setInterval(() => pollNotifications(auth.steamid), 15000);
+}
+
+async function pollNotifications(steamid) {
+  try {
+    const res = await fetch(
+      `${SB_URL}/rest/v1/friend_requests?to_steamid=eq.${steamid}&status=eq.pending&order=created_at.desc`,
+      { headers: SB_HEADERS }
+    );
+    const json = await res.json();
+    if (!Array.isArray(json)) return;
+
+    // Find any new requests not already in the list
+    const newOnes = json.filter(r => !_pendingRequests.find(p => p.id === r.id));
+    if (newOnes.length > 0) {
+      _pendingRequests = json; // full refresh
+      renderNotifList();
+      flashBell();
+    }
+  } catch {}
 }
 
 // ══════════════════════════════════════════
