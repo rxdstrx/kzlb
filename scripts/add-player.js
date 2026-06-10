@@ -253,6 +253,25 @@ function getLeaderboardFile(c) {
     } catch {}
   }
 
+  // Apply normalized place_num back to individual cache file + mapsData in memory
+  if (Object.keys(mapMaxTotal).length) {
+    for (const m of (mapsData?.list || [])) {
+      const maxTotal = mapMaxTotal[m.map];
+      if (!maxTotal || !m.place_num) continue;
+      const clean = m.place_num.replace(/[ \s]/g, '');
+      const parts = clean.split('/');
+      if (parts.length < 2) continue;
+      const rank = parseInt(parts[0].replace(/\D/g, ''), 10) || 0;
+      m.place_num = `${fmtNum(rank)} / ${fmtNum(maxTotal)}`;
+    }
+    // Re-write individual cache file with normalized totals
+    fs.writeFileSync(
+      path.join(cacheDir, `${steamid}.json`),
+      JSON.stringify({ steamid, nickname: resolvedNickname, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData }, null, 2)
+    );
+    console.log(`Updated cache/${steamid}.json with normalized place_num`);
+  }
+
   // Rebuild world leaderboard from all country files (never incremental — avoids corruption)
   const worldFile = path.join(cacheDir, 'world-kz-players.json');
   const seen = new Set();
