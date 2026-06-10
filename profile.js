@@ -644,6 +644,14 @@ function initSteamUI() {
     ownProfileActions.classList.remove('hidden');
     steamLoginBtn.classList.add('hidden');
     initBannerUI(loggedInSteamId);
+    // Init notifications for the logged-in user (works on any profile page)
+    const authObj = typeof getAuth === 'function' ? getAuth() : null;
+    if (authObj) initNotifications(authObj);
+  } else if (token && loggedInSteamId && loggedInSteamId !== steamid) {
+    // Viewing someone else's profile while logged in — still show bell
+    steamLoginBtn.classList.add('hidden');
+    const authObj = typeof getAuth === 'function' ? getAuth() : null;
+    if (authObj) initNotifications(authObj);
   } else if (!token) {
     steamLoginBtn.classList.remove('hidden');
     ownProfileActions.classList.add('hidden');
@@ -766,3 +774,109 @@ function initTabs() {
 
 // Run tabs after DOM is ready
 document.addEventListener('DOMContentLoaded', initTabs);
+
+// ── NOTIFICATIONS ──────────────────────────────────────────────
+const SB_NOTIF_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
+const SB_NOTIF_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+
+function timeSinceNotif(dateStr) {
+  const s = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  if (s < 60)   return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s/60)}m ago`;
+  if (s < 86400)return `${Math.floor(s/3600)}h ago`;
+  return `${Math.floor(s/86400)}d ago`;
+}
+
+function renderNotifications(items) {
+  const list  = document.getElementById('notifList');
+  const badge = document.getElementById('notifBadge');
+  if (!list) return;
+
+  const unread = items.filter(n => !n.read).length;
+  if (unread > 0) {
+    badge.textContent = unread > 9 ? '9+' : unread;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+
+  if (!items.length) {
+    list.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(n => {
+    const msg = n.type === 'friend_accepted'
+      ? `<strong>${n.from_nickname || 'Someone'}</strong> accepted your friend request`
+      : n.type;
+    return `
+      <div class="notif-item ${n.read ? '' : 'unread'}">
+        <img class="notif-avatar" src="${n.from_avatar || ''}" onerror="this.src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_medium.jpg'">
+        <div style="flex:1">
+          <div class="notif-text">${msg}</div>
+          <div class="notif-time">${timeSinceNotif(n.created_at)}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function loadNotifications(steamid) {
+  try {
+    const res = await fetch(
+      `${SB_NOTIF_URL}/rest/v1/notifications?steamid=eq.${steamid}&order=created_at.desc&limit=10`,
+      { headers: { apikey: SB_NOTIF_ANON, Authorization: `Bearer ${SB_NOTIF_ANON}` } }
+    );
+    if (res.ok) renderNotifications(await res.json());
+  } catch {}
+}
+
+function initNotifications(auth) {
+  const wrap = document.getElementById('notifBellWrap');
+  const btn  = document.getElementById('notifBellBtn');
+  const drop = document.getElementById('notifDropdown');
+  if (!wrap || !btn || !drop) return;
+
+  wrap.style.display = 'block';
+
+  // Initial load
+  loadNotifications(auth.steamid);
+
+  // Real-time: new notification → refresh
+  if (window.sbClient) {
+    window.sbClient
+      .channel(`notif_${auth.steamid}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'notifications',
+        filter: `steamid=eq.${auth.steamid}`,
+      }, () => loadNotifications(auth.steamid))
+      .subscribe();
+  }
+
+  // Toggle dropdown
+  btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const isOpen = !drop.classList.contains('hidden');
+    drop.classList.toggle('hidden');
+    if (!isOpen) {
+      // Mark all as read
+      const token = auth.token;
+      if (token) {
+        fetch('https://kzlb.vercel.app/api/friend-action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, action: 'notifications-read' }),
+        }).catch(() => {});
+        // Optimistically clear badge
+        document.getElementById('notifBadge')?.classList.add('hidden');
+        // Re-render as all read
+        setTimeout(() => loadNotifications(auth.steamid), 500);
+      }
+    }
+  });
+
+  // Close on outside click
+  document.addEventListener('click', () => drop.classList.add('hidden'));
+  drop.addEventListener('click', e => e.stopPropagation());
+}

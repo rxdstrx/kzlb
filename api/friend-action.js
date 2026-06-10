@@ -106,8 +106,36 @@ export default async function handler(req, res) {
       headers: { ...sbH, Prefer: 'return=minimal' },
       body: JSON.stringify({ status: newStatus, updated_at: new Date().toISOString() }),
     });
-    if (updateRes.ok) return res.status(200).json({ ok: true });
-    return res.status(500).json({ error: await updateRes.text() });
+    if (!updateRes.ok) return res.status(500).json({ error: await updateRes.text() });
+
+    // ── Insert notification to the sender when accepted ──
+    if (respond === 'accept') {
+      // Fetch accepter's nickname/avatar from Supabase players table
+      let acceptorNickname = payload.nickname || '';
+      let acceptorAvatar   = payload.avatar   || '';
+      try {
+        const pRes = await fetch(
+          `${sbUrl}/rest/v1/players?steamid=eq.${payload.steamid}&select=nickname,avatar&limit=1`,
+          { headers: sbH }
+        );
+        const pRows = await pRes.json();
+        if (pRows.length) { acceptorNickname = pRows[0].nickname || ''; acceptorAvatar = pRows[0].avatar || ''; }
+      } catch {}
+
+      fetch(`${sbUrl}/rest/v1/notifications`, {
+        method: 'POST',
+        headers: { ...sbH, Prefer: 'return=minimal' },
+        body: JSON.stringify({
+          steamid:      row.from_steamid,   // sender receives the notification
+          type:         'friend_accepted',
+          from_steamid: payload.steamid,    // the one who accepted
+          from_nickname: acceptorNickname,
+          from_avatar:   acceptorAvatar,
+        }),
+      }).catch(() => {});
+    }
+
+    return res.status(200).json({ ok: true });
   }
 
   // ── SET BANNER ──
@@ -125,6 +153,17 @@ export default async function handler(req, res) {
     });
     if (upsertRes.ok) return res.status(200).json({ ok: true });
     return res.status(500).json({ error: await upsertRes.text() });
+  }
+
+  // ── MARK NOTIFICATIONS AS READ ──
+  if (action === 'notifications-read') {
+    const steamid = payload.steamid;
+    fetch(`${sbUrl}/rest/v1/notifications?steamid=eq.${steamid}&read=eq.false`, {
+      method: 'PATCH',
+      headers: { ...sbH, Prefer: 'return=minimal' },
+      body: JSON.stringify({ read: true }),
+    }).catch(() => {});
+    return res.status(200).json({ ok: true });
   }
 
   return res.status(400).json({ error: 'Unknown action' });
