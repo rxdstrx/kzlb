@@ -1,5 +1,7 @@
 ﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const API_BASE = 'https://kzlb.vercel.app';
+const SB_URL = 'https://btcufotfvfnuoiokghjm.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzIwMTksImV4cCI6MjA2MTk0ODAxOX0.xBcCOKBIqeRSBnPCvHiSgaE4BOKIkyuAPaWKqfVGBpA';
 
 const CIRCUMFERENCE = 264;
 const STEPS = [
@@ -149,9 +151,33 @@ if (updateRecordBtn && steamid) {
   });
 }
 
+async function fetchPlayerData(sid) {
+  // 1. Check Supabase player_cache first (instant — written right after scrape)
+  try {
+    const sbRes = await fetch(
+      `${SB_URL}/rest/v1/player_cache?steamid=eq.${sid}&select=data&limit=1`,
+      { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }
+    );
+    if (sbRes.ok) {
+      const rows = await sbRes.json();
+      if (rows.length && rows[0].data) {
+        console.log('[profile] loaded from Supabase player_cache (instant)');
+        return { ok: true, data: rows[0].data };
+      }
+    }
+  } catch {}
+
+  // 2. Fall back to GitHub raw CDN
+  const cacheRes = await fetch(`${CACHE_BASE}/${sid}.json?bust=${Date.now()}`);
+  if (!cacheRes.ok) return { ok: false };
+  const data = await cacheRes.json();
+  return { ok: true, data };
+}
+
 async function loadProfile(sid) {
   try {
-    const cacheRes = await fetch(`${CACHE_BASE}/${sid}.json?bust=${Date.now()}`);
+    const { ok, data: cachedData } = await fetchPlayerData(sid);
+    const cacheRes = { ok, json: async () => cachedData };
 
     if (!cacheRes.ok) {
       triggerScrape(sid);
@@ -421,6 +447,23 @@ async function pollForCache(sid, attempts = 0) {
     showError('Could not fetch stats after 4 minutes. Please refresh the page.');
     return;
   }
+  // Check Supabase player_cache first — available immediately after scrape
+  try {
+    const sbRes = await fetch(
+      `${SB_URL}/rest/v1/player_cache?steamid=eq.${sid}&select=steamid&limit=1`,
+      { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }
+    );
+    if (sbRes.ok) {
+      const rows = await sbRes.json();
+      if (rows.length) {
+        stopProgress();
+        await new Promise(r => setTimeout(r, 600));
+        loadProfile(sid);
+        return;
+      }
+    }
+  } catch {}
+  // Fall back to GitHub raw CDN check
   const res = await fetch(`${CACHE_BASE}/${sid}.json?bust=${Date.now()}`).catch(() => null);
   if (res && res.ok) {
     stopProgress();
