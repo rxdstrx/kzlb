@@ -20,7 +20,8 @@ let player = null;
 for (const f of allFiles) {
   const fPath = path.join(cacheDir, f);
   try {
-    const data = JSON.parse(fs.readFileSync(fPath, 'utf8'));
+    const raw = fs.readFileSync(fPath, 'utf8').replace(/^﻿/, '');
+    const data = JSON.parse(raw);
     const idx = data.players.findIndex(p => p.steamid === steamid);
     if (idx !== -1) {
       player = { ...data.players[idx], country: newCountry };
@@ -28,7 +29,7 @@ for (const f of allFiles) {
       fs.writeFileSync(fPath, Buffer.from(JSON.stringify(data, null, 2), 'utf8'));
       console.log(`Removed from ${f}`);
     }
-  } catch {}
+  } catch (e) { console.warn(`Could not parse ${f}: ${e.message}`); }
 }
 
 // If not in any country file yet (new player), build from their individual cache
@@ -36,7 +37,7 @@ if (!player) {
   const indPath = path.join(cacheDir, `${steamid}.json`);
   if (fs.existsSync(indPath)) {
     try {
-      const ind = JSON.parse(fs.readFileSync(indPath, 'utf8'));
+      const ind = JSON.parse(fs.readFileSync(indPath, 'utf8').replace(/^﻿/, ''));
       // Use mapsData header/desc — this endpoint queries by steamid64, so it returns
       // the correct player's stats. The userData endpoint returns the authenticated
       // user's (cookie owner's) stats and must not be used for points/place.
@@ -67,7 +68,7 @@ if (!player) {
 const newFile = path.join(cacheDir, `${newCountry}-kz-players.json`);
 let newData = { updated_at: new Date().toISOString(), players: [] };
 if (fs.existsSync(newFile)) {
-  try { newData = JSON.parse(fs.readFileSync(newFile, 'utf8')); } catch {}
+  try { newData = JSON.parse(fs.readFileSync(newFile, 'utf8').replace(/^﻿/, '')); } catch {}
 }
 newData.players.push(player);
 newData.players.sort((a, b) => b.kz_points - a.kz_points);
@@ -79,7 +80,7 @@ console.log(`Added to ${newCountry}-kz-players.json`);
 const indFile = path.join(cacheDir, `${steamid}.json`);
 if (fs.existsSync(indFile)) {
   try {
-    const ind = JSON.parse(fs.readFileSync(indFile, 'utf8'));
+    const ind = JSON.parse(fs.readFileSync(indFile, 'utf8').replace(/^﻿/, ''));
     ind.country = newCountry;
     fs.writeFileSync(indFile, Buffer.from(JSON.stringify(ind, null, 2), 'utf8'));
     console.log(`Updated ${steamid}.json country to ${newCountry}`);
@@ -93,7 +94,7 @@ const worldPlayers = [];
 const countryFiles = fs.readdirSync(cacheDir).filter(f => f.endsWith('-kz-players.json') && f !== 'world-kz-players.json');
 for (const f of countryFiles) {
   try {
-    const ps = JSON.parse(fs.readFileSync(path.join(cacheDir, f), 'utf8')).players || [];
+    const ps = JSON.parse(fs.readFileSync(path.join(cacheDir, f), 'utf8').replace(/^﻿/, '')).players || [];
     for (const p of ps) { if (!seen.has(p.steamid)) { seen.add(p.steamid); worldPlayers.push(p); } }
   } catch {}
 }

@@ -274,6 +274,9 @@ function renderPinnedSelf() {
   // Also check if they have a record at all (in "all" records)
   const selfRecord = allRecords.find(r => r.steamid === auth.steamid);
 
+  // When filtering by a specific country, only show pinned row if player belongs to that country
+  if (activeCountry !== 'all' && idxFiltered === -1) return;
+
   const tr = document.createElement('tr');
   tr.id = 'pinned-self-row';
   tr.className = 'pinned-self-row';
