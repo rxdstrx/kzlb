@@ -563,24 +563,9 @@ function renderPinnedSelf() {
   tr.id = 'pinned-self-row';
   tr.className = 'pinned-self-row';
 
-  if (idx === -1) {
-    // Player has no records yet — show a placeholder pinned row
-    const nick = auth.nickname || 'You';
-    const avatar = auth.avatar || '';
-    tr.innerHTML = `
-      <td><span class="rank">—</span></td>
-      <td>
-        <div class="player-cell">
-          <img class="player-thumb" src="${avatar}" onerror="this.style.display='none'" />
-          <a class="player-nick" href="profile.html?steamid=${auth.steamid}">${nick}</a>
-          <span class="pinned-self-badge">📍 You</span>
-        </div>
-      </td>
-      <td><span class="pts-cell">0</span></td>
-      <td><span class="pos-cell">—</span></td>
-      <td><span class="runs-cell">0 (0%)</span></td>
-    `;
-  } else {
+  if (idx === -1) return;
+
+  {
     const p = sorted[idx];
     const rank = idx + 1;
     const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
