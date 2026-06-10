@@ -7,6 +7,7 @@ const SB_ANON      = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const SB_HEADERS = { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` };
 
 let _pendingRequests = [];
+let _acceptedNotifs  = [];   // friend_accepted notifications from DB
 let _realtimeChannel = null;
 let _friendsInitDone = false;
 
@@ -70,21 +71,53 @@ function injectBell() {
   // Insert inside navUser (avatar wrap) so bell + avatar stay grouped at nav right
   navUser.insertBefore(wrap, navUser.firstChild);
 
+  const auth = typeof getAuth === 'function' ? getAuth() : null;
+
   document.getElementById('kzNotifBtn').addEventListener('click', e => {
     e.stopPropagation();
-    document.getElementById('kzNotifDropdown').classList.toggle('hidden');
+    const dd = document.getElementById('kzNotifDropdown');
+    const wasHidden = dd.classList.contains('hidden');
+    dd.classList.toggle('hidden');
+    // Mark accepted notifs as read when opening
+    if (wasHidden && auth) markNotifsRead(auth);
   });
   document.addEventListener('click', () => {
     const dd = document.getElementById('kzNotifDropdown');
     if (dd) dd.classList.add('hidden');
   });
   document.getElementById('kzNotifDropdown').addEventListener('click', e => e.stopPropagation());
+
+  // Load accepted notifications
+  if (auth) {
+    loadAcceptedNotifs(auth);
+    // Real-time: refresh when new notification inserted
+    const sbClient = window.sbClient;
+    if (sbClient) {
+      sbClient.channel(`notif_bell_${auth.steamid}`)
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `steamid=eq.${auth.steamid}`,
+        }, () => loadAcceptedNotifs(auth))
+        .subscribe();
+    }
+  }
+}
+
+function timeSinceShort(dateStr) {
+  const s = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  if (s < 60)    return `${s}s ago`;
+  if (s < 3600)  return `${Math.floor(s/60)}m ago`;
+  if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+  return `${Math.floor(s/86400)}d ago`;
 }
 
 function updateBadge() {
   const badge = document.getElementById('kzNotifBadge');
   if (!badge) return;
-  const count = _pendingRequests.length;
+  const unreadAccepted = _acceptedNotifs.filter(n => !n.read).length;
+  const count = _pendingRequests.length + unreadAccepted;
   badge.textContent = count;
   badge.classList.toggle('hidden', count === 0);
 }
@@ -94,12 +127,7 @@ function renderNotifList() {
   if (!list) return;
   updateBadge();
 
-  if (!_pendingRequests.length) {
-    list.innerHTML = '<div class="kz-notif-empty">No notifications</div>';
-    return;
-  }
-
-  list.innerHTML = _pendingRequests.map(req => `
+  const pendingHtml = _pendingRequests.map(req => `
     <div class="kz-notif-item" id="kz-notif-${req.id}">
       <img class="kz-notif-avatar" src="${req.from_avatar || ''}" onerror="this.style.display='none'" />
       <div class="kz-notif-info">
@@ -112,6 +140,47 @@ function renderNotifList() {
       </div>
     </div>
   `).join('');
+
+  const acceptedHtml = _acceptedNotifs.map(n => `
+    <div class="kz-notif-item ${n.read ? '' : 'kz-notif-unread'}">
+      <img class="kz-notif-avatar" src="${n.from_avatar || ''}" onerror="this.style.display='none'" />
+      <div class="kz-notif-info" style="flex:1">
+        <a class="kz-notif-name" href="profile.html?steamid=${n.from_steamid}">${escHtml(n.from_nickname || n.from_steamid)}</a>
+        <span class="kz-notif-text">accepted your friend request</span>
+        <div class="kz-notif-time">${timeSinceShort(n.created_at)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const combined = pendingHtml + acceptedHtml;
+  list.innerHTML = combined || '<div class="kz-notif-empty">No notifications</div>';
+}
+
+async function loadAcceptedNotifs(auth) {
+  try {
+    const res = await fetch(`${FRIENDS_API}/friend-action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: auth.token, action: 'get-notifications' }),
+    });
+    const data = await res.json();
+    if (res.ok && data.notifications) {
+      _acceptedNotifs = data.notifications;
+      renderNotifList();
+    }
+  } catch {}
+}
+
+async function markNotifsRead(auth) {
+  try {
+    await fetch(`${FRIENDS_API}/friend-action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: auth.token, action: 'notifications-read' }),
+    });
+    _acceptedNotifs = _acceptedNotifs.map(n => ({ ...n, read: true }));
+    updateBadge();
+  } catch {}
 }
 
 // ══════════════════════════════════════════
