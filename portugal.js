@@ -168,10 +168,6 @@ function renderPinnedSelf(sorted) {
     <td><span class="runs-cell">${fmtMaps(p.kz_maps, p.maps_list)}</span></td>
   `;
   ptBody.insertBefore(tr, ptBody.firstChild);
-
-  // Remove the duplicate regular row so the player doesn't appear twice
-  const duplicate = ptBody.querySelector(`tr[data-steamid="${auth.steamid}"]`);
-  if (duplicate) duplicate.remove();
 }
 
 function renderByMap(mapName) {
