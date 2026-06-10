@@ -842,11 +842,12 @@ async function loadNotifications(steamid, token) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, action: 'get-notifications' }),
     });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.notifications) renderNotifications(data.notifications);
-    }
-  } catch {}
+    const data = await res.json();
+    console.log('[notif] status:', res.status, 'data:', JSON.stringify(data));
+    if (res.ok && data.notifications) renderNotifications(data.notifications);
+  } catch (e) {
+    console.error('[notif] fetch error:', e);
+  }
 }
 
 function initNotifications(auth) {
