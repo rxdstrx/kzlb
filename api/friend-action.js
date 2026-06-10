@@ -100,12 +100,21 @@ export default async function handler(req, res) {
     if (!isSender && !isReceiver) return res.status(403).json({ error: 'Not your request' });
     if (respond === 'accept' && !isReceiver) return res.status(403).json({ error: 'Only the recipient can accept' });
 
-    const newStatus = respond === 'accept' ? 'accepted' : 'declined';
-    const updateRes = await fetch(`${sbUrl}/rest/v1/friend_requests?id=eq.${request_id}`, {
-      method: 'PATCH',
-      headers: { ...sbH, Prefer: 'return=minimal' },
-      body: JSON.stringify({ status: newStatus, updated_at: new Date().toISOString() }),
-    });
+    // Decline on a pending request = reject. Decline on an accepted row = remove friend.
+    // Either way: just DELETE the row — no point keeping declined/removed rows.
+    let updateRes;
+    if (respond === 'decline') {
+      updateRes = await fetch(`${sbUrl}/rest/v1/friend_requests?id=eq.${request_id}`, {
+        method: 'DELETE',
+        headers: { ...sbH, Prefer: 'return=minimal' },
+      });
+    } else {
+      updateRes = await fetch(`${sbUrl}/rest/v1/friend_requests?id=eq.${request_id}`, {
+        method: 'PATCH',
+        headers: { ...sbH, Prefer: 'return=minimal' },
+        body: JSON.stringify({ status: 'accepted', updated_at: new Date().toISOString() }),
+      });
+    }
     if (!updateRes.ok) return res.status(500).json({ error: await updateRes.text() });
 
     // ── Insert notification to the sender when accepted ──
