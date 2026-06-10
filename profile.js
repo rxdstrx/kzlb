@@ -183,8 +183,18 @@ async function fetchPlayerData(sid) {
     }
   } catch {}
 
-  // 2. Fall back to GitHub raw CDN
-  const cacheRes = await fetch(`${CACHE_BASE}/${sid}.json?bust=${Date.now()}`);
+  // 2. Try GitHub API — always fresh, no CDN caching
+  try {
+    const ghRes = await fetch(`https://api.github.com/repos/rxdstrx/kzlb/contents/cache/${sid}.json`);
+    if (ghRes.ok) {
+      const meta = await ghRes.json();
+      const data = JSON.parse(atob(meta.content.replace(/\n/g, '')));
+      return { ok: true, data };
+    }
+  } catch {}
+
+  // 3. Last resort: raw CDN
+  const cacheRes = await fetch(`${CACHE_BASE}/${sid}.json`);
   if (!cacheRes.ok) return { ok: false };
   const data = await cacheRes.json();
   return { ok: true, data };
