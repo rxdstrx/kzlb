@@ -6,7 +6,7 @@
 // Format global rank: null/0/9999+ → '—', otherwise '#1,234'
 function fmtPlace(kz_place) {
   const v = Number(kz_place);
-  if (!kz_place || v === 0 || v >= 9999) return '—';
+  if (!kz_place || v === 0 || v === 9999) return '—';
   return '#' + v.toLocaleString();
 }
 
