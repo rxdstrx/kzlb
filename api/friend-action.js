@@ -61,18 +61,21 @@ export default async function handler(req, res) {
       await fetch(`${sbUrl}/rest/v1/friend_requests?id=eq.${row.id}`, { method: 'DELETE', headers: sbH });
     }
 
-    let to_nickname = '', to_avatar = '';
+    let to_nickname = '', to_avatar = '', from_nickname = '', from_avatar = '';
     try {
       const worldRes = await fetch('https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json');
       const world = await worldRes.json();
-      const found = (world.players || []).find(p => p.steamid === to_steamid);
-      if (found) { to_nickname = found.nickname || ''; to_avatar = found.avatar || ''; }
+      const players = world.players || [];
+      const toFound   = players.find(p => p.steamid === to_steamid);
+      const fromFound = players.find(p => p.steamid === from_steamid);
+      if (toFound)   { to_nickname   = toFound.nickname   || ''; to_avatar   = toFound.avatar   || ''; }
+      if (fromFound) { from_nickname = fromFound.nickname || ''; from_avatar = fromFound.avatar || ''; }
     } catch {}
 
     const insertRes = await fetch(`${sbUrl}/rest/v1/friend_requests`, {
       method: 'POST',
       headers: { ...sbH, Prefer: 'return=minimal' },
-      body: JSON.stringify({ from_steamid, to_steamid, from_nickname: payload.nickname || '', from_avatar: payload.avatar || '', to_nickname, to_avatar, status: 'pending' }),
+      body: JSON.stringify({ from_steamid, to_steamid, from_nickname, from_avatar, to_nickname, to_avatar, status: 'pending' }),
     });
     if (insertRes.ok) return res.status(200).json({ ok: true });
     return res.status(500).json({ error: await insertRes.text() });
