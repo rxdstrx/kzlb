@@ -112,6 +112,22 @@ function timeSinceShort(dateStr) {
   return `${Math.floor(s/86400)}d ago`;
 }
 
+// Live-update all notification timestamps every second (stops at 60s)
+let _notifTimerInterval = null;
+function startNotifTimer() {
+  if (_notifTimerInterval) return;
+  _notifTimerInterval = setInterval(() => {
+    const timeEls = document.querySelectorAll('.kz-notif-time[data-ts]');
+    let anyLive = false;
+    timeEls.forEach(el => {
+      const s = Math.floor((Date.now() - new Date(el.dataset.ts)) / 1000);
+      if (s < 60) { el.textContent = `${s}s ago`; anyLive = true; }
+      else { el.textContent = timeSinceShort(el.dataset.ts); }
+    });
+    if (!anyLive) { clearInterval(_notifTimerInterval); _notifTimerInterval = null; }
+  }, 1000);
+}
+
 function updateBadge() {
   const badge = document.getElementById('kzNotifBadge');
   if (!badge) return;
@@ -140,19 +156,23 @@ function renderNotifList() {
     </div>
   `).join('');
 
-  const acceptedHtml = _acceptedNotifs.map(n => `
-    <div class="kz-notif-item ${n.read ? '' : 'kz-notif-unread'}">
-      <img class="kz-notif-avatar" src="${n.from_avatar || ''}" onerror="this.style.display='none'" />
-      <div class="kz-notif-info" style="flex:1">
-        <a class="kz-notif-name" href="profile.html?steamid=${n.from_steamid}">${escHtml(n.from_nickname || n.from_steamid)}</a>
-        <span class="kz-notif-text">accepted your friend request</span>
-        <div class="kz-notif-time">${timeSinceShort(n.created_at)}</div>
-      </div>
-    </div>
-  `).join('');
+  const acceptedHtml = _acceptedNotifs.map(n => {
+    const msg = n.type === 'friend_you_accepted'
+      ? `You accepted <a class="kz-notif-name" href="profile.html?steamid=${n.from_steamid}">${escHtml(n.from_nickname || n.from_steamid)}</a>'s friend request`
+      : `<a class="kz-notif-name" href="profile.html?steamid=${n.from_steamid}">${escHtml(n.from_nickname || n.from_steamid)}</a> accepted your friend request`;
+    return `
+      <div class="kz-notif-item ${n.read ? '' : 'kz-notif-unread'}">
+        <img class="kz-notif-avatar" src="${n.from_avatar || ''}" onerror="this.style.display='none'" />
+        <div class="kz-notif-info" style="flex:1">
+          <span class="kz-notif-text">${msg}</span>
+          <div class="kz-notif-time" data-ts="${n.created_at}">${timeSinceShort(n.created_at)}</div>
+        </div>
+      </div>`;
+  }).join('');
 
   const combined = pendingHtml + acceptedHtml;
   list.innerHTML = combined || '<div class="kz-notif-empty">No notifications</div>';
+  if (_acceptedNotifs.length) startNotifTimer();
 }
 
 async function loadAcceptedNotifs(auth) {
