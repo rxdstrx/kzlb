@@ -167,6 +167,12 @@ async function loadProfile(sid) {
 
     const data = await cacheRes.json();
 
+    // Player was removed by admin — show empty profile, do not re-scrape
+    if (data.removed) {
+      showError('This player has been removed from the leaderboard.');
+      return;
+    }
+
     const header = data.maps?.header || {};
     const kzUser = data.user?.['18'] || {};
     let name   = header.title || kzUser.name || '';

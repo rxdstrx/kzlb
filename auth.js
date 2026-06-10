@@ -58,7 +58,16 @@ function triggerAddPlayer(steamid) {
   localStorage.setItem(key, String(now));
 
   // Fast path: write directly to GitHub JSON via Vercel (takes ~5 sec, no Action queue)
-  fetch(`https://kzlb.vercel.app/api/register-player?steamid=${steamid}`).catch(() => {});
+  // Also captures country returned by register-player so glow shows immediately
+  fetch(`https://kzlb.vercel.app/api/register-player?steamid=${steamid}`)
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      if (d?.country && d.country !== 'xx') localStorage.setItem('kz_country', d.country);
+      if (d?.nickname) localStorage.setItem('kz_steam_nick', d.nickname);
+      if (d?.avatar)   localStorage.setItem('kz_steam_avatar', d.avatar);
+      updateNavAuth();
+    })
+    .catch(() => {});
 
   // Background: full Cybershoke scrape via Action (picks up actual stats if they have any)
   fetch(`https://kzlb.vercel.app/api/trigger-scrape?steamid=${steamid}`).catch(() => {});

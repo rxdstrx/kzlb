@@ -88,6 +88,9 @@ export default async function handler(req, res) {
   const indExisting = await ghGet(indPath, ghToken);
 
   if (indExisting) {
+    // Removed by admin — do not re-register
+    if (indExisting.content.removed) return res.status(200).json({ ok: true, removed: true });
+
     // Cache already exists — player was scraped before.
     // Check if they're already in the world leaderboard too.
     const world = await ghGet('cache/world-kz-players.json', ghToken);

@@ -30,12 +30,12 @@ for (const f of allFiles) {
 
 if (!found) { console.error('Player not found'); process.exit(1); }
 
-// Remove individual cache file
+// Write tombstone cache file — keeps the file so profile.js won't re-trigger a scrape,
+// but marks it removed so registration and scraping are blocked.
 const indFile = path.join(cacheDir, `${steamid}.json`);
-if (fs.existsSync(indFile)) {
-  fs.unlinkSync(indFile);
-  console.log(`Deleted ${steamid}.json`);
-}
+const tombstone = { steamid, removed: true, removed_at: new Date().toISOString() };
+fs.writeFileSync(indFile, Buffer.from(JSON.stringify(tombstone, null, 2), 'utf8'));
+console.log(`Tombstoned ${steamid}.json`);
 
 // Rebuild world
 const countryFiles = fs.readdirSync(cacheDir).filter(f => f.endsWith('-kz-players.json') && f !== 'world-kz-players.json');
