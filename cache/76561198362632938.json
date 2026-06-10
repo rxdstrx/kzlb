@@ -1,0 +1,95 @@
+{
+  "steamid": "76561198362632938",
+  "country": "rs",
+  "cached_at": "2026-06-10T08:43:29.681Z",
+  "user": {},
+  "maps": {
+    "list": [
+      {
+        "map": "kz_variety_fix",
+        "points": "114.1397",
+        "completions": "4",
+        "tier": "4",
+        "place_num": "7 749 / 27 421",
+        "time_record": "19:12.7813",
+        "unixtime_record": 1768164292
+      },
+      {
+        "map": "kz_victoria",
+        "points": "30.6481",
+        "completions": "1",
+        "tier": "1",
+        "place_num": "18 406 / 57 168",
+        "time_record": "01:35.9688",
+        "unixtime_record": 1751908404
+      },
+      {
+        "map": "kz_igneous",
+        "points": "90.6971",
+        "completions": "1",
+        "tier": "3",
+        "place_num": "21 601 / 44 117",
+        "time_record": "03:58.6250",
+        "unixtime_record": 1728979136
+      },
+      {
+        "map": "kz_phamous",
+        "points": "82.5470",
+        "completions": "3",
+        "tier": "2",
+        "place_num": "34 687 / 190 079",
+        "time_record": "03:15.7032",
+        "unixtime_record": 1756145980
+      }
+    ],
+    "header": {
+      "title": "soinspirational",
+      "type": 1,
+      "avatar": "https://avatars.steamstatic.com/c432eeca3e610aa0a1c85ab57cd12777ffec9d7d_full.jpg",
+      "desc": {
+        "{{Position}}": 40688,
+        "{{Points}}": 318,
+        "{{COMPLETIONS-MAP}}": "4 (2.41%)",
+        "{{COMPLETIONS-BONUS}}": "0",
+        "WR": 0,
+        "PB {{TOP-1}} 100": 0
+      }
+    },
+    "column": {
+      "map": {
+        "name": "{{Map}}",
+        "minWidth": "200",
+        "disableClick": true
+      },
+      "tier": {
+        "name": "{{TIER}}"
+      },
+      "completions": {
+        "name": "{{COMPLETIONS}}"
+      },
+      "time_record": {
+        "name": "{{PB}}"
+      },
+      "place_num": {
+        "name": "{{Position}}"
+      },
+      "points": {
+        "name": "{{Points}}"
+      },
+      "unixtime_record": {
+        "name": "{{Date}}",
+        "type": "unixtime_format",
+        "format": "DD.MM.YYYY, HH:mm"
+      }
+    },
+    "column_sort": {
+      "0": "map",
+      "1": "tier",
+      "2": "completions",
+      "3": "time_record",
+      "4": "place_num",
+      "5": "points",
+      "6": "unixtime_record"
+    }
+  }
+}
