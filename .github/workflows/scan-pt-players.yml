@@ -54,7 +54,7 @@ jobs:
           git config user.name "GitHub Action"
           git add cache/
           git diff --staged --quiet || git commit -m "scan PT: ${{ github.event.inputs.how_many }} new players"
-          git pull --rebase=false origin main
+          git pull --rebase origin main
           node scripts/rebuild-world.js
           git add cache/world-kz-players.json
           git diff --staged --quiet || git commit -m "rebuild world after PT scan"
