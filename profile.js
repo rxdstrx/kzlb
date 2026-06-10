@@ -264,7 +264,7 @@ async function loadProfile(sid) {
 
     // Faceit ELO — fetch async
     setStatIfExists('statFaceitElo', '…');
-    fetch(`${API_BASE}/api/faceit-stats?steamid=${sid}`)
+    fetch(`${API_BASE}/api/faceit?action=stats&steamid=${sid}`)
       .then(r => r.ok ? r.json() : null)
       .then(f => {
         if (f?.elo) {
