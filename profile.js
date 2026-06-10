@@ -175,7 +175,7 @@ async function loadProfile(sid) {
 
     const header = data.maps?.header || {};
     const kzUser = data.user?.['18'] || {};
-    let name   = header.title || kzUser.name || '';
+    let name   = data.nickname || header.title || kzUser.name || '';
     let avatar = header.avatar || kzUser.avatar || '';
 
     if (!name || !avatar) {
