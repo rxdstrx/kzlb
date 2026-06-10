@@ -398,8 +398,8 @@ const LB_PAGE_SIZE = 100;
 async function fetchLeaderboardPlayers(countryCode) {
   try {
     const filter = (countryCode && countryCode !== 'world')
-      ? `&country=eq.${countryCode}&kz_maps=gt.0`
-      : `&kz_maps=gt.0`;
+      ? `&country=eq.${countryCode}`
+      : ``;
     const res = await fetch(
       `${SB_LB_URL}/rest/v1/players?order=kz_points.desc${filter}&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
       { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
