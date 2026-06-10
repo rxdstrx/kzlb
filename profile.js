@@ -478,7 +478,7 @@ function initBannerUI(ownerSteamId) {
         // Save to Supabase so others can see it
         const auth = typeof getAuth === 'function' ? getAuth() : null;
         if (auth?.token) {
-          fetch('https://kzlb.vercel.app/api/friend-action', {
+          fetch('https://kzlb-banner.vercel.app/api/friend-action', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token: auth.token, action: 'set-banner', banner_url: dataUrl }),
@@ -501,7 +501,7 @@ function initBannerUI(ownerSteamId) {
     removeBtn.classList.add('hidden');
     const auth = typeof getAuth === 'function' ? getAuth() : null;
     if (auth?.token) {
-      fetch('https://kzlb.vercel.app/api/friend-action', {
+      fetch('https://kzlb-banner.vercel.app/api/friend-action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: auth.token, action: 'set-banner', banner_url: '' }),
