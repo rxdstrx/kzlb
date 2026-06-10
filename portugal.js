@@ -201,7 +201,7 @@ function renderByMap(mapName) {
         </div>
       </td>
       <td><span class="time-cell">${p.entry.time_record}</span></td>
-      <td><span class="pos-cell">${(p.entry.place_num || '').replace(/\u00a0/g, ' ')}</span></td>
+      <td><span class="pos-cell">${(p.entry.place_num || '').replace(/\u00c2\u00a0|\u00a0/g, ' ')}</span></td>
       <td><span class="runs-cell">${p.entry.completions}</span></td>
     `;
     ptBody.appendChild(tr);
@@ -248,7 +248,7 @@ function renderPinnedSelfByMap(sorted, mapName, cc) {
         <span class="pinned-self-badge">📍 You</span>
       </div></td>
       <td><span class="time-cell">${p.entry.time_record}</span></td>
-      <td><span class="pos-cell">${(p.entry.place_num || '').replace(/ /g, ' ')}</span></td>
+      <td><span class="pos-cell">${(p.entry.place_num || '').replace(/\u00c2\u00a0|\u00a0/g, ' ')}</span></td>
       <td><span class="runs-cell">${p.entry.completions}</span></td>
     `;
   }
