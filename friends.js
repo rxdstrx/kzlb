@@ -320,21 +320,14 @@ async function friendRespond(requestId, action, btn) {
 
     // Remove from pending list
     _pendingRequests = _pendingRequests.filter(r => r.id !== requestId);
-    renderNotifList();
 
     if (action === 'accept') {
       showToast('Friend request accepted!');
       refreshFriendsTabIfOpen(auth.steamid);
-      // Update add-friend button if on their profile
-      const req = _pendingRequests.find(r => r.id === requestId);
-      if (req) {
-        const profileSteamid = getProfileSteamid();
-        if (profileSteamid === req.from_steamid) {
-          const wrap2 = document.getElementById('kzFriendBtnWrap');
-          const btn2  = document.getElementById('kzAddFriendBtn');
-          if (wrap2 && btn2) setFriendBtnState(wrap2, btn2, 'friends', auth, profileSteamid);
-        }
-      }
+      // Immediately fetch notifications so bell updates right away (don't wait for real-time)
+      await loadAcceptedNotifs(auth);
+    } else {
+      renderNotifList();
     }
   } catch (e) {
     if (item) item.querySelectorAll('button').forEach(b => b.disabled = false);
@@ -395,6 +388,7 @@ async function initAddFriendBtn(auth, profileSteamid) {
 }
 
 function setFriendBtnState(wrap, btn, status, auth, profileSteamid) {
+  if (!wrap || !btn) return;
   // Remove any existing unfriend dropdown
   const existing = wrap.querySelector('.kz-unfriend-dropdown');
   if (existing) existing.remove();
@@ -455,6 +449,7 @@ function getWrap() { return document.getElementById('kzFriendBtnWrap'); }
 async function sendFriendRequest(auth, profileSteamid, btn) {
   btn.disabled = true;
   btn.textContent = 'Sending…';
+  let ok = false, errorMsg = '';
   try {
     const res = await fetch(`${FRIENDS_API}/friend-action`, {
       method: 'POST',
@@ -462,17 +457,17 @@ async function sendFriendRequest(auth, profileSteamid, btn) {
       body: JSON.stringify({ token: auth.token, action: 'send', to_steamid: profileSteamid }),
     });
     const data = await res.json();
-    if (data.ok) {
-      setFriendBtnState(getWrap(), btn, 'sent', auth, profileSteamid);
-    } else {
-      btn.disabled = false;
-      btn.textContent = 'Add Friend';
-      showToast(data.error || 'Failed to send request', true);
-    }
+    ok = !!data.ok;
+    errorMsg = data.error || 'Failed to send request';
   } catch {
+    errorMsg = 'Network error';
+  }
+  if (ok) {
+    setFriendBtnState(getWrap(), btn, 'sent', auth, profileSteamid);
+  } else {
     btn.disabled = false;
     btn.textContent = 'Add Friend';
-    showToast('Something went wrong', true);
+    showToast(errorMsg, true);
   }
 }
 
