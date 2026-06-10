@@ -117,7 +117,24 @@ if (updateRecordBtn && steamid) {
 
         async function pollDone() {
           try {
-            // Use GitHub API — bypasses CDN caching
+            // Check Supabase player_cache first — written right after scrape, instant
+            const sbRes = await fetch(
+              `${SB_URL}/rest/v1/player_cache?steamid=eq.${steamid}&select=steamid&limit=1`,
+              { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }
+            );
+            if (sbRes.ok) {
+              const rows = await sbRes.json();
+              if (rows.length) {
+                clearInterval(timer);
+                updateRecordStatus.className = 'update-record-status success';
+                updateRecordStatus.textContent = '✅ Done! Reloading profile…';
+                setTimeout(() => window.location.reload(), 1500);
+                return;
+              }
+            }
+          } catch {}
+          try {
+            // Fallback: GitHub API — bypasses CDN caching
             const r = await fetch(`https://api.github.com/repos/rxdstrx/kzlb/contents/cache/${steamid}.json`);
             if (r.ok) {
               const meta = await r.json();
@@ -133,9 +150,9 @@ if (updateRecordBtn && steamid) {
               }
             }
           } catch {}
-          setTimeout(pollDone, 15000);
+          setTimeout(pollDone, 10000);
         }
-        setTimeout(pollDone, 30000);
+        setTimeout(pollDone, 15000);
 
       } else {
         updateRecordStatus.className = 'update-record-status error';
