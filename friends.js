@@ -378,13 +378,14 @@ async function renderFriendsList(profileSteamid, auth) {
   container.innerHTML = '<div class="kz-friends-loading">Loading…</div>';
 
   try {
+    // Fetch friend rows
     const res = await fetch(
       `${SB_URL}/rest/v1/friend_requests?or=(from_steamid.eq.${profileSteamid},to_steamid.eq.${profileSteamid})&status=eq.accepted&order=updated_at.desc`,
       { headers: SB_HEADERS }
     );
     const rows = await res.json();
 
-    if (!rows.length) {
+    if (!Array.isArray(rows) || !rows.length) {
       container.innerHTML = `
         <div class="friends-empty-wrap">
           <div class="friends-empty-icon">
@@ -403,23 +404,55 @@ async function renderFriendsList(profileSteamid, auth) {
 
     const isOwnProfile = auth && auth.steamid === profileSteamid;
 
+    // Collect all friend steamids to batch-fetch banners + world rank
+    const friendIds = rows.map(row => {
+      const isFrom = row.from_steamid === profileSteamid;
+      return isFrom ? row.to_steamid : row.from_steamid;
+    });
+
+    // Fetch banners from Supabase
+    const bannerMap = {};
+    try {
+      const idList = friendIds.map(id => `steamid.eq.${id}`).join(',');
+      const bRes = await fetch(
+        `${SB_URL}/rest/v1/player_profiles?or=(${idList})&select=steamid,banner_url`,
+        { headers: SB_HEADERS }
+      );
+      const bRows = await bRes.json();
+      if (Array.isArray(bRows)) bRows.forEach(r => { if (r.banner_url) bannerMap[r.steamid] = r.banner_url; });
+    } catch {}
+
+    // Fetch world ranks from world cache
+    const rankMap = {};
+    try {
+      const wRes = await fetch('https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json');
+      const world = await wRes.json();
+      (world.players || []).forEach((p, i) => { rankMap[p.steamid] = i + 1; });
+    } catch {}
+
     const html = rows.map(row => {
       const isFrom = row.from_steamid === profileSteamid;
       const friendSteamid  = isFrom ? row.to_steamid  : row.from_steamid;
       const friendNickname = isFrom ? (row.to_nickname || friendSteamid) : (row.from_nickname || friendSteamid);
       const friendAvatar   = isFrom ? row.to_avatar    : row.from_avatar;
+      const banner = bannerMap[friendSteamid] || '';
+      const rank   = rankMap[friendSteamid] ? `#${Number(rankMap[friendSteamid]).toLocaleString()}` : '';
       const removeBtn = isOwnProfile
         ? `<button class="kz-friend-remove" onclick="removeFriend('${row.id}', this)" title="Remove friend">✕</button>`
         : '';
       return `
-        <div class="kz-friend-row" id="kz-friend-row-${row.id}">
-          <img class="kz-friend-avatar" src="${friendAvatar || ''}" onerror="this.style.display='none'" />
-          <a class="kz-friend-name" href="profile.html?steamid=${friendSteamid}">${escHtml(friendNickname)}</a>
+        <div class="kz-friend-card" id="kz-friend-row-${row.id}" style="${banner ? `--friend-banner:url(${banner})` : ''}">
+          <div class="kz-friend-card-bg ${banner ? 'has-banner' : ''}"></div>
+          <img class="kz-friend-card-avatar" src="${friendAvatar || ''}" onerror="this.style.display='none'" />
+          <div class="kz-friend-card-info">
+            ${rank ? `<span class="kz-friend-card-rank">${rank}</span>` : ''}
+            <a class="kz-friend-card-name" href="profile.html?steamid=${friendSteamid}">${escHtml(friendNickname)}</a>
+          </div>
           ${removeBtn}
         </div>`;
     }).join('');
 
-    container.innerHTML = `<div class="kz-friends-list">${html}</div>`;
+    container.innerHTML = `<div class="kz-friends-grid">${html}</div>`;
   } catch {
     container.innerHTML = '<div class="kz-notif-empty">Failed to load friends.</div>';
   }

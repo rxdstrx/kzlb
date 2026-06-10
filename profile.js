@@ -241,11 +241,29 @@ async function loadProfile(sid) {
       localStorage.setItem(seenKey, Date.now().toString());
     }
 
-    // ── Banner: apply custom if set, otherwise CSS default (CS2 hero) shows ──
+    // ── Banner: load from Supabase (visible to all), fall back to localStorage ──
     const banner = document.getElementById('profileBanner');
     if (banner) {
-      const bannerUrl = localStorage.getItem(`kz_banner_${sid}`);
-      if (bannerUrl) banner.style.backgroundImage = `url(${bannerUrl})`;
+      try {
+        const sbRes = await fetch(
+          `https://btcufotfvfnuoiokghjm.supabase.co/rest/v1/player_profiles?steamid=eq.${sid}&select=banner_url`,
+          { headers: { apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4', Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4' } }
+        );
+        const rows = await sbRes.json();
+        const sbBanner = rows?.[0]?.banner_url;
+        if (sbBanner) {
+          banner.style.backgroundImage = `url(${sbBanner})`;
+          // Keep localStorage in sync for own profile
+          localStorage.setItem(`kz_banner_${sid}`, sbBanner);
+        } else {
+          // Fall back to localStorage (own profile before first Supabase save)
+          const localBanner = localStorage.getItem(`kz_banner_${sid}`);
+          if (localBanner) banner.style.backgroundImage = `url(${localBanner})`;
+        }
+      } catch {
+        const localBanner = localStorage.getItem(`kz_banner_${sid}`);
+        if (localBanner) banner.style.backgroundImage = `url(${localBanner})`;
+      }
     }
 
     // ── Cybershoke link ──
@@ -452,15 +470,20 @@ function initBannerUI(ownerSteamId) {
         if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
-        try {
-          localStorage.setItem(`kz_banner_${steamid}`, dataUrl);
-        } catch {
-          alert('Image too large. Try a smaller file.');
-          return;
-        }
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+        if (dataUrl.length > 500000) { alert('Image too large. Try a smaller or less detailed file.'); return; }
+        localStorage.setItem(`kz_banner_${steamid}`, dataUrl);
         banner.style.backgroundImage = `url(${dataUrl})`;
         removeBtn.classList.remove('hidden');
+        // Save to Supabase so others can see it
+        const auth = typeof getAuth === 'function' ? getAuth() : null;
+        if (auth?.token) {
+          fetch('https://kzlb.vercel.app/api/friend-action', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: auth.token, action: 'set-banner', banner_url: dataUrl }),
+          }).catch(() => {});
+        }
       };
       img.src = e.target.result;
     };
@@ -476,6 +499,14 @@ function initBannerUI(ownerSteamId) {
     localStorage.removeItem(`kz_banner_${steamid}`);
     banner.style.backgroundImage = '';
     removeBtn.classList.add('hidden');
+    const auth = typeof getAuth === 'function' ? getAuth() : null;
+    if (auth?.token) {
+      fetch('https://kzlb.vercel.app/api/friend-action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: auth.token, action: 'set-banner', banner_url: '' }),
+      }).catch(() => {});
+    }
   });
 
   // Drag & drop onto the banner
