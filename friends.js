@@ -175,10 +175,10 @@ async function friendRespond(requestId, action, btn) {
   if (item) item.querySelectorAll('button').forEach(b => b.disabled = true);
 
   try {
-    const res = await fetch(`${FRIENDS_API}/friend-respond`, {
+    const res = await fetch(`${FRIENDS_API}/friend-action`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: auth.token, request_id: requestId, action }),
+      body: JSON.stringify({ token: auth.token, action: 'respond', request_id: requestId, respond: action }),
     });
     const data = await res.json();
     if (!data.ok) throw new Error(data.error);
@@ -261,10 +261,10 @@ async function sendFriendRequest(auth, profileSteamid, btn) {
   btn.disabled = true;
   btn.textContent = 'Sending…';
   try {
-    const res = await fetch(`${FRIENDS_API}/friend-request`, {
+    const res = await fetch(`${FRIENDS_API}/friend-action`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: auth.token, to_steamid: profileSteamid }),
+      body: JSON.stringify({ token: auth.token, action: 'send', to_steamid: profileSteamid }),
     });
     const data = await res.json();
     if (data.ok) {
@@ -391,10 +391,10 @@ async function removeFriend(requestId, btn) {
   if (!auth || !confirm('Remove this friend?')) return;
   btn.disabled = true;
   try {
-    const res = await fetch(`${FRIENDS_API}/friend-respond`, {
+    const res = await fetch(`${FRIENDS_API}/friend-action`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: auth.token, request_id: requestId, action: 'decline' }),
+      body: JSON.stringify({ token: auth.token, action: 'respond', request_id: requestId, respond: 'decline' }),
     });
     const data = await res.json();
     if (data.ok) {
