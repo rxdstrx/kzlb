@@ -106,6 +106,9 @@
 /* ── Avatar dropdown ── */
 .nav-avatar-wrap {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 .nav-avatar-btn {
   width: 34px;

@@ -3,100 +3,116 @@
   position: relative;
   display: flex;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 4px;
 }
 
 .kz-notif-btn {
   background: none;
   border: none;
   cursor: pointer;
-  color: #94a3b8;
-  padding: 6px;
-  border-radius: 8px;
+  color: rgba(255,255,255,0.45);
+  padding: 6px 8px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   transition: color 0.2s, background 0.2s;
 }
-.kz-notif-btn:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
+.kz-notif-btn:hover {
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.07);
+}
 
 .kz-notif-badge {
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: 3px;
+  right: 3px;
   background: #ef4444;
   color: #fff;
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   font-weight: 700;
   border-radius: 9999px;
-  min-width: 16px;
-  height: 16px;
-  line-height: 16px;
+  min-width: 14px;
+  height: 14px;
+  line-height: 14px;
   text-align: center;
-  padding: 0 4px;
+  padding: 0 3px;
   pointer-events: none;
+  box-shadow: 0 0 0 2px #0d0d14;
 }
 .kz-notif-badge.hidden { display: none; }
 
 @keyframes kzBellFlash {
-  0%,100% { color: #94a3b8; }
+  0%,100% { color: rgba(255,255,255,0.45); }
   50% { color: #a78bfa; }
 }
-.kz-bell-flash { animation: kzBellFlash 0.3s ease 2; }
+.kz-bell-flash { animation: kzBellFlash 0.35s ease 2; }
 
-/* ── Notification Dropdown ── */
+/* ── Notification Dropdown — Apple glassy style ── */
 .kz-notif-dropdown {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 12px);
   right: 0;
-  width: 320px;
-  background: #1e1e2e;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  width: 340px;
+  background: rgba(20, 20, 32, 0.72);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 18px;
+  box-shadow:
+    0 2px 0 rgba(255,255,255,0.06) inset,
+    0 24px 64px rgba(0,0,0,0.55),
+    0 4px 16px rgba(0,0,0,0.3);
   z-index: 9999;
   overflow: hidden;
 }
 .kz-notif-dropdown.hidden { display: none; }
 
 .kz-notif-header {
-  padding: 12px 16px 10px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #94a3b8;
+  padding: 14px 18px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.09em;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-.kz-notif-list { max-height: 360px; overflow-y: auto; }
+.kz-notif-list {
+  max-height: 380px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
 
 .kz-notif-empty {
-  padding: 24px 16px;
+  padding: 32px 18px;
   text-align: center;
-  color: #475569;
-  font-size: 0.85rem;
+  color: rgba(255,255,255,0.2);
+  font-size: 0.84rem;
+  letter-spacing: 0.01em;
 }
 
 .kz-notif-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   transition: background 0.15s;
 }
 .kz-notif-item:last-child { border-bottom: none; }
-.kz-notif-item:hover { background: rgba(255,255,255,0.03); }
+.kz-notif-item:hover { background: rgba(255,255,255,0.04); }
 
 .kz-notif-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   object-fit: cover;
   flex-shrink: 0;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .kz-notif-info {
@@ -104,39 +120,45 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 .kz-notif-name {
-  font-size: 0.85rem;
+  font-size: 0.86rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: rgba(255,255,255,0.9);
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
-.kz-notif-name:hover { color: #a78bfa; }
-.kz-notif-text { font-size: 0.75rem; color: #64748b; }
+.kz-notif-name:hover { color: #c4b5fd; }
+.kz-notif-text {
+  font-size: 0.74rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.01em;
+}
 
 .kz-notif-actions { display: flex; gap: 6px; flex-shrink: 0; }
 .kz-notif-accept,
 .kz-notif-decline {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.15s, transform 0.1s;
+  transition: opacity 0.15s, transform 0.12s, background 0.15s;
 }
-.kz-notif-accept:hover,.kz-notif-decline:hover { opacity: 0.85; transform: scale(1.08); }
-.kz-notif-accept:disabled,.kz-notif-decline:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-.kz-notif-accept { background: rgba(52,211,153,0.15); color: #34d399; }
-.kz-notif-decline { background: rgba(239,68,68,0.12); color: #f87171; }
+.kz-notif-accept:hover { opacity: 1 !important; transform: scale(1.1); background: rgba(52,211,153,0.28) !important; }
+.kz-notif-decline:hover { opacity: 1 !important; transform: scale(1.1); background: rgba(239,68,68,0.22) !important; }
+.kz-notif-accept:disabled,.kz-notif-decline:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+.kz-notif-accept { background: rgba(52,211,153,0.13); color: #34d399; border: 1px solid rgba(52,211,153,0.2); }
+.kz-notif-decline { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.18); }
 
 /* ── Add Friend Button ── */
 .kz-friend-btn {
@@ -224,18 +246,20 @@
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: #1e1e2e;
-  border: 1px solid rgba(167,139,250,0.3);
-  color: #e2e8f0;
-  padding: 10px 20px;
-  border-radius: 10px;
+  background: rgba(20,20,32,0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.9);
+  padding: 10px 22px;
+  border-radius: 12px;
   font-size: 0.85rem;
   font-weight: 500;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
   z-index: 99999;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s, transform 0.25s;
 }
 .kz-toast--show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.kz-toast--error { border-color: rgba(239,68,68,0.35); color: #f87171; }
+.kz-toast--error { border-color: rgba(239,68,68,0.3); color: #f87171; }
