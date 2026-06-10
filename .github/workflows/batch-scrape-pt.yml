@@ -42,3 +42,10 @@ jobs:
           git diff --staged --quiet || git commit -m "update: pt kz players batch scrape"
           git pull --rebase=false --strategy-option=ours origin main
           git push origin HEAD:main
+
+      - name: Purge jsDelivr cache
+        run: |
+          BASE="https://purge.jsdelivr.net/gh/rxdstrx/kzlb@main/cache"
+          curl -s "$BASE/world-kz-players.json" &
+          curl -s "$BASE/pt-kz-players.json" &
+          wait

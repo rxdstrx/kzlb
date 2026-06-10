@@ -29,3 +29,10 @@ jobs:
           git add cache/
           git diff --cached --quiet || git commit -m "auto: sync player countries from Faceit"
           git push
+
+      - name: Purge jsDelivr cache
+        run: |
+          BASE="https://purge.jsdelivr.net/gh/rxdstrx/kzlb@main/cache"
+          curl -s "$BASE/world-kz-players.json" &
+          curl -s "$BASE/pt-kz-players.json" &
+          wait
