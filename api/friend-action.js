@@ -133,22 +133,24 @@ export default async function handler(req, res) {
         }
       } catch {}
 
+      console.log('[notifications] inserting for steamid:', row.from_steamid, 'from:', payload.steamid, 'sbUrl:', sbUrl ? 'set' : 'MISSING', 'sbKey:', sbKey ? 'set' : 'MISSING');
+
+      const notifBody = {
+        steamid:       row.from_steamid,
+        type:          'friend_accepted',
+        from_steamid:  payload.steamid,
+        from_nickname: acceptorNickname,
+        from_avatar:   acceptorAvatar,
+      };
       const notifRes = await fetch(`${sbUrl}/rest/v1/notifications`, {
         method: 'POST',
         headers: { ...sbH, Prefer: 'return=minimal' },
-        body: JSON.stringify({
-          steamid:       row.from_steamid,
-          type:          'friend_accepted',
-          from_steamid:  payload.steamid,
-          from_nickname: acceptorNickname,
-          from_avatar:   acceptorAvatar,
-        }),
+        body: JSON.stringify(notifBody),
       });
+      const notifText = await notifRes.text();
+      console.log('[notifications] insert response:', notifRes.status, notifText);
       if (!notifRes.ok) {
-        const errText = await notifRes.text();
-        console.error('[notifications] insert failed:', notifRes.status, errText);
-        // Still return ok — friend was accepted, notification is secondary
-        return res.status(200).json({ ok: true, notif_error: errText });
+        return res.status(200).json({ ok: true, notif_error: `${notifRes.status}: ${notifText}` });
       }
     }
 
