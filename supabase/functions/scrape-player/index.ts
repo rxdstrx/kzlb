@@ -116,6 +116,40 @@ serve(async (req) => {
       if (insErr) console.error('player_maps insert error:', insErr, 'first row:', JSON.stringify(mapRows[0]))
     }
 
+    // ── Fetch recent records from Cybershoke ──
+    try {
+      const recentHeaders = {
+        ...apiHeaders,
+        'Referer': `https://cybershoke.net/ru/cs2/leaderboard/kz/recent/${steamid}`,
+      }
+      const recentRes = await fetch('https://cybershoke.net/api/api/v2/mission/data?type=1', {
+        method: 'GET', headers: recentHeaders,
+      })
+      if (recentRes.ok) {
+        const recentData = await recentRes.json()
+        const recentList = recentData?.data?.list || recentData?.list || []
+        if (recentList.length > 0) {
+          const recentRows = recentList.map((m: any) => ({
+            steamid,
+            map: m.map || '',
+            points: String(m.points || '0'),
+            time_record: m.time_record || '',
+            unixtime_record: Number(m.unixtime_record) || 0,
+            tier: Number(m.tier) || 0,
+            completions: String(m.completions || '0'),
+            updated_at: now,
+          }))
+          await sb.from('player_recent').delete().eq('steamid', steamid)
+          const { error: recentErr } = await sb.from('player_recent').insert(recentRows)
+          if (recentErr) console.error('player_recent insert error:', recentErr)
+        }
+      } else {
+        console.error('recent fetch status:', recentRes.status)
+      }
+    } catch (recentEx) {
+      console.error('recent fetch error:', recentEx)
+    }
+
     // ── Write to player_cache so profile page detects completion instantly ──
     await sb.from('player_cache').upsert({
       steamid,
