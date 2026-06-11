@@ -604,7 +604,7 @@ async function renderFriendsList(profileSteamid, auth) {
     // Fetch nickname, avatar, last_seen from players table (authoritative — overrides stale request data)
     const playerDataMap = {};
     const lastSeenMap = {};
-    const ONLINE_MS = 3 * 60 * 1000;
+    const ONLINE_MS = 90 * 1000; // 90s — heartbeat fires every 60s, so offline within ~30s of expiry
     try {
       const idFilter = friendIds.map(id => `steamid.eq.${id}`).join(',');
       const lsRes = await fetch(

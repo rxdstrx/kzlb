@@ -351,7 +351,7 @@ async function loadProfile(sid) {
 
     // Last active — read from Supabase, show Online if < 3 min ago
     const lastSeenEl = document.getElementById('profileLastSeen');
-    const ONLINE_THRESHOLD_MS = 3 * 60 * 1000; // 3 minutes
+    const ONLINE_THRESHOLD_MS = 90 * 1000; // 90s — matches heartbeat (60s) + buffer
 
     function renderLastSeen(lastSeen) {
       if (!lastSeenEl) return;
