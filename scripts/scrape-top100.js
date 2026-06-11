@@ -32,7 +32,7 @@ async function getFaceitCountry(steamid) {
   try {
     const pyOut = execSync(
       'python3 scripts/scrape-cybershoke.py --top100',
-      { env: { ...process.env }, timeout: 300000, encoding: 'utf8' }
+      { env: { ...process.env }, timeout: 300000, encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }
     );
     scraped = JSON.parse(pyOut.trim());
     console.log(`✅ Got ${scraped.length} players from Python scraper`);
