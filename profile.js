@@ -951,7 +951,15 @@ function initTabs() {
 const TIER_COLORS = { 1: '#4ade80', 2: '#86efac', 3: '#fbbf24', 4: '#f97316', 5: '#ef4444', 6: '#dc2626', 7: '#9333ea' };
 const TIER_LABELS = { 1: 'Very Easy', 2: 'Easy', 3: 'Medium', 4: 'Hard', 5: 'Very Hard', 6: 'Extreme', 7: 'Death' };
 
+const MAP_IMAGE_OVERRIDES = {
+  'kz_leto':          'https://images.steamusercontent.com/ugc/11885551371005918584/1D296735D5F9A4D1D429F440DD0689B80A3FCD8E/',
+  'kz_leto_v2':       'https://images.steamusercontent.com/ugc/1812140868913772955/AD4D4C32828EFA27552DBFD5727FDF50C9023E5C/',
+  'kz_sanctum':       'https://images.steamusercontent.com/ugc/15129740893242769408/0C8F5DAF8AB71757AA0A3CA1D2338B69C761567D/',
+  'kz_ehcivec_final': 'https://images.steamusercontent.com/ugc/15129740893242769408/0C8F5DAF8AB71757AA0A3CA1D2338B69C761567D/',
+};
+
 function mapImageUrl(mapName) {
+  if (MAP_IMAGE_OVERRIDES[mapName]) return MAP_IMAGE_OVERRIDES[mapName];
   return `https://raw.githubusercontent.com/KZGlobalTeam/map-images/master/images/${mapName}.jpg`;
 }
 
@@ -1004,7 +1012,7 @@ async function renderRecentTab() {
       return `
         <div class="recent-card">
           <div class="recent-card-img-wrap">
-            <img class="recent-card-img" src="${imgUrl}" onerror="this.src='https://via.placeholder.com/280x158?text=${encodeURIComponent(r.map)}'" loading="lazy" />
+            <img class="recent-card-img" src="${imgUrl}" onerror="this.style.display='none';this.parentElement.style.background='rgba(255,255,255,0.06)'" loading="lazy" />
             <span class="recent-card-tier" style="background:${tierColor}22;color:${tierColor};border-color:${tierColor}44">${tierLabel}</span>
           </div>
           <div class="recent-card-body">
