@@ -47,13 +47,13 @@ serve(async (req) => {
     }
 
     // ── Trigger scrape ──
-    const anonKey  = Deno.env.get('SUPABASE_ANON_KEY') || ''
+    const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4'
     const scrapeUrl = `${sbUrl}/functions/v1/scrape-player`
     const scrapeRes = await fetch(scrapeUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${anonKey || sbKey}`,
+        'Authorization': `Bearer ${ANON_KEY}`,
       },
       body: JSON.stringify({ steamid }),
     })
