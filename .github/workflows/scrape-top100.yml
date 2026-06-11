@@ -28,10 +28,13 @@ jobs:
           key: ${{ runner.os }}-scraper-${{ hashFiles('package-lock.json') }}
           restore-keys: ${{ runner.os }}-scraper-
 
+      - name: Install Python deps
+        run: pip install curl_cffi
+
       - name: Install dependencies
         run: |
-          if [ ! -d "node_modules/puppeteer-core" ]; then
-            npm install puppeteer-core @sparticuz/chromium puppeteer-extra puppeteer-extra-plugin-stealth
+          if [ ! -d "node_modules" ]; then
+            npm install
           else
             echo "Using cached node_modules"
           fi

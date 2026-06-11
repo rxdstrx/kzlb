@@ -1,20 +1,14 @@
 /**
  * scrape-top100.js
- * Fetches top 100 KZ players from Cybershoke leaderboard,
- * scrapes each player's full stats via browser, looks up country via Faceit.
+ * Fetches top 100 KZ players via Python curl_cffi scraper (no Puppeteer).
+ * ~2 min total vs 30+ min with Puppeteer.
  */
 
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const chromium = require('@sparticuz/chromium');
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-puppeteer.use(StealthPlugin());
-
 const FACEIT_KEY = process.env.FACEIT_KEY;
-const COOKIE = process.env.CYBERSHOKE_COOKIE;
-
 const cacheDir = path.join(__dirname, '..', 'cache');
 
 function fmtNum(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
@@ -32,103 +26,76 @@ async function getFaceitCountry(steamid) {
 }
 
 (async () => {
-  console.log('Launching browser...');
-  const browser = await puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath(),
-    headless: true,
-  });
+  // Step 1: scrape all top 100 players via Python (one process, one session)
+  console.log('Scraping top 100 via curl_cffi...');
+  let scraped;
+  try {
+    const pyOut = execSync(
+      'python3 scripts/scrape-cybershoke.py --top100',
+      { env: { ...process.env }, timeout: 300000, encoding: 'utf8' }
+    );
+    scraped = JSON.parse(pyOut.trim());
+    console.log(`✅ Got ${scraped.length} players from Python scraper`);
+  } catch (e) {
+    console.error('❌ Python scraper failed:', e.message);
+    process.exit(1);
+  }
 
-  const page = await browser.newPage();
-  const cookies = COOKIE.split('; ').map(c => {
-    const [name, ...rest] = c.split('=');
-    return { name, value: rest.join('='), domain: 'cybershoke.net' };
-  });
-  await page.setCookie(...cookies);
-  await page.setExtraHTTPHeaders({ 'Accept-Language': 'ru-RU,ru;q=0.9' });
-  await page.goto('https://cybershoke.net/', { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
-  await new Promise(r => setTimeout(r, 3000));
-
-  // Step 1: fetch top 100 list via browser
-  console.log('Fetching top 100 KZ leaderboard...');
-  const topList = await page.evaluate(async () => {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json, text/plain, */*',
-      'Origin': 'https://cybershoke.net',
-      'Referer': 'https://cybershoke.net/ru/cs2/leaderboard/kz',
-    };
-    const res = await fetch('https://cybershoke.net/api/api/v2/leaderboard/data', {
-      method: 'POST', headers,
-      body: JSON.stringify({ mode: 18, season: 0, only_friends: false, only_pro: false, id_games: '2', map: null, category: null, steamid64: null, sub_type: 0, type: 0 }),
-    });
-    const data = await res.json().catch(() => ({}));
-    return data?.list || [];
-  });
-  console.log(`Got ${topList.length} players from leaderboard\n`);
-
-  // Step 2: fetch each player's full stats via browser + country via Faceit in parallel
+  // Step 2: for each player, resolve country + write individual cache file
   const results = [];
-  for (let i = 0; i < topList.length; i++) {
-    const p = topList[i];
-    const sid = p.steamid64;
-    if (!sid) continue;
+  for (let i = 0; i < scraped.length; i++) {
+    const p = scraped[i];
+    const sid = p.steamid;
+    if (!sid || p.error) {
+      console.log(`[${i+1}/${scraped.length}] Skipping ${sid} — ${p.error}`);
+      continue;
+    }
 
-    // Fetch KZ stats via browser (reliable, bypasses CF)
-    const mapsData = await page.evaluate(async (steamid) => {
-      const headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json, text/plain, */*',
-        'Origin': 'https://cybershoke.net',
-        'Referer': `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${steamid}`,
-      };
-      const body = JSON.stringify({ mode: 18, season: 0, only_friends: false, only_pro: false, id_games: '2', map: null, category: null, steamid64: steamid, sub_type: 0, type: 1 });
-      const res = await fetch('https://cybershoke.net/api/api/v2/leaderboard/data', { method: 'POST', headers, body });
-      return res.json().catch(() => ({}));
-    }, sid);
-
-    // Use manually-pinned country if exists, otherwise fetch from Faceit
+    // Use existing cached country if available, otherwise Faceit
     let country = 'xx';
     const indFile = path.join(cacheDir, `${sid}.json`);
     if (fs.existsSync(indFile)) {
       try {
         const cached = JSON.parse(fs.readFileSync(indFile, 'utf8'));
-        if (cached.country && cached.country !== 'xx') {
-          country = cached.country;
-        }
+        if (cached.country && cached.country !== 'xx') country = cached.country;
       } catch {}
     }
     if (country === 'xx') {
       country = await getFaceitCountry(sid);
     }
 
-    const mapList = mapsData?.list || [];
-    const desc = mapsData?.header?.desc || {};
-
     const player = {
       steamid: sid,
-      nickname: p.name || sid,
+      nickname: p.nickname || sid,
       country,
       cached_at: new Date().toISOString(),
-      kz_points: desc['{{Points}}'] || p.points || 0,
-      kz_place: desc['{{Position}}'] || p.place || 0,
-      kz_maps: desc['{{COMPLETIONS-MAP}}'] || '0',
-      avatar: p.avatar || mapsData?.header?.avatar || '',
-      maps_list: mapList,
+      kz_points: p.kz_points || 0,
+      kz_place: p.kz_place || 0,
+      kz_maps: p.kz_maps || '0',
+      avatar: p.avatar || '',
+      maps_list: p.maps || [],
     };
 
-    fs.writeFileSync(path.join(cacheDir, `${sid}.json`), JSON.stringify({
-      steamid: sid, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData,
+    // Write individual cache file (same format as before)
+    const mapsDataCompat = {
+      header: {
+        title: p.nickname,
+        avatar: p.avatar,
+        desc: {
+          '{{Points}}': p.kz_points,
+          '{{Position}}': p.kz_place,
+          '{{COMPLETIONS-MAP}}': p.kz_maps,
+        },
+      },
+      list: p.maps || [],
+    };
+    fs.writeFileSync(indFile, JSON.stringify({
+      steamid: sid, country, cached_at: new Date().toISOString(), user: {}, maps: mapsDataCompat,
     }, null, 2));
 
     results.push(player);
-    console.log(`[${i+1}/${topList.length}] ${p.name} (${country}) — ${mapList.length} maps, ${player.kz_points} pts`);
-
-    await new Promise(r => setTimeout(r, 200));
+    console.log(`[${i+1}/${scraped.length}] ${player.nickname} (${country}) — ${player.maps_list.length} maps, ${player.kz_points} pts`);
   }
-
-  await browser.close();
 
   // Step 3: remove from all country files, re-add to correct ones
   const allCountryFiles = fs.readdirSync(cacheDir).filter(f => f.endsWith('-kz-players.json') && f !== 'world-kz-players.json');
@@ -169,7 +136,7 @@ async function getFaceitCountry(steamid) {
       for (const p of players) {
         for (const m of (p.maps_list || [])) {
           if (!m.place_num) continue;
-          const clean = m.place_num.replace(/[\s ]/g, '');
+          const clean = m.place_num.replace(/[\s ]/g, '');
           const parts = clean.split('/');
           if (parts.length < 2) continue;
           const total = parseInt(parts[1].replace(/\D/g, ''), 10) || 0;
@@ -187,7 +154,7 @@ async function getFaceitCountry(steamid) {
         for (const m of (p.maps_list || [])) {
           const maxTotal = mapMaxTotal[m.map];
           if (!maxTotal || !m.place_num) continue;
-          const clean = m.place_num.replace(/[\s ]/g, '');
+          const clean = m.place_num.replace(/[\s ]/g, '');
           const parts = clean.split('/');
           if (parts.length < 2) continue;
           const rank = parseInt(parts[0].replace(/\D/g, ''), 10) || 0;
@@ -199,7 +166,7 @@ async function getFaceitCountry(steamid) {
     } catch {}
   }
 
-  // Save map-totals.json — used by profile page to show correct totals for all players
+  // Save map-totals.json
   const totalsFile = path.join(cacheDir, 'map-totals.json');
   let existingTotals = {};
   try { existingTotals = JSON.parse(fs.readFileSync(totalsFile, 'utf8')); } catch {}
