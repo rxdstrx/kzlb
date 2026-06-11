@@ -952,10 +952,22 @@ const TIER_COLORS = { 1: '#4ade80', 2: '#86efac', 3: '#fbbf24', 4: '#f97316', 5:
 const TIER_LABELS = { 1: 'Very Easy', 2: 'Easy', 3: 'Medium', 4: 'Hard', 5: 'Very Hard', 6: 'Extreme', 7: 'Death' };
 
 const MAP_IMAGE_OVERRIDES = {
-  'kz_leto':          'https://images.steamusercontent.com/ugc/11885551371005918584/1D296735D5F9A4D1D429F440DD0689B80A3FCD8E/',
-  'kz_leto_v2':       'https://images.steamusercontent.com/ugc/1812140868913772955/AD4D4C32828EFA27552DBFD5727FDF50C9023E5C/',
-  'kz_sanctum':       'https://images.steamusercontent.com/ugc/15129740893242769408/0C8F5DAF8AB71757AA0A3CA1D2338B69C761567D/',
-  'kz_ehcivec_final': 'https://images.steamusercontent.com/ugc/22057455406360778/C9A2E165E69B23AE4F8B42ACC43BA0675CC3B8B6/',
+  'kz_leto':               'https://images.steamusercontent.com/ugc/11885551371005918584/1D296735D5F9A4D1D429F440DD0689B80A3FCD8E/',
+  'kz_leto_v2':            'https://images.steamusercontent.com/ugc/1812140868913772955/AD4D4C32828EFA27552DBFD5727FDF50C9023E5C/',
+  'kz_sanctum':            'https://images.steamusercontent.com/ugc/15129740893242769408/0C8F5DAF8AB71757AA0A3CA1D2338B69C761567D/',
+  'kz_ehcivec_final':      'https://images.steamusercontent.com/ugc/22057455406360778/C9A2E165E69B23AE4F8B42ACC43BA0675CC3B8B6/',
+  'kz_hex':                'https://images.steamusercontent.com/ugc/17327033206911883325/B5406B197594E6C9F1C8783BA9FB9395536824A8/',
+  'kz_valley':             'https://images.steamusercontent.com/ugc/43456117187734928/FAF3A3D85C95D04CCA21D99B097CC6085C839AC8/',
+  'kz_slowrun':            'https://images.steamusercontent.com/ugc/16885672414694371784/FA6C5AC5186CEC19ECD29E15F62C6D14AE34175F/',
+  'kz_kuutio':             'https://images.steamusercontent.com/ugc/10301637653533649536/D90EE4F356B83F053300165F8BC5141B306307EC/',
+  'kz_madhatter':          'https://images.steamusercontent.com/ugc/12153468856958336416/BCB2A804F01F8CFD25FF5C8DEDC4A26620590146/',
+  'kz_bhop_apricity':      'https://images.steamusercontent.com/ugc/15967650113794788854/4CD8644A1CA9320C90365F69E5B85FA826561653/',
+  'kz_hb_smieszneznaczki': 'https://images.steamusercontent.com/ugc/12324540317533748432/53EF96BDF277A715ECF15725BB099F3EFDFA5189/',
+  'kz_gigablock_cs2':      'https://images.steamusercontent.com/ugc/11867416869093447143/474F70D049108E147B2A94862CAE1A0CE9695B60/',
+  'kz_blockhardy2k':       'https://images.steamusercontent.com/ugc/13905940919716529892/2AB8E84485BAA5A4C74FD551042D34A33A44B869/',
+  'kz_summercliff2':       'https://images.steamusercontent.com/ugc/14962848963795094377/B3686097108801928E217022F7B3A607A24383CA/',
+  'kz_breezeblocks':       'https://images.steamusercontent.com/ugc/17362079542864758403/DE2324B78F33C8FE8A3D749897D3B466CDE69DE6/',
+  'kz_dzy_beyond_v2':      'https://images.steamusercontent.com/ugc/9674050900521952/3723327929A88A09C4CF53748BD1F35B9BFD5BF9/',
 };
 
 function mapImageUrl(mapName) {
