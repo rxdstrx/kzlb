@@ -112,16 +112,31 @@ async function init() {
     badge.className = `tier-badge tier-${tier}`;
   }
 
-  try {
-    // Load all players from world cache
-    const res  = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`);
-    const data = await res.json();
-    const players = data.players || [];
+  const SB_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
+  const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+  const SB_HDR  = { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` };
 
-    players.forEach(p => {
+  try {
+    // Load GitHub cache + Supabase player_maps in parallel
+    const [ghRes, sbMapRes, sbPlayersRes] = await Promise.all([
+      fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`).then(r => r.ok ? r.json() : null),
+      fetch(`${SB_URL}/rest/v1/player_maps?map=eq.${encodeURIComponent(mapName)}&select=steamid,time_record,place_num,completions,points`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
+      fetch(`${SB_URL}/rest/v1/players?select=steamid,nickname,avatar,country`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
+    ]);
+
+    const ghPlayers  = ghRes?.players || [];
+    const sbMapRows  = Array.isArray(sbMapRes) ? sbMapRes : [];
+    const sbPlayers  = Array.isArray(sbPlayersRes) ? sbPlayersRes : [];
+
+    // Build Supabase player lookup
+    const sbPlayerMap = new Map(sbPlayers.map(p => [p.steamid, p]));
+
+    // Start with GitHub records
+    const seen = new Map();
+    ghPlayers.forEach(p => {
       const entry = (p.maps_list || []).find(m => m.map === mapName);
       if (entry) {
-        allRecords.push({
+        seen.set(p.steamid, {
           steamid:     p.steamid,
           nickname:    p.nickname,
           avatar:      p.avatar,
@@ -133,6 +148,22 @@ async function init() {
       }
     });
 
+    // Overlay/add Supabase records (fresher data, includes new players)
+    sbMapRows.forEach(entry => {
+      const sp = sbPlayerMap.get(entry.steamid);
+      if (!sp) return;
+      seen.set(entry.steamid, {
+        steamid:     entry.steamid,
+        nickname:    sp.nickname,
+        avatar:      sp.avatar,
+        country:     sp.country || 'xx',
+        time_record: entry.time_record,
+        place_num:   entry.place_num,
+        completions: entry.completions,
+      });
+    });
+
+    allRecords.push(...seen.values());
     allRecords.sort((a, b) => timeToSeconds(a.time_record) - timeToSeconds(b.time_record));
 
     document.getElementById('mapSub').textContent =
