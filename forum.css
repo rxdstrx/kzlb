@@ -107,7 +107,8 @@ body {
 
 /* ── Thread list ── */
 /* ── Sort row ── */
-.forum-sort-row { display: flex; gap: 8px; margin-bottom: 6px; }
+.forum-sort-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.forum-sort-label { color: var(--text-dim); font-size: 0.8rem; margin-right: 4px; }
 .forum-sort-btn {
   background: var(--surface); border: 1px solid var(--border);
   color: var(--text-dim); border-radius: 8px; padding: 5px 14px;
