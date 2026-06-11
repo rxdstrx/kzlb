@@ -1,0 +1,18 @@
+name: Test Cloudflare Bypass Methods
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Python deps
+        run: pip install curl_cffi cloudscraper requests
+
+      - name: Test bypass methods
+        env:
+          CYBERSHOKE_COOKIE: ${{ secrets.CYBERSHOKE_COOKIE }}
+        run: python3 scripts/test-cf-bypass.py 76561198842886915
