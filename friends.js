@@ -234,8 +234,16 @@ function subscribeRealtime(auth) {
       if (payload.new.from_steamid !== auth.steamid) return;
       if (payload.new.status === 'accepted') {
         refreshFriendsTabIfOpen(auth.steamid);
-        // Sender gets notified: fetch their new 'friend_accepted' notification
-        setTimeout(() => { loadAcceptedNotifs(auth); flashBell(); }, 1500);
+        // Sender gets notified — poll a few times until notification appears
+        const before = _acceptedNotifs.length;
+        const tryLoad = (delay, attempts) => {
+          setTimeout(async () => {
+            await loadAcceptedNotifs(auth);
+            if (_acceptedNotifs.length > before) { flashBell(); return; }
+            if (attempts > 1) tryLoad(2000, attempts - 1);
+          }, delay);
+        };
+        tryLoad(1500, 4);
       }
     })
     // ── Real-time: new notification inserted (client-side filter) ──
