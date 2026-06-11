@@ -93,12 +93,13 @@ serve(async (req) => {
     }
 
     // ── Trigger scrape ──
+    const anonKey  = Deno.env.get('SUPABASE_ANON_KEY') || ''
     const scrapeUrl = `${sbUrl}/functions/v1/scrape-player`
     const scrapeRes = await fetch(scrapeUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sbKey}`,
+        'Authorization': `Bearer ${anonKey || sbKey}`,
       },
       body: JSON.stringify({ steamid }),
     })
