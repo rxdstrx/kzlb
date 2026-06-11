@@ -966,8 +966,12 @@ function renderNotifications(items) {
 
   list.innerHTML = items.map(n => {
     const msg = n.type === 'friend_accepted'
-      ? `<strong>${n.from_nickname || 'Someone'}</strong> accepted your friend request and has been added to your friends list`
-      : n.type;
+      ? `<strong>${n.from_nickname || 'Someone'}</strong> accepted your friend request`
+      : n.type === 'friend_you_accepted'
+      ? `You accepted <strong>${n.from_nickname || 'Someone'}</strong>'s friend request`
+      : n.type === 'friend_request'
+      ? `<strong>${n.from_nickname || 'Someone'}</strong> sent you a friend request`
+      : `Notification`;
     return `
       <div class="notif-item ${n.read ? '' : 'unread'}">
         <img class="notif-avatar" src="${n.from_avatar || ''}" onerror="this.src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_medium.jpg'">
