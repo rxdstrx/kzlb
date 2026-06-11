@@ -117,26 +117,20 @@ body {
   border-color: var(--border-blue); color: var(--blue); background: var(--blue-dim);
 }
 
-/* ── Thread card wrap (for upvote sidebar) ── */
+/* ── Thread list ── */
 .forum-threads { display: flex; flex-direction: column; gap: 8px; }
-.thread-card-wrap { display: flex; align-items: stretch; gap: 0; }
 
-/* ── Upvote button ── */
+/* ── Upvote button (inline in meta row) ── */
 .upvote-btn {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 3px; min-width: 48px; padding: 10px 6px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-right: none; border-radius: var(--radius) 0 0 var(--radius);
+  display: inline-flex; align-items: center; gap: 4px;
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 2px 7px;
   color: var(--text-dim); cursor: pointer; transition: all 0.15s;
-  font-size: 0.72rem; font-weight: 700;
+  font-size: 0.72rem; font-weight: 700; vertical-align: middle;
 }
-.upvote-btn:hover { background: var(--blue-dim); color: var(--blue); border-color: var(--border-blue); }
-.upvote-btn.upvoted { color: var(--blue); background: var(--blue-dim); border-color: var(--border-blue); }
+.upvote-btn:hover { color: var(--blue); border-color: var(--border-blue); background: var(--blue-dim); }
+.upvote-btn.upvoted { color: var(--blue); border-color: var(--border-blue); background: var(--blue-dim); }
 .upvote-count { font-size: 0.7rem; }
-
-.thread-card-wrap .thread-card {
-  flex: 1; border-radius: 0 var(--radius) var(--radius) 0; border-left: none;
-}
 
 .thread-card {
   background: var(--surface);
