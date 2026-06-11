@@ -955,7 +955,7 @@ const MAP_IMAGE_OVERRIDES = {
   'kz_leto':          'https://images.steamusercontent.com/ugc/11885551371005918584/1D296735D5F9A4D1D429F440DD0689B80A3FCD8E/',
   'kz_leto_v2':       'https://images.steamusercontent.com/ugc/1812140868913772955/AD4D4C32828EFA27552DBFD5727FDF50C9023E5C/',
   'kz_sanctum':       'https://images.steamusercontent.com/ugc/15129740893242769408/0C8F5DAF8AB71757AA0A3CA1D2338B69C761567D/',
-  'kz_ehcivec_final': 'https://images.steamusercontent.com/ugc/15129740893242769408/0C8F5DAF8AB71757AA0A3CA1D2338B69C761567D/',
+  'kz_ehcivec_final': 'https://images.steamusercontent.com/ugc/22057455406360778/C9A2E165E69B23AE4F8B42ACC43BA0675CC3B8B6/',
 };
 
 function mapImageUrl(mapName) {
