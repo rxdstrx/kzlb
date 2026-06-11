@@ -126,9 +126,12 @@
 
   // ── Realtime subscription ──
   function subscribeRealtime() {
-    if (!window.sbClient) return;
-    window.sbClient
-      .channel('chat')
+    const client = window.sbClient || window.supabase?.createClient
+      ? null
+      : null;
+    const sb = window.sbClient || (typeof sbClient !== 'undefined' ? sbClient : null);
+    if (!sb) { setTimeout(subscribeRealtime, 300); return; }
+    sb.channel('kz-chat')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, payload => {
         renderMsg(payload.new);
       })
@@ -139,6 +142,6 @@
   document.addEventListener('DOMContentLoaded', () => {
     initAuth();
     loadMessages();
-    setTimeout(subscribeRealtime, 1000); // wait for sbClient to init
+    subscribeRealtime();
   });
 })();
