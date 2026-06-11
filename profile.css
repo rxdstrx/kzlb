@@ -616,6 +616,16 @@
   object-fit: cover;
   display: block;
 }
+.recent-card-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(10,14,30,0.92) 0%, transparent 100%);
+  pointer-events: none;
+}
+
 .recent-card-tier {
   position: absolute;
   top: 8px;
