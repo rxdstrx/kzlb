@@ -906,7 +906,7 @@ function initSteamUI() {
 function initTabs() {
   const tabs      = document.querySelectorAll('.profile-tab');
   const indicator = document.querySelector('.profile-tab-indicator');
-  const panels    = { profile: document.getElementById('tab-profile'), friends: document.getElementById('tab-friends') };
+  const panels    = { profile: document.getElementById('tab-profile'), recent: document.getElementById('tab-recent'), friends: document.getElementById('tab-friends') };
 
   function moveIndicator(activeTab) {
     if (!indicator) return;
@@ -929,7 +929,10 @@ function initTabs() {
   }
 
   tabs.forEach(tab => {
-    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    tab.addEventListener('click', () => {
+      switchTab(tab.dataset.tab);
+      if (tab.dataset.tab === 'recent') renderRecentTab();
+    });
   });
 
   // Handle browser back/forward
@@ -942,6 +945,83 @@ function initTabs() {
   const initTab = new URLSearchParams(window.location.search).get('tab') || 'profile';
   // Wait for layout so indicator width is correct
   requestAnimationFrame(() => switchTab(initTab, false));
+}
+
+// ── Recent Records Tab ──
+const TIER_COLORS = { 1: '#4ade80', 2: '#86efac', 3: '#fbbf24', 4: '#f97316', 5: '#ef4444', 6: '#dc2626', 7: '#9333ea' };
+const TIER_LABELS = { 1: 'Very Easy', 2: 'Easy', 3: 'Medium', 4: 'Hard', 5: 'Very Hard', 6: 'Extreme', 7: 'Death' };
+
+function mapImageUrl(mapName) {
+  return `https://cloud.cybershoke.net/img/maps/${mapName}.jpg`;
+}
+
+function timeSinceUnix(unix) {
+  if (!unix) return '';
+  const diff = Math.floor(Date.now() / 1000) - unix;
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
+let _recentLoaded = false;
+
+async function renderRecentTab() {
+  if (_recentLoaded) return;
+  const grid    = document.getElementById('recentGrid');
+  const loading = document.getElementById('recentLoading');
+  const empty   = document.getElementById('recentEmpty');
+  if (!grid) return;
+
+  loading.style.display = 'block';
+  empty.style.display   = 'none';
+  grid.innerHTML        = '';
+
+  const sid = new URLSearchParams(window.location.search).get('steamid');
+  if (!sid) { loading.style.display = 'none'; empty.style.display = 'block'; return; }
+
+  try {
+    const res  = await fetch(
+      `${SB_URL}/rest/v1/player_recent?steamid=eq.${sid}&order=unixtime_record.desc&limit=50`,
+      { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }
+    );
+    const rows = await res.json();
+    loading.style.display = 'none';
+
+    if (!Array.isArray(rows) || !rows.length) {
+      empty.style.display = 'block';
+      return;
+    }
+
+    _recentLoaded = true;
+    grid.innerHTML = rows.map(r => {
+      const tier      = Number(r.tier) || 1;
+      const tierColor = TIER_COLORS[tier] || '#4ade80';
+      const tierLabel = TIER_LABELS[tier] || `T${tier}`;
+      const imgUrl    = mapImageUrl(r.map);
+      const ago       = timeSinceUnix(r.unixtime_record);
+      return `
+        <div class="recent-card">
+          <div class="recent-card-img-wrap">
+            <img class="recent-card-img" src="${imgUrl}" onerror="this.src='https://via.placeholder.com/280x158?text=${encodeURIComponent(r.map)}'" loading="lazy" />
+            <span class="recent-card-tier" style="background:${tierColor}22;color:${tierColor};border-color:${tierColor}44">${tierLabel}</span>
+          </div>
+          <div class="recent-card-body">
+            <div class="recent-card-map" title="${r.map}">${r.map}</div>
+            <div class="recent-card-stats">
+              <span class="recent-stat"><span class="recent-stat-label">Time</span><span class="recent-stat-val">${r.time_record || '—'}</span></span>
+              <span class="recent-stat"><span class="recent-stat-label">Points</span><span class="recent-stat-val">${Number(r.points).toFixed(2)}</span></span>
+              <span class="recent-stat"><span class="recent-stat-label">Runs</span><span class="recent-stat-val">${r.completions || '1'}</span></span>
+            </div>
+            <div class="recent-card-ago">${ago}</div>
+          </div>
+        </div>`;
+    }).join('');
+  } catch {
+    loading.style.display = 'none';
+    empty.style.display   = 'block';
+    empty.textContent     = 'Failed to load recent records.';
+  }
 }
 
 // Run tabs after DOM is ready
