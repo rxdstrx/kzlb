@@ -80,10 +80,7 @@ body {
 
 /* ── Category filter tabs ── */
 .forum-cats {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+  display: none;
 }
 .forum-cat-btn {
   padding: 5px 14px;
