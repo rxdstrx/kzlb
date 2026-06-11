@@ -1,10 +1,6 @@
-﻿const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const chromium = require('@sparticuz/chromium');
+﻿const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-
-puppeteer.use(StealthPlugin());
 
 const steamid = process.argv[2];
 let country = (process.argv[3] || 'xx').toLowerCase();
@@ -37,21 +33,44 @@ function getLeaderboardFile(c) {
 }
 
 (async () => {
-  const browser = await puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath(),
-    headless: true,
-  });
+  // ── Scrape via Python curl_cffi (replaces Puppeteer — ~1s vs 2min) ──
+  console.log(`Scraping KZ stats for ${steamid} via curl_cffi...`);
+  let mapsData, userData;
+  try {
+    const pyOut = execSync(
+      `python3 scripts/scrape-cybershoke.py ${steamid}`,
+      { env: { ...process.env }, timeout: 60000, encoding: 'utf8' }
+    );
+    const scraped = JSON.parse(pyOut.trim());
+    if (scraped.error) throw new Error(scraped.error);
 
-  const page = await browser.newPage();
-
-  const cookies = COOKIE.split('; ').map(c => {
-    const [name, ...rest] = c.split('=');
-    return { name, value: rest.join('='), domain: 'cybershoke.net' };
-  });
-  await page.setCookie(...cookies);
-  await page.setExtraHTTPHeaders({ 'Accept-Language': 'ru-RU,ru;q=0.9' });
+    // Reshape into the same format the rest of the script expects
+    mapsData = {
+      header: {
+        title: scraped.nickname,
+        avatar: scraped.avatar,
+        desc: {
+          '{{Points}}': scraped.kz_points,
+          '{{Position}}': scraped.kz_place,
+          '{{COMPLETIONS-MAP}}': scraped.kz_maps,
+        },
+      },
+      list: scraped.maps.map(m => ({
+        map: m.map,
+        points: m.points,
+        time_record: m.time_record,
+        unixtime_record: m.unixtime_record,
+        place_num: m.place_num,
+        tier: m.tier,
+        completions: m.completions,
+      })),
+    };
+    userData = {};
+    console.log(`✅ Scraped ${scraped.maps.length} maps for ${scraped.nickname} in ~1s`);
+  } catch (e) {
+    console.error('❌ Python scraper failed:', e.message);
+    process.exit(1);
+  }
 
   // If country still unknown, try Faceit then Steam API
   if (country === 'xx') {
@@ -87,38 +106,6 @@ function getLeaderboardFile(c) {
     }
   }
 
-  console.log('Getting cybershoke session...');
-  await page.goto('https://cybershoke.net/', { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
-  await new Promise(r => setTimeout(r, 2000));
-
-  console.log(`Fetching KZ stats for ${steamid} (country: ${country})...`);
-
-  const { userData, mapsData } = await page.evaluate(async (sid) => {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json, text/plain, */*',
-      'Origin': 'https://cybershoke.net',
-      'Referer': `https://cybershoke.net/ru/cs2/leaderboard/kz/maps/${sid}`,
-    };
-    const body = JSON.stringify({
-      mode: 18, season: 0, only_friends: false, only_pro: false,
-      id_games: '2', map: null, category: null,
-      steamid64: sid, sub_type: 0, type: 1,
-    });
-
-    const [uRes, mRes] = await Promise.all([
-      fetch('https://cybershoke.net/api/api/v1/leaderboard/user', { method: 'POST', headers, body }),
-      fetch('https://cybershoke.net/api/api/v2/leaderboard/data', { method: 'POST', headers, body }),
-    ]);
-
-    return {
-      userData: await uRes.json().catch(() => ({})),
-      mapsData: await mRes.json().catch(() => ({})),
-    };
-  }, steamid);
-
-  await browser.close();
-
   const mapList = mapsData?.list || [];
   const desc = mapsData?.header?.desc || {};
 
@@ -150,7 +137,7 @@ function getLeaderboardFile(c) {
 
   // 3. Last resort: Cybershoke display name (may be Faceit nickname)
   if (!resolvedNickname) {
-    resolvedNickname = mapsData?.header?.name || steamid;
+    resolvedNickname = mapsData?.header?.title || steamid;
     console.log(`Nickname fallback (Cybershoke/steamid): ${resolvedNickname}`);
   }
 
