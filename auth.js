@@ -277,7 +277,14 @@ document.addEventListener('DOMContentLoaded', () => {
   updateNavAuth();
   syncPlayerData();
   maybeShowLoginModal();
-  // Update last_seen whenever logged-in player visits any page
+  // Heartbeat: update last_seen on load + every 60s while on site
   const _auth = getAuth();
-  if (_auth) updateLastSeen(_auth.steamid);
+  if (_auth) {
+    updateLastSeen(_auth.steamid);
+    setInterval(() => updateLastSeen(_auth.steamid), 60000);
+    // Also update when tab becomes visible again
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) updateLastSeen(_auth.steamid);
+    });
+  }
 });
