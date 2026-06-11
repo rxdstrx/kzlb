@@ -85,7 +85,7 @@
       if (!Array.isArray(rows)) { listEl.innerHTML = '<div class="forum-empty"><div class="forum-empty-icon">💬</div>Failed to load.</div>'; return; }
 
       hasMore = rows.length > PAGE_SIZE;
-      const page = rows.slice(0, PAGE_SIZE).filter(t => !threadIds.has(t.id) && t.title && t.title.trim());
+      const page = rows.slice(0, PAGE_SIZE).filter(t => !threadIds.has(t.id));
       page.forEach(t => threadIds.add(t.id));
       threads = reset ? page : [...threads, ...page];
       offset += page.length;
