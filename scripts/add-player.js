@@ -149,7 +149,7 @@ function getLeaderboardFile(c) {
     kz_points: desc['{{Points}}'] || 0,
     kz_place: desc['{{Position}}'] || 0,
     kz_maps: desc['{{COMPLETIONS-MAP}}'] || '0',
-    avatar: mapsData?.header?.avatar || '',
+    avatar: mapsData?.header?.avatar || await fetch(`https://playerdb.co/api/player/steam/${steamid}`).then(r=>r.json()).then(d=>d?.data?.player?.avatar||'').catch(()=>''),
     maps_list: mapList,
   };
 
