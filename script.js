@@ -1081,60 +1081,28 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
     }
   } catch {}
 
-  showAddStatus('loading', 'Submitting… this may take a few minutes while we fetch your stats.');
+  showAddStatus('loading', '⏳ Fetching your stats… this takes ~2 seconds');
 
   try {
-    const res = await fetch(`https://kzlb.vercel.app/api/add-player?steamid=${steamid}&country=${countryToSubmit}`);
+    // Use Supabase Edge Function — instant scrape, no GitHub Actions wait
+    const res = await fetch(`${SB_LB_URL}/functions/v1/add-player`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SB_LB_ANON}` },
+      body: JSON.stringify({ steamid, country: countryToSubmit }),
+    });
     const data = await res.json();
 
     if (data.ok) {
-      submitBtn.disabled = false;
-      // Start live timer + poll for profile completion
-      const startTime = Date.now();
-      const submittedSteamid = steamid;
-      const submittedCountry = countryToSubmit;
-
-      function fmtElapsed() {
-        const secs = Math.floor((Date.now() - startTime) / 1000);
-        const m = Math.floor(secs / 60);
-        const s = secs % 60;
-        return `${m}:${String(s).padStart(2, '0')}`;
-      }
-
-      const timerInterval = setInterval(() => {
-        showAddStatus('loading', `⏳ Processing your stats… ${fmtElapsed()} (approx. less than 1 min)`);
-      }, 1000);
-
-      showAddStatus('loading', '⏳ Processing your stats… 0:00 (approx. less than 1 min)');
-
-      async function pollForProfile() {
-        try {
-          const cacheRes = await fetch(`${CACHE_BASE}/${submittedSteamid}.json?bust=${Date.now()}`);
-          if (cacheRes.ok) {
-            const cacheData = await cacheRes.json();
-            const cachedAt = new Date(cacheData.cached_at).getTime();
-            if (cachedAt >= startTime) {
-              // Profile is ready
-              clearInterval(timerInterval);
-              showAddStatus('success', `✅ Done! Opening profile… (took ${fmtElapsed()})`);
-              setTimeout(() => {
-                window.location.href = `profile.html?steamid=${submittedSteamid}&country=${submittedCountry}`;
-              }, 1500);
-              return;
-            }
-          }
-        } catch {}
-        // Not ready yet, check again in 15s
-        setTimeout(pollForProfile, 15000);
-      }
-
-      // Start polling after 30s (workflow takes at least that long)
-      setTimeout(pollForProfile, 30000);
-
+      showAddStatus('success', `✅ Done! Welcome ${data.nickname}! Opening your profile…`);
+      setTimeout(() => {
+        window.location.href = `profile.html?steamid=${steamid}&country=${data.country || countryToSubmit}`;
+      }, 1500);
+    } else if (data.already_exists) {
+      showAddStatus('error', data.error || 'Already on leaderboard.');
     } else {
-      showAddStatus('error', 'Something went wrong. Try again later.');
-      submitBtn.disabled = false;
+      showAddStatus('error', data.error || 'Something went wrong. Try again later.');
     }
+    submitBtn.disabled = false;
   } catch (e) {
     showAddStatus('error', 'Could not reach the server: ' + e.message);
     submitBtn.disabled = false;
@@ -1169,15 +1137,24 @@ document.getElementById('updateSubmit').addEventListener('click', async () => {
     return;
   }
 
-  showUpdateStatus('loading', 'Updating… this may take a few minutes.');
+  showUpdateStatus('loading', '⏳ Updating your stats… ~2 seconds');
 
   try {
-    const res = await fetch(`https://kzlb.vercel.app/api/update-player?steamid=${steamid}`);
+    // Use Supabase Edge Function — instant update, no GitHub Actions wait
+    const res = await fetch(`${SB_LB_URL}/functions/v1/update-player`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SB_LB_ANON}` },
+      body: JSON.stringify({ steamid }),
+    });
     const data = await res.json();
     if (data.ok) {
-      showUpdateStatus('success', 'Update triggered! Your records will refresh in a few minutes.');
+      showUpdateStatus('success', `✅ Updated! ${data.nickname} — ${data.kz_points} pts, ${data.maps_count} maps`);
+      // Reload leaderboard to show fresh data
+      setTimeout(() => { if (typeof loadLeaderboard === 'function') loadLeaderboard(); }, 1000);
+    } else if (data.rate_limited) {
+      showUpdateStatus('error', data.error || 'Please wait before updating again.');
     } else {
-      const errMsg = data.error?.includes('not found') ? 'Player not found in leaderboard. Use "Add to the leaderboard" first.' : (data.error || 'Something went wrong. Are you on the leaderboard yet?');
+      const errMsg = data.error?.includes('not found') ? 'Player not found. Use "Add to the leaderboard" first.' : (data.error || 'Something went wrong. Are you on the leaderboard yet?');
       showUpdateStatus('error', errMsg);
     }
   } catch (e) {

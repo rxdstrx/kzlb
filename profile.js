@@ -100,60 +100,26 @@ if (updateRecordBtn && steamid) {
   updateRecordBtn.addEventListener('click', async () => {
     updateRecordBtn.disabled = true;
     updateRecordStatus.className = 'update-record-status loading';
-    updateRecordStatus.textContent = '⏳ Updating…';
+    updateRecordStatus.textContent = '⏳ Updating… ~2 seconds';
     updateRecordStatus.classList.remove('hidden');
 
     try {
-      const res = await fetch(`https://kzlb.vercel.app/api/update-player?steamid=${steamid}`);
+      // Supabase Edge Function — instant scrape, no polling needed
+      const res = await fetch(`${SB_URL}/functions/v1/update-player`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SB_ANON}` },
+        body: JSON.stringify({ steamid }),
+      });
       const data = await res.json();
+
       if (data.ok) {
-        const startTime = Date.now();
-        const timer = setInterval(() => {
-          const secs = Math.floor((Date.now() - startTime) / 1000);
-          const m = Math.floor(secs / 60), s = secs % 60;
-          updateRecordStatus.textContent = `⏳ Processing… ${m}:${String(s).padStart(2,'0')} (approx. less than 1 min)`;
-        }, 1000);
-        updateRecordStatus.textContent = '⏳ Processing… 0:00 (approx. less than 1 min)';
-
-        async function pollDone() {
-          try {
-            // Check Supabase player_cache first — written right after scrape, instant
-            const sbRes = await fetch(
-              `${SB_URL}/rest/v1/player_cache?steamid=eq.${steamid}&select=steamid&limit=1`,
-              { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }
-            );
-            if (sbRes.ok) {
-              const rows = await sbRes.json();
-              if (rows.length) {
-                clearInterval(timer);
-                updateRecordStatus.className = 'update-record-status success';
-                updateRecordStatus.textContent = '✅ Done! Reloading profile…';
-                setTimeout(() => window.location.reload(), 1500);
-                return;
-              }
-            }
-          } catch {}
-          try {
-            // Fallback: GitHub API — bypasses CDN caching
-            const r = await fetch(`https://api.github.com/repos/rxdstrx/kzlb/contents/cache/${steamid}.json`);
-            if (r.ok) {
-              const meta = await r.json();
-              const content = JSON.parse(atob(meta.content.replace(/\n/g, '')));
-              const newCachedAt = content.cached_at;
-              if (newCachedAt && newCachedAt !== originalCachedAt) {
-                clearInterval(timer);
-                updateRecordStatus.className = 'update-record-status success';
-                updateRecordStatus.textContent = '✅ Done! Reloading profile…';
-                originalCachedAt = newCachedAt;
-                setTimeout(() => window.location.reload(), 1500);
-                return;
-              }
-            }
-          } catch {}
-          setTimeout(pollDone, 10000);
-        }
-        setTimeout(pollDone, 15000);
-
+        updateRecordStatus.className = 'update-record-status success';
+        updateRecordStatus.textContent = `✅ Updated! ${data.kz_points} pts, ${data.maps_count} maps — reloading…`;
+        setTimeout(() => window.location.reload(), 1500);
+      } else if (data.rate_limited) {
+        updateRecordStatus.className = 'update-record-status error';
+        updateRecordStatus.textContent = data.error || 'Please wait before updating again.';
+        updateRecordBtn.disabled = false;
       } else {
         updateRecordStatus.className = 'update-record-status error';
         updateRecordStatus.textContent = data.error || 'Something went wrong.';
@@ -168,7 +134,46 @@ if (updateRecordBtn && steamid) {
 }
 
 async function fetchPlayerData(sid) {
-  // 1. Check Supabase player_cache first (instant — written right after scrape)
+  // 1. Supabase players + player_maps tables (instant, always fresh)
+  try {
+    const [pRes, mRes] = await Promise.all([
+      fetch(`${SB_URL}/rest/v1/players?steamid=eq.${sid}&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps,cached_at&limit=1`,
+        { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }),
+      fetch(`${SB_URL}/rest/v1/player_maps?steamid=eq.${sid}&select=map,points,time_record,unixtime_record,place_num,tier,completions&order=points.desc`,
+        { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }),
+    ]);
+    if (pRes.ok && mRes.ok) {
+      const players = await pRes.json();
+      const maps    = await mRes.json();
+      if (players.length) {
+        const p = players[0];
+        // Build the data structure the profile renderer expects
+        const data = {
+          steamid: p.steamid,
+          nickname: p.nickname,
+          country: p.country,
+          cached_at: p.cached_at,
+          user: {},
+          maps: {
+            header: {
+              title: p.nickname,
+              avatar: p.avatar,
+              desc: {
+                '{{Points}}': p.kz_points,
+                '{{Position}}': p.kz_place,
+                '{{COMPLETIONS-MAP}}': p.kz_maps,
+              },
+            },
+            list: maps,
+          },
+        };
+        console.log('[profile] loaded from Supabase players+player_maps (instant)');
+        return { ok: true, data };
+      }
+    }
+  } catch {}
+
+  // 2. Fallback: player_cache (written right after scrape)
   try {
     const sbRes = await fetch(
       `${SB_URL}/rest/v1/player_cache?steamid=eq.${sid}&select=data&limit=1`,
@@ -177,13 +182,13 @@ async function fetchPlayerData(sid) {
     if (sbRes.ok) {
       const rows = await sbRes.json();
       if (rows.length && rows[0].data) {
-        console.log('[profile] loaded from Supabase player_cache (instant)');
+        console.log('[profile] loaded from Supabase player_cache');
         return { ok: true, data: rows[0].data };
       }
     }
   } catch {}
 
-  // 2. Try GitHub API — always fresh, no CDN caching (used as fast fallback)
+  // 3. GitHub API fallback
   try {
     const ghRes = await fetch(`https://api.github.com/repos/rxdstrx/kzlb/contents/cache/${sid}.json`);
     if (ghRes.ok) {
@@ -193,16 +198,13 @@ async function fetchPlayerData(sid) {
     }
   } catch {}
 
-  // 3. jsDelivr CDN — no rate limit, ~5 min cache, purged after each scrape
+  // 4. jsDelivr CDN
   try {
     const jsdRes = await fetch(`https://cdn.jsdelivr.net/gh/rxdstrx/kzlb@main/cache/${sid}.json`);
-    if (jsdRes.ok) {
-      const data = await jsdRes.json();
-      return { ok: true, data };
-    }
+    if (jsdRes.ok) { const data = await jsdRes.json(); return { ok: true, data }; }
   } catch {}
 
-  // 4. Last resort: raw CDN
+  // 5. Last resort: raw CDN
   const cacheRes = await fetch(`${CACHE_BASE}/${sid}.json`);
   if (!cacheRes.ok) return { ok: false };
   const data = await cacheRes.json();
