@@ -99,8 +99,16 @@
         listEl.innerHTML = '<div class="forum-empty"><div class="forum-empty-icon">💬</div>No posts yet. Be the first!</div>';
         return;
       }
+      const auth = getAuth();
       listEl.innerHTML = threads.map(t => {
-        const voted = myUpvotes.has(t.id);
+        const voted   = myUpvotes.has(t.id);
+        const isOwner = auth && auth.steamid === t.steamid;
+        const deleteBtnHtml = isOwner
+          ? `<button class="thread-delete-btn" data-id="${t.id}" onclick="event.preventDefault();event.stopPropagation();confirmDeleteThread(Number(this.dataset.id),this)" title="Delete post">
+               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+               Delete
+             </button>`
+          : '';
         return `
         <a class="thread-card" href="thread.html?id=${t.id}">
           <div class="thread-cat-col ${catClass(t.category)}">${catLabel(t.category)}</div>
@@ -123,6 +131,7 @@
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
                 <span class="upvote-count">${t.upvotes||0}</span>
               </button>
+              ${deleteBtnHtml}
             </div>
           </div>
         </a>`;
@@ -150,6 +159,43 @@
         method: 'PATCH', headers: { ...HDR, Prefer: 'return=minimal' },
         body: JSON.stringify({ upvotes: t?.upvotes ?? 0 }),
       });
+    }
+
+    // ── Delete thread ──
+    const deleteTimers = {};
+    window.confirmDeleteThread = function(threadId, btn) {
+      if (deleteTimers[threadId]) {
+        // Second click — confirmed, do the delete
+        clearTimeout(deleteTimers[threadId]);
+        delete deleteTimers[threadId];
+        deleteThread(threadId, btn);
+      } else {
+        // First click — ask for confirmation
+        btn.classList.add('confirming');
+        btn.textContent = '⚠ Confirm?';
+        deleteTimers[threadId] = setTimeout(() => {
+          // Reset if user didn't confirm within 3s
+          btn.classList.remove('confirming');
+          btn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete`;
+          delete deleteTimers[threadId];
+        }, 3000);
+      }
+    };
+
+    async function deleteThread(threadId, btn) {
+      btn.textContent = '…';
+      btn.disabled = true;
+      // Delete replies and upvotes first, then the thread
+      await Promise.all([
+        fetch(`${SB_URL}/rest/v1/forum_replies?thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR }),
+        fetch(`${SB_URL}/rest/v1/forum_upvotes?thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR }),
+        fetch(`${SB_URL}/rest/v1/forum_likes?thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR }),
+      ]);
+      await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, { method: 'DELETE', headers: HDR });
+      // Remove from local list and re-render
+      threads = threads.filter(t => t.id !== threadId);
+      threadIds.delete(threadId);
+      renderThreads();
     }
 
     // ── Sort toggle ──
