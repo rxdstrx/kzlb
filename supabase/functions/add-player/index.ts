@@ -103,9 +103,12 @@ serve(async (req) => {
       },
       body: JSON.stringify({ steamid }),
     })
-    const scraped = await scrapeRes.json()
+    const scrapeText = await scrapeRes.text()
+    console.error('scrape-player status:', scrapeRes.status, 'body:', scrapeText)
+    let scraped: any = {}
+    try { scraped = JSON.parse(scrapeText) } catch {}
     if (!scrapeRes.ok || scraped.error) {
-      return new Response(JSON.stringify({ error: scraped.error || 'Scrape failed' }), {
+      return new Response(JSON.stringify({ error: scraped.error || scraped.msg || `Scrape HTTP ${scrapeRes.status}: ${scrapeText.slice(0, 200)}` }), {
         status: 502, headers: { ...CORS, 'Content-Type': 'application/json' }
       })
     }
