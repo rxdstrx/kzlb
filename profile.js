@@ -220,6 +220,39 @@ async function loadProfile(sid) {
     const cacheRes = { ok, json: async () => cachedData };
 
     if (!cacheRes.ok) {
+      // Use Supabase Edge Function — instant scrape (~2s), no GitHub Actions
+      const stepEl = document.getElementById('loadingStep');
+      const subEl  = document.getElementById('loadingSub');
+      const pctEl  = document.getElementById('progressPct');
+      const circle = document.getElementById('progressCircle');
+      if (stepEl) stepEl.textContent = 'Fetching your stats…';
+      if (subEl)  subEl.textContent  = 'This takes ~2 seconds';
+      if (pctEl)  pctEl.textContent  = '50%';
+      if (circle) circle.style.strokeDashoffset = String(CIRCUMFERENCE * 0.5);
+
+      const SB_EDGE_URL = 'https://btcufotfvfnuoiokghjm.supabase.co/functions/v1';
+      const SB_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+      try {
+        const scrapeRes = await fetch(`${SB_EDGE_URL}/scrape-player`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SB_ANON_KEY}` },
+          body: JSON.stringify({ steamid: sid }),
+        });
+        const scraped = await scrapeRes.json();
+        if (scraped.ok) {
+          // Re-fetch from Supabase now that data is saved
+          const { ok: ok2, data: data2 } = await fetchPlayerData(sid);
+          if (ok2) {
+            if (stepEl) stepEl.textContent = 'Done!';
+            if (pctEl)  pctEl.textContent  = '100%';
+            if (circle) { circle.style.stroke = '#34d399'; circle.style.strokeDashoffset = '0'; }
+            setTimeout(() => location.reload(), 500);
+            return;
+          }
+        }
+      } catch {}
+
+      // Final fallback — old GitHub method
       triggerScrape(sid);
       startProgress();
       const loadingLink = document.getElementById('loadingCybershokeLink');
