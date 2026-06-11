@@ -1010,9 +1010,10 @@ async function renderRecentTab() {
       const imgUrl    = mapImageUrl(r.map);
       const ago       = timeSinceUnix(r.unixtime_record);
       return `
-        <div class="recent-card">
+        <div class="recent-card" onclick="location.href='map.html?map=${encodeURIComponent(r.map)}'" style="cursor:pointer">
           <div class="recent-card-img-wrap">
             <img class="recent-card-img" src="${imgUrl}" onerror="this.style.display='none';this.parentElement.style.background='rgba(255,255,255,0.06)'" loading="lazy" />
+            <div class="recent-card-fade"></div>
             <span class="recent-card-tier" style="background:${tierColor}22;color:${tierColor};border-color:${tierColor}44">${tierLabel}</span>
           </div>
           <div class="recent-card-body">
