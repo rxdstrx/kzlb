@@ -93,7 +93,8 @@ serve(async (req) => {
       cached_at: now,
       updated_at: now,
     }
-    await sb.from('players').upsert(playerRow, { onConflict: 'steamid' })
+    const { error: playerErr } = await sb.from('players').upsert(playerRow, { onConflict: 'steamid' })
+    if (playerErr) console.error('players upsert error:', playerErr)
 
     // ── Save map records to player_maps table ──
     if (maps.length > 0) {
