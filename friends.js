@@ -601,6 +601,19 @@ async function renderFriendsList(profileSteamid, auth) {
       (world.players || []).forEach((p, i) => { rankMap[p.steamid] = i + 1; });
     } catch {}
 
+    // Fetch last_seen for all friends to show online status
+    const lastSeenMap = {};
+    const ONLINE_MS = 3 * 60 * 1000;
+    try {
+      const idFilter = friendIds.map(id => `steamid.eq.${id}`).join(',');
+      const lsRes = await fetch(
+        `${SB_URL}/rest/v1/players?or=(${idFilter})&select=steamid,last_seen`,
+        { headers: SB_HEADERS }
+      );
+      const lsRows = await lsRes.json();
+      if (Array.isArray(lsRows)) lsRows.forEach(r => { lastSeenMap[r.steamid] = r.last_seen; });
+    } catch {}
+
     const DEFAULT_BANNER = 'https://cdn.akamai.steamstatic.com/steam/apps/730/library_hero.jpg';
 
     const html = rows.map(row => {
@@ -613,6 +626,11 @@ async function renderFriendsList(profileSteamid, auth) {
       const removeBtn = isOwnProfile
         ? `<button class="kz-friend-remove" onclick="removeFriend('${row.id}', this)" title="Remove friend">✕</button>`
         : '';
+      const ls = lastSeenMap[friendSteamid];
+      const isOnline = ls && (Date.now() - new Date(ls).getTime()) < ONLINE_MS;
+      const onlineDot = isOnline
+        ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;color:#4ade80;font-weight:600"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80;display:inline-block"></span>Online</span>`
+        : '';
       return `
         <div class="kz-friend-card" id="kz-friend-row-${row.id}" style="--friend-banner:url(${banner})">
           <div class="kz-friend-card-bg has-banner"></div>
@@ -620,6 +638,7 @@ async function renderFriendsList(profileSteamid, auth) {
           <div class="kz-friend-card-info">
             ${rank ? `<span class="kz-friend-card-rank">${rank}</span>` : ''}
             <a class="kz-friend-card-name" href="profile.html?steamid=${friendSteamid}">${escHtml(friendNickname)}</a>
+            ${onlineDot}
           </div>
           ${removeBtn}
         </div>`;
