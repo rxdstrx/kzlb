@@ -952,7 +952,7 @@ const TIER_COLORS = { 1: '#4ade80', 2: '#86efac', 3: '#fbbf24', 4: '#f97316', 5:
 const TIER_LABELS = { 1: 'Very Easy', 2: 'Easy', 3: 'Medium', 4: 'Hard', 5: 'Very Hard', 6: 'Extreme', 7: 'Death' };
 
 function mapImageUrl(mapName) {
-  return `https://cloud.cybershoke.net/img/maps/${mapName}.jpg`;
+  return `https://raw.githubusercontent.com/KZGlobalTeam/map-images/master/images/${mapName}.jpg`;
 }
 
 function timeSinceUnix(unix) {
@@ -982,7 +982,7 @@ async function renderRecentTab() {
 
   try {
     const res  = await fetch(
-      `${SB_URL}/rest/v1/player_maps?steamid=eq.${sid}&order=unixtime_record.desc&limit=50`,
+      `${SB_URL}/rest/v1/player_maps?steamid=eq.${sid}&order=unixtime_record.desc&limit=10`,
       { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }
     );
     const rows = await res.json();
