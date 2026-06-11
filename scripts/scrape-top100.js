@@ -13,6 +13,14 @@ const cacheDir = path.join(__dirname, '..', 'cache');
 
 function fmtNum(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 
+async function getSteamAvatar(steamid) {
+  try {
+    const r = await fetch(`https://playerdb.co/api/player/steam/${steamid}`);
+    const d = await r.json();
+    return d?.data?.player?.avatar || '';
+  } catch { return ''; }
+}
+
 async function getFaceitCountry(steamid) {
   if (!FACEIT_KEY) return 'xx';
   try {
@@ -64,6 +72,13 @@ async function getFaceitCountry(steamid) {
       country = await getFaceitCountry(sid);
     }
 
+    // Fetch avatar from Steam if Cybershoke didn't return one
+    let avatar = p.avatar || '';
+    if (!avatar) {
+      avatar = await getSteamAvatar(sid);
+      if (avatar) console.log(`  → fetched avatar from Steam for ${p.nickname}`);
+    }
+
     const player = {
       steamid: sid,
       nickname: p.nickname || sid,
@@ -72,7 +87,7 @@ async function getFaceitCountry(steamid) {
       kz_points: p.kz_points || 0,
       kz_place: p.kz_place || 0,
       kz_maps: p.kz_maps || '0',
-      avatar: p.avatar || '',
+      avatar,
       maps_list: p.maps || [],
     };
 
