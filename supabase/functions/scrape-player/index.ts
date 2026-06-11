@@ -25,7 +25,8 @@ serve(async (req) => {
     const cookie = Deno.env.get('CYBERSHOKE_COOKIE') || ''
     const sbUrl  = Deno.env.get('SUPABASE_URL') || ''
     const sbKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SUPABASE_SERVICE_KEY') || ''
-    const sb     = createClient(sbUrl, sbKey)
+    console.log('sbUrl:', sbUrl ? 'set' : 'EMPTY', 'sbKey:', sbKey ? 'set' : 'EMPTY')
+    const sb     = createClient(sbUrl, sbKey, { auth: { persistSession: false } })
 
     // ── Scrape Cybershoke ──
     const apiBody = {
@@ -108,8 +109,10 @@ serve(async (req) => {
         updated_at: now,
       }))
       // Delete old records first, then insert fresh
-      await sb.from('player_maps').delete().eq('steamid', steamid)
-      await sb.from('player_maps').insert(mapRows)
+      const { error: delErr } = await sb.from('player_maps').delete().eq('steamid', steamid)
+      if (delErr) console.error('player_maps delete error:', delErr)
+      const { error: insErr } = await sb.from('player_maps').insert(mapRows)
+      if (insErr) console.error('player_maps insert error:', insErr, 'first row:', JSON.stringify(mapRows[0]))
     }
 
     // ── Write to player_cache so profile page detects completion instantly ──
