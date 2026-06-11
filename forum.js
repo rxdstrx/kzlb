@@ -102,41 +102,35 @@
       listEl.innerHTML = threads.map(t => {
         const voted = myUpvotes.has(t.id);
         return `
-        <div class="thread-card-wrap">
-          <button class="upvote-btn ${voted?'upvoted':''}" data-id="${t.id}" title="Upvote">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-            <span class="upvote-count">${t.upvotes||0}</span>
-          </button>
-          <a class="thread-card" href="thread.html?id=${t.id}">
-            <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
-            <div class="thread-main">
-              <div class="thread-top">
-                <span class="thread-category ${catClass(t.category)}">${catLabel(t.category)}</span>
-                <span class="thread-title">${esc(t.title)}</span>
-              </div>
-              <div class="thread-body-preview">${esc(t.body)}</div>
-              <div class="thread-meta">
-                <a class="thread-meta-author" href="profile.html?steamid=${esc(t.steamid)}" onclick="event.stopPropagation()">${esc(t.nickname)}</a>
-                <span class="thread-meta-sep">·</span>
-                <span>${timeAgo(t.created_at)}</span>
-                <span class="thread-meta-sep">·</span>
-                <span>❤ ${t.likes||0}</span>
-                <span class="thread-meta-sep">·</span>
-                <span>💬 ${t.reply_count||0}</span>
-              </div>
+        <a class="thread-card" href="thread.html?id=${t.id}">
+          <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
+          <div class="thread-main">
+            <div class="thread-top">
+              <span class="thread-category ${catClass(t.category)}">${catLabel(t.category)}</span>
+              <span class="thread-title">${esc(t.title)}</span>
             </div>
-          </a>
-        </div>`;
+            <div class="thread-body-preview">${esc(t.body)}</div>
+            <div class="thread-meta">
+              <a class="thread-meta-author" href="profile.html?steamid=${esc(t.steamid)}" onclick="event.stopPropagation()">${esc(t.nickname)}</a>
+              <span class="thread-meta-sep">·</span>
+              <span>${timeAgo(t.created_at)}</span>
+              <span class="thread-meta-sep">·</span>
+              <span>❤ ${t.likes||0}</span>
+              <span class="thread-meta-sep">·</span>
+              <span>💬 ${t.reply_count||0}</span>
+              <span class="thread-meta-sep">·</span>
+              <button class="upvote-btn ${voted?'upvoted':''}" data-id="${t.id}" onclick="event.preventDefault();event.stopPropagation();toggleUpvote(Number(this.dataset.id),this)" title="Upvote">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                <span class="upvote-count">${t.upvotes||0}</span>
+              </button>
+            </div>
+          </div>
+        </a>`;
       }).join('');
-
-      // Bind upvote buttons
-      listEl.querySelectorAll('.upvote-btn').forEach(btn => {
-        btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleUpvote(Number(btn.dataset.id), btn); });
-      });
     }
 
     // ── Toggle upvote ──
-    async function toggleUpvote(threadId, btn) {
+    window.toggleUpvote = async function toggleUpvote(threadId, btn) {
       const auth = getAuth();
       if (!auth) { window.location.href = 'login.html'; return; }
       const voted = myUpvotes.has(threadId);
