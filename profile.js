@@ -349,21 +349,34 @@ async function loadProfile(sid) {
     const steamLink = document.getElementById('steamSocialLink');
     if (steamLink) steamLink.href = `https://steamcommunity.com/profiles/${sid}`;
 
-    // Last active — read from Supabase so it works across all devices
+    // Last active — read from Supabase, show Online if < 3 min ago
     const lastSeenEl = document.getElementById('profileLastSeen');
+    const ONLINE_THRESHOLD_MS = 3 * 60 * 1000; // 3 minutes
+
+    function renderLastSeen(lastSeen) {
+      if (!lastSeenEl) return;
+      if (!lastSeen) { lastSeenEl.innerHTML = 'Never logged in'; return; }
+      const msSince = Date.now() - new Date(lastSeen).getTime();
+      if (msSince < ONLINE_THRESHOLD_MS) {
+        lastSeenEl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80;display:inline-block"></span><span style="color:#4ade80;font-weight:600">Online</span></span>';
+      } else {
+        lastSeenEl.innerHTML = `Last active on site ${timeSince(new Date(lastSeen))} ago`;
+      }
+    }
+
+    async function fetchAndRenderLastSeen() {
+      try {
+        const rows = await fetch(`${SB_URL}/rest/v1/players?steamid=eq.${sid}&select=last_seen&limit=1`,
+          { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }).then(r => r.ok ? r.json() : []);
+        renderLastSeen(rows?.[0]?.last_seen);
+      } catch { if (lastSeenEl) lastSeenEl.textContent = 'Never logged in'; }
+    }
+
     if (lastSeenEl) {
-      lastSeenEl.textContent = 'Last active: checking…';
-      fetch(`${SB_URL}/rest/v1/players?steamid=eq.${sid}&select=last_seen&limit=1`,
-        { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } })
-        .then(r => r.ok ? r.json() : [])
-        .then(rows => {
-          const lastSeen = rows?.[0]?.last_seen;
-          if (lastSeen) {
-            lastSeenEl.textContent = `Last active on site ${timeSince(new Date(lastSeen))} ago`;
-          } else {
-            lastSeenEl.textContent = 'Never logged in';
-          }
-        }).catch(() => { lastSeenEl.textContent = 'Never logged in'; });
+      lastSeenEl.textContent = '…';
+      fetchAndRenderLastSeen();
+      // Refresh every 30s so Online status updates live
+      setInterval(fetchAndRenderLastSeen, 30000);
     }
 
     // ── Banner: load from Supabase (visible to all) ──
