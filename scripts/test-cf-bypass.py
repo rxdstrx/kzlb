@@ -77,8 +77,13 @@ try:
         maps = data.get('list', [])
         desc = data.get('header', {}).get('desc', {})
         print(f'✅ SUCCESS — No Puppeteer needed!')
-        print(f'Player: {data.get("header", {}).get("name")}')
-        print(f'Points: {desc.get("{{Points}}")} | Maps: {len(maps)}')
+        print(f'RAW header keys: {list(data.get("header", {}).keys())}')
+        print(f'RAW desc keys: {list(desc.keys())}')
+        print(f'RAW header: {json.dumps(data.get("header", {}))[:500]}')
+        print(f'Maps count: {len(maps)}')
+        if maps:
+            print(f'First map keys: {list(maps[0].keys())}')
+            print(f'First map: {json.dumps(maps[0])[:300]}')
     else:
         print(f'❌ Failed: {r.text[:300]}')
 except ImportError:
