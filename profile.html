@@ -105,6 +105,7 @@
     <div class="profile-tabs-wrap">
       <div class="profile-tabs">
         <button class="profile-tab active" data-tab="profile">Profile</button>
+        <button class="profile-tab" data-tab="recent">Recent</button>
         <button class="profile-tab" data-tab="friends">Friends</button>
         <div class="profile-tab-indicator"></div>
       </div>
@@ -221,6 +222,13 @@
     </div>
 
     </div><!-- end #tab-profile -->
+
+    <!-- ══ TAB: RECENT ══ -->
+    <div class="tab-panel hidden" id="tab-recent">
+      <div id="recentLoading" class="kz-friends-loading" style="display:none">Loading…</div>
+      <div id="recentEmpty" class="notif-empty" style="display:none">No recent records yet. Click "Update Records" to load them.</div>
+      <div id="recentGrid" class="recent-grid"></div>
+    </div>
 
     <!-- ══ TAB: FRIENDS ══ -->
     <div class="tab-panel hidden" id="tab-friends">
