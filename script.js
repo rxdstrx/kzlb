@@ -1174,7 +1174,10 @@ document.getElementById('updateSubmit').addEventListener('click', async () => {
       // Reload leaderboard to show fresh data
       setTimeout(() => { if (typeof loadLeaderboard === 'function') loadLeaderboard(); }, 1000);
     } else if (data.rate_limited) {
-      showUpdateStatus('error', data.error || 'Please wait before updating again.');
+      const mins = data.retry_in ? Math.ceil(data.retry_in / 60) : 5;
+      const secs = data.retry_in && data.retry_in < 60 ? data.retry_in : null;
+      const wait = secs ? `${secs} seconds` : `${mins} minute${mins !== 1 ? 's' : ''}`;
+      showUpdateStatus('error', `⏱ Stats are already fresh! You can update again in ${wait}.`);
     } else {
       const errMsg = data.error?.includes('not found') ? 'Player not found. Use "Add to the leaderboard" first.' : (data.error || 'Something went wrong. Are you on the leaderboard yet?');
       showUpdateStatus('error', errMsg);

@@ -118,7 +118,10 @@ if (updateRecordBtn && steamid) {
         setTimeout(() => window.location.reload(), 1500);
       } else if (data.rate_limited) {
         updateRecordStatus.className = 'update-record-status error';
-        updateRecordStatus.textContent = data.error || 'Please wait before updating again.';
+        const mins = data.retry_in ? Math.ceil(data.retry_in / 60) : 5;
+        const secs = data.retry_in && data.retry_in < 60 ? data.retry_in : null;
+        const wait = secs ? `${secs} seconds` : `${mins} minute${mins !== 1 ? 's' : ''}`;
+        updateRecordStatus.textContent = `⏱ Stats are already fresh! Update again in ${wait}.`;
         updateRecordBtn.disabled = false;
       } else {
         updateRecordStatus.className = 'update-record-status error';
@@ -346,13 +349,21 @@ async function loadProfile(sid) {
     const steamLink = document.getElementById('steamSocialLink');
     if (steamLink) steamLink.href = `https://steamcommunity.com/profiles/${sid}`;
 
-    // Last seen
+    // Last active — only update when the player views their OWN profile
     const lastSeenEl = document.getElementById('profileLastSeen');
     if (lastSeenEl) {
-      const seenKey = `kz_seen_${sid}`;
+      const auth = typeof getAuth === 'function' ? getAuth() : null;
+      const seenKey = `kz_last_login_${sid}`;
+      // If this is the logged-in player's own profile, record now as their last active
+      if (auth && auth.steamid === sid) {
+        localStorage.setItem(seenKey, Date.now().toString());
+      }
       const lastSeen = localStorage.getItem(seenKey);
-      if (lastSeen) lastSeenEl.textContent = `Last active on site ${timeSince(new Date(Number(lastSeen)))} ago`;
-      localStorage.setItem(seenKey, Date.now().toString());
+      if (lastSeen) {
+        lastSeenEl.textContent = `Last active on site ${timeSince(new Date(Number(lastSeen)))} ago`;
+      } else {
+        lastSeenEl.textContent = 'Never logged in';
+      }
     }
 
     // ── Banner: load from Supabase (visible to all) ──
