@@ -190,7 +190,13 @@
         fetch(`${SB_URL}/rest/v1/forum_upvotes?thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR }),
         fetch(`${SB_URL}/rest/v1/forum_likes?thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR }),
       ]);
-      await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, { method: 'DELETE', headers: HDR });
+      const res = await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, { method: 'DELETE', headers: HDR });
+      if (!res.ok) {
+        console.error('Delete failed', res.status, await res.text());
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete`;
+        return;
+      }
       // Remove from local list and re-render
       threads = threads.filter(t => t.id !== threadId);
       threadIds.delete(threadId);
