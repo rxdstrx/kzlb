@@ -55,30 +55,18 @@
     const postError = document.getElementById('postError');
     const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-    let activeCat   = 'all';
-    let activeSort  = 'new'; // 'new' or 'top'
-    let offset      = 0;
-    let threads     = [];
-    let hasMore     = false;
-    let threadIds   = new Set(); // dedup guard
-    let myUpvotes   = new Set(); // thread ids I upvoted
-
-    // ── Load my upvotes ──
-    async function loadMyUpvotes() {
-      const auth = getAuth();
-      if (!auth) return;
-      const res = await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&select=thread_id`, { headers: HDR });
-      const rows = await res.json();
-      if (Array.isArray(rows)) rows.forEach(r => myUpvotes.add(r.thread_id));
-    }
+    let activeCat = 'all';
+    let offset    = 0;
+    let threads   = [];
+    let hasMore   = false;
+    let threadIds = new Set();
 
     // ── Load threads ──
     async function loadThreads(reset = true) {
       if (reset) { offset = 0; threads = []; threadIds = new Set(); listEl.innerHTML = '<div class="forum-loading">Loading threads…</div>'; }
-      const catFilter  = activeCat === 'all' ? '' : `&category=eq.${activeCat}`;
-      const sortOrder  = activeSort === 'top' ? 'upvotes.desc,created_at.desc' : 'created_at.desc';
+      const catFilter = activeCat === 'all' ? '' : `&category=eq.${activeCat}`;
       const res = await fetch(
-        `${SB_URL}/rest/v1/forum_threads?order=${sortOrder}&limit=${PAGE_SIZE + 1}&offset=${offset}${catFilter}&select=*`,
+        `${SB_URL}/rest/v1/forum_threads?order=created_at.desc&limit=${PAGE_SIZE + 1}&offset=${offset}${catFilter}&select=*`,
         { headers: HDR }
       );
       const rows = await res.json();
@@ -99,21 +87,12 @@
         listEl.innerHTML = '<div class="forum-empty"><div class="forum-empty-icon">💬</div>No posts yet. Be the first!</div>';
         return;
       }
-      const auth = getAuth();
-      listEl.innerHTML = threads.map(t => {
-        const voted   = myUpvotes.has(t.id);
-        const isOwner = auth && auth.steamid === t.steamid;
-        const deleteBtnHtml = isOwner
-          ? `<button class="thread-delete-btn" data-id="${t.id}" onclick="event.preventDefault();event.stopPropagation();confirmDeleteThread(Number(this.dataset.id),this)" title="Delete post">
-               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-               Delete
-             </button>`
-          : '';
-        return `
+      listEl.innerHTML = threads.map(t => `
         <a class="thread-card" href="thread.html?id=${t.id}">
+          <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
           <div class="thread-main">
             <div class="thread-top">
-              <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
+              <span class="thread-category ${catClass(t.category)}">${catLabel(t.category)}</span>
               <span class="thread-title">${esc(t.title)}</span>
             </div>
             <div class="thread-body-preview">${esc(t.body)}</div>
@@ -125,93 +104,10 @@
               <span>❤ ${t.likes||0}</span>
               <span class="thread-meta-sep">·</span>
               <span>💬 ${t.reply_count||0}</span>
-              <span class="thread-meta-sep">·</span>
-              <button class="upvote-btn ${voted?'upvoted':''}" data-id="${t.id}" onclick="event.preventDefault();event.stopPropagation();toggleUpvote(Number(this.dataset.id),this)" title="Upvote">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-                <span class="upvote-count">${t.upvotes||0}</span>
-              </button>
-              ${deleteBtnHtml}
             </div>
           </div>
-        </a>`;
-      }).join('');
+        </a>`).join('');
     }
-
-    // ── Toggle upvote ──
-    window.toggleUpvote = async function toggleUpvote(threadId, btn) {
-      const auth = getAuth();
-      if (!auth) { window.location.href = 'login.html'; return; }
-      const voted = myUpvotes.has(threadId);
-      const delta = voted ? -1 : 1;
-      if (voted) { myUpvotes.delete(threadId); } else { myUpvotes.add(threadId); }
-      btn.classList.toggle('upvoted', !voted);
-
-      const t = threads.find(x => x.id === threadId);
-      if (t) { t.upvotes = Math.max(0, (t.upvotes||0) + delta); btn.querySelector('.upvote-count').textContent = t.upvotes; }
-
-      if (voted) {
-        await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR });
-      } else {
-        await fetch(`${SB_URL}/rest/v1/forum_upvotes`, { method: 'POST', headers: { ...HDR, Prefer: 'return=minimal' }, body: JSON.stringify({ steamid: auth.steamid, thread_id: threadId }) });
-      }
-      await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, {
-        method: 'PATCH', headers: { ...HDR, Prefer: 'return=minimal' },
-        body: JSON.stringify({ upvotes: t?.upvotes ?? 0 }),
-      });
-    }
-
-    // ── Delete thread ──
-    const deleteTimers = {};
-    window.confirmDeleteThread = function(threadId, btn) {
-      if (deleteTimers[threadId]) {
-        // Second click — confirmed, do the delete
-        clearTimeout(deleteTimers[threadId]);
-        delete deleteTimers[threadId];
-        deleteThread(threadId, btn);
-      } else {
-        // First click — ask for confirmation
-        btn.classList.add('confirming');
-        btn.textContent = '⚠ Confirm?';
-        deleteTimers[threadId] = setTimeout(() => {
-          // Reset if user didn't confirm within 3s
-          btn.classList.remove('confirming');
-          btn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete`;
-          delete deleteTimers[threadId];
-        }, 3000);
-      }
-    };
-
-    async function deleteThread(threadId, btn) {
-      btn.textContent = '…';
-      btn.disabled = true;
-      // Delete replies and upvotes first, then the thread
-      await Promise.all([
-        fetch(`${SB_URL}/rest/v1/forum_replies?thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR }),
-        fetch(`${SB_URL}/rest/v1/forum_upvotes?thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR }),
-        fetch(`${SB_URL}/rest/v1/forum_likes?thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR }),
-      ]);
-      const res = await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, { method: 'DELETE', headers: HDR });
-      if (!res.ok) {
-        console.error('Delete failed', res.status, await res.text());
-        btn.disabled = false;
-        btn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete`;
-        return;
-      }
-      // Remove from local list and re-render
-      threads = threads.filter(t => t.id !== threadId);
-      threadIds.delete(threadId);
-      renderThreads();
-    }
-
-    // ── Sort toggle ──
-    document.querySelectorAll('.forum-sort-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.forum-sort-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        activeSort = btn.dataset.sort;
-        loadThreads();
-      });
-    });
 
     // ── Category filter ──
     document.querySelectorAll('.forum-cat-btn').forEach(btn => {
@@ -271,23 +167,27 @@
         closeModalFn();
         postTitle.value = '';
         postBody.value  = '';
-        // Instantly prepend
-        threads.unshift(rows[0]);
-        renderThreads();
+        if (!threadIds.has(rows[0].id)) {
+          threadIds.add(rows[0].id);
+          threads.unshift(rows[0]);
+          renderThreads();
+        }
       } else {
         postError.textContent = rows?.message || 'Failed to post. Try again.';
         postError.style.display = 'block';
       }
     });
 
-    // ── Realtime: new thread from someone else ──
+    // ── Realtime ──
     function subscribeThreads() {
       const sb = typeof sbClient !== 'undefined' ? sbClient : null;
       if (!sb) { setTimeout(subscribeThreads, 300); return; }
       sb.channel('forum-threads')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'forum_threads' }, payload => {
+          if (threadIds.has(payload.new.id)) return;
           const auth = getAuth();
-          if (auth && payload.new.steamid === auth.steamid) return; // already added locally
+          if (auth && payload.new.steamid === auth.steamid) return;
+          threadIds.add(payload.new.id);
           threads.unshift(payload.new);
           renderThreads();
         })
@@ -295,15 +195,10 @@
           const idx = threads.findIndex(t => t.id === payload.new.id);
           if (idx !== -1) { threads[idx] = payload.new; renderThreads(); }
         })
-        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'forum_threads' }, payload => {
-          threads = threads.filter(t => t.id !== payload.old.id);
-          threadIds.delete(payload.old.id);
-          renderThreads();
-        })
         .subscribe();
     }
 
-    loadMyUpvotes().then(() => loadThreads());
+    loadThreads();
     subscribeThreads();
   }
 
@@ -319,11 +214,10 @@
 
     let thread   = null;
     let replies  = [];
-    let myLikes  = new Set(); // thread/reply ids I liked
+    let myLikes  = new Set();
 
     if (!threadId) { threadEl.innerHTML = '<div class="forum-empty">Thread not found.</div>'; return; }
 
-    // ── Load thread ──
     async function loadThread() {
       const res  = await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}&select=*&limit=1`, { headers: HDR });
       const rows = await res.json();
@@ -337,7 +231,6 @@
       subscribeReplies();
     }
 
-    // ── Load replies ──
     async function loadReplies() {
       const res  = await fetch(`${SB_URL}/rest/v1/forum_replies?thread_id=eq.${threadId}&order=created_at.asc&select=*`, { headers: HDR });
       const rows = await res.json();
@@ -345,19 +238,16 @@
       renderReplies();
     }
 
-    // ── Load my likes ──
     async function loadMyLikes() {
       const auth = getAuth();
       if (!auth) return;
       const res  = await fetch(`${SB_URL}/rest/v1/forum_likes?steamid=eq.${auth.steamid}&select=target_id`, { headers: HDR });
       const rows = await res.json();
       if (Array.isArray(rows)) rows.forEach(r => myLikes.add(r.target_id));
-      // Re-render to show liked state
       renderThread();
       renderReplies();
     }
 
-    // ── Render thread ──
     function renderThread() {
       if (!thread) return;
       const liked = myLikes.has(`t_${thread.id}`);
@@ -383,7 +273,6 @@
       document.getElementById('likeThreadBtn')?.addEventListener('click', () => toggleLike(`t_${thread.id}`, 'forum_threads', thread.id, 'threadLikeCount'));
     }
 
-    // ── Render replies ──
     function renderReplies() {
       headerEl.style.display = replies.length ? 'block' : 'none';
       if (!replies.length) { repliesEl.innerHTML = ''; return; }
@@ -407,7 +296,6 @@
           </div>`;
       }).join('');
 
-      // Bind reply like buttons
       repliesEl.querySelectorAll('.like-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const span = btn.querySelector('span');
@@ -416,7 +304,6 @@
       });
     }
 
-    // ── Append single reply (realtime / optimistic) ──
     function appendReply(reply) {
       replies.push(reply);
       headerEl.style.display = 'block';
@@ -445,13 +332,12 @@
       div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // ── Toggle like ──
     async function toggleLike(targetKey, table, rowId, countElId, spanEl) {
       const auth = getAuth();
       if (!auth) { window.location.href = 'login.html'; return; }
 
-      const liked   = myLikes.has(targetKey);
-      const delta   = liked ? -1 : 1;
+      const liked = myLikes.has(targetKey);
+      const delta = liked ? -1 : 1;
 
       if (liked) {
         myLikes.delete(targetKey);
@@ -465,27 +351,23 @@
         });
       }
 
-      // Update likes count in DB
-      const getRes   = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${rowId}&select=likes`, { headers: HDR });
-      const [current]= await getRes.json();
-      const newCount = Math.max(0, (current?.likes || 0) + delta);
+      const getRes    = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${rowId}&select=likes`, { headers: HDR });
+      const [current] = await getRes.json();
+      const newCount  = Math.max(0, (current?.likes || 0) + delta);
       await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${rowId}`, {
         method: 'PATCH',
         headers: { ...HDR, Prefer: 'return=minimal' },
         body: JSON.stringify({ likes: newCount }),
       });
 
-      // Update UI
       const countEl = countElId ? document.getElementById(countElId) : spanEl;
       if (countEl) countEl.textContent = newCount;
-      // Toggle button class
       const btn = countElId ? document.getElementById('likeThreadBtn') : spanEl?.closest('.like-btn');
       if (btn) btn.classList.toggle('liked', !liked);
 
       if (table === 'forum_threads' && thread) thread.likes = newCount;
     }
 
-    // ── Render reply composer ──
     function renderComposer() {
       const auth = getAuth();
       if (!auth) {
@@ -535,7 +417,6 @@
           textarea.value = '';
           charCount.textContent = '0 / 1000';
           appendReply(rows[0]);
-          // Increment reply_count
           const newCount = (thread?.reply_count || 0) + 1;
           await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, {
             method: 'PATCH',
@@ -547,7 +428,6 @@
       });
     }
 
-    // ── Realtime: live replies ──
     function subscribeReplies() {
       const sb = typeof sbClient !== 'undefined' ? sbClient : null;
       if (!sb) { setTimeout(subscribeReplies, 300); return; }
@@ -555,7 +435,6 @@
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'forum_replies',
           filter: `thread_id=eq.${threadId}` }, payload => {
           const auth = getAuth();
-          // Don't double-add own reply (already added optimistically)
           if (auth && payload.new.steamid === auth.steamid) return;
           if (replies.find(r => r.id === payload.new.id)) return;
           appendReply(payload.new);
