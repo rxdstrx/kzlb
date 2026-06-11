@@ -142,6 +142,12 @@ body {
 .upvote-btn.upvoted { color: var(--blue); border-color: var(--border-blue); background: var(--blue-dim); }
 .upvote-count { font-size: 0.7rem; }
 
+.thread-card:not(:has(.thread-title:not(:empty))) {
+  background: transparent !important;
+  border-color: transparent !important;
+  pointer-events: none;
+}
+
 .thread-card {
   background: var(--surface);
   border: 1px solid var(--border);
