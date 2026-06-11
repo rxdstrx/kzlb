@@ -394,26 +394,47 @@ let lbSelectedMap = null;
 let lbPage = 1;
 const LB_PAGE_SIZE = 100;
 
-// Fetch players from Supabase (fast, no CDN delay), fallback to GitHub
+// Fetch players — merge GitHub (existing 4000) with Supabase (newly added/updated)
 async function fetchLeaderboardPlayers(countryCode) {
-  try {
-    const filter = (countryCode && countryCode !== 'world')
-      ? `&country=eq.${countryCode}`
-      : ``;
-    const res = await fetch(
-      `${SB_LB_URL}/rest/v1/players?order=kz_points.desc${filter}&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
-      { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
-    );
-    if (res.ok) {
-      const rows = await res.json();
-      if (Array.isArray(rows) && rows.length > 0) return rows;
-    }
-  } catch {}
-  // Fallback to GitHub raw
   const file = (countryCode && countryCode !== 'world') ? `${countryCode}-kz-players.json` : 'world-kz-players.json';
-  const res = await fetch(`${CACHE_BASE}/${file}?bust=${Date.now()}`);
-  const data = await res.json();
-  return data.players || [];
+
+  // Fetch GitHub cache + Supabase in parallel
+  const [ghResult, sbResult] = await Promise.allSettled([
+    fetch(`${CACHE_BASE}/${file}?bust=${Date.now()}`).then(r => r.ok ? r.json() : null),
+    fetch(
+      `${SB_LB_URL}/rest/v1/players?order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
+      { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
+    ).then(r => r.ok ? r.json() : null),
+  ]);
+
+  const ghPlayers  = ghResult.status === 'fulfilled'  && ghResult.value  ? (ghResult.value.players || ghResult.value) : [];
+  const sbPlayers  = sbResult.status === 'fulfilled'  && sbResult.value  ? sbResult.value : [];
+
+  if (!ghPlayers.length && !sbPlayers.length) return [];
+
+  // Build map from Supabase (steamid → player) for quick lookup
+  const sbMap = new Map();
+  for (const p of sbPlayers) sbMap.set(p.steamid, p);
+
+  // Start with GitHub players, override with fresher Supabase data where available
+  const merged = new Map();
+  for (const p of ghPlayers) {
+    merged.set(p.steamid, sbMap.has(p.steamid) ? { ...p, ...sbMap.get(p.steamid) } : p);
+  }
+  // Add Supabase-only players (not yet in GitHub cache)
+  for (const p of sbPlayers) {
+    if (!merged.has(p.steamid)) merged.set(p.steamid, p);
+  }
+
+  // Apply country filter if needed (Supabase-only players need client-side filter)
+  let result = [...merged.values()];
+  if (countryCode && countryCode !== 'world') {
+    result = result.filter(p => p.country === countryCode);
+  }
+
+  // Sort by kz_points descending
+  result.sort((a, b) => (Number(b.kz_points) || 0) - (Number(a.kz_points) || 0));
+  return result;
 }
 
 const lbBody   = document.getElementById('leaderboard-body');
@@ -1094,6 +1115,7 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
 
     if (data.ok) {
       showAddStatus('success', `✅ Done! Welcome ${data.nickname}! Opening your profile…`);
+      allPlayersCache = null; // invalidate search cache so new player appears
       setTimeout(() => {
         window.location.href = `profile.html?steamid=${steamid}&country=${data.country || countryToSubmit}`;
       }, 1500);
