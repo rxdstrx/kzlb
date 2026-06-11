@@ -618,6 +618,26 @@ async function renderFriendsList(profileSteamid, auth) {
       });
     } catch {}
 
+    // For friends not in Supabase players table at all, fetch from Steam API and save them
+    const missingIds = friendIds.filter(id => !playerDataMap[id] || !playerDataMap[id].nickname);
+    if (missingIds.length) {
+      await Promise.all(missingIds.map(async id => {
+        try {
+          const r = await fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${id}`);
+          const d = await r.json();
+          if (d?.nickname) {
+            playerDataMap[id] = { nickname: d.nickname, avatar: d.avatar || '' };
+            // Save to Supabase so future renders are instant
+            fetch(`${SB_URL}/rest/v1/players`, {
+              method: 'POST',
+              headers: { ...SB_HEADERS, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
+              body: JSON.stringify({ steamid: id, nickname: d.nickname, avatar: d.avatar || '' }),
+            }).catch(() => {});
+          }
+        } catch {}
+      }));
+    }
+
     const DEFAULT_BANNER = 'https://cdn.akamai.steamstatic.com/steam/apps/730/library_hero.jpg';
 
     const html = rows.map(row => {
