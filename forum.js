@@ -111,7 +111,6 @@
           : '';
         return `
         <a class="thread-card" href="thread.html?id=${t.id}">
-          <div class="thread-cat-col ${catClass(t.category)}">${catLabel(t.category)}</div>
           <div class="thread-main">
             <div class="thread-top">
               <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
@@ -289,6 +288,11 @@
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'forum_threads' }, payload => {
           const idx = threads.findIndex(t => t.id === payload.new.id);
           if (idx !== -1) { threads[idx] = payload.new; renderThreads(); }
+        })
+        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'forum_threads' }, payload => {
+          threads = threads.filter(t => t.id !== payload.old.id);
+          threadIds.delete(payload.old.id);
+          renderThreads();
         })
         .subscribe();
     }
