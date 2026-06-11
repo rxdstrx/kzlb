@@ -267,7 +267,17 @@ function subscribeRealtime(auth) {
 
 function startPolling(auth) {
   if (_pollInterval) return;
-  _pollInterval = setInterval(() => pollNotifications(auth.steamid), 5000);
+  _pollInterval = setInterval(async () => {
+    await pollNotifications(auth.steamid);
+    // Also poll accepted notifications so sender gets live bell without refresh
+    const prevCount = _acceptedNotifs.length;
+    const prevUnread = _acceptedNotifs.filter(n => !n.read).length;
+    await loadAcceptedNotifs(auth);
+    const newUnread = _acceptedNotifs.filter(n => !n.read).length;
+    if (_acceptedNotifs.length > prevCount || newUnread > prevUnread) {
+      flashBell();
+    }
+  }, 5000);
 }
 
 async function pollNotifications(steamid) {
