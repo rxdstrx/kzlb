@@ -56,23 +56,37 @@
     const loadMoreBtn = document.getElementById('loadMoreBtn');
 
     let activeCat   = 'all';
+    let activeSort  = 'new'; // 'new' or 'top'
     let offset      = 0;
     let threads     = [];
     let hasMore     = false;
+    let threadIds   = new Set(); // dedup guard
+    let myUpvotes   = new Set(); // thread ids I upvoted
+
+    // ── Load my upvotes ──
+    async function loadMyUpvotes() {
+      const auth = getAuth();
+      if (!auth) return;
+      const res = await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&select=thread_id`, { headers: HDR });
+      const rows = await res.json();
+      if (Array.isArray(rows)) rows.forEach(r => myUpvotes.add(r.thread_id));
+    }
 
     // ── Load threads ──
     async function loadThreads(reset = true) {
-      if (reset) { offset = 0; threads = []; listEl.innerHTML = '<div class="forum-loading">Loading threads…</div>'; }
-      const catFilter = activeCat === 'all' ? '' : `&category=eq.${activeCat}`;
+      if (reset) { offset = 0; threads = []; threadIds = new Set(); listEl.innerHTML = '<div class="forum-loading">Loading threads…</div>'; }
+      const catFilter  = activeCat === 'all' ? '' : `&category=eq.${activeCat}`;
+      const sortOrder  = activeSort === 'top' ? 'upvotes.desc,created_at.desc' : 'created_at.desc';
       const res = await fetch(
-        `${SB_URL}/rest/v1/forum_threads?order=created_at.desc&limit=${PAGE_SIZE + 1}&offset=${offset}${catFilter}&select=*`,
+        `${SB_URL}/rest/v1/forum_threads?order=${sortOrder}&limit=${PAGE_SIZE + 1}&offset=${offset}${catFilter}&select=*`,
         { headers: HDR }
       );
       const rows = await res.json();
       if (!Array.isArray(rows)) { listEl.innerHTML = '<div class="forum-empty"><div class="forum-empty-icon">💬</div>Failed to load.</div>'; return; }
 
       hasMore = rows.length > PAGE_SIZE;
-      const page = rows.slice(0, PAGE_SIZE);
+      const page = rows.slice(0, PAGE_SIZE).filter(t => !threadIds.has(t.id));
+      page.forEach(t => threadIds.add(t.id));
       threads = reset ? page : [...threads, ...page];
       offset += page.length;
 
@@ -85,27 +99,74 @@
         listEl.innerHTML = '<div class="forum-empty"><div class="forum-empty-icon">💬</div>No posts yet. Be the first!</div>';
         return;
       }
-      listEl.innerHTML = threads.map(t => `
-        <a class="thread-card" href="thread.html?id=${t.id}">
-          <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
-          <div class="thread-main">
-            <div class="thread-top">
-              <span class="thread-category ${catClass(t.category)}">${catLabel(t.category)}</span>
-              <span class="thread-title">${esc(t.title)}</span>
+      listEl.innerHTML = threads.map(t => {
+        const voted = myUpvotes.has(t.id);
+        return `
+        <div class="thread-card-wrap">
+          <button class="upvote-btn ${voted?'upvoted':''}" data-id="${t.id}" title="Upvote">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            <span class="upvote-count">${t.upvotes||0}</span>
+          </button>
+          <a class="thread-card" href="thread.html?id=${t.id}">
+            <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
+            <div class="thread-main">
+              <div class="thread-top">
+                <span class="thread-category ${catClass(t.category)}">${catLabel(t.category)}</span>
+                <span class="thread-title">${esc(t.title)}</span>
+              </div>
+              <div class="thread-body-preview">${esc(t.body)}</div>
+              <div class="thread-meta">
+                <a class="thread-meta-author" href="profile.html?steamid=${esc(t.steamid)}" onclick="event.stopPropagation()">${esc(t.nickname)}</a>
+                <span class="thread-meta-sep">·</span>
+                <span>${timeAgo(t.created_at)}</span>
+                <span class="thread-meta-sep">·</span>
+                <span>❤ ${t.likes||0}</span>
+                <span class="thread-meta-sep">·</span>
+                <span>💬 ${t.reply_count||0}</span>
+              </div>
             </div>
-            <div class="thread-body-preview">${esc(t.body)}</div>
-            <div class="thread-meta">
-              <a class="thread-meta-author" href="profile.html?steamid=${esc(t.steamid)}" onclick="event.stopPropagation()">${esc(t.nickname)}</a>
-              <span class="thread-meta-sep">·</span>
-              <span>${timeAgo(t.created_at)}</span>
-              <span class="thread-meta-sep">·</span>
-              <span>❤ ${t.likes||0}</span>
-              <span class="thread-meta-sep">·</span>
-              <span>💬 ${t.reply_count||0}</span>
-            </div>
-          </div>
-        </a>`).join('');
+          </a>
+        </div>`;
+      }).join('');
+
+      // Bind upvote buttons
+      listEl.querySelectorAll('.upvote-btn').forEach(btn => {
+        btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleUpvote(Number(btn.dataset.id), btn); });
+      });
     }
+
+    // ── Toggle upvote ──
+    async function toggleUpvote(threadId, btn) {
+      const auth = getAuth();
+      if (!auth) { window.location.href = 'login.html'; return; }
+      const voted = myUpvotes.has(threadId);
+      const delta = voted ? -1 : 1;
+      if (voted) { myUpvotes.delete(threadId); } else { myUpvotes.add(threadId); }
+      btn.classList.toggle('upvoted', !voted);
+
+      const t = threads.find(x => x.id === threadId);
+      if (t) { t.upvotes = Math.max(0, (t.upvotes||0) + delta); btn.querySelector('.upvote-count').textContent = t.upvotes; }
+
+      if (voted) {
+        await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&thread_id=eq.${threadId}`, { method: 'DELETE', headers: HDR });
+      } else {
+        await fetch(`${SB_URL}/rest/v1/forum_upvotes`, { method: 'POST', headers: { ...HDR, Prefer: 'return=minimal' }, body: JSON.stringify({ steamid: auth.steamid, thread_id: threadId }) });
+      }
+      await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, {
+        method: 'PATCH', headers: { ...HDR, Prefer: 'return=minimal' },
+        body: JSON.stringify({ upvotes: t?.upvotes ?? 0 }),
+      });
+    }
+
+    // ── Sort toggle ──
+    document.querySelectorAll('.forum-sort-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.forum-sort-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeSort = btn.dataset.sort;
+        loadThreads();
+      });
+    });
 
     // ── Category filter ──
     document.querySelectorAll('.forum-cat-btn').forEach(btn => {
@@ -192,7 +253,7 @@
         .subscribe();
     }
 
-    loadThreads();
+    loadMyUpvotes().then(() => loadThreads());
     subscribeThreads();
   }
 
