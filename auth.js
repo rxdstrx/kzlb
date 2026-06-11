@@ -49,28 +49,82 @@ function clearAuth() {
   localStorage.removeItem('kz_country');
 }
 
-// Register new player — rate-limited to once per 10 min per account
+const SB_EDGE    = 'https://btcufotfvfnuoiokghjm.supabase.co/functions/v1';
+const SB_ANON_AUTH = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+
+// Register/update player via Supabase Edge Function — instant (~2s)
 function triggerAddPlayer(steamid) {
   const key  = `kz_registered_${steamid}`;
   const last = parseInt(localStorage.getItem(key) || '0', 10);
   const now  = Date.now();
-  if (now - last < 10 * 60 * 1000) return; // already triggered in last 10 min
+  if (now - last < 10 * 60 * 1000) return;
   localStorage.setItem(key, String(now));
 
-  // Fast path: write directly to GitHub JSON via Vercel (takes ~5 sec, no Action queue)
-  // Also captures country returned by register-player so glow shows immediately
-  fetch(`https://kzlb.vercel.app/api/register-player?steamid=${steamid}`)
-    .then(r => r.ok ? r.json() : null)
-    .then(d => {
-      if (d?.country && d.country !== 'xx') localStorage.setItem('kz_country', d.country);
-      if (d?.nickname) localStorage.setItem('kz_steam_nick', d.nickname);
-      if (d?.avatar)   localStorage.setItem('kz_steam_avatar', d.avatar);
+  // Check if player already exists in Supabase
+  fetch(`https://btcufotfvfnuoiokghjm.supabase.co/rest/v1/players?steamid=eq.${steamid}&select=steamid,nickname,avatar,country&limit=1`, {
+    headers: { apikey: SB_ANON_AUTH, Authorization: `Bearer ${SB_ANON_AUTH}` }
+  })
+  .then(r => r.json())
+  .then(rows => {
+    if (rows && rows.length > 0) {
+      // Already exists — update local storage then refresh stats in background
+      const p = rows[0];
+      if (p.nickname) localStorage.setItem('kz_steam_nick', p.nickname);
+      if (p.avatar)   localStorage.setItem('kz_steam_avatar', p.avatar);
+      if (p.country && p.country !== 'xx') localStorage.setItem('kz_country', p.country);
       updateNavAuth();
-    })
-    .catch(() => {});
-
-  // Background: full Cybershoke scrape via Action (picks up actual stats if they have any)
-  fetch(`https://kzlb.vercel.app/api/trigger-scrape?steamid=${steamid}`).catch(() => {});
+      fetch(`${SB_EDGE}/update-player`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SB_ANON_AUTH}` },
+        body: JSON.stringify({ steamid }),
+      }).then(r => r.json()).then(d => {
+        if (d?.ok) {
+          if (d.nickname) localStorage.setItem('kz_steam_nick', d.nickname);
+          if (d.avatar)   localStorage.setItem('kz_steam_avatar', d.avatar);
+          updateNavAuth();
+        }
+      }).catch(() => {});
+    } else {
+      // New player — scrape instantly via Edge Function (~2s)
+      fetch(`${SB_EDGE}/scrape-player`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SB_ANON_AUTH}` },
+        body: JSON.stringify({ steamid }),
+      })
+      .then(r => r.json())
+      .then(d => {
+        if (d?.ok) {
+          if (d.nickname) localStorage.setItem('kz_steam_nick', d.nickname);
+          if (d.avatar)   localStorage.setItem('kz_steam_avatar', d.avatar);
+          updateNavAuth();
+          // Also trigger Vercel register for country detection
+          fetch(`https://kzlb.vercel.app/api/register-player?steamid=${steamid}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(reg => {
+              if (reg?.country && reg.country !== 'xx') {
+                localStorage.setItem('kz_country', reg.country);
+                // Update country in Supabase
+                fetch(`https://btcufotfvfnuoiokghjm.supabase.co/rest/v1/players?steamid=eq.${steamid}`, {
+                  method: 'PATCH',
+                  headers: { apikey: SB_ANON_AUTH, Authorization: `Bearer ${SB_ANON_AUTH}`, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ country: reg.country }),
+                }).catch(() => {});
+              }
+            }).catch(() => {});
+        }
+      }).catch(() => {});
+    }
+  }).catch(() => {
+    // Fallback to old Vercel method
+    fetch(`https://kzlb.vercel.app/api/register-player?steamid=${steamid}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.country && d.country !== 'xx') localStorage.setItem('kz_country', d.country);
+        if (d?.nickname) localStorage.setItem('kz_steam_nick', d.nickname);
+        if (d?.avatar)   localStorage.setItem('kz_steam_avatar', d.avatar);
+        updateNavAuth();
+      }).catch(() => {});
+  });
 }
 
 // Fetch avatar/nickname from Steam Vercel proxy
@@ -187,28 +241,26 @@ function syncPlayerData() {
   const auth = getAuth();
   if (!auth) return;
 
-  fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json`)
-    .then(r => r.json())
-    .then(d => {
-      const player = (d.players || []).find(p => p.steamid === auth.steamid);
+  // Read from Supabase (instant, no CDN delay)
+  fetch(`https://btcufotfvfnuoiokghjm.supabase.co/rest/v1/players?steamid=eq.${auth.steamid}&select=steamid,nickname,avatar,country&limit=1`, {
+    headers: { apikey: SB_ANON_AUTH, Authorization: `Bearer ${SB_ANON_AUTH}` }
+  })
+  .then(r => r.json())
+  .then(rows => {
+    const player = rows && rows.length > 0 ? rows[0] : null;
+    if (player?.avatar)   localStorage.setItem('kz_steam_avatar', player.avatar);
+    if (player?.nickname) localStorage.setItem('kz_steam_nick', player.nickname);
+    if (player?.country && player.country !== 'xx') localStorage.setItem('kz_country', player.country);
+    updateNavAuth();
 
-      // Update avatar/nickname/country if world cache has them
-      if (player?.avatar)   localStorage.setItem('kz_steam_avatar', player.avatar);
-      if (player?.nickname) localStorage.setItem('kz_steam_nick',   player.nickname);
-      if (player?.country && player.country !== 'xx') localStorage.setItem('kz_country', player.country);
-      updateNavAuth();
-
-      if (!player) {
-        // Still not in world leaderboard — trigger add-player (rate-limited)
-        triggerAddPlayer(auth.steamid);
-        // If we don't have an avatar yet, fetch from Steam proxy
-        if (!auth.avatar) fetchSteamProfile(auth.steamid).then(updateNavAuth);
-      }
-    })
-    .catch(() => {
-      // World cache unreachable — ensure we have at least an avatar
+    if (!player) {
+      triggerAddPlayer(auth.steamid);
       if (!auth.avatar) fetchSteamProfile(auth.steamid).then(updateNavAuth);
-    });
+    }
+  })
+  .catch(() => {
+    if (!auth.avatar) fetchSteamProfile(auth.steamid).then(updateNavAuth);
+  });
 }
 
 // Run on DOM ready
