@@ -982,7 +982,7 @@ async function renderRecentTab() {
 
   try {
     const res  = await fetch(
-      `${SB_URL}/rest/v1/player_recent?steamid=eq.${sid}&order=unixtime_record.desc&limit=50`,
+      `${SB_URL}/rest/v1/player_maps?steamid=eq.${sid}&order=unixtime_record.desc&limit=50`,
       { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } }
     );
     const rows = await res.json();
@@ -990,6 +990,7 @@ async function renderRecentTab() {
 
     if (!Array.isArray(rows) || !rows.length) {
       empty.style.display = 'block';
+      empty.textContent = 'No records yet. Click "Update Records" to load them.';
       return;
     }
 
