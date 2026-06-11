@@ -110,15 +110,27 @@
     const text = input.value.trim();
     if (!text) return;
     input.value = '';
+    sendBtn.disabled = true;
 
     const nick   = localStorage.getItem('kz_steam_nick') || auth.steamid;
     const avatar = localStorage.getItem('kz_steam_avatar') || '';
 
-    await fetch(`${SB_URL}/rest/v1/chat_messages`, {
-      method: 'POST',
-      headers: { ...HDR, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-      body: JSON.stringify({ steamid: auth.steamid, nickname: nick, avatar, text }),
-    });
+    try {
+      const res = await fetch(`${SB_URL}/rest/v1/chat_messages`, {
+        method: 'POST',
+        headers: { ...HDR, 'Content-Type': 'application/json', Prefer: 'return=representation' },
+        body: JSON.stringify({ steamid: auth.steamid, nickname: nick, avatar, text }),
+      });
+      const rows = await res.json();
+      if (res.ok && rows?.[0]) {
+        renderMsg(rows[0]); // show immediately without waiting for Realtime
+      } else {
+        console.error('Chat send error:', rows);
+      }
+    } catch(e) {
+      console.error('Chat send failed:', e);
+    }
+    sendBtn.disabled = false;
   }
 
   sendBtn.addEventListener('click', sendMessage);
