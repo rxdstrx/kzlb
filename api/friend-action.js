@@ -72,9 +72,8 @@ export default async function handler(req, res) {
       if (fromFound) { from_nickname = fromFound.nickname || ''; from_avatar = fromFound.avatar || ''; }
     } catch {}
 
-    // Fallback: look up missing nicknames/avatars from Supabase players table
-    const needsSbLookup = (!to_nickname || !from_nickname);
-    if (needsSbLookup) {
+    // Fallback 1: look up missing nicknames/avatars from Supabase players table
+    if (!to_nickname || !from_nickname) {
       try {
         const sbLookupRes = await fetch(
           `${sbUrl}/rest/v1/players?or=(steamid.eq.${to_steamid},steamid.eq.${from_steamid})&select=steamid,nickname,avatar`,
@@ -87,6 +86,12 @@ export default async function handler(req, res) {
         }
       } catch {}
     }
+
+    // Fallback 2: fetch from Steam API for anyone still missing
+    const steamFetches = [];
+    if (!to_nickname)   steamFetches.push(fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${to_steamid}`).then(r => r.json()).then(d => { if (d?.nickname) { to_nickname = d.nickname; to_avatar = d.avatar || ''; } }).catch(() => {}));
+    if (!from_nickname) steamFetches.push(fetch(`https://kzlb.vercel.app/api/steam-user?steamid=${from_steamid}`).then(r => r.json()).then(d => { if (d?.nickname) { from_nickname = d.nickname; from_avatar = d.avatar || ''; } }).catch(() => {}));
+    if (steamFetches.length) await Promise.all(steamFetches);
 
     const insertRes = await fetch(`${sbUrl}/rest/v1/friend_requests`, {
       method: 'POST',
