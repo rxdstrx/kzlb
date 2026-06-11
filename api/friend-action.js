@@ -72,6 +72,22 @@ export default async function handler(req, res) {
       if (fromFound) { from_nickname = fromFound.nickname || ''; from_avatar = fromFound.avatar || ''; }
     } catch {}
 
+    // Fallback: look up missing nicknames/avatars from Supabase players table
+    const needsSbLookup = (!to_nickname || !from_nickname);
+    if (needsSbLookup) {
+      try {
+        const sbLookupRes = await fetch(
+          `${sbUrl}/rest/v1/players?or=(steamid.eq.${to_steamid},steamid.eq.${from_steamid})&select=steamid,nickname,avatar`,
+          { headers: sbH }
+        );
+        const sbPlayers = await sbLookupRes.json();
+        for (const p of (sbPlayers || [])) {
+          if (p.steamid === to_steamid   && !to_nickname)   { to_nickname   = p.nickname || ''; to_avatar   = p.avatar || ''; }
+          if (p.steamid === from_steamid && !from_nickname) { from_nickname = p.nickname || ''; from_avatar = p.avatar || ''; }
+        }
+      } catch {}
+    }
+
     const insertRes = await fetch(`${sbUrl}/rest/v1/friend_requests`, {
       method: 'POST',
       headers: { ...sbH, Prefer: 'return=minimal' },

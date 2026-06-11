@@ -601,17 +601,21 @@ async function renderFriendsList(profileSteamid, auth) {
       (world.players || []).forEach((p, i) => { rankMap[p.steamid] = i + 1; });
     } catch {}
 
-    // Fetch last_seen for all friends to show online status
+    // Fetch nickname, avatar, last_seen from players table (authoritative — overrides stale request data)
+    const playerDataMap = {};
     const lastSeenMap = {};
     const ONLINE_MS = 3 * 60 * 1000;
     try {
       const idFilter = friendIds.map(id => `steamid.eq.${id}`).join(',');
       const lsRes = await fetch(
-        `${SB_URL}/rest/v1/players?or=(${idFilter})&select=steamid,last_seen`,
+        `${SB_URL}/rest/v1/players?or=(${idFilter})&select=steamid,nickname,avatar,last_seen`,
         { headers: SB_HEADERS }
       );
       const lsRows = await lsRes.json();
-      if (Array.isArray(lsRows)) lsRows.forEach(r => { lastSeenMap[r.steamid] = r.last_seen; });
+      if (Array.isArray(lsRows)) lsRows.forEach(r => {
+        lastSeenMap[r.steamid] = r.last_seen;
+        playerDataMap[r.steamid] = { nickname: r.nickname, avatar: r.avatar };
+      });
     } catch {}
 
     const DEFAULT_BANNER = 'https://cdn.akamai.steamstatic.com/steam/apps/730/library_hero.jpg';
@@ -619,8 +623,10 @@ async function renderFriendsList(profileSteamid, auth) {
     const html = rows.map(row => {
       const isFrom = row.from_steamid === profileSteamid;
       const friendSteamid  = isFrom ? row.to_steamid  : row.from_steamid;
-      const friendNickname = isFrom ? (row.to_nickname || friendSteamid) : (row.from_nickname || friendSteamid);
-      const friendAvatar   = isFrom ? row.to_avatar    : row.from_avatar;
+      const pd = playerDataMap[friendSteamid];
+      // Use live players table data first; fall back to stored request data, then steamid
+      const friendNickname = (pd?.nickname) || (isFrom ? row.to_nickname : row.from_nickname) || friendSteamid;
+      const friendAvatar   = (pd?.avatar)   || (isFrom ? row.to_avatar   : row.from_avatar)   || '';
       const banner = bannerMap[friendSteamid] || DEFAULT_BANNER;
       const rank   = rankMap[friendSteamid] ? `#${Number(rankMap[friendSteamid]).toLocaleString()}` : '';
       const removeBtn = isOwnProfile
