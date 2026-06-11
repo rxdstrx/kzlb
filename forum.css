@@ -124,8 +124,9 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px 18px;
-  color: var(--text-dim);
-  font-size: 0.85rem;
+  color: #7dd3fc;
+  font-size: 1.1rem;
+  font-weight: 700;
   margin-bottom: 8px;
 }
 
