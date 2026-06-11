@@ -17,9 +17,24 @@ body = {
 headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json, text/plain, */*',
+    'Accept-Encoding': 'gzip, deflate, br, zstd',
+    'Accept-Language': 'en-GB,en;q=0.7',
     'Origin': 'https://cybershoke.net',
     'Referer': f'https://cybershoke.net/ru/cs2/leaderboard/kz/maps/{steamid}',
-    'Accept-Language': 'ru-RU,ru;q=0.9',
+    'Sec-Ch-Ua': '"Brave";v="149", "Chromium";v="149", "Not)A;Brand";v="24"',
+    'Sec-Ch-Ua-Arch': '"x86"',
+    'Sec-Ch-Ua-Bitness': '"64"',
+    'Sec-Ch-Ua-Full-Version-List': '"Brave";v="149.0.0.0", "Chromium";v="149.0.0.0", "Not)A;Brand";v="24.0.0.0"',
+    'Sec-Ch-Ua-Mobile': '?0',
+    'Sec-Ch-Ua-Model': '""',
+    'Sec-Ch-Ua-Platform': '"Windows"',
+    'Sec-Ch-Ua-Platform-Version': '"19.0"',
+    'Sec-Fetch-Dest': 'empty',
+    'Sec-Fetch-Mode': 'cors',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Gpc': '1',
+    'Priority': 'u=1, i',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36',
 }
 if COOKIE:
     headers['Cookie'] = COOKIE
