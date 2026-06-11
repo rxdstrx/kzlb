@@ -103,10 +103,10 @@
         const voted = myUpvotes.has(t.id);
         return `
         <a class="thread-card" href="thread.html?id=${t.id}">
-          <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
+          <div class="thread-cat-col ${catClass(t.category)}">${catLabel(t.category)}</div>
           <div class="thread-main">
             <div class="thread-top">
-              <span class="thread-category ${catClass(t.category)}">${catLabel(t.category)}</span>
+              <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
               <span class="thread-title">${esc(t.title)}</span>
             </div>
             <div class="thread-body-preview">${esc(t.body)}</div>
