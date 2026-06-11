@@ -53,6 +53,14 @@ const SB_EDGE    = 'https://btcufotfvfnuoiokghjm.supabase.co/functions/v1';
 const SB_ANON_AUTH = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
 
 // Register/update player via Supabase Edge Function — instant (~2s)
+function updateLastSeen(steamid) {
+  fetch(`https://btcufotfvfnuoiokghjm.supabase.co/rest/v1/players?steamid=eq.${steamid}`, {
+    method: 'PATCH',
+    headers: { apikey: SB_ANON_AUTH, Authorization: `Bearer ${SB_ANON_AUTH}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify({ last_seen: new Date().toISOString() }),
+  }).catch(() => {});
+}
+
 function triggerAddPlayer(steamid) {
   const key  = `kz_registered_${steamid}`;
   const last = parseInt(localStorage.getItem(key) || '0', 10);
@@ -165,6 +173,7 @@ function fetchSteamProfile(steamid) {
     // the leaderboard (or refreshes their stats if already registered).
     // Rate-limited so re-logging in quickly won't spam Actions.
     triggerAddPlayer(steamid);
+    updateLastSeen(steamid);
 
     // Fetch avatar + nickname from world cache, then fall back to Steam proxy
     fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/world-kz-players.json`)
@@ -268,4 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateNavAuth();
   syncPlayerData();
   maybeShowLoginModal();
+  // Update last_seen whenever logged-in player visits any page
+  const _auth = getAuth();
+  if (_auth) updateLastSeen(_auth.steamid);
 });

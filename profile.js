@@ -349,21 +349,21 @@ async function loadProfile(sid) {
     const steamLink = document.getElementById('steamSocialLink');
     if (steamLink) steamLink.href = `https://steamcommunity.com/profiles/${sid}`;
 
-    // Last active — only update when the player views their OWN profile
+    // Last active — read from Supabase so it works across all devices
     const lastSeenEl = document.getElementById('profileLastSeen');
     if (lastSeenEl) {
-      const auth = typeof getAuth === 'function' ? getAuth() : null;
-      const seenKey = `kz_last_login_${sid}`;
-      // If this is the logged-in player's own profile, record now as their last active
-      if (auth && auth.steamid === sid) {
-        localStorage.setItem(seenKey, Date.now().toString());
-      }
-      const lastSeen = localStorage.getItem(seenKey);
-      if (lastSeen) {
-        lastSeenEl.textContent = `Last active on site ${timeSince(new Date(Number(lastSeen)))} ago`;
-      } else {
-        lastSeenEl.textContent = 'Never logged in';
-      }
+      lastSeenEl.textContent = 'Last active: checking…';
+      fetch(`${SB_URL}/rest/v1/players?steamid=eq.${sid}&select=last_seen&limit=1`,
+        { headers: { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` } })
+        .then(r => r.ok ? r.json() : [])
+        .then(rows => {
+          const lastSeen = rows?.[0]?.last_seen;
+          if (lastSeen) {
+            lastSeenEl.textContent = `Last active on site ${timeSince(new Date(lastSeen))} ago`;
+          } else {
+            lastSeenEl.textContent = 'Never logged in';
+          }
+        }).catch(() => { lastSeenEl.textContent = 'Never logged in'; });
     }
 
     // ── Banner: load from Supabase (visible to all) ──
