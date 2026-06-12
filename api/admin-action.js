@@ -36,6 +36,22 @@ export default async function handler(req, res) {
     return res.json({ ok: true, name });
   }
 
+  if (action === 'save_roles_config') {
+    if (!sbUrl || !sbKey) return res.status(500).json({ error: 'Supabase not configured' });
+    const roles = params.roles;
+    if (!Array.isArray(roles)) return res.status(400).json({ error: 'roles array required' });
+    const results = await Promise.all(roles.map(({ name, priority, show_in_filter }) =>
+      fetch(`${sbUrl}/rest/v1/roles?name=eq.${encodeURIComponent(name)}`, {
+        method: 'PATCH',
+        headers: { ...sbH, Prefer: 'return=minimal' },
+        body: JSON.stringify({ priority, show_in_filter }),
+      })
+    ));
+    const failed = results.filter(r => !r.ok);
+    if (failed.length) return res.status(400).json({ error: `${failed.length} role(s) failed to save` });
+    return res.json({ ok: true });
+  }
+
   if (action === 'toggle_filter') {
     if (!sbUrl || !sbKey) return res.status(500).json({ error: 'Supabase not configured' });
     const name = params.name;

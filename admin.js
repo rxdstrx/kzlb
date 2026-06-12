@@ -561,6 +561,19 @@ const ADMIN_SB_HDR  = { apikey: ADMIN_SB_ANON, Authorization: `Bearer ${ADMIN_SB
 
 let adminRoles = [];
 let roleModalSteamid = '';
+let rolesPendingChanges = false;
+
+function markRolesPending() {
+  rolesPendingChanges = true;
+  const bar = document.getElementById('rolesSaveBar');
+  if (bar) bar.classList.remove('hidden');
+}
+
+function clearRolesPending() {
+  rolesPendingChanges = false;
+  const bar = document.getElementById('rolesSaveBar');
+  if (bar) bar.classList.add('hidden');
+}
 
 function adminHexToRgb(hex) {
   hex = (hex || '#818cf8').replace('#', '');
@@ -611,37 +624,20 @@ function renderRolesList() {
   }).join('');
 }
 
-async function toggleRoleFilter(name, currentlyOn) {
+function toggleRoleFilter(name, currentlyOn) {
   const newVal = !currentlyOn;
-  const ok = await callRoleApi({ action: 'toggle_filter', name, show: newVal });
-  if (ok) {
-    const role = adminRoles.find(r => r.name === name);
-    if (role) role.show_in_filter = newVal;
-    renderRolesList();
-    toast(`"${name}" ${newVal ? 'shown in' : 'hidden from'} leaderboard filter`, 'success');
-  } else {
-    toast(`Failed to update filter for "${name}"`, 'error');
-  }
+  const role = adminRoles.find(r => r.name === name);
+  if (role) role.show_in_filter = newVal;
+  renderRolesList();
+  markRolesPending();
 }
 
-async function moveRole(index, direction) {
+function moveRole(index, direction) {
   const newIndex = index + direction;
   if (newIndex < 0 || newIndex >= adminRoles.length) return;
-
-  // Swap in local array
   [adminRoles[index], adminRoles[newIndex]] = [adminRoles[newIndex], adminRoles[index]];
-
-  // Re-render immediately for instant feedback
   renderRolesList();
-
-  // Save new priorities to Supabase
-  await Promise.all(adminRoles.map((r, i) =>
-    fetch(`${ADMIN_SB_URL}/rest/v1/roles?name=eq.${encodeURIComponent(r.name)}`, {
-      method: 'PATCH',
-      headers: { ...ADMIN_SB_HDR, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-      body: JSON.stringify({ priority: i }),
-    })
-  ));
+  markRolesPending();
 }
 
 function populateRoleModalSelect() {
@@ -784,6 +780,32 @@ if (bulkUpdateBtn) {
     }
     bulkUpdateBtn.disabled = false;
   });
+}
+
+// Save roles config (priority order + show_in_filter)
+const rolesSaveBtn = document.getElementById('rolesSaveBtn');
+if (rolesSaveBtn) {
+  rolesSaveBtn.addEventListener('click', saveRolesConfig);
+}
+
+async function saveRolesConfig() {
+  const btn = document.getElementById('rolesSaveBtn');
+  if (btn) btn.disabled = true;
+
+  const roles = adminRoles.map((r, i) => ({
+    name: r.name,
+    priority: i,
+    show_in_filter: r.show_in_filter !== false,
+  }));
+
+  const ok = await callRoleApi({ action: 'save_roles_config', roles });
+  if (ok) {
+    clearRolesPending();
+    toast('Role settings saved', 'success');
+  } else {
+    toast('Failed to save role settings', 'error');
+  }
+  if (btn) btn.disabled = false;
 }
 
 async function callRoleApi(body) {
