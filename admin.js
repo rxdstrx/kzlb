@@ -581,7 +581,7 @@ document.getElementById('rolesSectionToggle').addEventListener('click', () => {
 
 async function loadAdminRoles() {
   try {
-    const res = await fetch(`${ADMIN_SB_URL}/rest/v1/roles?select=name,color,icon&order=created_at.asc`, { headers: ADMIN_SB_HDR });
+    const res = await fetch(`${ADMIN_SB_URL}/rest/v1/roles?select=name,color,icon,priority&order=priority.asc.nullslast,created_at.asc`, { headers: ADMIN_SB_HDR });
     adminRoles = res.ok ? await res.json() : [];
     renderRolesList();
     populateRoleModalSelect();
@@ -596,14 +596,38 @@ function renderRolesList() {
     el.innerHTML = '<span style="color:rgba(255,255,255,0.3);font-size:0.8rem">No roles created yet.</span>';
     return;
   }
-  el.innerHTML = adminRoles.map(r => {
+  el.innerHTML = adminRoles.map((r, i) => {
     const rgb = adminHexToRgb(r.color);
     return `<span class="admin-role-chip" style="--rb-rgb:${rgb};--rb-color:${r.color}">
+      <span class="role-order-btns">
+        <button class="role-order-btn" onclick="moveRole(${i}, -1)" title="Move up" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button class="role-order-btn" onclick="moveRole(${i}, 1)" title="Move down" ${i === adminRoles.length - 1 ? 'disabled' : ''}>↓</button>
+      </span>
       ${r.icon ? `<span>${r.icon}</span>` : ''}
       <span class="admin-role-chip-name">${escHtml(r.name)}</span>
       <button class="admin-role-chip-del" onclick="deleteRole('${escHtml(r.name)}')" title="Delete role">✕</button>
     </span>`;
   }).join('');
+}
+
+async function moveRole(index, direction) {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= adminRoles.length) return;
+
+  // Swap in local array
+  [adminRoles[index], adminRoles[newIndex]] = [adminRoles[newIndex], adminRoles[index]];
+
+  // Re-render immediately for instant feedback
+  renderRolesList();
+
+  // Save new priorities to Supabase
+  await Promise.all(adminRoles.map((r, i) =>
+    fetch(`${ADMIN_SB_URL}/rest/v1/roles?name=eq.${encodeURIComponent(r.name)}`, {
+      method: 'PATCH',
+      headers: { ...ADMIN_SB_HDR, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({ priority: i }),
+    })
+  ));
 }
 
 function populateRoleModalSelect() {
