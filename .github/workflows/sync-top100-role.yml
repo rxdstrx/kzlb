@@ -1,0 +1,30 @@
+name: Sync TOP 100 Role
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - "Scrape Top 100 KZ"
+      - "Rebuild World Leaderboard"
+      - "Add Player to Leaderboard"
+    types: [completed]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync TOP 100 role in Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node scripts/sync-top100-role.js
