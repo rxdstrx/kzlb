@@ -20,8 +20,9 @@ function _ctHexToRgb(hex) {
 function _ctRoleBadgesHtml(steamid) {
   const roles = ctPlayerRoleMap.get(steamid);
   if (!roles || !roles.length) return '';
-  const cfgMap = Object.fromEntries(ctAllRoles.map(r => [r.name, r]));
-  return roles.map(name => {
+  const cfgMap = Object.fromEntries(ctAllRoles.map((r, i) => [r.name, { ...r, _idx: i }]));
+  const sorted = [...roles].sort((a, b) => (cfgMap[a]?._idx ?? 9999) - (cfgMap[b]?._idx ?? 9999));
+  return sorted.map(name => {
     const cfg = cfgMap[name] || { color: '#818cf8', icon: '' };
     const rgb = _ctHexToRgb(cfg.color);
     const icon = cfg.icon ? `<span class="role-badge-icon">${cfg.icon}</span>` : '';
@@ -32,7 +33,7 @@ function _ctRoleBadgesHtml(steamid) {
 async function initCtRoleFilter() {
   try {
     const [rolesRes, prRes] = await Promise.all([
-      fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon&order=created_at.asc`, { headers: SB_HDR_C }),
+      fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon,show_in_filter&order=priority.asc.nullslast,created_at.asc`, { headers: SB_HDR_C }),
       fetch(`${SB_LB_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_HDR_C }),
     ]);
     ctAllRoles = rolesRes.ok ? await rolesRes.json() : [];
@@ -49,7 +50,9 @@ async function initCtRoleFilter() {
     bar.querySelectorAll('[data-role]:not([data-role="all"])').forEach(el => el.remove());
 
     const cfgMap = Object.fromEntries(ctAllRoles.map(r => [r.name, r]));
-    ctAllRoles.forEach(r => {
+    const filterRoles = ctAllRoles.filter(r => r.show_in_filter !== false);
+    if (!filterRoles.length) return;
+    filterRoles.forEach(r => {
       const btn = document.createElement('button');
       btn.className = 'role-filter-btn';
       btn.dataset.role = r.name;
