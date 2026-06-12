@@ -96,9 +96,7 @@ def parse(steamid, data):
         })
     pts   = str(d.get('{{Points}}', '0'))
     place = str(d.get('{{Position}}', '0'))
-    nick  = h.get('title', '')
-    if not nick:
-        return None
+    nick  = h.get('title', '') or steamid  # fall back to steamid if no nickname
     return {
         'steamid':   steamid,
         'nickname':  nick,
