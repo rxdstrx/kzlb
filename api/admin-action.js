@@ -36,6 +36,19 @@ export default async function handler(req, res) {
     return res.json({ ok: true, name });
   }
 
+  if (action === 'toggle_filter') {
+    if (!sbUrl || !sbKey) return res.status(500).json({ error: 'Supabase not configured' });
+    const name = params.name;
+    if (!name) return res.status(400).json({ error: 'Role name required' });
+    const r = await fetch(`${sbUrl}/rest/v1/roles?name=eq.${encodeURIComponent(name)}`, {
+      method: 'PATCH',
+      headers: { ...sbH, Prefer: 'return=minimal' },
+      body: JSON.stringify({ show_in_filter: Boolean(params.show) }),
+    });
+    if (!r.ok) return res.status(400).json({ error: await r.text() });
+    return res.json({ ok: true });
+  }
+
   if (action === 'delete_role') {
     if (!sbUrl || !sbKey) return res.status(500).json({ error: 'Supabase not configured' });
     const name = params.name;
