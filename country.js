@@ -192,7 +192,7 @@ async function init() {
     let loaded = false;
     try {
       const res = await fetch(
-        `${SB_LB_URL}/rest/v1/players?country=eq.${countryCode}&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps,maps_list&limit=20000`,
+        `${SB_LB_URL}/rest/v1/players?country=eq.${countryCode}&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
         { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
       );
       if (res.ok) {
@@ -219,7 +219,7 @@ async function init() {
     if (_selfAuth && !allPlayers.some(p => String(p.steamid) === String(_selfAuth.steamid))) {
       try {
         const selfRes = await fetch(
-          `${SB_LB_URL}/rest/v1/players?steamid=eq.${_selfAuth.steamid}&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps,maps_list&limit=1`,
+          `${SB_LB_URL}/rest/v1/players?steamid=eq.${_selfAuth.steamid}&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=1`,
           { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
         );
         if (selfRes.ok) {
