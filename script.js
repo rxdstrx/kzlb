@@ -51,9 +51,11 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
     if (faceit?.steamid) {
       const country = faceit.country?.toLowerCase();
       const q = country ? `&country=${country}` : '';
-      if (country) {
-        fetch(`https://kzlb.vercel.app/api/add-player?steamid=${faceit.steamid}&country=${country}`).catch(() => {});
-      }
+      fetch(`${SB_LB_URL}/functions/v1/add-player`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SB_LB_ANON}` },
+        body: JSON.stringify({ steamid: faceit.steamid, country: country || 'xx' }),
+      }).catch(() => {});
       window.location.href = `profile.html?steamid=${faceit.steamid}${q}`;
     } else {
       showError('Could not find this Faceit profile.');
@@ -75,8 +77,12 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
     if (fr.ok) { const fd = await fr.json(); country = fd.country || null; }
   } catch {}
 
-  // Save player stats in background (same as leaderboard "Add Player")
-  fetch(`https://kzlb.vercel.app/api/add-player?steamid=${steamid}&country=${country || 'xx'}`).catch(() => {});
+  // Save player stats in background via instant Supabase Edge Function
+  fetch(`${SB_LB_URL}/functions/v1/add-player`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SB_LB_ANON}` },
+    body: JSON.stringify({ steamid, country: country || 'xx' }),
+  }).catch(() => {});
 
   const q = country ? `&country=${country}` : '';
   window.location.href = `profile.html?steamid=${steamid}${q}`;
