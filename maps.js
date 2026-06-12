@@ -42,7 +42,12 @@ async function init() {
   const loggedSteamid = localStorage.getItem('kz_steam_id');
 
   try {
-    // Fetch map_stats (authoritative global totals), player_maps (record + avg), and logged-in player's maps
+    // Fetch from three sources in parallel:
+    // 1. map_stats — Supabase table with authoritative global completion counts per map.
+    //    Written by bulk-update-all.py and add-player.js whenever any player is updated.
+    //    Schema: { map TEXT PK, total_completions INT, updated_at TIMESTAMPTZ }
+    // 2. player_maps — all player records (for fastest time + avg across our tracked players)
+    // 3. logged-in player's own maps (for "Your time" column)
     const requests = [
       fetch(`${SB_URL}/rest/v1/map_stats?select=map,total_completions`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
       fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record`),

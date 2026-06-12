@@ -278,7 +278,18 @@ function getLeaderboardFile(c) {
   fs.writeFileSync(totalsFile, JSON.stringify(totalsMerged, null, 2));
   console.log(`Saved map-totals.json (${Object.keys(totalsMerged).length} maps)`);
 
-  // Upsert map totals to Supabase map_stats table
+  // Upsert map totals to Supabase `map_stats` table.
+  // `totalsMerged` contains { mapName -> maxTotal } built from all country cache files,
+  // so it always holds the highest known completion count per map across every tracked player.
+  // The frontend reads `map_stats.total_completions` to display "Unique completions" on
+  // the maps list page and map detail page — no guessing from place_num strings needed.
+  //
+  // Supabase table required (run once in SQL Editor):
+  //   CREATE TABLE IF NOT EXISTS map_stats (
+  //     map               TEXT PRIMARY KEY,
+  //     total_completions INT  NOT NULL DEFAULT 0,
+  //     updated_at        TIMESTAMPTZ DEFAULT NOW()
+  //   );
   if (sbUrl && sbKey && Object.keys(totalsMerged).length) {
     const sbH2 = { apikey: sbKey, Authorization: `Bearer ${sbKey}`, 'Content-Type': 'application/json' };
     const batch = Object.entries(totalsMerged).map(([map, total]) => ({ map, total_completions: total }));
