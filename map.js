@@ -278,8 +278,13 @@ async function init() {
 
     // ── Map stats bar ─────────────────────────────────────────────────────────
     if (allRecords.length) {
-      // Unique completions: take denominator from the largest place_num fraction seen
-      const uniq = maxMapTotal > 0 ? maxMapTotal.toLocaleString() : allRecords.length.toLocaleString();
+      // Unique completions: read from map_stats table (authoritative), fall back to place_num denominator
+      const mapStatsRes = await fetch(
+        `${SB_URL}/rest/v1/map_stats?map=eq.${encodeURIComponent(mapName)}&select=total_completions&limit=1`,
+        { headers: SB_HDR }
+      ).then(r => r.ok ? r.json() : []).catch(() => []);
+      const dbTotal = mapStatsRes[0]?.total_completions || 0;
+      const uniq = (dbTotal || maxMapTotal || allRecords.length).toLocaleString();
 
       // World record: first entry (already sorted fastest-first)
       const wr = allRecords[0];
