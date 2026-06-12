@@ -1,6 +1,6 @@
 // Syncs the "TOP 100" role in Supabase to match the current world leaderboard.
 // Adds the role to anyone who entered top 100, removes it from anyone who fell out.
-const fs = require('fs');
+// Reads live data directly from Supabase (not stale GitHub cache).
 
 const SB_URL  = process.env.SUPABASE_URL;
 const SB_KEY  = process.env.SUPABASE_SERVICE_KEY;
@@ -20,14 +20,21 @@ const H = {
 };
 
 async function main() {
-  // 1. Read world cache and determine current top N by kz_points
-  const raw     = JSON.parse(fs.readFileSync('cache/world-kz-players.json', 'utf8'));
-  const players = raw.players || raw; // handle both {players:[]} and flat []
-  const sorted  = [...players].sort((a, b) => (Number(b.kz_points) || 0) - (Number(a.kz_points) || 0));
-  const newTop  = new Set(sorted.slice(0, TOP_N).map(p => p.steamid));
+  // 1. Fetch top N directly from Supabase (always fresh, not stale cache)
+  const sbRes = await fetch(
+    `${SB_URL}/rest/v1/players?select=steamid,nickname,kz_points&order=kz_points.desc&limit=${TOP_N}`,
+    { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+  );
+  if (!sbRes.ok) {
+    console.error('Failed to fetch players from Supabase:', await sbRes.text());
+    process.exit(1);
+  }
+  const players = await sbRes.json();
+  const newTop  = new Set(players.slice(0, TOP_N).map(p => String(p.steamid)));
 
-  console.log(`World cache has ${players.length} players. Top ${TOP_N} determined.`);
-  console.log(`#1: ${sorted[0]?.nickname} (${sorted[0]?.kz_points} pts)  #${TOP_N}: ${sorted[TOP_N - 1]?.nickname} (${sorted[TOP_N - 1]?.kz_points} pts)`);
+  console.log(`Supabase returned ${players.length} players. Top ${TOP_N} determined.`);
+  if (players[0])           console.log(`#1: ${players[0].nickname} (${players[0].kz_points} pts)`);
+  if (players[TOP_N - 1])  console.log(`#${TOP_N}: ${players[TOP_N - 1].nickname} (${players[TOP_N - 1].kz_points} pts)`);
 
   // 2. Ensure the TOP 100 role exists (gold crown)
   await fetch(`${SB_URL}/rest/v1/roles`, {
@@ -42,7 +49,7 @@ async function main() {
     { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
   );
   const curRows   = curRes.ok ? await curRes.json() : [];
-  const currentTop = new Set(curRows.map(r => r.steamid));
+  const currentTop = new Set(curRows.map(r => String(r.steamid)));
 
   // 4. Diff
   const toAdd    = [...newTop].filter(id => !currentTop.has(id));

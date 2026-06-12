@@ -43,6 +43,8 @@ jobs:
         env:
           FACEIT_KEY: ${{ secrets.FACEIT_KEY }}
           CYBERSHOKE_COOKIE: ${{ secrets.CYBERSHOKE_COOKIE }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node scripts/scrape-top100.js
 
       - name: Commit results
