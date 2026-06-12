@@ -119,7 +119,7 @@ async function init() {
     try {
       const res = await fetch(
         `${SB_LB_URL}/rest/v1/players?country=eq.pt&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps,maps_list&limit=20000`,
-        { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}`, 'Cache-Control': 'no-cache' } }
+        { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
       );
       if (res.ok) {
         const rows = await res.json();
@@ -145,7 +145,7 @@ async function init() {
       try {
         const selfRes = await fetch(
           `${SB_LB_URL}/rest/v1/players?steamid=eq.${_selfAuth.steamid}&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps,maps_list&limit=1`,
-          { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}`, 'Cache-Control': 'no-cache' } }
+          { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
         );
         if (selfRes.ok) {
           const selfRows = await selfRes.json();
