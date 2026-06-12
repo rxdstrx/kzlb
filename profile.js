@@ -55,9 +55,12 @@ const params = new URLSearchParams(window.location.search);
 const steamid = params.get('steamid');
 const urlCountry = params.get('country');
 
+const UNKNOWN_FLAG_SRC = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 15'%3E%3Crect width='20' height='15' rx='2' fill='%23b0b7c3'/%3E%3Ctext x='10' y='11' font-size='10' text-anchor='middle' fill='%23fff' font-family='sans-serif' font-weight='bold'%3E%3F%3C/text%3E%3C/svg%3E";
+
 function countryToFlag(code) {
-  if (!code || code.length !== 2 || code === 'xx') return '';
-  return `<img src="https://flagcdn.com/w40/${code.toLowerCase()}.png" alt="${code}" style="height:18px;border-radius:2px;vertical-align:middle;margin-left:6px;">`;
+  if (!code || code.length !== 2 || code === 'xx')
+    return `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:18px;border-radius:2px;vertical-align:middle;margin-left:6px;">`;
+  return `<img src="https://flagcdn.com/w40/${code.toLowerCase()}.png" alt="${code}" style="height:18px;border-radius:2px;vertical-align:middle;margin-left:6px;" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null">`;
 }
 
 

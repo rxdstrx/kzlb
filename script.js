@@ -550,9 +550,12 @@ const lbEmpty  = document.getElementById('lbEmpty');
 const lbPagTop = document.getElementById('lbPaginationTop');
 const lbPagBot = document.getElementById('lbPaginationBottom');
 
+const UNKNOWN_FLAG_SRC = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 15'%3E%3Crect width='20' height='15' rx='2' fill='%23b0b7c3'/%3E%3Ctext x='10' y='11' font-size='10' text-anchor='middle' fill='%23fff' font-family='sans-serif' font-weight='bold'%3E%3F%3C/text%3E%3C/svg%3E";
+
 function flagImg(country) {
-  if (!country || country === 'xx') return '';
-  return `<img class="player-flag-img" src="https://flagcdn.com/w20/${country}.png" alt="${country}" onerror="this.style.display='none'">`;
+  if (!country || country === 'xx')
+    return `<img class="player-flag-img" src="${UNKNOWN_FLAG_SRC}" alt="?">`;
+  return `<img class="player-flag-img" src="https://flagcdn.com/w20/${country}.png" alt="${country}" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null">`;
 }
 
 function renderPagination(totalRows) {
@@ -1342,8 +1345,8 @@ searchInput.addEventListener('input', async () => {
 
   searchSuggestions.innerHTML = matches.map(p => {
     const flagHtml = p.country && p.country !== 'xx'
-      ? `<img class="search-suggestion-flag" src="https://flagcdn.com/w20/${p.country}.png" onerror="this.style.display='none'">`
-      : '';
+      ? `<img class="search-suggestion-flag" src="https://flagcdn.com/w20/${p.country}.png" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null">`
+      : `<img class="search-suggestion-flag" src="${UNKNOWN_FLAG_SRC}" alt="?">`;
     const avatarSrc = p.avatar || 'https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg';
     return `<div class="search-suggestion-item" data-steamid="${p.steamid}" data-country="${p.country || 'xx'}">
       <img class="search-suggestion-avatar" src="${avatarSrc}" onerror="this.src='https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg'">
