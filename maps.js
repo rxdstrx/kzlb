@@ -13,6 +13,13 @@ function timeToSec(t) {
   return parseFloat(t);
 }
 
+// Parse the denominator from "rank / total" format (handles non-breaking spaces)
+function parsePlaceTotal(placeNum) {
+  const clean = (placeNum || '').replace(/[\s ]/g, '');
+  const m = clean.match(/^(\d+)\/(\d+)$/);
+  return m ? parseInt(m[2], 10) : 0;
+}
+
 async function fetchAll(url) {
   const PAGE = 1000;
   let offset = 0, rows = [];
@@ -35,9 +42,9 @@ async function init() {
   const loggedSteamid = localStorage.getItem('kz_steam_id');
 
   try {
-    // Fetch all player_maps (for record + completions + avg) and logged-in player's maps in parallel
+    // Fetch all player_maps (for record + unique completions + avg) and logged-in player's maps in parallel
     const requests = [
-      fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record,completions`),
+      fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record,place_num`),
     ];
     if (loggedSteamid) {
       requests.push(
@@ -50,18 +57,21 @@ async function init() {
     const myMap = new Map(myRows.map(r => [r.map, r.time_record]));
 
     // Group all rows by map name and compute stats
-    const mapStats = new Map(); // map_name → { record, completions, times[] }
+    const mapStats = new Map(); // map_name → { record, maxTotal, times[] }
     for (const row of allRows) {
       if (!row.map) continue;
-      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, completions: 0, times: [] });
+      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, maxTotal: 0, times: [] });
       const s = mapStats.get(row.map);
+
       const sec = timeToSec(row.time_record);
       if (isFinite(sec)) {
         s.times.push(sec);
         if (s.record === null || sec < timeToSec(s.record)) s.record = row.time_record;
       }
-      const c = parseInt(row.completions) || 0;
-      if (c > s.completions) s.completions = c;
+
+      // Use place_num denominator for unique completions (global Cybershoke count)
+      const tot = parsePlaceTotal(row.place_num);
+      if (tot > s.maxTotal) s.maxTotal = tot;
     }
 
     // Render rows
@@ -70,7 +80,7 @@ async function init() {
       const i   = index + 1;
       const rnk = i === 1 ? 'top1' : i === 2 ? 'top2' : i === 3 ? 'top3' : '';
       const s   = mapStats.get(map.name) || {};
-      const completions = s.completions ? s.completions.toLocaleString() : '—';
+      const completions = s.maxTotal ? s.maxTotal.toLocaleString() : '—';
       const record      = s.record || '—';
       const yourTime    = myMap.get(map.name) || '—';
       const avgSec      = s.times?.length
