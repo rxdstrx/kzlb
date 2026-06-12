@@ -74,16 +74,14 @@ export default async function handler(req, res) {
 
   if (action === 'move') {
     if (!country || !/^[a-z]{2}$/.test(country)) return res.status(400).json({ error: 'Invalid country' });
-    // Also update Supabase instantly
-    if (sbUrl && sbKey) {
-      fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
-        method: 'PATCH',
-        headers: { ...sbH, Prefer: 'return=minimal' },
-        body: JSON.stringify({ country, updated_at: new Date().toISOString() }),
-      }).catch(() => {});
-    }
-    workflow = 'admin-action.yml';
-    inputs = { action: 'move', steamid, country };
+    if (!sbUrl || !sbKey) return res.status(500).json({ error: 'Supabase not configured' });
+    const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
+      method: 'PATCH',
+      headers: sbH,
+      body: JSON.stringify({ country, updated_at: new Date().toISOString() }),
+    });
+    if (!r.ok) return res.status(500).json({ error: 'DB update failed' });
+    return res.json({ ok: true });
   } else if (action === 'remove') {
     // Delete from Supabase immediately — leaderboard updates instantly
     if (sbUrl && sbKey) {

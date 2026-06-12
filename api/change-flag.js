@@ -43,39 +43,24 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid country code' });
   }
 
-  // ── 1. Update Supabase instantly (country leaderboard reflects immediately) ──
   const sbUrl = process.env.SUPABASE_URL;
   const sbKey = process.env.SUPABASE_SERVICE_KEY;
-  if (sbUrl && sbKey) {
-    fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
-      method: 'PATCH',
-      headers: {
-        apikey: sbKey, Authorization: `Bearer ${sbKey}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
-      body: JSON.stringify({ country, updated_at: new Date().toISOString() }),
-    }).catch(() => {});
+  if (!sbUrl || !sbKey) return res.status(500).json({ error: 'Supabase not configured' });
+
+  const sbRes = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
+    method: 'PATCH',
+    headers: {
+      apikey: sbKey, Authorization: `Bearer ${sbKey}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify({ country, updated_at: new Date().toISOString() }),
+  });
+
+  if (!sbRes.ok) {
+    const err = await sbRes.text();
+    return res.status(500).json({ error: 'DB update failed: ' + err });
   }
 
-  // ── 2. Trigger GitHub Action to update file cache in background ──
-  const ghToken = process.env.GH_TOKEN;
-  if (!ghToken) return res.status(200).json({ ok: true }); // Supabase already updated
-
-  const response = await fetch(
-    `https://api.github.com/repos/rxdstrx/kzlb/actions/workflows/admin-action.yml/dispatches`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${ghToken}`,
-        'Accept': 'application/vnd.github+json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ref: 'main', inputs: { action: 'move', steamid, country } }),
-    }
-  );
-
-  if (response.status === 204) return res.status(200).json({ ok: true });
-  // Even if GitHub Action fails, Supabase was already updated
   return res.status(200).json({ ok: true });
 }
