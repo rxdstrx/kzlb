@@ -316,10 +316,11 @@ async function loadProfile(sid) {
       if (c && c !== 'xx') {
         if (flagEl) flagEl.innerHTML = countryToFlag(c);
         if (statCountryEl) statCountryEl.innerHTML =
-          `<img src="https://flagcdn.com/w40/${c}.png" style="height:22px;border-radius:3px;vertical-align:middle"> ${c.toUpperCase()}`;
+          `<img src="https://flagcdn.com/w40/${c}.png" style="height:22px;border-radius:3px;vertical-align:middle" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null"> ${c.toUpperCase()}`;
       } else {
-        if (flagEl) flagEl.innerHTML = '';
-        if (statCountryEl) statCountryEl.textContent = '—';
+        if (flagEl) flagEl.innerHTML = countryToFlag(null);
+        if (statCountryEl) statCountryEl.innerHTML =
+          `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:22px;border-radius:3px;vertical-align:middle"> Unknown`;
       }
     }
 
@@ -331,11 +332,11 @@ async function loadProfile(sid) {
       { headers: { apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4', Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4` } }
     ).then(r => r.ok ? r.json() : null)
      .then(rows => {
-       if (rows?.length && rows[0].country && rows[0].country !== 'xx') {
-         applyCountry(rows[0].country);
-         // Also update localStorage if this is own profile
-         if (sid === localStorage.getItem('kz_steam_id')) {
-           localStorage.setItem('kz_country', rows[0].country);
+       if (rows?.length) {
+         const c = rows[0].country;
+         applyCountry(c && c !== 'xx' ? c : null);
+         if (c && c !== 'xx' && sid === localStorage.getItem('kz_steam_id')) {
+           localStorage.setItem('kz_country', c);
          }
        }
      }).catch(() => {});
