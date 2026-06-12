@@ -225,6 +225,19 @@ async function init() {
     // Build display-info lookup from GitHub cache (nickname, avatar, country)
     const ghPlayerMap = new Map(ghPlayers.map(p => [p.steamid, { nickname: p.nickname, avatar: p.avatar, country: p.country }]));
 
+    // Find players in sbMapRows that are NOT in the GitHub cache (e.g. newly added players
+    // whose cache entry hasn't been rebuilt yet). Fetch their display info directly from
+    // Supabase players table — this is a small targeted set so no truncation risk.
+    const missingIds = sbMapRows.map(e => e.steamid).filter(id => !ghPlayerMap.has(id));
+    let sbExtraMap = new Map();
+    if (missingIds.length > 0) {
+      const rows = await fetch(
+        `${SB_URL}/rest/v1/players?steamid=in.(${missingIds.join(',')})&select=steamid,nickname,avatar,country`,
+        { headers: SB_HDR }
+      ).then(r => r.ok ? r.json() : []).catch(() => []);
+      sbExtraMap = new Map(rows.map(p => [p.steamid, p]));
+    }
+
     // Start with GitHub records
     const seen = new Map();
     ghPlayers.forEach(p => {
@@ -242,9 +255,10 @@ async function init() {
       }
     });
 
-    // Overlay Supabase records (always fresher time data); use GitHub for display info fallback
+    // Overlay Supabase records (always fresher time data).
+    // Display info priority: GitHub cache → Supabase players table → existing seen entry
     sbMapRows.forEach(entry => {
-      const gh  = ghPlayerMap.get(entry.steamid) || {};
+      const gh  = ghPlayerMap.get(entry.steamid) || sbExtraMap.get(entry.steamid) || {};
       const cur = seen.get(entry.steamid) || {};
       seen.set(entry.steamid, {
         steamid:     entry.steamid,
