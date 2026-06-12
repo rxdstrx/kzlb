@@ -213,18 +213,17 @@ async function init() {
 
   try {
     // Load GitHub cache + Supabase player_maps in parallel
-    const [ghRes, sbMapRes, sbPlayersRes] = await Promise.all([
+    // No separate players fetch — avoids 1000-row truncation; use GitHub cache for display info
+    const [ghRes, sbMapRes] = await Promise.all([
       fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`).then(r => r.ok ? r.json() : null),
-      fetch(`${SB_URL}/rest/v1/player_maps?map=eq.${encodeURIComponent(mapName)}&select=steamid,time_record,place_num,completions,points`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
-      fetch(`${SB_URL}/rest/v1/players?select=steamid,nickname,avatar,country`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
+      fetch(`${SB_URL}/rest/v1/player_maps?map=eq.${encodeURIComponent(mapName)}&select=steamid,time_record,place_num,completions,points&limit=10000`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
     ]);
 
-    const ghPlayers  = ghRes?.players || [];
-    const sbMapRows  = Array.isArray(sbMapRes) ? sbMapRes : [];
-    const sbPlayers  = Array.isArray(sbPlayersRes) ? sbPlayersRes : [];
+    const ghPlayers = ghRes?.players || [];
+    const sbMapRows = Array.isArray(sbMapRes) ? sbMapRes : [];
 
-    // Build Supabase player lookup
-    const sbPlayerMap = new Map(sbPlayers.map(p => [p.steamid, p]));
+    // Build display-info lookup from GitHub cache (nickname, avatar, country)
+    const ghPlayerMap = new Map(ghPlayers.map(p => [p.steamid, { nickname: p.nickname, avatar: p.avatar, country: p.country }]));
 
     // Start with GitHub records
     const seen = new Map();
@@ -243,15 +242,15 @@ async function init() {
       }
     });
 
-    // Overlay/add Supabase records (fresher data, includes new players)
+    // Overlay Supabase records (always fresher time data); use GitHub for display info fallback
     sbMapRows.forEach(entry => {
-      const sp = sbPlayerMap.get(entry.steamid);
-      if (!sp) return;
+      const gh  = ghPlayerMap.get(entry.steamid) || {};
+      const cur = seen.get(entry.steamid) || {};
       seen.set(entry.steamid, {
         steamid:     entry.steamid,
-        nickname:    sp.nickname,
-        avatar:      sp.avatar,
-        country:     sp.country || 'xx',
+        nickname:    gh.nickname ?? cur.nickname ?? null,
+        avatar:      gh.avatar   ?? cur.avatar   ?? null,
+        country:     gh.country  ?? cur.country  ?? 'xx',
         time_record: entry.time_record,
         place_num:   entry.place_num,
         completions: entry.completions,
@@ -294,13 +293,20 @@ async function init() {
       document.getElementById('statRecordHolder').textContent = wr.nickname ? `by ${wr.nickname}` : '';
       document.getElementById('statAvgTime').textContent = avgSec != null ? fmtSeconds(avgSec) : '—';
 
-      // Your time: check localStorage for logged-in steamid
+      // Your time: find in allRecords first, then fall back to direct Supabase fetch
       const mySteamid = localStorage.getItem('kz_steam_id');
-      const myRecord = mySteamid ? allRecords.find(r => String(r.steamid) === String(mySteamid)) : null;
+      let myRecord = mySteamid ? allRecords.find(r => String(r.steamid) === String(mySteamid)) : null;
+      if (!myRecord && mySteamid) {
+        const myRows = await fetch(
+          `${SB_URL}/rest/v1/player_maps?steamid=eq.${mySteamid}&map=eq.${encodeURIComponent(mapName)}&select=time_record,place_num&limit=1`,
+          { headers: SB_HDR }
+        ).then(r => r.ok ? r.json() : []);
+        if (myRows[0]) myRecord = { steamid: mySteamid, ...myRows[0] };
+      }
       if (myRecord) {
         document.getElementById('statYourTime').textContent = myRecord.time_record || '—';
         const myRank = allRecords.indexOf(myRecord) + 1;
-        document.getElementById('statYourRank').textContent = `#${myRank} on leaderboard`;
+        document.getElementById('statYourRank').textContent = myRank > 0 ? `#${myRank} on leaderboard` : '';
       } else {
         document.getElementById('statYourTime').textContent = '—';
         document.getElementById('statYourRank').textContent = mySteamid ? 'No record yet' : 'Log in to see';
