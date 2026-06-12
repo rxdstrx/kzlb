@@ -83,9 +83,35 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
-.col-mapname { width: auto; }
-.col-tier { width: 70px; }
-.col-time { width: 120px; text-align: right; }
+.col-mapname    { width: auto; }
+.col-tier       { width: 60px; }
+.col-completions{ width: 130px; text-align: right; }
+.col-record     { width: 130px; text-align: right; }
+.col-yourtime   { width: 130px; text-align: right; }
+.col-time       { width: 120px; text-align: right; }
+
+.maps-stat-cell      { text-align: right; font-variant-numeric: tabular-nums; font-size: 0.85rem; color: rgba(255,255,255,0.55); }
+.maps-record-cell    { color: #fbbf24; font-weight: 600; }
+.maps-yourtime-cell  { color: #34d399; font-weight: 600; }
+.maps-dash-cell      { color: rgba(255,255,255,0.2); }
+
+.maps-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 0;
+  color: rgba(255,255,255,0.35);
+  font-size: 0.85rem;
+}
+.maps-loading .spinner {
+  width: 28px; height: 28px;
+  border: 2.5px solid rgba(255,255,255,0.1);
+  border-top-color: #38bdf8;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .map-name-cell {
   display: flex;
