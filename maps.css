@@ -88,7 +88,15 @@
 .th-icon-cell {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
+}
+
+th.col-completions,
+th.col-record,
+th.col-yourtime,
+th.col-avgtime {
+  text-align: center;
 }
 
 .col-completions{ width: 140px; text-align: right; padding-left: 16px; }
