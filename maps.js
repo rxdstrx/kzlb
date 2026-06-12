@@ -105,10 +105,10 @@ async function init() {
       mapsBody.appendChild(tr);
     });
 
-    mapsLoading.classList.add('hidden');
+    mapsLoading.style.display = 'none';
     mapsTableWrap.classList.remove('hidden');
   } catch (e) {
-    mapsLoading.classList.add('hidden');
+    mapsLoading.style.display = 'none';
     mapsLoading.querySelector('p').textContent = 'Failed to load map stats.';
   }
 }
