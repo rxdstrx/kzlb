@@ -365,7 +365,7 @@ function renderPinnedSelfCountry(sorted) {
   const auth = typeof getAuth === 'function' ? getAuth() : null;
   if (!auth) return;
 
-  const idx = activeSorted.findIndex(p => p.steamid === auth.steamid);
+  const idx = activeSorted.findIndex(p => String(p.steamid) === String(auth.steamid));
   if (idx === -1) return;
 
   let tr;
@@ -441,7 +441,7 @@ function renderPinnedSelfByMap(sorted, mapName) {
   const auth = typeof getAuth === 'function' ? getAuth() : null;
   if (!auth) return;
 
-  const idx = sorted.findIndex(p => p.steamid === auth.steamid);
+  const idx = sorted.findIndex(p => String(p.steamid) === String(auth.steamid));
   const tr = document.createElement('tr');
   tr.id = 'pinned-self-row-country';
   tr.className = 'pinned-self-row';
