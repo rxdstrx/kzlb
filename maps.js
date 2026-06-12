@@ -43,7 +43,6 @@ async function init() {
   const loggedSteamid = localStorage.getItem('kz_steam_id');
 
   try {
-    // Fetch all player_maps (for record + completions + avg) and logged-in player's maps in parallel
     const requests = [
       fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record,place_num`),
     ];
@@ -54,39 +53,37 @@ async function init() {
     }
     const [allRows, myRows = []] = await Promise.all(requests);
 
-    // Build per-map lookup for logged-in player
     const myMap = new Map(myRows.map(r => [r.map, r.time_record]));
 
-    // Group all rows by map name and compute stats
-    const mapStats = new Map(); // map_name → { record, completions, times[] }
+    // Use sum+count instead of times[] to avoid large array spread stack overflows
+    const mapStats = new Map();
     for (const row of allRows) {
       if (!row.map) continue;
-      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, uniq: 0, times: [] });
+      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, uniq: 0, timeSum: 0, timeCount: 0 });
       const s = mapStats.get(row.map);
       const sec = timeToSec(row.time_record);
       if (isFinite(sec)) {
-        s.times.push(sec);
+        s.timeSum += sec;
+        s.timeCount++;
         if (s.record === null || sec < timeToSec(s.record)) s.record = row.time_record;
       }
-      // place_num is stored as "rank / total" — the denominator is the global Cybershoke count
-      const clean = (row.place_num || '').replace(/[\s ]/g, '');
+      const clean = (row.place_num || '').replace(/[\s ]/g, '');
       const pm = clean.match(/^(\d+)\/(\d+)$/);
       if (pm) { const tot = parseInt(pm[2], 10); if (tot > s.uniq) s.uniq = tot; }
     }
 
-    // Aggregate stats
+    // Aggregate stats for summary bar
     let bestRecordSec = Infinity, bestRecord = null;
-    const allTimesFlat = [];
+    let totalTimeSum = 0, totalTimeCount = 0;
     for (const [, s] of mapStats) {
       if (s.record !== null) {
         const sec = timeToSec(s.record);
         if (sec < bestRecordSec) { bestRecordSec = sec; bestRecord = s.record; }
       }
-      allTimesFlat.push(...s.times);
+      totalTimeSum += s.timeSum;
+      totalTimeCount += s.timeCount;
     }
-    const avgAllSec = allTimesFlat.length
-      ? allTimesFlat.reduce((a, b) => a + b, 0) / allTimesFlat.length
-      : null;
+    const avgAllSec = totalTimeCount > 0 ? totalTimeSum / totalTimeCount : null;
 
     document.getElementById('aggStatMaps').textContent = ALL_MAPS.length;
     document.getElementById('aggStatYourComp').textContent = loggedSteamid
@@ -105,9 +102,7 @@ async function init() {
       const completions = s.uniq ? s.uniq.toLocaleString() : '—';
       const record      = s.record || '—';
       const yourTime    = myMap.get(map.name) || '—';
-      const avgSec      = s.times?.length
-        ? s.times.reduce((a, b) => a + b, 0) / s.times.length
-        : null;
+      const avgSec      = s.timeCount > 0 ? s.timeSum / s.timeCount : null;
 
       const tr = document.createElement('tr');
       tr.style.cursor = 'pointer';
@@ -134,6 +129,7 @@ async function init() {
     mapsLoading.classList.add('hidden');
     mapsTableWrap.classList.remove('hidden');
   } catch (e) {
+    mapsLoading.classList.add('hidden');
     mapsLoading.querySelector('p').textContent = 'Failed to load map stats.';
   }
 }
