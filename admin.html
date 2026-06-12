@@ -87,6 +87,16 @@
         <span class="row-status hidden" id="addStatus"></span>
       </div>
 
+      <!-- Bulk update -->
+      <div class="bulk-update-bar">
+        <div class="bulk-update-info">
+          <strong>Update All Players</strong>
+          <span class="bulk-update-sub">Scrapes all players via GitHub Action (~15 min for 10k) · 0 Edge Function invocations</span>
+        </div>
+        <button class="btn-update" id="bulkUpdateBtn">🔄 Update All</button>
+        <span class="row-status hidden" id="bulkUpdateStatus"></span>
+      </div>
+
       <!-- Search -->
       <input class="admin-search" id="adminSearch" type="text" placeholder="🔍 Search by nickname, steamid or country…" autocomplete="off" />
 
