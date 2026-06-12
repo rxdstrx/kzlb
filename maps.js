@@ -72,27 +72,6 @@ async function init() {
       if (pm) { const tot = parseInt(pm[2], 10); if (tot > s.uniq) s.uniq = tot; }
     }
 
-    // Aggregate stats for summary bar
-    let bestRecordSec = Infinity, bestRecord = null;
-    let totalTimeSum = 0, totalTimeCount = 0;
-    for (const [, s] of mapStats) {
-      if (s.record !== null) {
-        const sec = timeToSec(s.record);
-        if (sec < bestRecordSec) { bestRecordSec = sec; bestRecord = s.record; }
-      }
-      totalTimeSum += s.timeSum;
-      totalTimeCount += s.timeCount;
-    }
-    const avgAllSec = totalTimeCount > 0 ? totalTimeSum / totalTimeCount : null;
-
-    document.getElementById('aggStatMaps').textContent = ALL_MAPS.length;
-    document.getElementById('aggStatYourComp').textContent = loggedSteamid
-      ? `${myRows.length} / ${ALL_MAPS.length}`
-      : '—';
-    document.getElementById('aggStatRecord').textContent = bestRecord || '—';
-    document.getElementById('aggStatAvg').textContent = avgAllSec !== null ? secToTime(avgAllSec) : '—';
-    document.getElementById('mapsStatsBar').classList.remove('hidden');
-
     // Render rows
     mapsBody.innerHTML = '';
     ALL_MAPS.forEach((map, index) => {
