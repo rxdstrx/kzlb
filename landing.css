@@ -75,19 +75,23 @@
 
 .nav-home-dropdown {
   position: absolute;
-  top: calc(100% + 16px);
+  top: 100%;
   left: 50%;
-  transform: translateX(-50%) translateY(-6px);
+  transform: translateX(-50%) translateY(-4px);
   width: 230px;
+  padding: 10px 6px 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+  z-index: 2000;
+}
+
+.nav-home-dropdown-inner {
   background: #0d0d14;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
   padding: 6px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s, transform 0.15s;
   box-shadow: 0 24px 64px rgba(0,0,0,0.55);
-  z-index: 2000;
 }
 
 .nav-home-menu:hover .nav-home-dropdown {
