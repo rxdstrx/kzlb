@@ -252,6 +252,19 @@ async function init() {
     allRecords.push(...seen.values());
     allRecords.sort((a, b) => timeToSeconds(a.time_record) - timeToSeconds(b.time_record));
 
+    // Normalize place_num denominators: use the highest total seen across all records
+    let maxMapTotal = 0;
+    allRecords.forEach(r => {
+      const m = (r.place_num || '').replace(/[\s ]/g, '').match(/^(\d+)\/(\d+)$/);
+      if (m) maxMapTotal = Math.max(maxMapTotal, parseInt(m[2], 10));
+    });
+    if (maxMapTotal > 0) {
+      allRecords.forEach(r => {
+        const m = (r.place_num || '').replace(/[\s ]/g, '').match(/^(\d+)\/(\d+)$/);
+        if (m) r.place_num = `${m[1]}/${maxMapTotal}`;
+      });
+    }
+
     document.getElementById('mapSub').textContent =
       `${allRecords.length} player${allRecords.length !== 1 ? 's' : ''} with records · Sorted by fastest time`;
 
