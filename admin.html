@@ -32,6 +32,31 @@
 
     <div class="admin-body">
 
+      <!-- Roles manager -->
+      <div class="roles-section" id="rolesSection">
+        <div class="roles-section-header" id="rolesSectionToggle">
+          <span>🏷 Roles Manager</span>
+          <svg class="roles-chevron" id="rolesChevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="roles-section-body hidden" id="rolesSectionBody">
+          <div class="create-role-row">
+            <input class="form-input" id="newRoleName" type="text" placeholder="Role name (e.g. PRO)" maxlength="20" autocomplete="off" style="flex:1;min-width:120px" />
+            <div class="role-color-wrap">
+              <label class="role-color-label">Color</label>
+              <input class="role-color-input" id="newRoleColor" type="color" value="#fbbf24" />
+            </div>
+            <input class="form-input" id="newRoleIcon" type="text" placeholder="Emoji" maxlength="4" autocomplete="off" style="width:80px;text-align:center" />
+            <button class="btn-add" id="createRoleBtn">+ Create Role</button>
+            <span class="row-status hidden" id="createRoleStatus"></span>
+          </div>
+          <div class="roles-list" id="rolesList">
+            <span style="color:rgba(255,255,255,0.3);font-size:0.8rem">Loading roles…</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Stats -->
       <div class="admin-stats">
         <div class="admin-stat">
@@ -84,6 +109,32 @@
         </table>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Role assignment modal -->
+  <div class="role-modal-overlay hidden" id="roleModal">
+    <div class="role-modal">
+      <div class="role-modal-header">
+        <span class="role-modal-title" id="roleModalTitle">Manage Roles</span>
+        <button class="role-modal-close" id="roleModalClose">✕</button>
+      </div>
+      <div class="role-modal-body">
+        <div class="role-modal-section-label">Current roles</div>
+        <div class="role-modal-current" id="roleModalCurrent">
+          <span style="color:rgba(255,255,255,0.3);font-size:0.8rem">Loading…</span>
+        </div>
+        <div class="role-modal-section-label" style="margin-top:14px">Add role</div>
+        <div class="role-modal-add">
+          <select class="form-select" id="roleModalSelect" style="flex:1">
+            <option value="">— select role —</option>
+          </select>
+          <button class="btn-save" id="roleModalAssignBtn">Assign</button>
+        </div>
+      </div>
+      <div class="role-modal-footer">
+        <span class="row-status hidden" id="roleModalStatus"></span>
+      </div>
     </div>
   </div>
 

@@ -340,6 +340,7 @@ function renderTable(players) {
         <div class="action-btns">
           <button class="btn-save" onclick="saveCountry('${p.steamid}', '${selectId}', '${statusId}')">Save flag</button>
           <button class="btn-update" onclick="updatePlayer('${p.steamid}', '${statusId}')">Update</button>
+          <button class="btn-roles" onclick="openRoleModal('${p.steamid}', '${escHtml(p.nickname || p.steamid)}')">🏷 Roles</button>
           <button class="btn-remove" onclick="removePlayer('${p.steamid}', '${statusId}')">Remove</button>
           <span class="row-status hidden" id="${statusId}"></span>
         </div>
@@ -533,4 +534,194 @@ function toast(msg, type = 'success') {
 
 function escHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ── Role Management ───────────────────────────────────────────────────────────
+const ADMIN_SB_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
+const ADMIN_SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+const ADMIN_SB_HDR  = { apikey: ADMIN_SB_ANON, Authorization: `Bearer ${ADMIN_SB_ANON}` };
+
+let adminRoles = [];
+let roleModalSteamid = '';
+
+function adminHexToRgb(hex) {
+  hex = (hex || '#818cf8').replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  const n = parseInt(hex, 16);
+  return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+}
+
+// Roles section toggle
+document.getElementById('rolesSectionToggle').addEventListener('click', () => {
+  const body = document.getElementById('rolesSectionBody');
+  const chevron = document.getElementById('rolesChevron');
+  const isOpen = !body.classList.contains('hidden');
+  body.classList.toggle('hidden', isOpen);
+  chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  if (!isOpen) loadAdminRoles();
+});
+
+async function loadAdminRoles() {
+  try {
+    const res = await fetch(`${ADMIN_SB_URL}/rest/v1/roles?select=name,color,icon&order=created_at.asc`, { headers: ADMIN_SB_HDR });
+    adminRoles = res.ok ? await res.json() : [];
+    renderRolesList();
+    populateRoleModalSelect();
+  } catch {
+    document.getElementById('rolesList').innerHTML = '<span style="color:#f87171;font-size:0.8rem">Failed to load roles.</span>';
+  }
+}
+
+function renderRolesList() {
+  const el = document.getElementById('rolesList');
+  if (!adminRoles.length) {
+    el.innerHTML = '<span style="color:rgba(255,255,255,0.3);font-size:0.8rem">No roles created yet.</span>';
+    return;
+  }
+  el.innerHTML = adminRoles.map(r => {
+    const rgb = adminHexToRgb(r.color);
+    return `<span class="admin-role-chip" style="--rb-rgb:${rgb};--rb-color:${r.color}">
+      ${r.icon ? `<span>${r.icon}</span>` : ''}
+      <span class="admin-role-chip-name">${escHtml(r.name)}</span>
+      <button class="admin-role-chip-del" onclick="deleteRole('${escHtml(r.name)}')" title="Delete role">✕</button>
+    </span>`;
+  }).join('');
+}
+
+function populateRoleModalSelect() {
+  const sel = document.getElementById('roleModalSelect');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— select role —</option>' +
+    adminRoles.map(r => `<option value="${escHtml(r.name)}">${r.icon ? r.icon + ' ' : ''}${escHtml(r.name)}</option>`).join('');
+}
+
+// Create role
+document.getElementById('createRoleBtn').addEventListener('click', async () => {
+  const name  = document.getElementById('newRoleName').value.trim();
+  const color = document.getElementById('newRoleColor').value;
+  const icon  = document.getElementById('newRoleIcon').value.trim();
+  const statusEl = document.getElementById('createRoleStatus');
+
+  if (!name) { showEl(statusEl, '✗ Enter a role name', 'error'); return; }
+  document.getElementById('createRoleBtn').disabled = true;
+  showEl(statusEl, '⏳ Creating…', 'loading');
+
+  const ok = await callRoleApi({ action: 'create_role', name, color, icon });
+  if (ok) {
+    showEl(statusEl, `✓ Role "${name.toUpperCase()}" created!`, 'success');
+    document.getElementById('newRoleName').value = '';
+    document.getElementById('newRoleIcon').value = '';
+    toast(`Role "${name.toUpperCase()}" created`, 'success');
+    await loadAdminRoles();
+  } else {
+    showEl(statusEl, '✗ Failed. Role may already exist.', 'error');
+  }
+  document.getElementById('createRoleBtn').disabled = false;
+});
+
+async function deleteRole(name) {
+  if (!confirm(`Delete role "${name}"? This removes it from all players.`)) return;
+  const ok = await callRoleApi({ action: 'delete_role', name });
+  if (ok) {
+    toast(`Role "${name}" deleted`, 'success');
+    await loadAdminRoles();
+  } else {
+    toast(`Failed to delete role "${name}"`, 'error');
+  }
+}
+
+// Role modal
+async function openRoleModal(steamid, nickname) {
+  roleModalSteamid = steamid;
+  document.getElementById('roleModalTitle').textContent = `Roles — ${nickname}`;
+  document.getElementById('roleModal').classList.remove('hidden');
+  document.getElementById('roleModalStatus').classList.add('hidden');
+
+  // Load available roles if not yet loaded
+  if (!adminRoles.length) await loadAdminRoles();
+  populateRoleModalSelect();
+
+  // Load current player roles
+  await refreshRoleModalCurrent(steamid);
+}
+
+async function refreshRoleModalCurrent(steamid) {
+  const el = document.getElementById('roleModalCurrent');
+  el.innerHTML = '<span style="color:rgba(255,255,255,0.3);font-size:0.8rem">Loading…</span>';
+  try {
+    const res = await fetch(`${ADMIN_SB_URL}/rest/v1/player_roles?steamid=eq.${steamid}&select=role`, { headers: ADMIN_SB_HDR });
+    const rows = res.ok ? await res.json() : [];
+    const cfgMap = Object.fromEntries(adminRoles.map(r => [r.name, r]));
+    if (!rows.length) {
+      el.innerHTML = '<span style="color:rgba(255,255,255,0.3);font-size:0.8rem">No roles assigned.</span>';
+      return;
+    }
+    el.innerHTML = rows.map(({ role }) => {
+      const cfg = cfgMap[role] || { color: '#818cf8', icon: '' };
+      const rgb = adminHexToRgb(cfg.color);
+      return `<span class="admin-role-chip" style="--rb-rgb:${rgb};--rb-color:${cfg.color}">
+        ${cfg.icon ? `<span>${cfg.icon}</span>` : ''}
+        <span class="admin-role-chip-name">${escHtml(role)}</span>
+        <button class="admin-role-chip-del" onclick="removeModalRole('${escHtml(role)}')" title="Remove">✕</button>
+      </span>`;
+    }).join('');
+  } catch {
+    el.innerHTML = '<span style="color:#f87171;font-size:0.8rem">Failed to load.</span>';
+  }
+}
+
+async function removeModalRole(role) {
+  const statusEl = document.getElementById('roleModalStatus');
+  showEl(statusEl, '⏳ Removing…', 'loading');
+  const ok = await callRoleApi({ action: 'remove_role', steamid: roleModalSteamid, role });
+  if (ok) {
+    showEl(statusEl, `✓ Removed "${role}"`, 'success');
+    await refreshRoleModalCurrent(roleModalSteamid);
+  } else {
+    showEl(statusEl, '✗ Failed', 'error');
+  }
+}
+
+document.getElementById('roleModalAssignBtn').addEventListener('click', async () => {
+  const role = document.getElementById('roleModalSelect').value;
+  const statusEl = document.getElementById('roleModalStatus');
+  if (!role) { showEl(statusEl, '✗ Select a role first', 'error'); return; }
+
+  showEl(statusEl, '⏳ Assigning…', 'loading');
+  const ok = await callRoleApi({ action: 'assign_role', steamid: roleModalSteamid, role });
+  if (ok) {
+    showEl(statusEl, `✓ "${role}" assigned!`, 'success');
+    document.getElementById('roleModalSelect').value = '';
+    await refreshRoleModalCurrent(roleModalSteamid);
+  } else {
+    showEl(statusEl, '✗ Failed', 'error');
+  }
+});
+
+document.getElementById('roleModalClose').addEventListener('click', () => {
+  document.getElementById('roleModal').classList.add('hidden');
+  roleModalSteamid = '';
+});
+
+document.getElementById('roleModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('roleModal')) {
+    document.getElementById('roleModal').classList.add('hidden');
+  }
+});
+
+async function callRoleApi(body) {
+  try {
+    const r = await fetch(`${API_BASE}/role-action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...body, password: adminPassword }),
+    });
+    if (r.status === 401) { toast('Wrong password — please log out and try again', 'error'); return false; }
+    const data = await r.json();
+    if (!r.ok) { toast('API error: ' + (data.error || r.status), 'error'); return false; }
+    return true;
+  } catch (err) {
+    toast('Network error: ' + err.message, 'error');
+    return false;
+  }
 }

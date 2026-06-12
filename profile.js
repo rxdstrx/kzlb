@@ -474,6 +474,9 @@ async function loadProfile(sid) {
     // Init Steam UI after content is visible
     initSteamUI();
 
+    // Load and render role badges (non-blocking)
+    _loadProfileRoles(sid);
+
   } catch (e) {
     showError('Failed to load profile. ' + e.message);
   }
@@ -596,6 +599,37 @@ function timeSince(date) {
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
   if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
   return `${Math.floor(seconds / 86400)}d`;
+}
+
+// ── Role badges ───────────────────────────────────────────────────────────────
+function _hexToRgb(hex) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  const n = parseInt(hex, 16);
+  return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+}
+
+async function _loadProfileRoles(sid) {
+  try {
+    const SB_R = 'https://btcufotfvfnuoiokghjm.supabase.co';
+    const SB_A = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+    const H = { apikey: SB_A, Authorization: `Bearer ${SB_A}` };
+    const [allRolesRes, playerRolesRes] = await Promise.all([
+      fetch(`${SB_R}/rest/v1/roles?select=name,color,icon&order=created_at.asc`, { headers: H }),
+      fetch(`${SB_R}/rest/v1/player_roles?steamid=eq.${sid}&select=role`, { headers: H }),
+    ]);
+    const allRoles    = allRolesRes.ok    ? await allRolesRes.json()    : [];
+    const playerRoles = playerRolesRes.ok ? await playerRolesRes.json() : [];
+    const rolesEl = document.getElementById('profileRoles');
+    if (!rolesEl || !playerRoles.length) return;
+    const cfg = Object.fromEntries(allRoles.map(r => [r.name, r]));
+    rolesEl.innerHTML = playerRoles.map(({ role }) => {
+      const r = cfg[role] || { color: '#818cf8', icon: '' };
+      const rgb = _hexToRgb(r.color);
+      const icon = r.icon ? `<span class="role-badge-icon">${r.icon}</span>` : '';
+      return `<span class="role-badge" style="--rb-rgb:${rgb};--rb-color:${r.color}">${icon}<span class="role-badge-text">${role}</span></span>`;
+    }).join('');
+  } catch {}
 }
 
 // ── Steam Login / Flag Change (uses auth.js getAuth()) ────────────────────────

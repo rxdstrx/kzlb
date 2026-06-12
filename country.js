@@ -1,7 +1,87 @@
 ﻿const CACHE_BASE  = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const SB_LB_URL   = 'https://btcufotfvfnuoiokghjm.supabase.co';
 const SB_LB_ANON  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+const SB_HDR_C    = { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` };
 const PAGE_SIZE = 100;
+
+// ── Role filter state ──
+let ctRoleFilter    = 'all';
+let ctRoleSteamids  = new Set();
+let ctAllRoles      = [];
+let ctPlayerRoleMap = new Map();
+
+function _ctHexToRgb(hex) {
+  hex = (hex || '#818cf8').replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  const n = parseInt(hex, 16);
+  return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+}
+
+function _ctRoleBadgesHtml(steamid) {
+  const roles = ctPlayerRoleMap.get(steamid);
+  if (!roles || !roles.length) return '';
+  const cfgMap = Object.fromEntries(ctAllRoles.map(r => [r.name, r]));
+  return roles.map(name => {
+    const cfg = cfgMap[name] || { color: '#818cf8', icon: '' };
+    const rgb = _ctHexToRgb(cfg.color);
+    const icon = cfg.icon ? `<span class="role-badge-icon">${cfg.icon}</span>` : '';
+    return `<span class="role-badge role-badge-sm" style="--rb-rgb:${rgb};--rb-color:${cfg.color}">${icon}<span class="role-badge-text">${name}</span></span>`;
+  }).join('');
+}
+
+async function initCtRoleFilter() {
+  try {
+    const [rolesRes, prRes] = await Promise.all([
+      fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon&order=created_at.asc`, { headers: SB_HDR_C }),
+      fetch(`${SB_LB_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_HDR_C }),
+    ]);
+    ctAllRoles = rolesRes.ok ? await rolesRes.json() : [];
+    const prRows = prRes.ok ? await prRes.json() : [];
+
+    for (const { steamid, role } of prRows) {
+      if (!ctPlayerRoleMap.has(steamid)) ctPlayerRoleMap.set(steamid, []);
+      ctPlayerRoleMap.get(steamid).push(role);
+    }
+
+    const bar = document.getElementById('roleFilterBar');
+    if (!bar || !ctAllRoles.length) return;
+    bar.style.display = '';
+    bar.querySelectorAll('[data-role]:not([data-role="all"])').forEach(el => el.remove());
+
+    const cfgMap = Object.fromEntries(ctAllRoles.map(r => [r.name, r]));
+    ctAllRoles.forEach(r => {
+      const btn = document.createElement('button');
+      btn.className = 'role-filter-btn';
+      btn.dataset.role = r.name;
+      btn.textContent = (r.icon ? r.icon + ' ' : '') + r.name;
+      btn.addEventListener('click', () => {
+        ctRoleFilter = r.name;
+        ctRoleSteamids = new Set(prRows.filter(x => x.role === r.name).map(x => x.steamid));
+        bar.querySelectorAll('.role-filter-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.role === r.name);
+          if (b.dataset.role === r.name) {
+            const cfg = cfgMap[r.name];
+            const rgb = _ctHexToRgb(cfg?.color);
+            b.style.cssText = `background:rgba(${rgb},0.15);border-color:rgba(${rgb},0.4);color:${cfg?.color}`;
+          } else { b.style.cssText = ''; }
+        });
+        currentPage = 1;
+        if (selectedMap) renderByMap(selectedMap);
+        else renderOverall();
+      });
+      bar.appendChild(btn);
+    });
+
+    bar.querySelector('[data-role="all"]').addEventListener('click', function() {
+      ctRoleFilter = 'all';
+      ctRoleSteamids = new Set();
+      bar.querySelectorAll('.role-filter-btn').forEach(b => { b.classList.toggle('active', b.dataset.role === 'all'); b.style.cssText = ''; });
+      currentPage = 1;
+      if (selectedMap) renderByMap(selectedMap);
+      else renderOverall();
+    });
+  } catch {}
+}
 
 // These may also be defined in auth.js (portugal.html loads both) — safe to redefine
 function fmtPlace(kz_place) {
@@ -138,17 +218,39 @@ async function init() {
     tableWrapper.classList.remove('hidden');
     renderOverall();
     buildMapList();
+
+    // Inject role filter bar if not already in the HTML (for country pages without it)
+    if (!document.getElementById('roleFilterBar')) {
+      const bar = document.createElement('div');
+      bar.id = 'roleFilterBar';
+      bar.className = 'role-filter-bar';
+      bar.style.display = 'none';
+      bar.innerHTML = '<span class="role-filter-label">Show:</span><button class="role-filter-btn active" data-role="all">All Players</button>';
+      const tabs = document.getElementById('tabOverall');
+      if (tabs && tabs.parentElement) {
+        tabs.parentElement.parentElement.insertBefore(bar, tabs.parentElement.nextSibling);
+      }
+    }
+    initCtRoleFilter();
   } catch {
     loadingState.querySelector('p').textContent = `No leaderboard data found for ${info.name} yet.`;
   }
 }
 
 function getOverallSorted() {
-  return [...allPlayers].sort((a, b) => b.kz_points - a.kz_points);
+  let players = [...allPlayers];
+  if (ctRoleFilter !== 'all') {
+    players = ctRoleSteamids.size > 0 ? players.filter(p => ctRoleSteamids.has(p.steamid)) : [];
+  }
+  return players.sort((a, b) => b.kz_points - a.kz_points);
 }
 
 function getMapSorted(mapName) {
-  return allPlayers
+  let players = allPlayers;
+  if (ctRoleFilter !== 'all') {
+    players = ctRoleSteamids.size > 0 ? players.filter(p => ctRoleSteamids.has(p.steamid)) : [];
+  }
+  return players
     .map(p => {
       const entry = (p.maps_list || []).find(m => m.map === mapName);
       return entry ? { ...p, entry } : null;
@@ -219,6 +321,7 @@ function renderOverall() {
         <div class="player-cell">
           <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
           <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${countryCode}">${p.nickname}</a>
+          ${_ctRoleBadgesHtml(p.steamid)}
         </div>
       </td>
       <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
@@ -300,6 +403,7 @@ function renderByMap(mapName) {
         <div class="player-cell">
           <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
           <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=${countryCode}">${p.nickname}</a>
+          ${_ctRoleBadgesHtml(p.steamid)}
         </div>
       </td>
       <td><span class="time-cell">${p.entry.time_record}</span></td>
