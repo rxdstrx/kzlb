@@ -1,0 +1,21 @@
+name: Bulk Update All Players
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bulk-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Python deps
+        run: pip install curl_cffi
+
+      - name: Bulk update all players
+        env:
+          CYBERSHOKE_COOKIE: ${{ secrets.CYBERSHOKE_COOKIE }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 scripts/bulk-update-all.py

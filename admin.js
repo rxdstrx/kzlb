@@ -709,6 +709,27 @@ document.getElementById('roleModal').addEventListener('click', e => {
   }
 });
 
+// ── Bulk update all players ───────────────────────────────────────────────────
+const bulkUpdateBtn    = document.getElementById('bulkUpdateBtn');
+const bulkUpdateStatus = document.getElementById('bulkUpdateStatus');
+
+if (bulkUpdateBtn) {
+  bulkUpdateBtn.addEventListener('click', async () => {
+    if (!confirm('Update ALL players in the database?\n\nThis triggers a GitHub Action that scrapes every player (~15 min for 10k players). 0 Edge Function invocations used.')) return;
+    bulkUpdateBtn.disabled = true;
+    showEl(bulkUpdateStatus, '⏳ Triggering…', 'loading');
+    bulkUpdateStatus.classList.remove('hidden');
+    const ok = await callAdminApi({ action: 'bulk_update' });
+    if (ok) {
+      showEl(bulkUpdateStatus, '✓ GitHub Action triggered! Monitor progress in the Actions tab.', 'success');
+      toast('Bulk update started — check GitHub Actions for live progress', 'success');
+    } else {
+      showEl(bulkUpdateStatus, '✗ Failed to trigger', 'error');
+    }
+    bulkUpdateBtn.disabled = false;
+  });
+}
+
 async function callRoleApi(body) {
   try {
     const r = await fetch(`${API_BASE}/admin-action`, {
