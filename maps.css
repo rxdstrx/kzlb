@@ -1,3 +1,72 @@
+/* ── Map stats bar ── */
+.map-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 700px) {
+  .map-stats-bar { grid-template-columns: repeat(2, 1fr); }
+}
+
+.map-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.map-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: rgba(56,189,248,0.08);
+  color: #38bdf8;
+  border: 1px solid rgba(56,189,248,0.15);
+}
+.map-stat-icon-wr  { background: rgba(251,191,36,0.08);  color: #fbbf24; border-color: rgba(251,191,36,0.15); }
+.map-stat-icon-you { background: rgba(52,211,153,0.08);  color: #34d399; border-color: rgba(52,211,153,0.15); }
+.map-stat-icon-avg { background: rgba(167,139,250,0.08); color: #a78bfa; border-color: rgba(167,139,250,0.15); }
+
+.map-stat-body { min-width: 0; }
+
+.map-stat-label {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.map-stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.map-stat-sub {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.3);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── */
 .back-btn {
   display: inline-flex;
   align-items: center;
