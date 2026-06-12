@@ -96,7 +96,8 @@ th.col-completions,
 th.col-record,
 th.col-yourtime,
 th.col-avgtime {
-  text-align: center;
+  text-align: center !important;
+  padding-left: 24px !important;
 }
 
 .col-completions{ width: 140px; text-align: right; padding-left: 16px; }
