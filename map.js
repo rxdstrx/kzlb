@@ -1,5 +1,11 @@
 ﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const PAGE_SIZE  = 100;
+const UNKNOWN_FLAG_SRC = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 15'%3E%3Crect width='20' height='15' rx='2' fill='%23b0b7c3'/%3E%3Ctext x='10' y='11' font-size='10' text-anchor='middle' fill='%23fff' font-family='sans-serif' font-weight='bold'%3E%3F%3C/text%3E%3C/svg%3E";
+function mapFlagImg(country) {
+  if (!country || country === 'xx')
+    return `<img src="${UNKNOWN_FLAG_SRC}" style="height:13px;border-radius:2px;vertical-align:middle;margin-left:4px" alt="?">`;
+  return `<img src="https://flagcdn.com/w20/${country}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-left:4px" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null">`;
+}
 const SB_MAP_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
 const SB_MAP_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
 const SB_MAP_HDR  = { apikey: SB_MAP_ANON, Authorization: `Bearer ${SB_MAP_ANON}` };
@@ -367,7 +373,7 @@ function renderPage() {
           <img class="player-thumb" src="${r.avatar}" onerror="this.style.display='none'" />
           <a class="player-nick" href="profile.html?steamid=${r.steamid}&country=${r.country}">${r.nickname}</a>
           ${_mapRoleBadgesHtml(r.steamid)}
-          <img src="https://flagcdn.com/w20/${r.country}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-left:4px">
+          ${mapFlagImg(r.country)}
         </div>
       </td>
       <td><span class="time-cell">${r.time_record}</span></td>
@@ -410,7 +416,7 @@ function renderPinnedSelf() {
       <td><div class="player-cell">
         <img class="player-thumb" src="${r.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
         <a class="player-nick" href="profile.html?steamid=${r.steamid}&country=${r.country}">${r.nickname}</a>
-        <img src="https://flagcdn.com/w20/${r.country}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-left:4px" onerror="this.style.display='none'">
+        ${mapFlagImg(r.country)}
         <span class="pinned-self-badge">📍 You</span>
       </div></td>
       <td><span class="time-cell">${r.time_record}</span></td>
@@ -427,7 +433,7 @@ function renderPinnedSelf() {
       <td><div class="player-cell">
         <img class="player-thumb" src="${selfRecord.avatar || auth.avatar || ''}" onerror="this.style.display='none'" />
         <a class="player-nick" href="profile.html?steamid=${selfRecord.steamid}&country=${selfRecord.country}">${selfRecord.nickname}</a>
-        <img src="https://flagcdn.com/w20/${selfRecord.country}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-left:4px" onerror="this.style.display='none'">
+        ${mapFlagImg(selfRecord.country)}
         <span class="pinned-self-badge">📍 You</span>
       </div></td>
       <td><span class="time-cell">${selfRecord.time_record}</span></td>
