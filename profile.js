@@ -337,8 +337,12 @@ async function loadProfile(sid) {
        }
      }).catch(() => {});
 
-    // If no country set, try Steam API (returns loccountrycode)
+    // If no country set, try Faceit (fastest, most accurate) + Steam in parallel
     if (!country) {
+      fetch(`${API_BASE}/api/faceit?action=country&steamid=${sid}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(d => { if (d?.country) applyCountry(d.country); })
+        .catch(() => {});
       fetch(`${API_BASE}/api/steam-user?steamid=${sid}`)
         .then(r => r.ok ? r.json() : null)
         .then(d => { if (d?.country) applyCountry(d.country); })

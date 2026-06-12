@@ -1353,7 +1353,8 @@ searchInput.addEventListener('input', async () => {
       const sid = el.dataset.steamid;
       const country = el.dataset.country;
       searchSuggestions.classList.add('hidden');
-      window.location.href = `profile.html?steamid=${sid}&country=${country}`;
+      const q = country && country !== 'xx' ? `&country=${country}` : '';
+      window.location.href = `profile.html?steamid=${sid}${q}`;
     });
   });
 
