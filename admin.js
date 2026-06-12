@@ -234,13 +234,31 @@ if (saved) {
 loginBtn.addEventListener('click', doLogin);
 loginPassword.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
-function doLogin() {
+async function doLogin() {
   const pw = loginPassword.value.trim();
   if (!pw) return;
-  adminPassword = pw;
-  sessionStorage.setItem('kz_admin_pw', pw);
+  loginBtn.disabled = true;
   loginError.classList.add('hidden');
-  showAdmin();
+
+  try {
+    const r = await fetch(`${API_BASE}/admin-action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw, action: 'verify' }),
+    });
+    if (r.status === 401) {
+      loginError.classList.remove('hidden');
+      loginBtn.disabled = false;
+      return;
+    }
+    adminPassword = pw;
+    sessionStorage.setItem('kz_admin_pw', pw);
+    showAdmin();
+  } catch {
+    loginError.textContent = 'Could not reach server. Try again.';
+    loginError.classList.remove('hidden');
+  }
+  loginBtn.disabled = false;
 }
 
 function showAdmin() {

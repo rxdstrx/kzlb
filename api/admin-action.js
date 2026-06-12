@@ -63,6 +63,10 @@ export default async function handler(req, res) {
   }
   // ─────────────────────────────────────────────────────────────────────────
 
+  if (action === 'verify') {
+    return res.status(200).json({ ok: true });
+  }
+
   if (action === 'bulk_update') {
     const token = process.env.GH_TOKEN;
     if (!token) return res.status(500).json({ error: 'No GH_TOKEN configured' });
