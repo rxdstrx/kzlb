@@ -63,11 +63,23 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
 
   const identifier = extractIdentifier(raw);
   const steamid = await resolveSteamId(identifier);
-  if (steamid) {
-    window.location.href = `profile.html?steamid=${steamid}`;
-  } else {
-    showError('Could not resolve a Steam ID from that link.');
-  }
+  if (!steamid) { showError('Could not resolve a Steam ID from that link.'); return; }
+
+  // Try Faceit for country (4s timeout so it doesn't block navigation)
+  let country = null;
+  try {
+    const fr = await fetch(
+      `https://kzlb.vercel.app/api/faceit?action=country&steamid=${steamid}`,
+      { signal: AbortSignal.timeout(4000) }
+    );
+    if (fr.ok) { const fd = await fr.json(); country = fd.country || null; }
+  } catch {}
+
+  // Save player stats in background (same as leaderboard "Add Player")
+  fetch(`https://kzlb.vercel.app/api/add-player?steamid=${steamid}&country=${country || 'xx'}`).catch(() => {});
+
+  const q = country ? `&country=${country}` : '';
+  window.location.href = `profile.html?steamid=${steamid}${q}`;
 });
 
 function extractIdentifier(input) {
