@@ -920,11 +920,11 @@ function initSteamUI() {
               window.location.href = country === 'pt' ? 'portugal.html' : `${country}.html`;
             }, 1200);
           } else {
-            // No flag — just update the UI in place
+            // No flag — update UI with unknown flag placeholder
             const flagEl = document.getElementById('playerFlag');
             const countryEl = document.getElementById('statCountryDisplay');
-            if (flagEl) flagEl.innerHTML = '';
-            if (countryEl) countryEl.innerHTML = '—';
+            if (flagEl) flagEl.innerHTML = countryToFlag(null);
+            if (countryEl) countryEl.innerHTML = `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:22px;border-radius:3px;vertical-align:middle"> Unknown`;
           }
         } else {
           flagChangeStatus.textContent = '✗ ' + (data.error || 'Failed');
