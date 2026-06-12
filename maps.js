@@ -13,13 +13,6 @@ function timeToSec(t) {
   return parseFloat(t);
 }
 
-// Parse the denominator from "rank / total" format (handles non-breaking spaces)
-function parsePlaceTotal(placeNum) {
-  const clean = (placeNum || '').replace(/[\s ]/g, '');
-  const m = clean.match(/^(\d+)\/(\d+)$/);
-  return m ? parseInt(m[2], 10) : 0;
-}
-
 async function fetchAll(url) {
   const PAGE = 1000;
   let offset = 0, rows = [];
@@ -42,14 +35,8 @@ async function init() {
   const loggedSteamid = localStorage.getItem('kz_steam_id');
 
   try {
-    // Fetch from three sources in parallel:
-    // 1. map_stats — Supabase table with authoritative global completion counts per map.
-    //    Written by bulk-update-all.py and add-player.js whenever any player is updated.
-    //    Schema: { map TEXT PK, total_completions INT, updated_at TIMESTAMPTZ }
-    // 2. player_maps — all player records (for fastest time + avg across our tracked players)
-    // 3. logged-in player's own maps (for "Your time" column)
+    // Fetch all player_maps (for record + completions + avg) and logged-in player's maps in parallel
     const requests = [
-      fetch(`${SB_URL}/rest/v1/map_stats?select=map,total_completions`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []).catch(() => []),
       fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record,place_num`),
     ];
     if (loggedSteamid) {
@@ -57,30 +44,26 @@ async function init() {
         fetchAll(`${SB_URL}/rest/v1/player_maps?steamid=eq.${loggedSteamid}&select=map,time_record`)
       );
     }
-    const [mapStatsRows, allRows, myRows = []] = await Promise.all(requests);
+    const [allRows, myRows = []] = await Promise.all(requests);
 
     // Build per-map lookup for logged-in player
     const myMap = new Map(myRows.map(r => [r.map, r.time_record]));
 
-    // Authoritative completion totals from map_stats table (populated once table exists)
-    const dbTotals = new Map((mapStatsRows || []).map(r => [r.map, r.total_completions]));
-
-    // Group all rows by map name — compute record, avg, and place_num max as fallback
-    const mapStats = new Map(); // map_name → { record, times[], maxTotal }
+    // Group all rows by map name and compute stats
+    const mapStats = new Map(); // map_name → { record, completions, times[] }
     for (const row of allRows) {
       if (!row.map) continue;
-      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, times: [], maxTotal: 0 });
+      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, uniq: 0, times: [] });
       const s = mapStats.get(row.map);
-
       const sec = timeToSec(row.time_record);
       if (isFinite(sec)) {
         s.times.push(sec);
         if (s.record === null || sec < timeToSec(s.record)) s.record = row.time_record;
       }
-
-      // Keep place_num denominator as fallback if map_stats table is empty
-      const tot = parsePlaceTotal(row.place_num);
-      if (tot > s.maxTotal) s.maxTotal = tot;
+      // place_num is stored as "rank / total" — the denominator is the global Cybershoke count
+      const clean = (row.place_num || '').replace(/[\s ]/g, '');
+      const pm = clean.match(/^(\d+)\/(\d+)$/);
+      if (pm) { const tot = parseInt(pm[2], 10); if (tot > s.uniq) s.uniq = tot; }
     }
 
     // Render rows
@@ -89,9 +72,7 @@ async function init() {
       const i   = index + 1;
       const rnk = i === 1 ? 'top1' : i === 2 ? 'top2' : i === 3 ? 'top3' : '';
       const s   = mapStats.get(map.name) || {};
-      // Use map_stats table first; fall back to max place_num denominator across tracked players
-      const total = dbTotals.get(map.name) || s.maxTotal || 0;
-      const completions = total ? total.toLocaleString() : '—';
+      const completions = s.uniq ? s.uniq.toLocaleString() : '—';
       const record      = s.record || '—';
       const yourTime    = myMap.get(map.name) || '—';
       const avgSec      = s.times?.length
