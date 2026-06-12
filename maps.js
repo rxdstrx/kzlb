@@ -42,25 +42,29 @@ async function init() {
   const loggedSteamid = localStorage.getItem('kz_steam_id');
 
   try {
-    // Fetch all player_maps (for record + unique completions + avg) and logged-in player's maps in parallel
+    // Fetch map_stats (authoritative global totals), player_maps (record + avg), and logged-in player's maps
     const requests = [
-      fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record,place_num`),
+      fetch(`${SB_URL}/rest/v1/map_stats?select=map,total_completions`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
+      fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record`),
     ];
     if (loggedSteamid) {
       requests.push(
         fetchAll(`${SB_URL}/rest/v1/player_maps?steamid=eq.${loggedSteamid}&select=map,time_record`)
       );
     }
-    const [allRows, myRows = []] = await Promise.all(requests);
+    const [mapStatsRows, allRows, myRows = []] = await Promise.all(requests);
 
     // Build per-map lookup for logged-in player
     const myMap = new Map(myRows.map(r => [r.map, r.time_record]));
 
-    // Group all rows by map name and compute stats
-    const mapStats = new Map(); // map_name → { record, maxTotal, times[] }
+    // Authoritative completion totals from map_stats table
+    const dbTotals = new Map((mapStatsRows || []).map(r => [r.map, r.total_completions]));
+
+    // Group all rows by map name and compute record + avg
+    const mapStats = new Map(); // map_name → { record, times[] }
     for (const row of allRows) {
       if (!row.map) continue;
-      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, maxTotal: 0, times: [] });
+      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, times: [] });
       const s = mapStats.get(row.map);
 
       const sec = timeToSec(row.time_record);
@@ -68,10 +72,6 @@ async function init() {
         s.times.push(sec);
         if (s.record === null || sec < timeToSec(s.record)) s.record = row.time_record;
       }
-
-      // Use place_num denominator for unique completions (global Cybershoke count)
-      const tot = parsePlaceTotal(row.place_num);
-      if (tot > s.maxTotal) s.maxTotal = tot;
     }
 
     // Render rows
@@ -80,7 +80,8 @@ async function init() {
       const i   = index + 1;
       const rnk = i === 1 ? 'top1' : i === 2 ? 'top2' : i === 3 ? 'top3' : '';
       const s   = mapStats.get(map.name) || {};
-      const completions = s.maxTotal ? s.maxTotal.toLocaleString() : '—';
+      const total = dbTotals.get(map.name) || 0;
+      const completions = total ? total.toLocaleString() : '—';
       const record      = s.record || '—';
       const yourTime    = myMap.get(map.name) || '—';
       const avgSec      = s.times?.length

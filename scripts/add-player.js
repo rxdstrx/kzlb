@@ -278,6 +278,20 @@ function getLeaderboardFile(c) {
   fs.writeFileSync(totalsFile, JSON.stringify(totalsMerged, null, 2));
   console.log(`Saved map-totals.json (${Object.keys(totalsMerged).length} maps)`);
 
+  // Upsert map totals to Supabase map_stats table
+  if (sbUrl && sbKey && Object.keys(totalsMerged).length) {
+    const sbH2 = { apikey: sbKey, Authorization: `Bearer ${sbKey}`, 'Content-Type': 'application/json' };
+    const batch = Object.entries(totalsMerged).map(([map, total]) => ({ map, total_completions: total }));
+    for (let i = 0; i < batch.length; i += 500) {
+      await fetch(`${sbUrl}/rest/v1/map_stats`, {
+        method: 'POST',
+        headers: { ...sbH2, Prefer: 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify(batch.slice(i, i + 500)),
+      }).then(r => r.ok ? null : r.text().then(t => console.warn(`map_stats upsert failed: ${t}`))).catch(e => console.warn('map_stats upsert error:', e.message));
+    }
+    console.log(`Upserted ${batch.length} map totals to Supabase map_stats`);
+  }
+
   // Apply normalized place_num back to individual cache file + mapsData in memory
   if (Object.keys(mapMaxTotal).length) {
     for (const m of (mapsData?.list || [])) {

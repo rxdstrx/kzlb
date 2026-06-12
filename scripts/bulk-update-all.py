@@ -9,6 +9,7 @@ COOKIE = os.environ.get('CYBERSHOKE_COOKIE', '')
 SB_URL  = os.environ.get('SUPABASE_URL', '')
 SB_KEY  = os.environ.get('SUPABASE_SERVICE_KEY', '')
 CONCURRENCY = 5
+map_totals = {}  # accumulates max total_completions per map across all processed players
 
 if not COOKIE:
     print('CYBERSHOKE_COOKIE not set', flush=True)
@@ -75,6 +76,19 @@ async def scrape(s, steamid, sem):
                     await asyncio.sleep(5)
         return None
 
+def _extract_total(place_num):
+    """Return the denominator from a place_num string like '12 / 8 476', or 0."""
+    clean = str(place_num).replace(' ', '').replace(' ', '')
+    if '/' not in clean:
+        return 0
+    parts = clean.split('/')
+    if len(parts) != 2:
+        return 0
+    try:
+        return int(''.join(c for c in parts[1] if c.isdigit()))
+    except (ValueError, IndexError):
+        return 0
+
 def parse(steamid, data):
     if not data:
         return None
@@ -84,16 +98,22 @@ def parse(steamid, data):
     for m in data.get('list', []):
         if not m.get('map'):
             continue
+        place = str(m.get('place_num', '')).strip()
         maps.append({
             'steamid': steamid,
             'map': m.get('map', ''),
             'points': str(m.get('points', '0')),
             'time_record': m.get('time_record', ''),
             'unixtime_record': m.get('unixtime_record', 0),
-            'place_num': str(m.get('place_num', '')).strip(),
+            'place_num': place,
             'tier': m.get('tier', 0),
             'completions': str(m.get('completions', '0')),
         })
+        # Track the global completion total for this map
+        total = _extract_total(place)
+        name  = m.get('map', '')
+        if name and total > map_totals.get(name, 0):
+            map_totals[name] = total
     pts   = str(d.get('{{Points}}', '0'))
     place = str(d.get('{{Position}}', '0'))
     nick  = h.get('title', '') or steamid  # fall back to steamid if no nickname
@@ -176,5 +196,20 @@ async def main():
 
         elapsed = (time.time() - start) / 60
         print(f'\nDone! {done}/{total} updated, {errors} skipped, {elapsed:.1f}min total', flush=True)
+
+        # Flush accumulated map completion totals to Supabase
+        if map_totals:
+            print(f'Upserting {len(map_totals)} map totals to map_stats...', flush=True)
+            batch = [{'map': m, 'total_completions': t} for m, t in map_totals.items()]
+            chunk = 500
+            for i in range(0, len(batch), chunk):
+                r = await s.post(
+                    f"{SB_URL}/rest/v1/map_stats",
+                    json=batch[i:i+chunk],
+                    headers={**SB_HDR, 'Prefer': 'resolution=merge-duplicates,return=minimal'},
+                )
+                if r.status_code not in (200, 201, 204):
+                    print(f'map_stats upsert failed: {r.status_code} {r.text[:200]}', flush=True)
+            print(f'map_stats upsert complete', flush=True)
 
 asyncio.run(main())
