@@ -50,6 +50,106 @@
 
 .nav-links a:hover { color: #fff; }
 
+/* ── Home dropdown menu ── */
+.nav-home-menu {
+  position: relative;
+  list-style: none;
+}
+
+.nav-home-trigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.nav-home-menu:hover .nav-home-trigger {
+  color: #38bdf8;
+}
+
+.nav-home-dropdown {
+  position: absolute;
+  top: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  width: 230px;
+  background: #0d0d14;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.55);
+  z-index: 2000;
+}
+
+.nav-home-menu:hover .nav-home-dropdown {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(-50%) translateY(0);
+}
+
+.nav-home-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.84rem;
+  font-weight: 500;
+  transition: background 0.12s, color 0.12s;
+}
+
+.nav-home-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+.nav-home-item:hover .nav-home-icon {
+  background: rgba(56,189,248,0.1);
+  border-color: rgba(56,189,248,0.2);
+  color: #38bdf8;
+}
+
+.nav-home-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.4);
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.nav-home-item-soon { opacity: 0.55; pointer-events: none; }
+
+.nav-soon-tag {
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+}
+
 /* Nav profile link */
 .nav-profile-link {
   display: flex;
