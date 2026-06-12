@@ -441,7 +441,7 @@ function _lbRoleBadgesHtml(steamid) {
 async function initRoleFilter() {
   try {
     const [rolesRes, prRes] = await Promise.all([
-      fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon&show_in_filter=eq.true&order=priority.asc.nullslast,created_at.asc`, { headers: SB_LB_HDR }),
+      fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon,show_in_filter&order=priority.asc.nullslast,created_at.asc`, { headers: SB_LB_HDR }),
       fetch(`${SB_LB_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_LB_HDR }),
     ]);
     lbAllRoles = rolesRes.ok ? await rolesRes.json() : [];
@@ -462,7 +462,9 @@ async function initRoleFilter() {
     bar.querySelectorAll('[data-role]:not([data-role="all"])').forEach(el => el.remove());
 
     const cfgMap = Object.fromEntries(lbAllRoles.map(r => [r.name, r]));
-    lbAllRoles.forEach(r => {
+    const filterRoles = lbAllRoles.filter(r => r.show_in_filter !== false);
+    if (!filterRoles.length) return;
+    filterRoles.forEach(r => {
       const btn = document.createElement('button');
       btn.className = 'role-filter-btn';
       btn.dataset.role = r.name;

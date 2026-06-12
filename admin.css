@@ -140,6 +140,20 @@ body {
 .btn-add:hover { opacity: 0.85; }
 .btn-add:disabled { opacity: 0.5; cursor: default; }
 
+/* ── Roles save bar ── */
+.roles-save-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(251,191,36,0.06);
+  border: 1px solid rgba(251,191,36,0.25);
+  border-radius: 10px;
+}
+.roles-save-hint { color: rgba(251,191,36,0.85); font-size: 0.8rem; flex: 1; }
+
 /* ── Bulk update bar ── */
 .bulk-update-bar {
   display: flex;
