@@ -21,10 +21,16 @@ export default async function handler(req, res) {
     if (!sbUrl || !sbKey) return res.status(500).json({ error: 'Supabase not configured' });
     const name = (params.name || '').trim().toUpperCase();
     if (!name) return res.status(400).json({ error: 'Role name required' });
+    // Get current max priority so new role goes to the bottom
+    const maxRes = await fetch(`${sbUrl}/rest/v1/roles?select=priority&order=priority.desc&limit=1`, {
+      headers: { apikey: sbKey, Authorization: `Bearer ${sbKey}` },
+    });
+    const maxRows = maxRes.ok ? await maxRes.json() : [];
+    const priority = maxRows.length > 0 ? (maxRows[0].priority ?? 0) + 1 : 0;
     const r = await fetch(`${sbUrl}/rest/v1/roles`, {
       method: 'POST',
       headers: { ...sbH, Prefer: 'return=representation' },
-      body: JSON.stringify({ name, color: params.color || '#fbbf24', icon: params.icon || '' }),
+      body: JSON.stringify({ name, color: params.color || '#fbbf24', icon: params.icon || '', priority }),
     });
     if (!r.ok) return res.status(400).json({ error: await r.text() });
     return res.json({ ok: true, name });
