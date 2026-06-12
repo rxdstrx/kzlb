@@ -9,7 +9,52 @@ const fs = require('fs');
 const path = require('path');
 
 const FACEIT_KEY = process.env.FACEIT_KEY;
-const cacheDir = path.join(__dirname, '..', 'cache');
+const SB_URL     = process.env.SUPABASE_URL;
+const SB_KEY     = process.env.SUPABASE_SERVICE_KEY;
+const cacheDir   = path.join(__dirname, '..', 'cache');
+
+const SB_HDR = SB_URL && SB_KEY ? {
+  apikey: SB_KEY,
+  Authorization: `Bearer ${SB_KEY}`,
+  'Content-Type': 'application/json',
+  Prefer: 'resolution=merge-duplicates,return=minimal',
+} : null;
+
+async function upsertToSupabase(player, mapsRaw) {
+  if (!SB_HDR) return;
+  const sid = player.steamid;
+  await fetch(`${SB_URL}/rest/v1/players`, {
+    method: 'POST',
+    headers: SB_HDR,
+    body: JSON.stringify({
+      steamid:   sid,
+      nickname:  player.nickname,
+      avatar:    player.avatar,
+      country:   player.country,
+      kz_points: Number(player.kz_points) || 0,
+      kz_place:  Number(player.kz_place)  || 0,
+      kz_maps:   (mapsRaw || []).length,
+      cached_at: player.cached_at,
+    }),
+  });
+  const rows = (mapsRaw || []).filter(m => m.map).map(m => ({
+    steamid:        sid,
+    map:            m.map,
+    points:         String(m.points || '0'),
+    time_record:    m.time_record || '',
+    unixtime_record: m.unixtime_record || 0,
+    place_num:      String(m.place_num || '').trim(),
+    tier:           m.tier || 0,
+    completions:    String(m.completions || '0'),
+  }));
+  for (let i = 0; i < rows.length; i += 200) {
+    await fetch(`${SB_URL}/rest/v1/player_maps`, {
+      method: 'POST',
+      headers: SB_HDR,
+      body: JSON.stringify(rows.slice(i, i + 200)),
+    });
+  }
+}
 
 function fmtNum(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 
@@ -90,6 +135,10 @@ async function getFaceitCountry(steamid) {
       avatar,
       maps_list: p.maps || [],
     };
+
+    // Write to Supabase immediately (0 Edge Function invocations)
+    await upsertToSupabase(player, p.maps || []);
+    console.log(`  → Supabase upserted: ${player.nickname}`);
 
     // Write individual cache file (same format as before)
     const mapsDataCompat = {
