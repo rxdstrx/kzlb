@@ -49,8 +49,8 @@ async function init() {
     // 2. player_maps — all player records (for fastest time + avg across our tracked players)
     // 3. logged-in player's own maps (for "Your time" column)
     const requests = [
-      fetch(`${SB_URL}/rest/v1/map_stats?select=map,total_completions`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
-      fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record`),
+      fetch(`${SB_URL}/rest/v1/map_stats?select=map,total_completions`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record,place_num`),
     ];
     if (loggedSteamid) {
       requests.push(
@@ -62,14 +62,14 @@ async function init() {
     // Build per-map lookup for logged-in player
     const myMap = new Map(myRows.map(r => [r.map, r.time_record]));
 
-    // Authoritative completion totals from map_stats table
+    // Authoritative completion totals from map_stats table (populated once table exists)
     const dbTotals = new Map((mapStatsRows || []).map(r => [r.map, r.total_completions]));
 
-    // Group all rows by map name and compute record + avg
-    const mapStats = new Map(); // map_name → { record, times[] }
+    // Group all rows by map name — compute record, avg, and place_num max as fallback
+    const mapStats = new Map(); // map_name → { record, times[], maxTotal }
     for (const row of allRows) {
       if (!row.map) continue;
-      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, times: [] });
+      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, times: [], maxTotal: 0 });
       const s = mapStats.get(row.map);
 
       const sec = timeToSec(row.time_record);
@@ -77,6 +77,10 @@ async function init() {
         s.times.push(sec);
         if (s.record === null || sec < timeToSec(s.record)) s.record = row.time_record;
       }
+
+      // Keep place_num denominator as fallback if map_stats table is empty
+      const tot = parsePlaceTotal(row.place_num);
+      if (tot > s.maxTotal) s.maxTotal = tot;
     }
 
     // Render rows
@@ -85,7 +89,8 @@ async function init() {
       const i   = index + 1;
       const rnk = i === 1 ? 'top1' : i === 2 ? 'top2' : i === 3 ? 'top3' : '';
       const s   = mapStats.get(map.name) || {};
-      const total = dbTotals.get(map.name) || 0;
+      // Use map_stats table first; fall back to max place_num denominator across tracked players
+      const total = dbTotals.get(map.name) || s.maxTotal || 0;
       const completions = total ? total.toLocaleString() : '—';
       const record      = s.record || '—';
       const yourTime    = myMap.get(map.name) || '—';
