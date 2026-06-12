@@ -252,7 +252,7 @@ function syncPlayerData() {
 
   // Read from Supabase (instant, no CDN delay)
   fetch(`https://btcufotfvfnuoiokghjm.supabase.co/rest/v1/players?steamid=eq.${auth.steamid}&select=steamid,nickname,avatar,country&limit=1`, {
-    headers: { apikey: SB_ANON_AUTH, Authorization: `Bearer ${SB_ANON_AUTH}`, 'Cache-Control': 'no-cache' }
+    headers: { apikey: SB_ANON_AUTH, Authorization: `Bearer ${SB_ANON_AUTH}` }
   })
   .then(r => r.json())
   .then(rows => {
