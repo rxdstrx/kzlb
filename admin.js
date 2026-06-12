@@ -711,7 +711,7 @@ document.getElementById('roleModal').addEventListener('click', e => {
 
 async function callRoleApi(body) {
   try {
-    const r = await fetch(`${API_BASE}/role-action`, {
+    const r = await fetch(`${API_BASE}/admin-action`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...body, password: adminPassword }),
