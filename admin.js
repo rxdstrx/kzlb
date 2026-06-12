@@ -282,17 +282,28 @@ logoutBtn.addEventListener('click', () => {
 async function loadPlayers() {
   adminSub.textContent = 'Loading players…';
   try {
-    const r = await fetch(WORLD_CACHE + '?bust=' + Date.now());
-    const data = await r.json();
-    allPlayers = data.players || [];
-    allPlayers.sort((a, b) => b.kz_points - a.kz_points);
+    const PAGE = 1000;
+    let offset = 0;
+    let all = [];
+    while (true) {
+      const r = await fetch(
+        `${ADMIN_SB_URL}/rest/v1/players?select=steamid,nickname,country,kz_points,avatar_url,map_count&order=kz_points.desc&limit=${PAGE}&offset=${offset}`,
+        { headers: ADMIN_SB_HDR }
+      );
+      if (!r.ok) throw new Error('Supabase ' + r.status);
+      const rows = await r.json();
+      all = all.concat(rows);
+      if (rows.length < PAGE) break;
+      offset += PAGE;
+    }
+    allPlayers = all;
     filteredPlayers = [...allPlayers];
     updateStats();
     renderTable(filteredPlayers);
     adminSub.textContent = `${allPlayers.length} players loaded`;
   } catch (err) {
     adminSub.textContent = 'Failed to load players';
-    adminTableBody.innerHTML = '<tr class="loading-row"><td colspan="6">Failed to load world cache.</td></tr>';
+    adminTableBody.innerHTML = '<tr class="loading-row"><td colspan="6">Failed to load players: ' + err.message + '</td></tr>';
   }
 }
 
@@ -456,7 +467,7 @@ async function removePlayer(steamid, statusId) {
       row.style.opacity = '0.3';
       setTimeout(() => row.remove(), 600);
     }
-    toast(`"${nick}" removed — GitHub Action running`, 'success');
+    toast(`"${nick}" removed from leaderboard`, 'success');
   } else {
     showRowStatus(statusId, '✗ Failed', 'error');
     setRowBusy(statusId, false);

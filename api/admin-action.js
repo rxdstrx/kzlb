@@ -144,15 +144,12 @@ export default async function handler(req, res) {
     if (!rows || rows.length === 0) return res.status(404).json({ error: 'not_found' });
     return res.json({ ok: true });
   } else if (action === 'remove') {
-    // Delete from Supabase immediately — leaderboard updates instantly
-    if (sbUrl && sbKey) {
-      await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
-        method: 'DELETE',
-        headers: { ...sbH, Prefer: 'return=minimal' },
-      });
-    }
-    workflow = 'admin-action.yml';
-    inputs = { action: 'remove', steamid, country: '' };
+    if (!sbUrl || !sbKey) return res.status(500).json({ error: 'Supabase not configured' });
+    await fetch(`${sbUrl}/rest/v1/player_roles?steamid=eq.${steamid}`, { method: 'DELETE', headers: sbH });
+    await fetch(`${sbUrl}/rest/v1/player_maps?steamid=eq.${steamid}`, { method: 'DELETE', headers: sbH });
+    const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, { method: 'DELETE', headers: sbH });
+    if (!r.ok) return res.status(500).json({ error: 'DB delete failed' });
+    return res.json({ ok: true });
   } else if (action === 'update') {
     workflow = 'add-player.yml';
     let existingCountry = 'xx';
