@@ -23,14 +23,21 @@
       <p class="subtitle">Map Records</p>
     </header>
 
-    <div class="table-wrapper">
+    <div class="maps-loading" id="mapsLoading">
+      <div class="spinner"></div>
+      <p>Loading map stats…</p>
+    </div>
+
+    <div class="table-wrapper hidden" id="mapsTableWrap">
       <table>
         <thead>
           <tr>
             <th class="col-rank">#</th>
             <th class="col-mapname">Map</th>
             <th class="col-tier">Tier</th>
-            <th class="col-time">Time</th>
+            <th class="col-completions">Completions</th>
+            <th class="col-record">Record</th>
+            <th class="col-yourtime">Your time</th>
           </tr>
         </thead>
         <tbody id="maps-body"></tbody>
