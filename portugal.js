@@ -139,6 +139,23 @@ async function init() {
       ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(data.updated_at))} ago`;
     }
 
+    // If logged-in user is missing from the list, fetch them directly (handles stale CDN/cache)
+    const _selfAuth = typeof getAuth === 'function' ? getAuth() : null;
+    if (_selfAuth && !allPlayers.some(p => String(p.steamid) === String(_selfAuth.steamid))) {
+      try {
+        const selfRes = await fetch(
+          `${SB_LB_URL}/rest/v1/players?steamid=eq.${_selfAuth.steamid}&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps,maps_list&limit=1`,
+          { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}`, 'Cache-Control': 'no-cache' } }
+        );
+        if (selfRes.ok) {
+          const selfRows = await selfRes.json();
+          if (selfRows?.length && String(selfRows[0].country) === 'pt') {
+            allPlayers = [...allPlayers, selfRows[0]];
+          }
+        }
+      } catch {}
+    }
+
     loadingState.classList.add('hidden');
     tableWrapper.classList.remove('hidden');
     renderOverall();
