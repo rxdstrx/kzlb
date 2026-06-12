@@ -5,7 +5,7 @@ const fs = require('fs');
 const SB_URL  = process.env.SUPABASE_URL;
 const SB_KEY  = process.env.SUPABASE_SERVICE_KEY;
 const ROLE    = 'TOP 100';
-const TOP_N   = 99; // TEMP: set back to 100 after testing
+const TOP_N   = 100;
 
 if (!SB_URL || !SB_KEY) {
   console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_KEY');
