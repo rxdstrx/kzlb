@@ -528,15 +528,13 @@ async function fetchLeaderboardPlayers(countryCode) {
   for (const p of sbPlayers) sbMap.set(p.steamid, p);
 
   // Start with GitHub players, override with fresher Supabase data where available.
-  // Country is special: keep GitHub cache value if Supabase has 'xx'/null (no country
-  // detected), so flags don't disappear for players with valid country in cache.
+  // Keep GitHub country when Supabase has 'xx'/null so flags don't disappear.
   const merged = new Map();
   for (const p of ghPlayers) {
     if (sbMap.has(p.steamid)) {
       const sb = sbMap.get(p.steamid);
       merged.set(p.steamid, {
-        ...p,
-        ...sb,
+        ...p, ...sb,
         country: (sb.country && sb.country !== 'xx') ? sb.country : (p.country || 'xx'),
       });
     } else {
