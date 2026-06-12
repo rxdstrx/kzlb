@@ -917,19 +917,15 @@ function initSteamUI() {
           else url.searchParams.set('country', country);
           history.replaceState(null, '', url.toString());
 
-          // ── Redirect to country leaderboard after a short delay ──
-          if (country && country !== 'xx') {
-            flagChangeStatus.textContent = '✅ Flag updated! Redirecting…';
-            setTimeout(() => {
-              window.location.href = country === 'pt' ? 'portugal.html' : `${country}.html`;
-            }, 1200);
-          } else {
-            // No flag — update UI with unknown flag placeholder
-            const flagEl = document.getElementById('playerFlag');
-            const countryEl = document.getElementById('statCountryDisplay');
-            if (flagEl) flagEl.innerHTML = countryToFlag(null);
-            if (countryEl) countryEl.innerHTML = `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:22px;border-radius:3px;vertical-align:middle"> Unknown`;
-          }
+          // ── Redirect to country leaderboard ──
+          flagChangeStatus.textContent = '✅ Flag updated! Redirecting…';
+          setTimeout(() => {
+            if (country && country !== 'xx') {
+              window.location.href = `country.html?code=${country}&_=${Date.now()}`;
+            } else {
+              window.location.href = `index.html`;
+            }
+          }, 800);
         } else {
           if (r.status === 404 && data.error === 'not_found') {
             flagChangeStatus.textContent = '✗ Your profile is not in the database yet. Use "Add yourself to the leaderboard" first.';

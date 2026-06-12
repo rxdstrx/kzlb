@@ -188,16 +188,16 @@ function timeToSeconds(t) {
 
 async function init() {
   try {
-    // Try Supabase first (instant)
+    // Try Supabase first (always fresh — bypass CDN cache)
     let loaded = false;
     try {
       const res = await fetch(
         `${SB_LB_URL}/rest/v1/players?country=eq.${countryCode}&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps,maps_list&limit=20000`,
-        { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
+        { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}`, 'Cache-Control': 'no-cache' } }
       );
       if (res.ok) {
         const rows = await res.json();
-        if (Array.isArray(rows) && rows.length > 0) {
+        if (Array.isArray(rows)) {
           allPlayers = rows;
           ptSub.textContent = `${allPlayers.length} players`;
           loaded = true;
@@ -205,7 +205,7 @@ async function init() {
       }
     } catch {}
 
-    // Fallback to GitHub
+    // Fallback to GitHub only if Supabase failed entirely
     if (!loaded) {
       const res = await fetch(`${CACHE_BASE}/${countryCode}-kz-players.json?bust=${Date.now()}`);
       if (!res.ok) throw new Error('No data');

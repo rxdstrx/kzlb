@@ -119,11 +119,11 @@ async function init() {
     try {
       const res = await fetch(
         `${SB_LB_URL}/rest/v1/players?country=eq.pt&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps,maps_list&limit=20000`,
-        { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
+        { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}`, 'Cache-Control': 'no-cache' } }
       );
       if (res.ok) {
         const rows = await res.json();
-        if (Array.isArray(rows) && rows.length > 0) {
+        if (Array.isArray(rows)) {
           allPlayers = rows;
           ptSub.textContent = `${allPlayers.length} players with KZ data`;
           loaded = true;
