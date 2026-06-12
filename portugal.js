@@ -1,12 +1,92 @@
 ﻿const CACHE_BASE  = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const SB_LB_URL   = 'https://btcufotfvfnuoiokghjm.supabase.co';
 const SB_LB_ANON  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+const SB_HDR_PT   = { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` };
 const PAGE_SIZE = 100;
 
 let allPlayers = [];
 let currentPage = 1;
 let currentTab = 'overall';
 let selectedMap = null;
+
+// ── Role filter state ──
+let ptRoleFilter    = 'all';
+let ptRoleSteamids  = new Set();
+let ptAllRoles      = [];
+let ptPlayerRoleMap = new Map();
+
+function _ptHexToRgb(hex) {
+  hex = (hex || '#818cf8').replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  const n = parseInt(hex, 16);
+  return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+}
+
+function _ptRoleBadgesHtml(steamid) {
+  const roles = ptPlayerRoleMap.get(steamid);
+  if (!roles || !roles.length) return '';
+  const cfgMap = Object.fromEntries(ptAllRoles.map(r => [r.name, r]));
+  return roles.map(name => {
+    const cfg = cfgMap[name] || { color: '#818cf8', icon: '' };
+    const rgb = _ptHexToRgb(cfg.color);
+    const icon = cfg.icon ? `<span class="role-badge-icon">${cfg.icon}</span>` : '';
+    return `<span class="role-badge role-badge-sm" style="--rb-rgb:${rgb};--rb-color:${cfg.color}">${icon}<span class="role-badge-text">${name}</span></span>`;
+  }).join('');
+}
+
+async function initPtRoleFilter() {
+  try {
+    const [rolesRes, prRes] = await Promise.all([
+      fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon&order=created_at.asc`, { headers: SB_HDR_PT }),
+      fetch(`${SB_LB_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_HDR_PT }),
+    ]);
+    ptAllRoles = rolesRes.ok ? await rolesRes.json() : [];
+    const prRows = prRes.ok ? await prRes.json() : [];
+
+    for (const { steamid, role } of prRows) {
+      if (!ptPlayerRoleMap.has(steamid)) ptPlayerRoleMap.set(steamid, []);
+      ptPlayerRoleMap.get(steamid).push(role);
+    }
+
+    const bar = document.getElementById('roleFilterBar');
+    if (!bar || !ptAllRoles.length) return;
+    bar.style.display = '';
+    bar.querySelectorAll('[data-role]:not([data-role="all"])').forEach(el => el.remove());
+
+    const cfgMap = Object.fromEntries(ptAllRoles.map(r => [r.name, r]));
+    ptAllRoles.forEach(r => {
+      const btn = document.createElement('button');
+      btn.className = 'role-filter-btn';
+      btn.dataset.role = r.name;
+      btn.textContent = (r.icon ? r.icon + ' ' : '') + r.name;
+      btn.addEventListener('click', () => {
+        ptRoleFilter = r.name;
+        ptRoleSteamids = new Set(prRows.filter(x => x.role === r.name).map(x => x.steamid));
+        bar.querySelectorAll('.role-filter-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.role === r.name);
+          if (b.dataset.role === r.name) {
+            const cfg = cfgMap[r.name];
+            const rgb = _ptHexToRgb(cfg?.color);
+            b.style.cssText = `background:rgba(${rgb},0.15);border-color:rgba(${rgb},0.4);color:${cfg?.color}`;
+          } else { b.style.cssText = ''; }
+        });
+        currentPage = 1;
+        if (selectedMap) renderByMap(selectedMap);
+        else renderOverall();
+      });
+      bar.appendChild(btn);
+    });
+
+    bar.querySelector('[data-role="all"]').addEventListener('click', function() {
+      ptRoleFilter = 'all';
+      ptRoleSteamids = new Set();
+      bar.querySelectorAll('.role-filter-btn').forEach(b => { b.classList.toggle('active', b.dataset.role === 'all'); b.style.cssText = ''; });
+      currentPage = 1;
+      if (selectedMap) renderByMap(selectedMap);
+      else renderOverall();
+    });
+  } catch {}
+}
 
 const loadingState = document.getElementById('loadingState');
 const tableWrapper = document.getElementById('tableWrapper');
@@ -63,17 +143,26 @@ async function init() {
     tableWrapper.classList.remove('hidden');
     renderOverall();
     buildMapList();
+    initPtRoleFilter();
   } catch (e) {
     loadingState.querySelector('p').textContent = 'Failed to load data.';
   }
 }
 
 function getOverallSorted() {
-  return [...allPlayers].sort((a, b) => b.kz_points - a.kz_points);
+  let players = [...allPlayers];
+  if (ptRoleFilter !== 'all') {
+    players = ptRoleSteamids.size > 0 ? players.filter(p => ptRoleSteamids.has(p.steamid)) : [];
+  }
+  return players.sort((a, b) => b.kz_points - a.kz_points);
 }
 
 function getMapSorted(mapName) {
-  return allPlayers
+  let players = allPlayers;
+  if (ptRoleFilter !== 'all') {
+    players = ptRoleSteamids.size > 0 ? players.filter(p => ptRoleSteamids.has(p.steamid)) : [];
+  }
+  return players
     .map(p => {
       const entry = (p.maps_list || []).find(m => m.map === mapName);
       return entry ? { ...p, entry } : null;
@@ -145,6 +234,7 @@ function renderOverall() {
         <div class="player-cell">
           <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
           <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=pt">${p.nickname}</a>
+          ${_ptRoleBadgesHtml(p.steamid)}
         </div>
       </td>
       <td><span class="pts-cell">${Number(p.kz_points).toFixed(0)}</span></td>
@@ -220,6 +310,7 @@ function renderByMap(mapName) {
         <div class="player-cell">
           <img class="player-thumb" src="${p.avatar}" onerror="this.style.display='none'" />
           <a class="player-nick" href="profile.html?steamid=${p.steamid}&country=pt">${p.nickname}</a>
+          ${_ptRoleBadgesHtml(p.steamid)}
         </div>
       </td>
       <td><span class="time-cell">${p.entry.time_record}</span></td>

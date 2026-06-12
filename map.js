@@ -1,5 +1,85 @@
 ﻿const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
 const PAGE_SIZE  = 100;
+const SB_MAP_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
+const SB_MAP_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+const SB_MAP_HDR  = { apikey: SB_MAP_ANON, Authorization: `Bearer ${SB_MAP_ANON}` };
+
+// ── Role filter state ──
+let mapRoleFilter    = 'all';
+let mapRoleSteamids  = new Set();
+let mapAllRoles      = [];
+let mapPlayerRoleMap = new Map();
+
+function _mapHexToRgb(hex) {
+  hex = (hex || '#818cf8').replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  const n = parseInt(hex, 16);
+  return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+}
+
+function _mapRoleBadgesHtml(steamid) {
+  const roles = mapPlayerRoleMap.get(steamid);
+  if (!roles || !roles.length) return '';
+  const cfgMap = Object.fromEntries(mapAllRoles.map(r => [r.name, r]));
+  return roles.map(name => {
+    const cfg = cfgMap[name] || { color: '#818cf8', icon: '' };
+    const rgb = _mapHexToRgb(cfg.color);
+    const icon = cfg.icon ? `<span class="role-badge-icon">${cfg.icon}</span>` : '';
+    return `<span class="role-badge role-badge-sm" style="--rb-rgb:${rgb};--rb-color:${cfg.color}">${icon}<span class="role-badge-text">${name}</span></span>`;
+  }).join('');
+}
+
+async function initMapRoleFilter() {
+  try {
+    const [rolesRes, prRes] = await Promise.all([
+      fetch(`${SB_MAP_URL}/rest/v1/roles?select=name,color,icon&order=created_at.asc`, { headers: SB_MAP_HDR }),
+      fetch(`${SB_MAP_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_MAP_HDR }),
+    ]);
+    mapAllRoles = rolesRes.ok ? await rolesRes.json() : [];
+    const prRows = prRes.ok ? await prRes.json() : [];
+
+    for (const { steamid, role } of prRows) {
+      if (!mapPlayerRoleMap.has(steamid)) mapPlayerRoleMap.set(steamid, []);
+      mapPlayerRoleMap.get(steamid).push(role);
+    }
+
+    const bar = document.getElementById('roleFilterBarMap');
+    if (!bar || !mapAllRoles.length) return;
+    bar.style.display = '';
+    bar.querySelectorAll('[data-role]:not([data-role="all"])').forEach(el => el.remove());
+
+    const cfgMap = Object.fromEntries(mapAllRoles.map(r => [r.name, r]));
+    mapAllRoles.forEach(r => {
+      const btn = document.createElement('button');
+      btn.className = 'role-filter-btn';
+      btn.dataset.role = r.name;
+      btn.textContent = (r.icon ? r.icon + ' ' : '') + r.name;
+      btn.addEventListener('click', () => {
+        mapRoleFilter = r.name;
+        mapRoleSteamids = new Set(prRows.filter(x => x.role === r.name).map(x => x.steamid));
+        bar.querySelectorAll('.role-filter-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.role === r.name);
+          if (b.dataset.role === r.name) {
+            const cfg = cfgMap[r.name];
+            const rgb = _mapHexToRgb(cfg?.color);
+            b.style.cssText = `background:rgba(${rgb},0.15);border-color:rgba(${rgb},0.4);color:${cfg?.color}`;
+          } else { b.style.cssText = ''; }
+        });
+        currentPage = 1;
+        applyFilter();
+      });
+      bar.appendChild(btn);
+    });
+
+    bar.querySelector('[data-role="all"]').addEventListener('click', function() {
+      mapRoleFilter = 'all';
+      mapRoleSteamids = new Set();
+      bar.querySelectorAll('.role-filter-btn').forEach(b => { b.classList.toggle('active', b.dataset.role === 'all'); b.style.cssText = ''; });
+      currentPage = 1;
+      applyFilter();
+    });
+  } catch {}
+}
 
 const ALL_COUNTRIES = [
   {code:'af',name:'Afghanistan'},{code:'al',name:'Albania'},{code:'dz',name:'Algeria'},
@@ -174,6 +254,7 @@ async function init() {
     loadingState.classList.add('hidden');
     tableWrapper.classList.remove('hidden');
     applyFilter();
+    initMapRoleFilter();
   } catch (e) {
     loadingState.querySelector('p').textContent = 'Failed to load records.';
   }
@@ -250,9 +331,15 @@ function buildCountryFilter() {
 }
 
 function applyFilter() {
-  filtered = activeCountry === 'all'
+  let base = activeCountry === 'all'
     ? allRecords
     : allRecords.filter(r => r.country === activeCountry);
+
+  if (mapRoleFilter !== 'all') {
+    base = mapRoleSteamids.size > 0 ? base.filter(r => mapRoleSteamids.has(r.steamid)) : [];
+  }
+
+  filtered = base;
   currentPage = 1;
   renderPage();
 }
@@ -279,6 +366,7 @@ function renderPage() {
         <div class="player-cell">
           <img class="player-thumb" src="${r.avatar}" onerror="this.style.display='none'" />
           <a class="player-nick" href="profile.html?steamid=${r.steamid}&country=${r.country}">${r.nickname}</a>
+          ${_mapRoleBadgesHtml(r.steamid)}
           <img src="https://flagcdn.com/w20/${r.country}.png" style="height:13px;border-radius:2px;vertical-align:middle;margin-left:4px">
         </div>
       </td>

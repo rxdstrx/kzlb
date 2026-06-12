@@ -4,6 +4,43 @@
   padding: 0;
 }
 
+/* ── Role Filter Bar (used by leaderboard, country, map pages) ── */
+.role-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.role-filter-label {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.32);
+  white-space: nowrap;
+  margin-right: 2px;
+}
+.role-filter-btn {
+  padding: 5px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+.role-filter-btn:hover {
+  background: rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.8);
+}
+.role-filter-btn.active {
+  background: rgba(56,189,248,0.12);
+  border-color: rgba(56,189,248,0.32);
+  color: #38bdf8;
+}
+
 body {
   min-height: 100vh;
   background: #060608;
