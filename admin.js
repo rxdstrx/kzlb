@@ -291,12 +291,13 @@ async function loadPlayers() {
     let all = [];
     while (true) {
       const r = await fetch(
-        `${ADMIN_SB_URL}/rest/v1/players?select=steamid,nickname,country,kz_points,avatar_url,map_count&order=kz_points.desc&limit=${PAGE}&offset=${offset}`,
+        `${ADMIN_SB_URL}/rest/v1/players?select=steamid,nickname,country,kz_points,avatar,kz_maps&order=kz_points.desc&limit=${PAGE}&offset=${offset}`,
         { headers: ADMIN_SB_HDR }
       );
       if (!r.ok) throw new Error('Supabase ' + r.status);
       const rows = await r.json();
-      all = all.concat(rows);
+      // normalize to field names used by renderTable
+      all = all.concat(rows.map(p => ({ ...p, avatar_url: p.avatar || '', map_count: p.kz_maps || 0 })));
       if (rows.length < PAGE) break;
       offset += PAGE;
     }
