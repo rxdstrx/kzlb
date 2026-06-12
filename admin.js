@@ -4,6 +4,10 @@ const API_BASE = window.location.hostname === 'localhost' || window.location.hos
   ? 'http://localhost:3000/api'
   : 'https://kzlb.vercel.app/api';
 
+const ADMIN_SB_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
+const ADMIN_SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
+const ADMIN_SB_HDR  = { apikey: ADMIN_SB_ANON, Authorization: `Bearer ${ADMIN_SB_ANON}` };
+
 const ALL_COUNTRIES = [
   { code: 'xx', name: 'No flag', flag: '' },
   { code: 'af', name: 'Afghanistan', flag: '🇦🇫' },
@@ -566,9 +570,6 @@ function escHtml(s) {
 }
 
 // ── Role Management ───────────────────────────────────────────────────────────
-const ADMIN_SB_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
-const ADMIN_SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
-const ADMIN_SB_HDR  = { apikey: ADMIN_SB_ANON, Authorization: `Bearer ${ADMIN_SB_ANON}` };
 
 let adminRoles = [];
 let roleModalSteamid = '';
