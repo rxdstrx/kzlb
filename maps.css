@@ -86,18 +86,10 @@
 .col-mapname    { width: auto; }
 .col-tier       { width: 60px; }
 .th-icon-cell {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-}
-
-th.col-completions,
-th.col-record,
-th.col-yourtime,
-th.col-avgtime {
-  text-align: center !important;
-  padding-left: 24px !important;
 }
 
 .col-completions{ width: 140px; text-align: right; padding-left: 16px; }
