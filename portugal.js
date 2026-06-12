@@ -272,7 +272,7 @@ function renderPinnedSelf(sorted) {
   const auth = typeof getAuth === 'function' ? getAuth() : null;
   if (!auth) return;
 
-  const idx = sorted.findIndex(p => p.steamid === auth.steamid);
+  const idx = sorted.findIndex(p => String(p.steamid) === String(auth.steamid));
   // Only pin on this country's leaderboard if the player actually belongs here
   if (idx === -1) return;
 
@@ -348,7 +348,7 @@ function renderPinnedSelfByMap(sorted, mapName, cc) {
   const auth = typeof getAuth === 'function' ? getAuth() : null;
   if (!auth) return;
 
-  const idx = sorted.findIndex(p => p.steamid === auth.steamid);
+  const idx = sorted.findIndex(p => String(p.steamid) === String(auth.steamid));
   const tr = document.createElement('tr');
   tr.id = 'pinned-self-row';
   tr.className = 'pinned-self-row';
