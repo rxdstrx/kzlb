@@ -28,6 +28,46 @@
       <p>Loading map stats…</p>
     </div>
 
+    <!-- Summary stats bar -->
+    <div class="map-stats-bar hidden" id="mapsStatsBar">
+      <div class="map-stat-card">
+        <div class="map-stat-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="map-stat-body">
+          <div class="map-stat-label">Total maps</div>
+          <div class="map-stat-value" id="aggStatMaps">—</div>
+        </div>
+      </div>
+      <div class="map-stat-card">
+        <div class="map-stat-icon map-stat-icon-you">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <div class="map-stat-body">
+          <div class="map-stat-label">Your completions</div>
+          <div class="map-stat-value" id="aggStatYourComp">—</div>
+        </div>
+      </div>
+      <div class="map-stat-card">
+        <div class="map-stat-icon map-stat-icon-wr">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="map-stat-body">
+          <div class="map-stat-label">Best record</div>
+          <div class="map-stat-value" id="aggStatRecord">—</div>
+        </div>
+      </div>
+      <div class="map-stat-card">
+        <div class="map-stat-icon map-stat-icon-avg">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <div class="map-stat-body">
+          <div class="map-stat-label">Average time</div>
+          <div class="map-stat-value" id="aggStatAvg">—</div>
+        </div>
+      </div>
+    </div>
+
     <div class="table-wrapper hidden" id="mapsTableWrap">
       <table>
         <thead>
@@ -38,6 +78,7 @@
             <th class="col-completions">Completions</th>
             <th class="col-record">Record</th>
             <th class="col-yourtime">Your time</th>
+            <th class="col-avgtime">Avg time</th>
           </tr>
         </thead>
         <tbody id="maps-body"></tbody>
