@@ -77,10 +77,12 @@ export default async function handler(req, res) {
     if (!sbUrl || !sbKey) return res.status(500).json({ error: 'Supabase not configured' });
     const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
       method: 'PATCH',
-      headers: sbH,
-      body: JSON.stringify({ country, updated_at: new Date().toISOString() }),
+      headers: { ...sbH, Prefer: 'return=representation' },
+      body: JSON.stringify({ country }),
     });
     if (!r.ok) return res.status(500).json({ error: 'DB update failed' });
+    const rows = await r.json();
+    if (!rows || rows.length === 0) return res.status(404).json({ error: 'not_found' });
     return res.json({ ok: true });
   } else if (action === 'remove') {
     // Delete from Supabase immediately — leaderboard updates instantly
