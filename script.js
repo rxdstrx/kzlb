@@ -429,8 +429,9 @@ function _lbHexToRgb(hex) {
 function _lbRoleBadgesHtml(steamid) {
   const roles = lbPlayerRoleMap.get(steamid);
   if (!roles || !roles.length) return '';
-  const cfgMap = Object.fromEntries(lbAllRoles.map(r => [r.name, r]));
-  return roles.map(name => {
+  const cfgMap = Object.fromEntries(lbAllRoles.map((r, i) => [r.name, { ...r, _idx: i }]));
+  const sorted = [...roles].sort((a, b) => (cfgMap[a]?._idx ?? 9999) - (cfgMap[b]?._idx ?? 9999));
+  return sorted.map(name => {
     const cfg = cfgMap[name] || { color: '#818cf8', icon: '' };
     const rgb = _lbHexToRgb(cfg.color);
     const icon = cfg.icon ? `<span class="role-badge-icon">${cfg.icon}</span>` : '';
