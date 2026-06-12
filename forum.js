@@ -55,15 +55,25 @@
     const postError = document.getElementById('postError');
     const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-    let activeCat = 'all';
-    let offset    = 0;
-    let threads   = [];
-    let hasMore   = false;
-    let threadIds = new Set();
+    let activeCat    = 'all';
+    let offset       = 0;
+    let threads      = [];
+    let hasMore      = false;
+    let threadIds    = new Set();
+    let myListLikes  = new Set();
+
+    // ── Upvote delegation (catches clicks before <a> navigates) ──
+    listEl.addEventListener('click', e => {
+      const btn = e.target.closest('.thread-upvote');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      toggleListUpvote(btn, btn.dataset.threadId);
+    });
 
     // ── Load threads ──
     async function loadThreads(reset = true) {
-      if (reset) { offset = 0; threads = []; threadIds = new Set(); listEl.innerHTML = '<div class="forum-loading">Loading threads…</div>'; }
+      if (reset) { offset = 0; threads = []; threadIds = new Set(); myListLikes = new Set(); listEl.innerHTML = '<div class="forum-loading">Loading threads…</div>'; }
       const catFilter = activeCat === 'all' ? '' : `&category=eq.${activeCat}`;
       const res = await fetch(
         `${SB_URL}/rest/v1/forum_threads?order=created_at.desc&limit=${PAGE_SIZE + 1}&offset=${offset}${catFilter}&select=*`,
@@ -80,6 +90,50 @@
 
       renderThreads();
       loadMoreBtn.style.display = hasMore ? 'inline-block' : 'none';
+      loadMyListLikes();
+    }
+
+    async function loadMyListLikes() {
+      const auth = getAuth();
+      if (!auth || !threads.length) return;
+      const ids = threads.map(t => `t_${t.id}`).join(',');
+      const res = await fetch(`${SB_URL}/rest/v1/forum_likes?steamid=eq.${auth.steamid}&target_id=in.(${ids})&select=target_id`, { headers: HDR });
+      const rows = await res.json();
+      if (!Array.isArray(rows)) return;
+      rows.forEach(r => myListLikes.add(r.target_id));
+      // update upvote button states without full re-render
+      threads.forEach(t => {
+        const btn = listEl.querySelector(`.thread-upvote[data-thread-id="${t.id}"]`);
+        if (btn) btn.classList.toggle('upvoted', myListLikes.has(`t_${t.id}`));
+      });
+    }
+
+    async function toggleListUpvote(btn, threadId) {
+      const auth = getAuth();
+      if (!auth) { window.location.href = 'login.html'; return; }
+      const targetKey = `t_${threadId}`;
+      const wasLiked  = myListLikes.has(targetKey);
+      const thread    = threads.find(t => String(t.id) === String(threadId));
+      const newCount  = Math.max(0, ((thread?.likes) || 0) + (wasLiked ? -1 : 1));
+      // optimistic
+      wasLiked ? myListLikes.delete(targetKey) : myListLikes.add(targetKey);
+      btn.classList.toggle('upvoted', !wasLiked);
+      const countEl = btn.querySelector('.thread-upvote-count');
+      if (countEl) countEl.textContent = newCount;
+      if (thread) thread.likes = newCount;
+      // persist
+      if (wasLiked) {
+        await fetch(`${SB_URL}/rest/v1/forum_likes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR });
+      } else {
+        await fetch(`${SB_URL}/rest/v1/forum_likes`, {
+          method: 'POST', headers: { ...HDR, Prefer: 'return=minimal' },
+          body: JSON.stringify({ steamid: auth.steamid, target_id: targetKey }),
+        });
+      }
+      await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, {
+        method: 'PATCH', headers: { ...HDR, Prefer: 'return=minimal' },
+        body: JSON.stringify({ likes: newCount }),
+      });
     }
 
     function renderThreads() {
@@ -101,11 +155,15 @@
               <span class="thread-meta-sep">·</span>
               <span>${timeAgo(t.created_at)}</span>
               <span class="thread-meta-sep">·</span>
-              <span>❤ ${t.likes||0}</span>
-              <span class="thread-meta-sep">·</span>
               <span>💬 ${t.reply_count||0}</span>
             </div>
           </div>
+          <button class="thread-upvote ${myListLikes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="thread-upvote-count">${t.likes||0}</span>
+          </button>
         </a>`).join('');
     }
 
