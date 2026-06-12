@@ -581,7 +581,7 @@ document.getElementById('rolesSectionToggle').addEventListener('click', () => {
 
 async function loadAdminRoles() {
   try {
-    const res = await fetch(`${ADMIN_SB_URL}/rest/v1/roles?select=name,color,icon,priority&order=priority.asc.nullslast,created_at.asc`, { headers: ADMIN_SB_HDR });
+    const res = await fetch(`${ADMIN_SB_URL}/rest/v1/roles?select=name,color,icon,priority,show_in_filter&order=priority.asc.nullslast,created_at.asc`, { headers: ADMIN_SB_HDR });
     adminRoles = res.ok ? await res.json() : [];
     renderRolesList();
     populateRoleModalSelect();
@@ -605,9 +605,23 @@ function renderRolesList() {
       </span>
       ${r.icon ? `<span>${r.icon}</span>` : ''}
       <span class="admin-role-chip-name">${escHtml(r.name)}</span>
+      <button class="role-filter-toggle ${r.show_in_filter !== false ? 'on' : 'off'}" onclick="toggleRoleFilter('${escHtml(r.name)}', ${r.show_in_filter !== false})" title="${r.show_in_filter !== false ? 'Shown in leaderboard filter — click to hide' : 'Hidden from leaderboard filter — click to show'}">${r.show_in_filter !== false ? '👁 Filter' : '🚫 Hidden'}</button>
       <button class="admin-role-chip-del" onclick="deleteRole('${escHtml(r.name)}')" title="Delete role">✕</button>
     </span>`;
   }).join('');
+}
+
+async function toggleRoleFilter(name, currentlyOn) {
+  const newVal = !currentlyOn;
+  const ok = await callRoleApi({ action: 'toggle_filter', name, show: newVal });
+  if (ok) {
+    const role = adminRoles.find(r => r.name === name);
+    if (role) role.show_in_filter = newVal;
+    renderRolesList();
+    toast(`"${name}" ${newVal ? 'shown in' : 'hidden from'} leaderboard filter`, 'success');
+  } else {
+    toast(`Failed to update filter for "${name}"`, 'error');
+  }
 }
 
 async function moveRole(index, direction) {
