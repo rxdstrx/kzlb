@@ -2,6 +2,14 @@ const SB_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
 const SB_HDR  = { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` };
 
+function secToTime(s) {
+  if (!isFinite(s) || s < 0) return '—';
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = (s % 60).toFixed(4).padStart(7, '0');
+  return h ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${m}:${sec}`;
+}
+
 function timeToSec(t) {
   if (!t || t === '—') return Infinity;
   t = t.trim();
@@ -66,6 +74,28 @@ async function init() {
       if (pm) { const tot = parseInt(pm[2], 10); if (tot > s.uniq) s.uniq = tot; }
     }
 
+    // Aggregate stats
+    let bestRecordSec = Infinity, bestRecord = null;
+    const allTimesFlat = [];
+    for (const [, s] of mapStats) {
+      if (s.record !== null) {
+        const sec = timeToSec(s.record);
+        if (sec < bestRecordSec) { bestRecordSec = sec; bestRecord = s.record; }
+      }
+      allTimesFlat.push(...s.times);
+    }
+    const avgAllSec = allTimesFlat.length
+      ? allTimesFlat.reduce((a, b) => a + b, 0) / allTimesFlat.length
+      : null;
+
+    document.getElementById('aggStatMaps').textContent = ALL_MAPS.length;
+    document.getElementById('aggStatYourComp').textContent = loggedSteamid
+      ? `${myRows.length} / ${ALL_MAPS.length}`
+      : '—';
+    document.getElementById('aggStatRecord').textContent = bestRecord || '—';
+    document.getElementById('aggStatAvg').textContent = avgAllSec !== null ? secToTime(avgAllSec) : '—';
+    document.getElementById('mapsStatsBar').classList.remove('hidden');
+
     // Render rows
     mapsBody.innerHTML = '';
     ALL_MAPS.forEach((map, index) => {
@@ -93,6 +123,7 @@ async function init() {
         <td class="maps-stat-cell">${completions}</td>
         <td class="maps-stat-cell maps-record-cell">${record}</td>
         <td class="maps-stat-cell ${yourTime !== '—' ? 'maps-yourtime-cell' : 'maps-dash-cell'}">${yourTime}</td>
+        <td class="maps-stat-cell maps-avg-cell">${avgSec !== null ? secToTime(avgSec) : '—'}</td>
       `;
       tr.addEventListener('click', () => {
         window.location.href = `map.html?map=${encodeURIComponent(map.name)}`;
