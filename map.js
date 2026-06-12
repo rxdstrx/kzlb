@@ -278,7 +278,9 @@ async function init() {
 
     // ── Map stats bar ─────────────────────────────────────────────────────────
     if (allRecords.length) {
-      // Unique completions: read from map_stats table (authoritative), fall back to place_num denominator
+      // Unique completions: read from map_stats table (authoritative global count from Cybershoke).
+      // map_stats is kept current by bulk-update-all.py and add-player.js on every player update.
+      // Falls back to place_num denominator (max seen across tracked players) if table is empty.
       const mapStatsRes = await fetch(
         `${SB_URL}/rest/v1/map_stats?map=eq.${encodeURIComponent(mapName)}&select=total_completions&limit=1`,
         { headers: SB_HDR }

@@ -9,7 +9,19 @@ COOKIE = os.environ.get('CYBERSHOKE_COOKIE', '')
 SB_URL  = os.environ.get('SUPABASE_URL', '')
 SB_KEY  = os.environ.get('SUPABASE_SERVICE_KEY', '')
 CONCURRENCY = 5
-map_totals = {}  # accumulates max total_completions per map across all processed players
+# map_totals accumulates the global completion count per map as we process players.
+# Each player's place_num looks like "12 / 71 035" — the denominator (71035) is
+# Cybershoke's live count of unique players who finished that map.
+# After all players are processed, the highest seen value per map is upserted to
+# the Supabase `map_stats` table so the frontend can read accurate counts.
+#
+# Supabase table required (run once in SQL Editor):
+#   CREATE TABLE IF NOT EXISTS map_stats (
+#     map               TEXT PRIMARY KEY,
+#     total_completions INT  NOT NULL DEFAULT 0,
+#     updated_at        TIMESTAMPTZ DEFAULT NOW()
+#   );
+map_totals = {}
 
 if not COOKIE:
     print('CYBERSHOKE_COOKIE not set', flush=True)
