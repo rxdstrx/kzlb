@@ -170,7 +170,11 @@ async def main():
                 errors += 1
                 print(f'[SKIP] {steamid} — no data returned', flush=True)
 
-        await asyncio.gather(*[process(sid) for sid in steamids])
+        async def staggered(idx, sid):
+            await asyncio.sleep(idx * 0.5)  # stagger startup so tasks don't all fire at once
+            await process(sid)
+
+        await asyncio.gather(*[staggered(i, sid) for i, sid in enumerate(steamids)])
 
         elapsed = (time.time() - start) / 60
         print(f'\nDone! {done}/{total} updated, {errors} skipped, {elapsed:.1f}min total', flush=True)
