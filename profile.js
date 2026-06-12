@@ -299,7 +299,10 @@ async function loadProfile(sid) {
     const desc    = header.desc || {};
     // For the logged-in player's own profile, use localStorage country (updates instantly on flag change)
     const lsCountry = (sid === localStorage.getItem('kz_steam_id')) ? localStorage.getItem('kz_country') : null;
-    const cacheCountry = (data.country && data.country !== 'xx') ? data.country : null;
+    const dbCountry = data.country || null;
+    // noFlagConfirmed = player explicitly chose "no flag" (xx) — must not be overridden by Faceit/Steam
+    let noFlagConfirmed = dbCountry === 'xx';
+    const cacheCountry = (dbCountry && !noFlagConfirmed) ? dbCountry : null;
     const rawCountry = lsCountry || cacheCountry || urlCountry || null;
     let country = (rawCountry && rawCountry !== 'xx') ? rawCountry : null;
 
@@ -334,6 +337,7 @@ async function loadProfile(sid) {
      .then(rows => {
        if (rows?.length) {
          const c = rows[0].country;
+         if (c === 'xx') noFlagConfirmed = true;
          applyCountry(c && c !== 'xx' ? c : null);
          if (c && c !== 'xx' && sid === localStorage.getItem('kz_steam_id')) {
            localStorage.setItem('kz_country', c);
@@ -341,15 +345,15 @@ async function loadProfile(sid) {
        }
      }).catch(() => {});
 
-    // If no country set, try Faceit (fastest, most accurate) + Steam in parallel
-    if (!country) {
+    // Only try Faceit/Steam if country is genuinely unknown (never set, not deliberately removed)
+    if (!country && !noFlagConfirmed) {
       fetch(`${API_BASE}/api/faceit?action=country&steamid=${sid}`)
         .then(r => r.ok ? r.json() : null)
-        .then(d => { if (d?.country) applyCountry(d.country); })
+        .then(d => { if (d?.country && !noFlagConfirmed) applyCountry(d.country); })
         .catch(() => {});
       fetch(`${API_BASE}/api/steam-user?steamid=${sid}`)
         .then(r => r.ok ? r.json() : null)
-        .then(d => { if (d?.country) applyCountry(d.country); })
+        .then(d => { if (d?.country && !noFlagConfirmed) applyCountry(d.country); })
         .catch(() => {});
     }
 
