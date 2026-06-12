@@ -52,14 +52,19 @@ export default async function handler(req, res) {
     headers: {
       apikey: sbKey, Authorization: `Bearer ${sbKey}`,
       'Content-Type': 'application/json',
-      Prefer: 'return=minimal',
+      Prefer: 'return=representation',
     },
-    body: JSON.stringify({ country, updated_at: new Date().toISOString() }),
+    body: JSON.stringify({ country }),
   });
 
   if (!sbRes.ok) {
     const err = await sbRes.text();
     return res.status(500).json({ error: 'DB update failed: ' + err });
+  }
+
+  const rows = await sbRes.json();
+  if (!rows || rows.length === 0) {
+    return res.status(404).json({ error: 'not_found' });
   }
 
   return res.status(200).json({ ok: true });

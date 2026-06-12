@@ -931,7 +931,11 @@ function initSteamUI() {
             if (countryEl) countryEl.innerHTML = `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:22px;border-radius:3px;vertical-align:middle"> Unknown`;
           }
         } else {
-          flagChangeStatus.textContent = '✗ ' + (data.error || 'Failed');
+          if (r.status === 404 && data.error === 'not_found') {
+            flagChangeStatus.textContent = '✗ Your profile is not in the database yet. Use "Add yourself to the leaderboard" first.';
+          } else {
+            flagChangeStatus.textContent = '✗ ' + (data.error || 'Failed');
+          }
           flagChangeStatus.className = 'flag-change-status error';
           if (r.status === 401 && typeof clearAuth === 'function') {
             clearAuth();
