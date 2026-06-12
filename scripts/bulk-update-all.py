@@ -8,7 +8,7 @@ import asyncio, json, os, sys, time
 COOKIE = os.environ.get('CYBERSHOKE_COOKIE', '')
 SB_URL  = os.environ.get('SUPABASE_URL', '')
 SB_KEY  = os.environ.get('SUPABASE_SERVICE_KEY', '')
-CONCURRENCY = 15
+CONCURRENCY = 5
 
 if not COOKIE:
     print('CYBERSHOKE_COOKIE not set', flush=True)
@@ -53,6 +53,7 @@ async def scrape(s, steamid, sem):
             'steamid64': steamid, 'sub_type': 0, 'type': 1,
         }
         hdrs = {**CY_HDR, 'Referer': f'https://cybershoke.net/ru/cs2/leaderboard/kz/maps/{steamid}'}
+        await asyncio.sleep(0.3)  # space out requests to avoid 429
         for attempt in range(3):
             try:
                 r = await s.post(
