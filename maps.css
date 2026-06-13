@@ -98,7 +98,7 @@
 .col-avgtime    { width: 140px; text-align: right; padding-left: 16px; }
 .col-time       { width: 120px; text-align: right; }
 
-.maps-stat-cell      { text-align: right; padding-left: 16px; font-variant-numeric: tabular-nums; font-size: 0.85rem; color: rgba(255,255,255,0.55); }
+.maps-stat-cell      { text-align: center; padding-left: 16px; font-variant-numeric: tabular-nums; font-size: 0.85rem; color: rgba(255,255,255,0.55); }
 .maps-record-cell    { color: #fbbf24; font-weight: 600; }
 .maps-yourtime-cell  { color: #34d399; font-weight: 600; }
 .maps-avg-cell       { color: #a78bfa; }
