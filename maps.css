@@ -85,11 +85,13 @@
 
 .col-mapname    { width: auto; }
 .col-tier       { width: 60px; }
-.th-icon-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
+.th-icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  margin-right: 4px;
+  position: relative;
+  top: -1px;
 }
 
 .col-completions{ width: 140px; text-align: right; padding-left: 16px; }
