@@ -134,12 +134,20 @@ async function init() {
       }
     } catch {}
 
-    // Fallback to GitHub raw
-    if (!loaded) {
-      const res  = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
-      const data = await res.json();
-      allPlayers = data.players || [];
-      ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(data.updated_at))} ago`;
+    // Always fetch cache for maps_list (Supabase doesn't store it)
+    try {
+      const cacheRes  = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
+      const cacheData = await cacheRes.json();
+      const cachePlayers = cacheData.players || [];
+      if (!loaded) {
+        allPlayers = cachePlayers;
+        ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(cacheData.updated_at))} ago`;
+      } else {
+        const mapsById = new Map(cachePlayers.map(p => [String(p.steamid), p.maps_list || []]));
+        allPlayers = allPlayers.map(p => ({ ...p, maps_list: mapsById.get(String(p.steamid)) || [] }));
+      }
+    } catch {
+      if (!loaded) throw new Error('Cache failed');
     }
 
     // If logged-in user is missing from the list, fetch them directly (handles stale CDN/cache)
