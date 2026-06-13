@@ -208,13 +208,21 @@ async function init() {
       }
     } catch {}
 
-    // Fallback to GitHub only if Supabase failed entirely
-    if (!loaded) {
-      const res = await fetch(`${CACHE_BASE}/${countryCode}-kz-players.json?bust=${Date.now()}`);
-      if (!res.ok) throw new Error('No data');
-      const data = await res.json();
-      allPlayers = data.players || [];
-      ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(data.updated_at))} ago`;
+    // Always fetch cache for maps_list (Supabase doesn't store it)
+    try {
+      const cacheRes = await fetch(`${CACHE_BASE}/${countryCode}-kz-players.json?bust=${Date.now()}`);
+      if (!cacheRes.ok && !loaded) throw new Error('No data');
+      const cacheData = await cacheRes.json();
+      const cachePlayers = cacheData.players || [];
+      if (!loaded) {
+        allPlayers = cachePlayers;
+        ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(cacheData.updated_at))} ago`;
+      } else {
+        const mapsById = new Map(cachePlayers.map(p => [String(p.steamid), p.maps_list || []]));
+        allPlayers = allPlayers.map(p => ({ ...p, maps_list: mapsById.get(String(p.steamid)) || [] }));
+      }
+    } catch (e) {
+      if (!loaded) throw e;
     }
 
     // If logged-in user is missing from the list, fetch them directly (handles stale CDN/cache)
