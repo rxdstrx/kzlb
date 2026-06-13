@@ -404,14 +404,42 @@ function renderPinnedSelfCountry(sorted) {
   ptBody.insertBefore(tr, ptBody.firstChild);
 }
 
-function renderByMap(mapName) {
+async function renderByMap(mapName) {
   ptBody.innerHTML = '';
   noData.classList.add('hidden');
   document.getElementById('thPoints').textContent = 'Time';
   document.getElementById('thPlace').textContent  = 'Position';
   document.getElementById('thMaps').textContent   = 'Runs';
 
-  const sorted = getMapSorted(mapName);
+  // Fetch live from Supabase player_maps
+  let sorted = [];
+  try {
+    const steamids = allPlayers.map(p => p.steamid);
+    const playerById = new Map(allPlayers.map(p => [String(p.steamid), p]));
+    const CHUNK = 150;
+    const entries = [];
+    for (let i = 0; i < steamids.length; i += CHUNK) {
+      const ids = steamids.slice(i, i + CHUNK).join(',');
+      const res = await fetch(
+        `${SB_LB_URL}/rest/v1/player_maps?map=eq.${encodeURIComponent(mapName)}&steamid=in.(${ids})&select=steamid,time_record,place_num,completions&limit=1000`,
+        { headers: SB_HDR_C }
+      );
+      if (res.ok) entries.push(...await res.json());
+    }
+    sorted = entries
+      .map(r => { const p = playerById.get(String(r.steamid)); return p ? { ...p, entry: r } : null; })
+      .filter(Boolean)
+      .sort((a, b) => timeToSeconds(a.entry.time_record) - timeToSeconds(b.entry.time_record));
+  } catch {}
+
+  // Fallback to cached maps_list if Supabase returns nothing
+  if (!sorted.length) sorted = getMapSorted(mapName);
+
+  // Apply role filter
+  if (ctRoleFilter !== 'all') {
+    sorted = ctRoleSteamids.size > 0 ? sorted.filter(p => ctRoleSteamids.has(p.steamid)) : [];
+  }
+
   if (!sorted.length) {
     noData.textContent = `No ${info.name} players found for ${mapName}`;
     noData.classList.remove('hidden');
