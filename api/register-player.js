@@ -53,6 +53,21 @@ export default async function handler(req, res) {
   const ghToken = process.env.GH_TOKEN;
   if (!ghToken) return res.status(500).json({ error: 'GH_TOKEN not configured' });
 
+  // ── 0. Check Supabase first — if player exists skip all GitHub work ──
+  const sbUrl = process.env.SUPABASE_URL;
+  const sbKey = process.env.SUPABASE_SERVICE_KEY;
+  if (sbUrl && sbKey) {
+    try {
+      const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}&select=steamid,nickname,country,avatar&limit=1`, {
+        headers: { apikey: sbKey, Authorization: `Bearer ${sbKey}` },
+      });
+      if (r.ok) {
+        const rows = await r.json();
+        if (rows[0]) return res.status(200).json({ ok: true, already: true, ...rows[0] });
+      }
+    } catch {}
+  }
+
   // ── 1. Fetch player info from playerdb (free, no API key) ──
   let nickname = steamid, avatar = '', country = 'xx';
   try {

@@ -15,6 +15,27 @@ export default async function handler(req, res) {
   const token = process.env.GH_TOKEN;
   if (!token) return res.status(500).json({ error: 'No token configured' });
 
+  // Cooldown: 1 hour per steamid
+  const sbUrl = process.env.SUPABASE_URL;
+  const sbKey = process.env.SUPABASE_SERVICE_KEY;
+  if (sbUrl && sbKey) {
+    try {
+      const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}&select=updated_at&limit=1`, {
+        headers: { apikey: sbKey, Authorization: `Bearer ${sbKey}` },
+      });
+      if (r.ok) {
+        const rows = await r.json();
+        if (rows[0]?.updated_at) {
+          const minsAgo = (Date.now() - new Date(rows[0].updated_at).getTime()) / 60000;
+          if (minsAgo < 60) {
+            const wait = Math.ceil(60 - minsAgo);
+            return res.status(429).json({ error: `Updated too recently. Try again in ${wait} minute${wait !== 1 ? 's' : ''}.` });
+          }
+        }
+      }
+    } catch {}
+  }
+
   // Look up existing country from player cache
   let country = 'xx';
   let playerFound = false;
