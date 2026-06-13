@@ -93,10 +93,18 @@
   margin-right: 4px;
 }
 
-.col-completions{ width: 150px; text-align: right; padding-left: 8px; white-space: nowrap; }
-.col-record     { width: 150px; text-align: right; padding-left: 8px; white-space: nowrap; }
-.col-yourtime   { width: 150px; text-align: right; padding-left: 8px; white-space: nowrap; }
-.col-avgtime    { width: 150px; text-align: right; padding-left: 8px; white-space: nowrap; }
+.col-completions{ width: 150px; }
+.col-record     { width: 150px; }
+.col-yourtime   { width: 150px; }
+.col-avgtime    { width: 150px; }
+
+th.col-completions,
+th.col-record,
+th.col-yourtime,
+th.col-avgtime {
+  text-align: center !important;
+  white-space: nowrap;
+}
 .col-time       { width: 120px; text-align: right; }
 
 .maps-stat-cell      { text-align: right; padding-left: 16px; font-variant-numeric: tabular-nums; font-size: 0.85rem; color: rgba(255,255,255,0.55); }
