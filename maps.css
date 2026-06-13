@@ -85,26 +85,10 @@
 
 .col-mapname    { width: auto; }
 .col-tier       { width: 60px; }
-.th-icon {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  vertical-align: middle;
-  margin-right: 4px;
-}
-
-.col-completions{ width: 150px; }
-.col-record     { width: 150px; }
-.col-yourtime   { width: 150px; }
-.col-avgtime    { width: 150px; }
-
-th.col-completions,
-th.col-record,
-th.col-yourtime,
-th.col-avgtime {
-  text-align: center !important;
-  white-space: nowrap;
-}
+.col-completions{ width: 130px; text-align: right; }
+.col-record     { width: 130px; text-align: right; }
+.col-yourtime   { width: 130px; text-align: right; }
+.col-avgtime    { width: 130px; text-align: right; }
 .col-time       { width: 120px; text-align: right; }
 
 .maps-stat-cell      { text-align: right; font-variant-numeric: tabular-nums; font-size: 0.85rem; color: rgba(255,255,255,0.55); }
