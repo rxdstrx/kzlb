@@ -550,7 +550,8 @@
       const target = document.getElementById('lb-table');
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const top = target.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
       }
     });
   </script>
