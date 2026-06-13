@@ -35,7 +35,7 @@
         </span>
         <div class="nav-home-dropdown">
           <div class="nav-home-dropdown-inner">
-          <a href="index.html#leaderboard-section" class="nav-home-item">
+          <a href="index.html#lb-table" class="nav-home-item" id="navLbLink">
             <span class="nav-home-icon">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </span>
@@ -421,7 +421,7 @@
 
       <!-- Main leaderboard -->
       <div id="lbPaginationTop" class="lb-pagination hidden"></div>
-      <div class="table-wrapper">
+      <div class="table-wrapper" id="lb-table">
         <table>
           <thead>
             <tr id="leaderboard-head">
@@ -545,5 +545,14 @@
   <script src="supabase-client.js"></script>
   <script src="friends.js"></script>
   <script src="chat.js"></script>
+  <script>
+    document.getElementById('navLbLink')?.addEventListener('click', function(e) {
+      const target = document.getElementById('lb-table');
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  </script>
 </body>
 </html>
