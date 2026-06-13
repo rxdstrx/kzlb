@@ -41,6 +41,8 @@
   color: #38bdf8;
 }
 
+html { scroll-behavior: smooth; }
+
 body {
   min-height: 100vh;
   background: #060608;
