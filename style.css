@@ -41,7 +41,8 @@
   color: #38bdf8;
 }
 
-html { scroll-behavior: smooth; }
+html, body { scroll-behavior: smooth; }
+#lb-table { scroll-margin-top: 90px; }
 
 body {
   min-height: 100vh;
