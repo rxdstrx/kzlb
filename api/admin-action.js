@@ -1,16 +1,33 @@
+const ALLOWED_ORIGINS = ['https://rxdstrx.github.io', 'https://kzlb.vercel.app'];
+
+const failedAttempts = new Map();
+const LOCKOUT_LIMIT = 5;
+const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
+
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin || '';
+  if (ALLOWED_ORIGINS.includes(origin)) res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).end();
+
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
+  const now = Date.now();
+  const attempts = failedAttempts.get(ip) || { count: 0, until: 0 };
+  if (attempts.until > now) return res.status(429).json({ error: 'Too many failed attempts. Try again later.' });
 
   const { password, action, steamid, country, ...params } = req.body || {};
 
   const adminPassword = process.env.ADMIN_PASSWORD;
   if (!adminPassword || password !== adminPassword) {
+    attempts.count++;
+    if (attempts.count >= LOCKOUT_LIMIT) attempts.until = now + LOCKOUT_MS;
+    failedAttempts.set(ip, attempts);
     return res.status(401).json({ error: 'Unauthorized' });
   }
+
+  failedAttempts.delete(ip);
 
   const sbUrl = process.env.SUPABASE_URL;
   const sbKey = process.env.SUPABASE_SERVICE_KEY;
