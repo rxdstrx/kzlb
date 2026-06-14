@@ -207,6 +207,7 @@ async function markNotifsRead(auth) {
 // ══════════════════════════════════════════
 
 let _pollInterval = null;
+let _realtimeOk = false;
 
 function subscribeRealtime(auth) {
   if (!window.sbClient) {
@@ -259,15 +260,21 @@ function subscribeRealtime(auth) {
     })
     .subscribe((status, err) => {
       if (err) console.warn('[friends] realtime error:', err);
+      // Track websocket health so we only fall back to polling when it's down.
+      _realtimeOk = (status === 'SUBSCRIBED');
     });
 
-  // Always run polling alongside real-time as a reliable fallback
+  // Polling only runs as a fallback when realtime is NOT connected (see startPolling).
   startPolling(auth);
 }
 
 function startPolling(auth) {
   if (_pollInterval) return;
   _pollInterval = setInterval(async () => {
+    // Realtime pushes new requests/notifications instantly. While the websocket is
+    // healthy, skip the background requests entirely — they were the constant drain.
+    // Only poll when realtime is down (no sbClient or connection dropped).
+    if (_realtimeOk) return;
     await pollNotifications(auth.steamid);
     // Also poll accepted notifications so sender gets live bell without refresh
     const prevCount = _acceptedNotifs.length;
@@ -277,7 +284,7 @@ function startPolling(auth) {
     if (_acceptedNotifs.length > prevCount || newUnread > prevUnread) {
       flashBell();
     }
-  }, 5000);
+  }, 20000);
 }
 
 async function pollNotifications(steamid) {
