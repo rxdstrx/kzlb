@@ -36,7 +36,7 @@ async function init() {
 
   try {
     const requests = [
-      fetch(`${CDN_BASE}/map-stats.json`).then(r => { if (!r.ok) throw new Error('map-stats fetch failed'); return r.json(); }),
+      fetch(`${CDN_BASE}/map-stats.json`).then(r => r.ok ? r.json() : { maps: {} }).catch(() => ({ maps: {} })),
     ];
     if (loggedSteamid) requests.push(fetchMyMaps(loggedSteamid));
 
