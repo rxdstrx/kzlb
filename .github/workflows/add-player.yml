@@ -56,13 +56,9 @@ jobs:
         run: node scripts/add-player.js "${{ github.event.inputs.steamid }}" "${{ github.event.inputs.country }}" "${{ github.event.inputs.nickname }}"
 
       - name: Normalize place totals and rebuild world
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           node scripts/normalize-place-totals.js
           node scripts/rebuild-world.js
-          node scripts/compute-map-stats.js
 
       - name: Commit results
         run: |
@@ -72,7 +68,7 @@ jobs:
           git diff --staged --quiet || git commit -m "add player: ${{ github.event.inputs.steamid }} (${{ github.event.inputs.country }})"
           git pull --rebase origin main
           node scripts/rebuild-world.js
-          git add cache/world-kz-players.json cache/map-stats.json
+          git add cache/world-kz-players.json
           git diff --staged --quiet || git commit -m "rebuild world after merge"
           git push origin HEAD:main
 
@@ -84,5 +80,4 @@ jobs:
           curl -s "$BASE/${STEAMID}.json" &
           curl -s "$BASE/world-kz-players.json" &
           curl -s "$BASE/${COUNTRY}-kz-players.json" &
-          curl -s "$BASE/map-stats.json" &
           wait
