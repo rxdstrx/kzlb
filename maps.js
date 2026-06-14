@@ -10,17 +10,6 @@ function secToTime(s) {
   return h ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${m}:${sec}`;
 }
 
-function timeToSec(t) {
-  if (!t || t === '—') return Infinity;
-  t = t.trim();
-  const p = t.split(':');
-  try {
-    if (p.length === 3) return Math.abs(parseInt(p[0])) * 3600 + parseInt(p[1]) * 60 + parseFloat(p[2]);
-    if (p.length === 2) return parseInt(p[0]) * 60 + parseFloat(p[1]);
-  } catch {}
-  return parseFloat(t);
-}
-
 async function fetchAll(url) {
   const PAGE = 1000;
   let offset = 0, rows = [];
@@ -43,33 +32,32 @@ async function init() {
   const loggedSteamid = localStorage.getItem('kz_steam_id');
 
   try {
+    // Aggregated per-map stats are computed server-side by the `map_stats_live`
+    // view (one row per map) instead of pulling every player_maps row to the
+    // browser. Same numbers, ~6 kB instead of ~300 kB+, and still fully live.
     const requests = [
-      fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record,place_num`),
+      fetch(`${SB_URL}/rest/v1/map_stats_live?select=map,completions,record,avg_sec`, { headers: SB_HDR })
+        .then(r => r.ok ? r.json() : []),
     ];
+    // "Your time" stays a per-player lookup — only the logged-in user's own rows.
     if (loggedSteamid) {
       requests.push(
         fetchAll(`${SB_URL}/rest/v1/player_maps?steamid=eq.${loggedSteamid}&select=map,time_record`)
       );
     }
-    const [allRows, myRows = []] = await Promise.all(requests);
+    const [statRows, myRows = []] = await Promise.all(requests);
 
     const myMap = new Map(myRows.map(r => [r.map, r.time_record]));
 
-    // Use sum+count instead of times[] to avoid large array spread stack overflows
     const mapStats = new Map();
-    for (const row of allRows) {
-      if (!row.map) continue;
-      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, uniq: 0, timeSum: 0, timeCount: 0 });
-      const s = mapStats.get(row.map);
-      const sec = timeToSec(row.time_record);
-      if (isFinite(sec)) {
-        s.timeSum += sec;
-        s.timeCount++;
-        if (s.record === null || sec < timeToSec(s.record)) s.record = row.time_record;
-      }
-      const clean = (row.place_num || '').replace(/[\s ]/g, '');
-      const pm = clean.match(/^(\d+)\/(\d+)$/);
-      if (pm) { const tot = parseInt(pm[2], 10); if (tot > s.uniq) s.uniq = tot; }
+    for (const r of statRows) {
+      if (!r.map) continue;
+      const avg = (r.avg_sec === null || r.avg_sec === undefined) ? null : Number(r.avg_sec);
+      mapStats.set(r.map, {
+        completions: Number(r.completions) || 0,
+        record:      r.record || null,
+        avgSec:      (avg !== null && isFinite(avg)) ? avg : null,
+      });
     }
 
     // Render rows
@@ -78,10 +66,10 @@ async function init() {
       const i   = index + 1;
       const rnk = i === 1 ? 'top1' : i === 2 ? 'top2' : i === 3 ? 'top3' : '';
       const s   = mapStats.get(map.name) || {};
-      const completions = s.uniq ? s.uniq.toLocaleString() : '—';
+      const completions = s.completions ? s.completions.toLocaleString() : '—';
       const record      = s.record || '—';
       const yourTime    = myMap.get(map.name) || '—';
-      const avgSec      = s.timeCount > 0 ? s.timeSum / s.timeCount : null;
+      const avgSec      = (s.avgSec !== null && s.avgSec !== undefined) ? s.avgSec : null;
 
       const tr = document.createElement('tr');
       tr.style.cursor = 'pointer';
