@@ -54,7 +54,7 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json',
       Prefer: 'return=representation',
     },
-    body: JSON.stringify({ country }),
+    body: JSON.stringify({ country, updated_at: new Date().toISOString() }),
   });
 
   if (!sbRes.ok) {
