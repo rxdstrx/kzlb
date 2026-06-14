@@ -441,12 +441,24 @@ function _lbRoleBadgesHtml(steamid) {
 
 async function initRoleFilter() {
   try {
-    const [rolesRes, prRes] = await Promise.all([
-      fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon,show_in_filter&order=priority.asc.nullslast,created_at.asc`, { headers: SB_LB_HDR }),
-      fetch(`${SB_LB_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_LB_HDR }),
-    ]);
-    lbAllRoles = rolesRes.ok ? await rolesRes.json() : [];
-    const prRows = prRes.ok ? await prRes.json() : [];
+    // Roles + assignments change rarely — cache across page navigations (120s) so
+    // browsing multiple pages doesn't refetch every role assignment each time.
+    let _roles, prRows;
+    const _ck = 'kz_roles_cache_v1';
+    try {
+      const c = JSON.parse(sessionStorage.getItem(_ck) || 'null');
+      if (c && Date.now() - c.t < 120000) { _roles = c.roles; prRows = c.pr; }
+    } catch {}
+    if (!_roles) {
+      const [rolesRes, prRes] = await Promise.all([
+        fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon,show_in_filter&order=priority.asc.nullslast,created_at.asc`, { headers: SB_LB_HDR }),
+        fetch(`${SB_LB_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_LB_HDR }),
+      ]);
+      _roles = rolesRes.ok ? await rolesRes.json() : [];
+      prRows = prRes.ok ? await prRes.json() : [];
+      try { sessionStorage.setItem(_ck, JSON.stringify({ t: Date.now(), roles: _roles, pr: prRows })); } catch {}
+    }
+    lbAllRoles = _roles;
 
     // Build steamid → [roles] map
     lbPlayerRoleMap = new Map();
@@ -509,17 +521,25 @@ setTimeout(initRoleFilter, 0);
 async function fetchLeaderboardPlayers(countryCode) {
   const file = (countryCode && countryCode !== 'world') ? `${countryCode}-kz-players.json` : 'world-kz-players.json';
 
-  // Fetch GitHub cache + Supabase in parallel
-  const [ghResult, sbResult] = await Promise.allSettled([
-    fetch(`${CACHE_BASE}/${file}?bust=${Date.now()}`).then(r => r.ok ? r.json() : null),
-    fetch(
-      `${SB_LB_URL}/rest/v1/players?order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
-      { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
-    ).then(r => r.ok ? r.json() : null),
-  ]);
+  // 1) Load the free GitHub cache first — the full player list, served from CDN
+  //    at zero Supabase bandwidth.
+  let ghData = null;
+  try { ghData = await fetch(`${CACHE_BASE}/${file}?bust=${Date.now()}`).then(r => r.ok ? r.json() : null); } catch {}
+  const ghPlayers = ghData ? (ghData.players || ghData) : [];
 
-  const ghPlayers  = ghResult.status === 'fulfilled'  && ghResult.value  ? (ghResult.value.players || ghResult.value) : [];
-  const sbPlayers  = sbResult.status === 'fulfilled'  && sbResult.value  ? sbResult.value : [];
+  // 2) From Supabase, fetch ONLY players changed since the cache was built
+  //    (new registrations + button-updates). A 10-minute buffer absorbs any
+  //    clock skew between the GitHub Action and Supabase so nothing fresh is missed.
+  const cacheTime = ghData && ghData.updated_at ? new Date(ghData.updated_at).getTime() : null;
+  const anchor = cacheTime ? new Date(cacheTime - 10 * 60 * 1000).toISOString() : null;
+  const sbQuery = anchor
+    ? `${SB_LB_URL}/rest/v1/players?updated_at=gt.${encodeURIComponent(anchor)}&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`
+    : `${SB_LB_URL}/rest/v1/players?order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`;
+  let sbPlayers = [];
+  try {
+    sbPlayers = await fetch(sbQuery, { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } })
+      .then(r => r.ok ? r.json() : null) || [];
+  } catch {}
 
   if (!ghPlayers.length && !sbPlayers.length) return [];
 

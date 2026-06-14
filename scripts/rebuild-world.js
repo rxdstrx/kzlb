@@ -60,7 +60,11 @@ async function syncToSupabase(allPlayers) {
     kz_place:  Number(p.kz_place)  || 0,
     kz_maps:   Number(p.kz_maps)   || (p.maps_list?.length) || 0,
     cached_at: p.cached_at || new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    // NOTE: deliberately do NOT set updated_at here. The bulk world-rebuild must
+    // preserve each player's real last-update time so (a) the homepage can fetch
+    // only players changed since the cache was built, and (b) the update cooldown
+    // isn't reset for everyone on every rebuild. Real updates (scrape-player,
+    // register-player) set updated_at themselves.
   }));
 
   // Batch upsert in chunks of 500

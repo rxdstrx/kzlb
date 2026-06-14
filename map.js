@@ -38,12 +38,23 @@ function _mapRoleBadgesHtml(steamid) {
 
 async function initMapRoleFilter() {
   try {
-    const [rolesRes, prRes] = await Promise.all([
-      fetch(`${SB_MAP_URL}/rest/v1/roles?select=name,color,icon,show_in_filter&order=priority.asc.nullslast,created_at.asc`, { headers: SB_MAP_HDR }),
-      fetch(`${SB_MAP_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_MAP_HDR }),
-    ]);
-    mapAllRoles = rolesRes.ok ? await rolesRes.json() : [];
-    const prRows = prRes.ok ? await prRes.json() : [];
+    // Roles + assignments change rarely — cache across page navigations (120s).
+    let _roles, prRows;
+    const _ck = 'kz_roles_cache_v1';
+    try {
+      const c = JSON.parse(sessionStorage.getItem(_ck) || 'null');
+      if (c && Date.now() - c.t < 120000) { _roles = c.roles; prRows = c.pr; }
+    } catch {}
+    if (!_roles) {
+      const [rolesRes, prRes] = await Promise.all([
+        fetch(`${SB_MAP_URL}/rest/v1/roles?select=name,color,icon,show_in_filter&order=priority.asc.nullslast,created_at.asc`, { headers: SB_MAP_HDR }),
+        fetch(`${SB_MAP_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_MAP_HDR }),
+      ]);
+      _roles = rolesRes.ok ? await rolesRes.json() : [];
+      prRows = prRes.ok ? await prRes.json() : [];
+      try { sessionStorage.setItem(_ck, JSON.stringify({ t: Date.now(), roles: _roles, pr: prRows })); } catch {}
+    }
+    mapAllRoles = _roles;
 
     for (const { steamid, role } of prRows) {
       if (!mapPlayerRoleMap.has(steamid)) mapPlayerRoleMap.set(steamid, []);
@@ -212,19 +223,34 @@ async function init() {
   const SB_HDR  = { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` };
 
   try {
-    // Load GitHub cache + Supabase player_maps in parallel
-    const [ghRes, sbMapRes, sbPlayersRes] = await Promise.all([
+    // Load the free GitHub cache (has every player's name/avatar/country) and
+    // ONLY this map's records from Supabase — not all players. Player info comes
+    // from the free cache; we fetch from Supabase only the handful of players who
+    // have a record here but aren't in the cache yet (added since last rebuild).
+    const [ghRes, sbMapRes] = await Promise.all([
       fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`).then(r => r.ok ? r.json() : null),
       fetch(`${SB_URL}/rest/v1/player_maps?map=eq.${encodeURIComponent(mapName)}&select=steamid,time_record,place_num,completions,points`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
-      fetch(`${SB_URL}/rest/v1/players?select=steamid,nickname,avatar,country&limit=10000`, { headers: SB_HDR }).then(r => r.ok ? r.json() : []),
     ]);
 
     const ghPlayers  = ghRes?.players || [];
     const sbMapRows  = Array.isArray(sbMapRes) ? sbMapRes : [];
-    const sbPlayers  = Array.isArray(sbPlayersRes) ? sbPlayersRes : [];
 
-    // Build Supabase player lookup
-    const sbPlayerMap = new Map(sbPlayers.map(p => [p.steamid, p]));
+    // Player info (nickname/avatar/country) keyed by steamid — start from the free cache.
+    const sbPlayerMap = new Map();
+    ghPlayers.forEach(p => sbPlayerMap.set(p.steamid, { nickname: p.nickname, avatar: p.avatar, country: p.country || 'xx' }));
+
+    // Fetch info only for players on this map who aren't in the cache yet, in safe chunks.
+    const missingIds = [...new Set(sbMapRows.map(e => e.steamid).filter(id => !sbPlayerMap.has(id)))];
+    for (let i = 0; i < missingIds.length; i += 150) {
+      const chunk = missingIds.slice(i, i + 150);
+      try {
+        const res = await fetch(`${SB_URL}/rest/v1/players?steamid=in.(${chunk.join(',')})&select=steamid,nickname,avatar,country`, { headers: SB_HDR });
+        if (res.ok) {
+          const rows = await res.json();
+          rows.forEach(p => sbPlayerMap.set(p.steamid, { nickname: p.nickname, avatar: p.avatar, country: p.country || 'xx' }));
+        }
+      } catch {}
+    }
 
     // Start with GitHub records
     const seen = new Map();
