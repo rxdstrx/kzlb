@@ -37,12 +37,23 @@ function _ptRoleBadgesHtml(steamid) {
 
 async function initPtRoleFilter() {
   try {
-    const [rolesRes, prRes] = await Promise.all([
-      fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon,show_in_filter&order=priority.asc.nullslast,created_at.asc`, { headers: SB_HDR_PT }),
-      fetch(`${SB_LB_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_HDR_PT }),
-    ]);
-    ptAllRoles = rolesRes.ok ? await rolesRes.json() : [];
-    const prRows = prRes.ok ? await prRes.json() : [];
+    // Roles + assignments change rarely — cache across page navigations (120s).
+    let _roles, prRows;
+    const _ck = 'kz_roles_cache_v1';
+    try {
+      const c = JSON.parse(sessionStorage.getItem(_ck) || 'null');
+      if (c && Date.now() - c.t < 120000) { _roles = c.roles; prRows = c.pr; }
+    } catch {}
+    if (!_roles) {
+      const [rolesRes, prRes] = await Promise.all([
+        fetch(`${SB_LB_URL}/rest/v1/roles?select=name,color,icon,show_in_filter&order=priority.asc.nullslast,created_at.asc`, { headers: SB_HDR_PT }),
+        fetch(`${SB_LB_URL}/rest/v1/player_roles?select=steamid,role`, { headers: SB_HDR_PT }),
+      ]);
+      _roles = rolesRes.ok ? await rolesRes.json() : [];
+      prRows = prRes.ok ? await prRes.json() : [];
+      try { sessionStorage.setItem(_ck, JSON.stringify({ t: Date.now(), roles: _roles, pr: prRows })); } catch {}
+    }
+    ptAllRoles = _roles;
 
     for (const { steamid, role } of prRows) {
       if (!ptPlayerRoleMap.has(steamid)) ptPlayerRoleMap.set(steamid, []);
@@ -117,38 +128,50 @@ function timeToSeconds(t) {
 
 async function init() {
   try {
-    // Try Supabase first (instant, no CDN delay)
     let loaded = false;
+    let cacheData = null;
+    let cachePlayers = [];
+
+    // 1) Load the free PT cache first — full list + per-map maps_list, zero Supabase bandwidth.
     try {
-      const res = await fetch(
-        `${SB_LB_URL}/rest/v1/players?country=eq.pt&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
-        { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }
-      );
-      if (res.ok) {
-        const rows = await res.json();
-        if (Array.isArray(rows)) {
-          allPlayers = rows;
-          ptSub.textContent = `${allPlayers.length} players with KZ data`;
+      const cacheRes = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
+      if (cacheRes.ok) {
+        cacheData = await cacheRes.json();
+        cachePlayers = cacheData.players || [];
+        if (cachePlayers.length) {
+          allPlayers = cachePlayers;
+          ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(cacheData.updated_at))} ago`;
           loaded = true;
         }
       }
     } catch {}
 
-    // Always fetch cache for maps_list (Supabase doesn't store it)
+    // 2) Overlay only PT players changed since the cache was built (new + button-updates).
+    //    10-min buffer absorbs clock skew. No cache → fall back to the full PT list.
     try {
-      const cacheRes  = await fetch(`${CACHE_BASE}/pt-kz-players.json?bust=${Date.now()}`);
-      const cacheData = await cacheRes.json();
-      const cachePlayers = cacheData.players || [];
-      if (!loaded) {
-        allPlayers = cachePlayers;
-        ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(cacheData.updated_at))} ago`;
-      } else {
-        const mapsById = new Map(cachePlayers.map(p => [String(p.steamid), p.maps_list || []]));
-        allPlayers = allPlayers.map(p => ({ ...p, maps_list: mapsById.get(String(p.steamid)) || [] }));
+      const cacheTime = cacheData && cacheData.updated_at ? new Date(cacheData.updated_at).getTime() : null;
+      const anchor = cacheTime ? new Date(cacheTime - 10 * 60 * 1000).toISOString() : null;
+      const sbUrl = anchor
+        ? `${SB_LB_URL}/rest/v1/players?country=eq.pt&updated_at=gt.${encodeURIComponent(anchor)}&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`
+        : `${SB_LB_URL}/rest/v1/players?country=eq.pt&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`;
+      const res = await fetch(sbUrl, { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } });
+      if (res.ok) {
+        const rows = await res.json();
+        if (Array.isArray(rows) && rows.length) {
+          const mapsById = new Map(cachePlayers.map(p => [String(p.steamid), p.maps_list || []]));
+          const byId = new Map(allPlayers.map(p => [String(p.steamid), p]));
+          rows.forEach(r => byId.set(String(r.steamid), { ...r, maps_list: mapsById.get(String(r.steamid)) || byId.get(String(r.steamid))?.maps_list || [] }));
+          allPlayers = [...byId.values()];
+          if (!loaded) ptSub.textContent = `${allPlayers.length} players with KZ data`;
+          loaded = true;
+        }
       }
-    } catch {
-      if (!loaded) throw new Error('Cache failed');
-    }
+    } catch {}
+
+    if (!loaded) throw new Error('No data');
+    allPlayers.sort((a, b) => (Number(b.kz_points) || 0) - (Number(a.kz_points) || 0));
+    const _ago = cacheData && cacheData.updated_at ? ` · Updated ${timeSince(new Date(cacheData.updated_at))} ago` : '';
+    ptSub.textContent = `${allPlayers.length} players with KZ data${_ago}`;
 
     // If logged-in user is missing from the list, fetch them directly (handles stale CDN/cache)
     const _selfAuth = typeof getAuth === 'function' ? getAuth() : null;
