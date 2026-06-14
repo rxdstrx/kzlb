@@ -517,14 +517,32 @@ async function initRoleFilter() {
 // Fire role filter init after DOM is ready (non-blocking)
 setTimeout(initRoleFilter, 0);
 
-// Fetch players — merge GitHub (existing 4000) with Supabase (newly added/updated)
+// Fetch players — merge GitHub cache with Supabase (newly added/updated)
 async function fetchLeaderboardPlayers(countryCode) {
-  const file = (countryCode && countryCode !== 'world') ? `${countryCode}-kz-players.json` : 'world-kz-players.json';
+  const isWorld = !countryCode || countryCode === 'world';
 
-  // 1) Load the free GitHub cache first — the full player list, served from CDN
-  //    at zero Supabase bandwidth.
+  // ── Country view: Supabase is AUTHORITATIVE for membership (reflects flag changes /
+  //    moves instantly; the cache files can lag, so they must not decide membership).
+  //    The cache only supplies maps_list. Bounded by country size.
+  if (!isWorld) {
+    const [cacheRes, sbRes] = await Promise.allSettled([
+      fetch(`${CACHE_BASE}/${countryCode}-kz-players.json?bust=${Date.now()}`).then(r => r.ok ? r.json() : null),
+      fetch(`${SB_LB_URL}/rest/v1/players?country=eq.${countryCode}&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`,
+            { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } }).then(r => r.ok ? r.json() : null),
+    ]);
+    const cachePlayers = cacheRes.status === 'fulfilled' && cacheRes.value ? (cacheRes.value.players || cacheRes.value) : [];
+    const sbRows = sbRes.status === 'fulfilled' && Array.isArray(sbRes.value) ? sbRes.value : [];
+    const mapsById = new Map(cachePlayers.map(p => [String(p.steamid), p.maps_list || []]));
+    const list = sbRows.length
+      ? sbRows.map(p => ({ ...p, maps_list: mapsById.get(String(p.steamid)) || [] }))
+      : cachePlayers;
+    return list.slice().sort((a, b) => (Number(b.kz_points) || 0) - (Number(a.kz_points) || 0));
+  }
+
+  // ── World view: free GitHub cache base + only players changed since the cache was
+  //    built. The world list isn't country-filtered, so the delta can't drop members.
   let ghData = null;
-  try { ghData = await fetch(`${CACHE_BASE}/${file}?bust=${Date.now()}`).then(r => r.ok ? r.json() : null); } catch {}
+  try { ghData = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`).then(r => r.ok ? r.json() : null); } catch {}
   const ghPlayers = ghData ? (ghData.players || ghData) : [];
 
   // 2) From Supabase, fetch ONLY players changed since the cache was built
