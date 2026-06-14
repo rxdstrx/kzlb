@@ -1,4 +1,3 @@
-const CDN_BASE = 'https://cdn.jsdelivr.net/gh/rxdstrx/kzlb@main/cache';
 const SB_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
 const SB_HDR  = { apikey: SB_ANON, Authorization: `Bearer ${SB_ANON}` };
@@ -11,14 +10,23 @@ function secToTime(s) {
   return h ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${m}:${sec}`;
 }
 
-async function fetchMyMaps(steamid) {
+function timeToSec(t) {
+  if (!t || t === '—') return Infinity;
+  t = t.trim();
+  const p = t.split(':');
+  try {
+    if (p.length === 3) return Math.abs(parseInt(p[0])) * 3600 + parseInt(p[1]) * 60 + parseFloat(p[2]);
+    if (p.length === 2) return parseInt(p[0]) * 60 + parseFloat(p[1]);
+  } catch {}
+  return parseFloat(t);
+}
+
+async function fetchAll(url) {
   const PAGE = 1000;
   let offset = 0, rows = [];
   while (true) {
-    const r = await fetch(
-      `${SB_URL}/rest/v1/player_maps?steamid=eq.${steamid}&select=map,time_record&limit=${PAGE}&offset=${offset}`,
-      { headers: SB_HDR }
-    );
+    const sep = url.includes('?') ? '&' : '?';
+    const r = await fetch(`${url}${sep}limit=${PAGE}&offset=${offset}`, { headers: SB_HDR });
     if (!r.ok) break;
     const batch = await r.json();
     rows = rows.concat(batch);
@@ -36,24 +44,44 @@ async function init() {
 
   try {
     const requests = [
-      fetch(`${CDN_BASE}/map-stats.json`).then(r => r.ok ? r.json() : { maps: {} }).catch(() => ({ maps: {} })),
+      fetchAll(`${SB_URL}/rest/v1/player_maps?select=map,time_record,place_num`),
     ];
-    if (loggedSteamid) requests.push(fetchMyMaps(loggedSteamid));
+    if (loggedSteamid) {
+      requests.push(
+        fetchAll(`${SB_URL}/rest/v1/player_maps?steamid=eq.${loggedSteamid}&select=map,time_record`)
+      );
+    }
+    const [allRows, myRows = []] = await Promise.all(requests);
 
-    const [statsData, myRows = []] = await Promise.all(requests);
+    const myMap = new Map(myRows.map(r => [r.map, r.time_record]));
 
-    const mapStats = statsData.maps || {};
-    const myMap    = new Map(myRows.map(r => [r.map, r.time_record]));
+    // Use sum+count instead of times[] to avoid large array spread stack overflows
+    const mapStats = new Map();
+    for (const row of allRows) {
+      if (!row.map) continue;
+      if (!mapStats.has(row.map)) mapStats.set(row.map, { record: null, uniq: 0, timeSum: 0, timeCount: 0 });
+      const s = mapStats.get(row.map);
+      const sec = timeToSec(row.time_record);
+      if (isFinite(sec)) {
+        s.timeSum += sec;
+        s.timeCount++;
+        if (s.record === null || sec < timeToSec(s.record)) s.record = row.time_record;
+      }
+      const clean = (row.place_num || '').replace(/[\s ]/g, '');
+      const pm = clean.match(/^(\d+)\/(\d+)$/);
+      if (pm) { const tot = parseInt(pm[2], 10); if (tot > s.uniq) s.uniq = tot; }
+    }
 
+    // Render rows
     mapsBody.innerHTML = '';
     ALL_MAPS.forEach((map, index) => {
       const i   = index + 1;
       const rnk = i === 1 ? 'top1' : i === 2 ? 'top2' : i === 3 ? 'top3' : '';
-      const s   = mapStats[map.name] || {};
-      const completions = s.completions ? s.completions.toLocaleString() : '—';
+      const s   = mapStats.get(map.name) || {};
+      const completions = s.uniq ? s.uniq.toLocaleString() : '—';
       const record      = s.record || '—';
       const yourTime    = myMap.get(map.name) || '—';
-      const avgSec      = s.avg;
+      const avgSec      = s.timeCount > 0 ? s.timeSum / s.timeCount : null;
 
       const tr = document.createElement('tr');
       tr.style.cursor = 'pointer';
@@ -69,7 +97,7 @@ async function init() {
         <td class="maps-stat-cell">${completions}</td>
         <td class="maps-stat-cell maps-record-cell">${record}</td>
         <td class="maps-stat-cell ${yourTime !== '—' ? 'maps-yourtime-cell' : 'maps-dash-cell'}">${yourTime}</td>
-        <td class="maps-stat-cell maps-avg-cell">${avgSec !== null && avgSec !== undefined ? secToTime(avgSec) : '—'}</td>
+        <td class="maps-stat-cell maps-avg-cell">${avgSec !== null ? secToTime(avgSec) : '—'}</td>
       `;
       tr.addEventListener('click', () => {
         window.location.href = `map.html?map=${encodeURIComponent(map.name)}`;
