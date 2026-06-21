@@ -1,6 +1,63 @@
 {
-  "updated_at": "2026-06-20T12:18:01.616Z",
+  "updated_at": "2026-06-21T12:22:33.134Z",
   "players": [
+    {
+      "steamid": "76561198836798232",
+      "nickname": "Z   W   G",
+      "country": "kz",
+      "cached_at": "2026-06-07T09:32:05.186Z",
+      "kz_points": 285,
+      "kz_place": 44793,
+      "kz_maps": "5 (3.02%)",
+      "avatar": "https://avatars.steamstatic.com/4477dc31e4b32e675dfcb1fc12ba4116bba9f7ea_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_kiwifactory",
+          "points": "30.8639",
+          "completions": "3",
+          "tier": "1",
+          "place_num": "3 020 / 9 999",
+          "time_record": "02:39.7657",
+          "unixtime_record": 1776457271
+        },
+        {
+          "map": "kz_igneous",
+          "points": "134.4391",
+          "completions": "3",
+          "tier": "3",
+          "place_num": "8 838 / 44 877",
+          "time_record": "02:40.9844",
+          "unixtime_record": 1724110844
+        },
+        {
+          "map": "kz_woodstock_v2",
+          "points": "30.7357",
+          "completions": "2",
+          "tier": "1",
+          "place_num": "19 728 / 71 730",
+          "time_record": "02:55.2344",
+          "unixtime_record": 1771971087
+        },
+        {
+          "map": "kz_phamous",
+          "points": "68.6339",
+          "completions": "3",
+          "tier": "2",
+          "place_num": "56 629 / 192 922",
+          "time_record": "03:55.3750",
+          "unixtime_record": 1724003224
+        },
+        {
+          "map": "kz_leto",
+          "points": "21.0999",
+          "completions": "1",
+          "tier": "2",
+          "place_num": "69 558 / 114 287",
+          "time_record": "05:42.6094",
+          "unixtime_record": 1724189615
+        }
+      ]
+    },
     {
       "steamid": "76561198390744859",
       "nickname": "Ambush^",
@@ -6739,63 +6796,6 @@
           "place_num": "2 955 / 29 053",
           "tier": "3",
           "completions": "1"
-        }
-      ]
-    },
-    {
-      "steamid": "76561198836798232",
-      "nickname": "Z   W   G",
-      "country": "kz",
-      "cached_at": "2026-06-07T09:32:05.186Z",
-      "kz_points": 285,
-      "kz_place": 44793,
-      "kz_maps": "5 (3.02%)",
-      "avatar": "https://avatars.steamstatic.com/4477dc31e4b32e675dfcb1fc12ba4116bba9f7ea_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_kiwifactory",
-          "points": "30.8639",
-          "completions": "3",
-          "tier": "1",
-          "place_num": "3 020 / 9 999",
-          "time_record": "02:39.7657",
-          "unixtime_record": 1776457271
-        },
-        {
-          "map": "kz_igneous",
-          "points": "134.4391",
-          "completions": "3",
-          "tier": "3",
-          "place_num": "8 838 / 44 877",
-          "time_record": "02:40.9844",
-          "unixtime_record": 1724110844
-        },
-        {
-          "map": "kz_woodstock_v2",
-          "points": "30.7357",
-          "completions": "2",
-          "tier": "1",
-          "place_num": "19 728 / 71 730",
-          "time_record": "02:55.2344",
-          "unixtime_record": 1771971087
-        },
-        {
-          "map": "kz_phamous",
-          "points": "68.6339",
-          "completions": "3",
-          "tier": "2",
-          "place_num": "56 629 / 192 922",
-          "time_record": "03:55.3750",
-          "unixtime_record": 1724003224
-        },
-        {
-          "map": "kz_leto",
-          "points": "21.0999",
-          "completions": "1",
-          "tier": "2",
-          "place_num": "69 558 / 114 287",
-          "time_record": "05:42.6094",
-          "unixtime_record": 1724189615
         }
       ]
     },
