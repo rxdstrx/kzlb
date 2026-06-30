@@ -20,10 +20,10 @@
     <a href="index.html" class="nav-logo">
       <!-- KZplus logo -->
       <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <rect width="36" height="36" rx="10" fill="rgba(56,189,248,0.12)"/>
-        <text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#38bdf8">KZ</text>
-        <line x1="27" y1="10" x2="27" y2="26" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
-        <line x1="19" y1="18" x2="35" y2="18" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+        <rect width="36" height="36" rx="10" fill="rgba(139,92,246,0.18)"/>
+        <text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#a855f7">KZ</text>
+        <line x1="27" y1="10" x2="27" y2="26" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="19" y1="18" x2="35" y2="18" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/>
       </svg>
       <span class="nav-logo-text">KZ<span>plus</span></span>
     </a>
@@ -95,7 +95,7 @@
   <div class="steam-modal-overlay hidden" id="steamModalOverlay">
     <div class="steam-modal">
       <div class="steam-modal-logo">
-        <svg width="40" height="40" viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="10" fill="rgba(56,189,248,0.15)"/><text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#38bdf8">KZ</text><line x1="27" y1="10" x2="27" y2="26" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/><line x1="19" y1="18" x2="35" y2="18" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <svg width="40" height="40" viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="10" fill="rgba(139,92,246,0.18)"/><text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#a855f7">KZ</text><line x1="27" y1="10" x2="27" y2="26" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/><line x1="19" y1="18" x2="35" y2="18" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/></svg>
         <span>KZplus</span>
       </div>
       <div class="steam-modal-title">Welcome to KZplus</div>
@@ -179,12 +179,12 @@
               <svg viewBox="0 0 380 130" fill="none" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.15"/>
-                    <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                    <stop offset="0%" stop-color="#a855f7" stop-opacity="0.18"/>
+                    <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
                   </linearGradient>
                   <filter id="lineGlow" x="-10%" y="-80%" width="120%" height="260%">
                     <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
-                    <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.22 0 0 0 0 0.74 0 0 0 0 0.98 0 0 0 0.8 0" result="glow"/>
+                    <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.55 0 0 0 0 0.21 0 0 0 0 0.97 0 0 0 0.8 0" result="glow"/>
                     <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
                   </filter>
                 </defs>
@@ -206,41 +206,41 @@
                 <path class="chart-area" d="M0,122 C40,112 60,104 90,90 C120,76 140,80 170,66 C200,52 220,56 250,42 C280,28 310,32 340,18 C360,10 370,8 380,4 L380,130 L0,130 Z" fill="url(#chartGrad)"/>
 
                 <!-- Glow line (subtle) -->
-                <path id="chart-glow-line" class="chart-glow-line" d="M0,122 C40,112 60,104 90,90 C120,76 140,80 170,66 C200,52 220,56 250,42 C280,28 310,32 340,18 C360,10 370,8 380,4" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" fill="none" filter="url(#lineGlow)" opacity="0"/>
+                <path id="chart-glow-line" class="chart-glow-line" d="M0,122 C40,112 60,104 90,90 C120,76 140,80 170,66 C200,52 220,56 250,42 C280,28 310,32 340,18 C360,10 370,8 380,4" stroke="#a855f7" stroke-width="3" stroke-linecap="round" fill="none" filter="url(#lineGlow)" opacity="0"/>
 
                 <!-- Main line -->
-                <path class="chart-line" d="M0,122 C40,112 60,104 90,90 C120,76 140,80 170,66 C200,52 220,56 250,42 C280,28 310,32 340,18 C360,10 370,8 380,4" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <path class="chart-line" d="M0,122 C40,112 60,104 90,90 C120,76 140,80 170,66 C200,52 220,56 250,42 C280,28 310,32 340,18 C360,10 370,8 380,4" stroke="#a855f7" stroke-width="2" stroke-linecap="round" fill="none"/>
 
                 <!-- Milestone dots — positions calculated ON the line -->
                 <!-- 500: x=0,   y=122 | delay=0.3s  -->
                 <g class="ms-dot" style="--dx:0.3s">
-                  <circle cx="0"   cy="122" r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
-                  <circle cx="0"   cy="122" r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                  <circle cx="0"   cy="122" r="7"  fill="#a855f7" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="0"   cy="122" r="3"  fill="#a855f7" class="ms-center" class="ms-glow-dot"/>
                 </g>
                 <!-- 1000: x=76,  y=97  | delay=1.2s  -->
                 <g class="ms-dot" style="--dx:1.2s">
-                  <circle cx="76"  cy="97"  r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
-                  <circle cx="76"  cy="97"  r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                  <circle cx="76"  cy="97"  r="7"  fill="#a855f7" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="76"  cy="97"  r="3"  fill="#a855f7" class="ms-center" class="ms-glow-dot"/>
                 </g>
                 <!-- 1500: x=152, y=72  | delay=2.1s  -->
                 <g class="ms-dot" style="--dx:2.1s">
-                  <circle cx="152" cy="72"  r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
-                  <circle cx="152" cy="72"  r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                  <circle cx="152" cy="72"  r="7"  fill="#a855f7" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="152" cy="72"  r="3"  fill="#a855f7" class="ms-center" class="ms-glow-dot"/>
                 </g>
                 <!-- 2000: x=228, y=50  | delay=2.9s  -->
                 <g class="ms-dot" style="--dx:2.9s">
-                  <circle cx="228" cy="50"  r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
-                  <circle cx="228" cy="50"  r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                  <circle cx="228" cy="50"  r="7"  fill="#a855f7" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="228" cy="50"  r="3"  fill="#a855f7" class="ms-center" class="ms-glow-dot"/>
                 </g>
                 <!-- 2500: x=304, y=27  | delay=3.8s  -->
                 <g class="ms-dot" style="--dx:3.8s">
-                  <circle cx="304" cy="27"  r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
-                  <circle cx="304" cy="27"  r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                  <circle cx="304" cy="27"  r="7"  fill="#a855f7" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="304" cy="27"  r="3"  fill="#a855f7" class="ms-center" class="ms-glow-dot"/>
                 </g>
                 <!-- 3000: x=380, y=4   | delay=5.0s  -->
                 <g class="ms-dot" style="--dx:5.0s">
-                  <circle cx="380" cy="4"   r="7"  fill="#38bdf8" opacity="0.1"  class="ms-ring"/>
-                  <circle cx="380" cy="4"   r="3"  fill="#38bdf8" class="ms-center" class="ms-glow-dot"/>
+                  <circle cx="380" cy="4"   r="7"  fill="#a855f7" opacity="0.1"  class="ms-ring"/>
+                  <circle cx="380" cy="4"   r="3"  fill="#a855f7" class="ms-center" class="ms-glow-dot"/>
                 </g>
               </svg>
             </div>

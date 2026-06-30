@@ -731,3 +731,120 @@
 @media (max-width: 400px) {
   .recent-grid { grid-template-columns: 1fr; }
 }
+
+/* ══ MESHALKIN-style upgrades ══ */
+
+/* Section pill tag — like "● PROFILE" / "● STATS" headers */
+.section-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: rgba(139,92,246,0.09);
+  border: 1px solid rgba(139,92,246,0.22);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c084fc;
+  margin-bottom: 14px;
+}
+.section-pill::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #a855f7;
+  box-shadow: 0 0 8px rgba(168,85,247,0.7);
+  flex-shrink: 0;
+}
+
+/* Stats bar — individual glassy cards with purple glow */
+.profile-stats-bar {
+  background: transparent !important;
+  border: none !important;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  overflow: visible !important;
+}
+.stat-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(139,92,246,0.16);
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px rgba(139,92,246,0.06) inset,
+    0 8px 24px rgba(0,0,0,0.3),
+    0 0 30px rgba(139,92,246,0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 18px 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover {
+  border-color: rgba(168,85,247,0.30);
+  box-shadow:
+    0 0 0 1px rgba(168,85,247,0.10) inset,
+    0 8px 24px rgba(0,0,0,0.3),
+    0 0 40px rgba(139,92,246,0.12);
+}
+.stat-card-sep { display: none; }
+.stat-card-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #f0f0f5 40%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+/* Avatar — purple glow ring */
+.profile-avatar-outer {
+  border: 2px solid rgba(139,92,246,0.45) !important;
+  box-shadow:
+    0 0 0 4px rgba(139,92,246,0.10),
+    0 4px 24px rgba(0,0,0,0.5) !important;
+}
+
+/* Tabs — make active tab more vivid */
+.profile-tab.active {
+  color: #e9d5ff !important;
+}
+.profile-tab-indicator {
+  box-shadow: 0 0 12px rgba(192,132,252,0.6) !important;
+}
+
+/* Section heading utility for tab panes */
+.tab-section-header {
+  max-width: 960px;
+  margin: 24px auto 0;
+  padding: 0 24px;
+}
+.tab-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  margin: 0 0 16px;
+}
+.tab-section-title em {
+  font-style: italic;
+  background: linear-gradient(135deg, #c084fc, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Recent card — purple hover glow */
+.recent-card {
+  border-color: rgba(255,255,255,0.07) !important;
+  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s !important;
+}
+.recent-card:hover {
+  border-color: rgba(139,92,246,0.35) !important;
+  box-shadow: 0 0 24px rgba(139,92,246,0.12) !important;
+}
+
+@media (max-width: 640px) {
+  .profile-stats-bar { grid-template-columns: repeat(2, 1fr); }
+}

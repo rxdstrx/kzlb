@@ -333,6 +333,8 @@ async function init() {
       }
 
       document.getElementById('mapStatsBar').classList.remove('hidden');
+      const pill = document.getElementById('mapStatsPill');
+      if (pill) pill.classList.remove('hidden');
     }
 
     buildCountryFilter();

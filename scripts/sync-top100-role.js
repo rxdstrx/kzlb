@@ -40,7 +40,7 @@ async function main() {
   await fetch(`${SB_URL}/rest/v1/roles`, {
     method: 'POST',
     headers: { ...H, Prefer: 'resolution=ignore-duplicates,return=minimal' },
-    body: JSON.stringify({ name: ROLE, color: '#fbbf24', icon: '👑' }),
+    body: JSON.stringify({ name: ROLE, color: '#a855f7', icon: '👑' }),
   });
 
   // 3. Fetch all current holders of the TOP 100 role
