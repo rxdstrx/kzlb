@@ -157,9 +157,9 @@
               <span>💬 ${t.reply_count||0}</span>
             </div>
           </div>
-          <button class="thread-upvote ${myListLikes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}" style="flex-shrink:0;width:auto;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;">
+          <span class="thread-upvote ${myListLikes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}" role="button" style="flex-shrink:0;width:auto;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;cursor:pointer;">
             ↑ <span class="thread-upvote-count">${t.likes||0}</span>
-          </button>
+          </span>
         </a>`).join('');
     }
 
