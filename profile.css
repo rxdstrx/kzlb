@@ -1,6 +1,6 @@
-.hidden { display: none !important; }
+﻿.hidden { display: none !important; }
 
-/* ── Role Badges ── */
+/* â”€â”€ Role Badges â”€â”€ */
 .profile-roles {
   display: flex;
   flex-wrap: wrap;
@@ -47,7 +47,7 @@
 .role-badge-sm .role-badge-icon { font-size: 0.7rem; }
 .role-badge-sm .role-badge-text { font-size: 0.57rem; letter-spacing: 0.05em; }
 
-/* ── Notification Bell ── */
+/* â”€â”€ Notification Bell â”€â”€ */
 .notif-bell-wrap {
   position: relative;
 }
@@ -118,7 +118,7 @@
   transition: background 0.15s;
 }
 .notif-item:last-child { border-bottom: none; }
-.notif-item.unread { background: rgba(99,102,241,0.08); }
+.notif-item.unread { background: rgba(139,92,246,0.08); }
 .notif-item:hover { background: rgba(255,255,255,0.05); }
 .notif-avatar {
   width: 36px;
@@ -131,7 +131,7 @@
 .notif-text strong { color: #fff; }
 .notif-time { font-size: 11px; color: rgba(255,255,255,0.3); white-space: nowrap; margin-top: 2px; }
 
-/* ── Loading ── */
+/* â”€â”€ Loading â”€â”€ */
 .profile-loading {
   display: flex;
   flex-direction: column;
@@ -149,10 +149,10 @@
 .progress-ring { transform: rotate(-90deg); }
 .progress-ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 6; }
 .progress-ring-fill {
-  fill: none; stroke: #818cf8; stroke-width: 6; stroke-linecap: round;
+  fill: none; stroke: #8b5cf6; stroke-width: 6; stroke-linecap: round;
   stroke-dasharray: 264; stroke-dashoffset: 264;
   transition: stroke-dashoffset 0.8s ease, stroke 0.4s ease;
-  filter: drop-shadow(0 0 6px rgba(129,140,248,0.6));
+  filter: drop-shadow(0 0 6px rgba(139,92,246,0.6));
 }
 .progress-pct { position: absolute; font-size: 1rem; font-weight: 700; color: #f0f0f5; }
 .loading-step { font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.85); margin: 0; }
@@ -164,7 +164,7 @@
   display: flex; flex-direction: column; align-items: center;
 }
 
-/* ── Back button ── */
+/* â”€â”€ Back button â”€â”€ */
 .profile-back-wrap {
   max-width: 960px;
   margin: 0 auto;
@@ -188,7 +188,7 @@
   color: rgba(255,255,255,0.85);
 }
 
-/* ── Banner ── */
+/* â”€â”€ Banner â”€â”€ */
 .profile-banner-container {
   max-width: 960px;
   margin: 16px auto 0;
@@ -207,7 +207,7 @@
   transition: box-shadow 0.2s;
 }
 .profile-banner.drag-over {
-  box-shadow: 0 0 0 3px rgba(129,140,248,0.6);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.6);
 }
 .banner-overlay {
   position: absolute; inset: 0;
@@ -218,7 +218,7 @@
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.1rem; font-weight: 700; color: #fff;
-  background: rgba(129,140,248,0.25);
+  background: rgba(139,92,246,0.25);
   backdrop-filter: blur(4px);
   border-radius: 18px;
   pointer-events: none;
@@ -251,7 +251,7 @@
 }
 .banner-remove-btn:hover { background: rgba(248,113,113,0.28); }
 
-/* ── Profile header ── */
+/* â”€â”€ Profile header â”€â”€ */
 .profile-header-wrap {
   max-width: 960px;
   margin: -52px auto 0;
@@ -321,7 +321,7 @@
 .faceit-btn { color: #ff5500; border-color: rgba(255,85,0,0.2); background: rgba(255,85,0,0.06); }
 .faceit-btn:hover { background: rgba(255,85,0,0.14); border-color: rgba(255,85,0,0.35); color: #ff6a1a; }
 
-/* ── Tabs ── */
+/* â”€â”€ Tabs â”€â”€ */
 .profile-tabs-wrap {
   max-width: 960px;
   margin: 20px auto 0;
@@ -356,13 +356,13 @@
   left: 0;
   height: 2px;
   width: 80px; /* overridden by JS */
-  background: #38bdf8;
+  background: #c084fc;
   border-radius: 2px 2px 0 0;
   transition: transform 0.25s cubic-bezier(0.4,0,0.2,1), width 0.25s cubic-bezier(0.4,0,0.2,1);
-  box-shadow: 0 0 8px rgba(56,189,248,0.5);
+  box-shadow: 0 0 8px rgba(168,85,247,0.5);
 }
 
-/* ── Friends tab container ── */
+/* â”€â”€ Friends tab container â”€â”€ */
 #tab-friends {
   max-width: 960px;
   margin: 0 auto;
@@ -377,7 +377,7 @@
   padding-right: 4px;
 }
 
-/* ── Friends empty state ── */
+/* â”€â”€ Friends empty state â”€â”€ */
 .friends-empty-wrap {
   max-width: 100%;
   margin: 60px auto;
@@ -404,7 +404,7 @@
   margin: 0;
 }
 
-/* ── Stats bar ── */
+/* â”€â”€ Stats bar â”€â”€ */
 .profile-stats-bar {
   max-width: 960px;
   margin: 20px auto 0;
@@ -441,7 +441,7 @@
   margin-top: 5px;
 }
 
-/* ── Actions bar ── */
+/* â”€â”€ Actions bar â”€â”€ */
 .profile-actions-bar {
   max-width: 960px;
   margin: 14px auto 0;
@@ -466,11 +466,11 @@
   transition: opacity 0.15s, background 0.15s;
 }
 .action-cybershoke {
-  background: rgba(129,140,248,0.1);
-  border: 1px solid rgba(129,140,248,0.22);
-  color: #a5b4fc;
+  background: rgba(139,92,246,0.1);
+  border: 1px solid rgba(139,92,246,0.22);
+  color: #c4b5fd;
 }
-.action-cybershoke:hover { background: rgba(129,140,248,0.2); border-color: rgba(129,140,248,0.4); }
+.action-cybershoke:hover { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); }
 .action-update {
   background: linear-gradient(135deg, #34d399, #059669);
   border: none; color: #fff;
@@ -525,7 +525,7 @@
   outline: none; box-sizing: border-box;
 }
 .flag-search-input::placeholder { color: rgba(255,255,255,0.25); }
-.flag-search-input:focus { border-color: rgba(129,140,248,0.35); }
+.flag-search-input:focus { border-color: rgba(139,92,246,0.35); }
 .flag-options-list {
   max-height: 200px; overflow-y: auto;
   padding: 6px;
@@ -540,8 +540,8 @@
   font-size: 0.82rem; color: rgba(255,255,255,0.65);
   cursor: pointer; transition: background 0.1s, color 0.1s;
 }
-.flag-option:hover { background: rgba(129,140,248,0.12); color: #fff; }
-.flag-option.selected { background: rgba(129,140,248,0.18); color: #a5b4fc; }
+.flag-option:hover { background: rgba(139,92,246,0.12); color: #fff; }
+.flag-option.selected { background: rgba(139,92,246,0.18); color: #c4b5fd; }
 .flag-change-btn {
   padding: 8px 16px;
   background: linear-gradient(135deg, #34d399, #059669);
@@ -571,13 +571,13 @@
 .steam-login-btn {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 8px 16px;
-  background: rgba(56,189,248,0.08);
-  border: 1px solid rgba(56,189,248,0.2);
+  background: rgba(168,85,247,0.08);
+  border: 1px solid rgba(168,85,247,0.2);
   border-radius: 9px;
-  color: #38bdf8; font-size: 0.82rem; font-weight: 600;
+  color: #c084fc; font-size: 0.82rem; font-weight: 600;
   text-decoration: none; transition: background 0.15s;
 }
-.steam-login-btn:hover { background: rgba(56,189,248,0.15); }
+.steam-login-btn:hover { background: rgba(168,85,247,0.15); }
 
 /* Update status */
 .update-record-status {
@@ -599,14 +599,14 @@
   color: rgba(255,255,255,0.18);
 }
 
-/* ── Maps table ── */
+/* â”€â”€ Maps table â”€â”€ */
 .table-wrapper {
   max-width: 960px;
   margin: 0 auto;
   padding: 0 24px 40px;
 }
 
-/* ── Stats table columns ── */
+/* â”€â”€ Stats table columns â”€â”€ */
 .col-tier-sm  { width: 55px; }
 .col-mapname  { min-width: 160px; }
 .col-date     { width: 160px; min-width: 160px; white-space: nowrap; }
@@ -616,7 +616,7 @@
 .date-cell    { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
 .empty-state  { text-align: center; padding: 40px; color: rgba(255,255,255,0.2); font-size: 0.85rem; }
 
-/* ── Responsive ── */
+/* â”€â”€ Responsive â”€â”€ */
 @media (max-width: 640px) {
   .profile-banner { height: 150px; }
   .profile-header-wrap { margin-top: -44px; }
@@ -629,7 +629,7 @@
   .banner-url-input { width: 160px; }
 }
 
-/* ── Recent Records Tab ── */
+/* â”€â”€ Recent Records Tab â”€â”€ */
 .recent-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

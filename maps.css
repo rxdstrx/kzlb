@@ -1,4 +1,4 @@
-/* ── Map stats bar ── */
+﻿/* â”€â”€ Map stats bar â”€â”€ */
 .map-stats-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -28,9 +28,9 @@
   height: 36px;
   flex-shrink: 0;
   border-radius: 9px;
-  background: rgba(56,189,248,0.08);
-  color: #38bdf8;
-  border: 1px solid rgba(56,189,248,0.15);
+  background: rgba(168,85,247,0.08);
+  color: #c084fc;
+  border: 1px solid rgba(168,85,247,0.15);
 }
 .map-stat-icon-wr  { background: rgba(251,191,36,0.08);  color: #fbbf24; border-color: rgba(251,191,36,0.15); }
 .map-stat-icon-you { background: rgba(52,211,153,0.08);  color: #34d399; border-color: rgba(52,211,153,0.15); }
@@ -66,7 +66,7 @@
   text-overflow: ellipsis;
 }
 
-/* ── */
+/* â”€â”€ */
 .back-btn {
   display: inline-flex;
   align-items: center;
@@ -116,7 +116,7 @@
 .maps-loading .spinner {
   width: 28px; height: 28px;
   border: 2.5px solid rgba(255,255,255,0.1);
-  border-top-color: #38bdf8;
+  border-top-color: #c084fc;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -163,8 +163,8 @@
 
 .tier-1  { background: rgba(255,255,255,0.08);   border: 1px solid rgba(255,255,255,0.2);    color: #ffffff; }
 .tier-2  { background: rgba(176,212,241,0.1);    border: 1px solid rgba(176,212,241,0.25);   color: #b0d4f1; }
-.tier-3  { background: rgba(56,189,248,0.1);     border: 1px solid rgba(56,189,248,0.25);    color: #38bdf8; }
-.tier-4  { background: rgba(29,78,216,0.15);     border: 1px solid rgba(29,78,216,0.35);     color: #60a5fa; }
+.tier-3  { background: rgba(168,85,247,0.1);     border: 1px solid rgba(168,85,247,0.25);    color: #c084fc; }
+.tier-4  { background: rgba(29,78,216,0.15);     border: 1px solid rgba(29,78,216,0.35);     color: #a78bfa; }
 .tier-5  { background: rgba(251,113,133,0.1);    border: 1px solid rgba(251,113,133,0.25);   color: #fb7185; }
 .tier-6  { background: rgba(124,58,237,0.12);    border: 1px solid rgba(124,58,237,0.3);     color: #a78bfa; }
 .tier-7  { background: rgba(76,29,149,0.15);     border: 1px solid rgba(76,29,149,0.35);     color: #7c3aed; }

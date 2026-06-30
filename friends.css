@@ -1,4 +1,4 @@
-/* ── Notification Bell ── */
+﻿/* â”€â”€ Notification Bell â”€â”€ */
 .kz-notif-bell {
   position: relative;
   display: flex;
@@ -49,7 +49,7 @@
 }
 .kz-bell-flash { animation: kzBellFlash 0.35s ease 2; }
 
-/* ── Notification Dropdown — Apple glassy style ── */
+/* â”€â”€ Notification Dropdown â€” Apple glassy style â”€â”€ */
 .kz-notif-dropdown {
   position: absolute;
   top: calc(100% + 12px);
@@ -104,7 +104,7 @@
 }
 .kz-notif-item:last-child { border-bottom: none; }
 .kz-notif-item:hover { background: rgba(255,255,255,0.04); }
-.kz-notif-item.kz-notif-unread { background: rgba(99,102,241,0.09); }
+.kz-notif-item.kz-notif-unread { background: rgba(139,92,246,0.09); }
 .kz-notif-time { font-size: 11px; color: rgba(255,255,255,0.28); margin-top: 2px; }
 
 .kz-notif-avatar {
@@ -162,7 +162,7 @@
 .kz-notif-accept { background: rgba(52,211,153,0.13); color: #34d399; border: 1px solid rgba(52,211,153,0.2); }
 .kz-notif-decline { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.18); }
 
-/* ── Add Friend Button ── */
+/* â”€â”€ Add Friend Button â”€â”€ */
 .kz-friend-btn {
   background: rgba(167,139,250,0.12);
   color: #a78bfa;
@@ -183,7 +183,7 @@
 .kz-friend-btn--incoming { background: rgba(251,191,36,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.25); }
 .kz-friend-chevron { font-size: 10px; margin-left: 4px; opacity: 0.7; }
 
-/* ── Unfriend dropdown ── */
+/* â”€â”€ Unfriend dropdown â”€â”€ */
 .kz-friend-btn-wrap {
   position: relative;
   display: inline-block;
@@ -216,7 +216,7 @@
 }
 .kz-unfriend-btn:hover { background: rgba(239,68,68,0.25); }
 
-/* ── Friends List (Friends Tab) ── */
+/* â”€â”€ Friends List (Friends Tab) â”€â”€ */
 .kz-friends-loading {
   padding: 32px;
   text-align: center;
@@ -231,7 +231,7 @@
   padding: 16px 0;
 }
 
-/* ── Friend Card ── */
+/* â”€â”€ Friend Card â”€â”€ */
 .kz-friend-card {
   position: relative;
   display: flex;
@@ -253,7 +253,7 @@
 .kz-friend-card-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(56,189,248,0.06) 0%, rgba(167,139,250,0.06) 100%);
+  background: linear-gradient(135deg, rgba(168,85,247,0.06) 0%, rgba(167,139,250,0.06) 100%);
   z-index: 0;
 }
 .kz-friend-card-bg.has-banner {
@@ -332,7 +332,7 @@
 }
 .kz-friend-remove:hover { color: #f87171; background: rgba(239,68,68,0.1); }
 
-/* ── Toast notification ── */
+/* â”€â”€ Toast notification â”€â”€ */
 .kz-toast {
   position: fixed;
   bottom: 24px;

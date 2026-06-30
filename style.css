@@ -36,9 +36,9 @@
   color: rgba(255,255,255,0.8);
 }
 .role-filter-btn.active {
-  background: rgba(56,189,248,0.12);
-  border-color: rgba(56,189,248,0.32);
-  color: #38bdf8;
+  background: rgba(168,85,247,0.12);
+  border-color: rgba(168,85,247,0.32);
+  color: #c084fc;
 }
 
 html, body { scroll-behavior: smooth; }
@@ -46,11 +46,28 @@ html, body { scroll-behavior: smooth; }
 
 body {
   min-height: 100vh;
-  background: #060608;
+  background:
+    radial-gradient(900px 600px at 82% -10%, rgba(139,92,246,.12), transparent 60%),
+    radial-gradient(700px 600px at -10% 110%, rgba(168,85,247,.10), transparent 55%),
+    #060608;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
   color: #fff;
   overflow-x: hidden;
   position: relative;
+}
+
+/* futuristic dotted grid, faded toward the centre */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(139,92,246,.16) 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask: radial-gradient(circle at 50% 30%, transparent 24%, #000 78%);
+          mask: radial-gradient(circle at 50% 30%, transparent 24%, #000 78%);
+  opacity: .5;
 }
 
 .bg-orb {
@@ -64,7 +81,7 @@ body {
 .orb1 {
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.25), transparent 70%);
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.28), transparent 70%);
   top: -150px;
   left: -150px;
 }
@@ -72,7 +89,7 @@ body {
 .orb2 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.18), transparent 70%);
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.20), transparent 70%);
   bottom: -100px;
   right: -100px;
 }
@@ -98,7 +115,7 @@ header {
 }
 
 .title span {
-  background: linear-gradient(135deg, #818cf8, #38bdf8);
+  background: linear-gradient(135deg, #8b5cf6, #c084fc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -162,7 +179,7 @@ header {
   text-overflow: ellipsis;
 }
 .search-suggestion-nick em {
-  color: #a5b4fc;
+  color: #c4b5fd;
   font-style: normal;
   font-weight: 700;
 }
@@ -190,8 +207,8 @@ header {
 }
 
 .search-form:focus-within {
-  border-color: rgba(129,140,248,0.4);
-  box-shadow: 0 0 0 3px rgba(129,140,248,0.08);
+  border-color: rgba(139,92,246,0.4);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.08);
 }
 
 .search-icon {
@@ -221,10 +238,10 @@ header {
 .search-submit {
   flex-shrink: 0;
   padding: 7px 16px;
-  background: rgba(129,140,248,0.15);
-  border: 1px solid rgba(129,140,248,0.25);
+  background: rgba(139,92,246,0.15);
+  border: 1px solid rgba(139,92,246,0.25);
   border-radius: 8px;
-  color: #a5b4fc;
+  color: #c4b5fd;
   font-size: 0.8rem;
   font-weight: 600;
   font-family: inherit;
@@ -234,8 +251,8 @@ header {
 }
 
 .search-submit:hover {
-  background: rgba(129,140,248,0.25);
-  border-color: rgba(129,140,248,0.45);
+  background: rgba(139,92,246,0.25);
+  border-color: rgba(139,92,246,0.45);
 }
 
 /* ── Filter bar ── */
@@ -271,9 +288,9 @@ header {
 }
 
 .filter-btn.active {
-  background: rgba(129, 140, 248, 0.15);
-  border-color: rgba(129, 140, 248, 0.35);
-  color: #a5b4fc;
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.35);
+  color: #c4b5fd;
 }
 
 /* ── Dropdown ── */
@@ -359,7 +376,7 @@ header {
   font-weight: 500;
   text-decoration: none;
 }
-.player-nick:hover { color: #a5b4fc; }
+.player-nick:hover { color: #c4b5fd; }
 
 .country-options {
   padding: 6px 8px 8px;
@@ -426,8 +443,8 @@ header {
 }
 
 .country-item.active {
-  background: rgba(129,140,248,0.15);
-  color: #a5b4fc;
+  background: rgba(139,92,246,0.15);
+  color: #c4b5fd;
 }
 
 .country-flag {
@@ -471,28 +488,29 @@ header {
 }
 
 .tier-chip:hover {
-  background: rgba(129, 140, 248, 0.15);
-  border-color: rgba(129, 140, 248, 0.3);
-  color: #a5b4fc;
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #c4b5fd;
 }
 
 .tier-chip.selected, .tier-chip.active {
-  background: rgba(129, 140, 248, 0.25);
-  border-color: rgba(129, 140, 248, 0.5);
-  color: #c7d2fe;
+  background: rgba(139, 92, 246, 0.25);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: #ddd6fe;
 }
 
 /* ── Tables ── */
 .table-wrapper {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.14);
   border-radius: 20px;
   overflow: hidden;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.04) inset,
-    0 24px 64px rgba(0, 0, 0, 0.5);
+    0 0 0 1px rgba(139,92,246,0.05) inset,
+    0 24px 64px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(139, 92, 246, 0.06);
 }
 
 .hidden {

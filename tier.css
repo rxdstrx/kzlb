@@ -1,4 +1,4 @@
-.tier-nav {
+﻿.tier-nav {
   display: flex;
   gap: 8px;
   justify-content: center;
@@ -28,9 +28,9 @@
 }
 
 .tier-nav-pill.active {
-  background: rgba(129, 140, 248, 0.2);
-  border-color: rgba(129, 140, 248, 0.45);
-  color: #a5b4fc;
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.45);
+  color: #c4b5fd;
 }
 
 .empty-state {
