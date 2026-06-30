@@ -15,10 +15,10 @@
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
       <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <rect width="36" height="36" rx="10" fill="rgba(56,189,248,0.12)"/>
-        <text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#38bdf8">KZ</text>
-        <line x1="27" y1="10" x2="27" y2="26" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
-        <line x1="19" y1="18" x2="35" y2="18" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+        <rect width="36" height="36" rx="10" fill="rgba(139,92,246,0.18)"/>
+        <text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#a855f7">KZ</text>
+        <line x1="27" y1="10" x2="27" y2="26" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="19" y1="18" x2="35" y2="18" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/>
       </svg>
       <span class="nav-logo-text">KZ<span>plus</span></span>
     </a>
@@ -50,35 +50,103 @@
 
   <!-- PAGE -->
   <div class="forum-page">
-    <div class="forum-header">
-      <div>
-        <div class="forum-header-title">KZ <span>Forum</span></div>
-        <div class="forum-header-sub">Discuss maps, records, and everything KZ</div>
+
+    <!-- ── Hero header ── -->
+    <div class="forum-hero">
+      <div class="forum-hero-left">
+        <div class="forum-hero-pill">● KZ FORUM</div>
+        <h1 class="forum-hero-title">KZ <em>Community</em></h1>
+        <p class="forum-hero-sub">Discuss maps, records, and everything KZ</p>
       </div>
-      <button class="btn-new-post" id="newPostBtn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        New Post
-      </button>
+      <div class="forum-hero-right">
+        <button class="btn-new-post" id="newPostBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Post
+        </button>
+      </div>
     </div>
 
-    <!-- Category filters -->
-    <div class="forum-cats">
-      <button class="forum-cat-btn active" data-cat="all">All</button>
-      <button class="forum-cat-btn" data-cat="general">General</button>
-      <button class="forum-cat-btn" data-cat="maps">Maps</button>
-      <button class="forum-cat-btn" data-cat="records">Records</button>
-      <button class="forum-cat-btn" data-cat="help">Help</button>
-      <button class="forum-cat-btn" data-cat="off-topic">Off Topic</button>
-    </div>
+    <!-- ── 2-column layout ── -->
+    <div class="forum-layout">
 
-    <!-- Thread list -->
-    <div class="forum-threads" id="forumThreads">
-      <div class="forum-loading">Loading threads…</div>
-    </div>
+      <!-- LEFT: discussions -->
+      <div class="forum-col-main">
 
-    <!-- Load more -->
-    <div style="text-align:center;margin-top:20px">
-      <button class="btn-cancel" id="loadMoreBtn" style="display:none">Load more</button>
+        <!-- Category filter row -->
+        <div class="forum-cats">
+          <button class="forum-cat-btn active" data-cat="all">All</button>
+          <button class="forum-cat-btn" data-cat="maps">Maps</button>
+          <button class="forum-cat-btn" data-cat="records">Records</button>
+          <button class="forum-cat-btn" data-cat="general">General</button>
+          <button class="forum-cat-btn" data-cat="help">Help</button>
+          <button class="forum-cat-btn" data-cat="off-topic">Off Topic</button>
+        </div>
+
+        <!-- Section header -->
+        <div class="forum-section-header">
+          <span class="forum-section-pill">Discussions</span>
+          <span class="forum-section-count" id="threadCount">—</span>
+        </div>
+
+        <!-- Thread list -->
+        <div class="forum-threads" id="forumThreads">
+          <div class="forum-loading">Loading threads…</div>
+        </div>
+
+        <div class="forum-load-more-wrap">
+          <button class="forum-load-more-btn" id="loadMoreBtn" style="display:none">Load more</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: sidebar (featured + stats) -->
+      <aside class="forum-col-side">
+
+        <!-- Featured / pinned section -->
+        <div class="forum-side-section">
+          <div class="forum-section-pill">Featured</div>
+          <div id="featuredThreads" class="forum-featured-list">
+            <div class="forum-loading" style="font-size:0.78rem;padding:20px 0">Loading…</div>
+          </div>
+        </div>
+
+        <!-- Forum stats -->
+        <div class="forum-side-section" style="margin-top:20px">
+          <div class="forum-section-pill">Community</div>
+          <div class="forum-stats-grid">
+            <div class="forum-stat-item">
+              <div class="forum-stat-val" id="statPostCount">—</div>
+              <div class="forum-stat-lbl">Posts</div>
+            </div>
+            <div class="forum-stat-item">
+              <div class="forum-stat-val" id="statCategoryCount">5</div>
+              <div class="forum-stat-lbl">Categories</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category legend -->
+        <div class="forum-side-section" style="margin-top:20px">
+          <div class="forum-section-pill">Categories</div>
+          <div class="forum-cat-legend">
+            <div class="forum-cat-legend-item cat-maps" data-cat="maps">
+              <span class="cat-dot"></span>Maps
+            </div>
+            <div class="forum-cat-legend-item cat-records" data-cat="records">
+              <span class="cat-dot"></span>Records
+            </div>
+            <div class="forum-cat-legend-item cat-general" data-cat="general">
+              <span class="cat-dot"></span>General
+            </div>
+            <div class="forum-cat-legend-item cat-help" data-cat="help">
+              <span class="cat-dot"></span>Help
+            </div>
+            <div class="forum-cat-legend-item cat-off-topic" data-cat="off-topic">
+              <span class="cat-dot"></span>Off Topic
+            </div>
+          </div>
+        </div>
+
+      </aside>
     </div>
   </div>
 
@@ -92,9 +160,9 @@
       <div class="forum-field">
         <label class="forum-label">Category</label>
         <select class="forum-select" id="postCategory">
-          <option value="general">General</option>
           <option value="maps">Maps</option>
           <option value="records">Records</option>
+          <option value="general">General</option>
           <option value="help">Help</option>
           <option value="off-topic">Off Topic</option>
         </select>

@@ -256,8 +256,59 @@
         .subscribe();
     }
 
+    // ── Featured threads (sidebar) ──
+    async function loadFeatured() {
+      const el = document.getElementById('featuredThreads');
+      if (!el) return;
+      const res = await fetch(`${SB_URL}/rest/v1/forum_threads?order=likes.desc&limit=5&select=id,title,category,likes`, { headers: HDR });
+      const rows = await res.json();
+      if (!Array.isArray(rows) || !rows.length) { el.innerHTML = '<div style="font-size:0.75rem;color:rgba(255,255,255,0.3);padding:8px 0">No posts yet.</div>'; return; }
+      el.innerHTML = rows.map(t => `
+        <a class="forum-featured-item" href="thread.html?id=${t.id}">
+          <span class="forum-featured-badge ${catClass(t.category)}">${catLabel(t.category)}</span>
+          <span class="forum-featured-title">${esc(t.title)}</span>
+          <span class="forum-featured-upvotes">↑${t.likes||0}</span>
+        </a>`).join('');
+    }
+
+    // ── Thread count (sidebar stats) ──
+    async function loadThreadCount() {
+      const res = await fetch(`${SB_URL}/rest/v1/forum_threads?select=id`, { headers: { ...HDR, Prefer: 'count=exact', Range: '0-0' } });
+      const count = res.headers.get('content-range')?.split('/')[1] || '—';
+      const statEl = document.getElementById('statPostCount');
+      if (statEl) statEl.textContent = count;
+      const tcEl = document.getElementById('threadCount');
+      if (tcEl) tcEl.textContent = count + ' posts';
+    }
+
+    // ── Category legend clicks ──
+    function wireCatLegend() {
+      document.querySelectorAll('.forum-cat-legend-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const cat = item.dataset.cat;
+          document.querySelectorAll('.forum-cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+          activeCat = cat;
+          loadThreads();
+        });
+      });
+    }
+
     loadThreads();
     subscribeThreads();
+    loadFeatured();
+    loadThreadCount();
+    wireCatLegend();
+  }
+
+  // ── Notification helper ──
+  async function sendForumNotification(toSteamid, auth, type, threadId, threadTitle) {
+    try {
+      await fetch(`${SB_URL}/rest/v1/forum_notifications`, {
+        method: 'POST',
+        headers: { ...HDR, Prefer: 'return=minimal' },
+        body: JSON.stringify({ steamid: toSteamid, from_steamid: auth.steamid, from_nick: auth.nickname, from_avatar: auth.avatar || '', type, thread_id: threadId, thread_title: threadTitle || '' }),
+      });
+    } catch (_) {}
   }
 
   // ════════════════════════════════════
@@ -424,6 +475,19 @@
       if (btn) btn.classList.toggle('liked', !liked);
 
       if (table === 'forum_threads' && thread) thread.likes = newCount;
+
+      // Send notification to post/reply author (not when un-liking, not own content)
+      const auth2 = getAuth();
+      if (!liked && auth2) {
+        if (table === 'forum_threads' && thread && thread.steamid !== auth2.steamid) {
+          sendForumNotification(thread.steamid, auth2, 'like', thread.id, thread.title);
+        } else if (table === 'forum_replies') {
+          const reply = replies.find(r => String(r.id) === String(rowId));
+          if (reply && reply.steamid !== auth2.steamid) {
+            sendForumNotification(reply.steamid, auth2, 'like_reply', thread?.id, thread?.title);
+          }
+        }
+      }
     }
 
     function renderComposer() {
@@ -482,6 +546,10 @@
             body: JSON.stringify({ reply_count: newCount }),
           });
           if (thread) thread.reply_count = newCount;
+          // Notify thread author of new reply
+          if (thread && thread.steamid !== auth.steamid) {
+            sendForumNotification(thread.steamid, auth, 'reply', thread.id, thread.title);
+          }
         }
       });
     }

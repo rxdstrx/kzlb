@@ -55,9 +55,7 @@
     <div class="profile-banner-container">
       <div class="profile-banner" id="profileBanner">
         <div class="banner-overlay"></div>
-        <!-- Drop zone hint (owner only, shown when dragging) -->
         <div class="banner-drop-hint hidden" id="bannerDropHint">Drop image here</div>
-        <!-- Owner-only controls -->
         <div class="banner-owner-controls hidden" id="bannerOwnerControls">
           <button class="banner-edit-btn" id="bannerEditBtn">
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
@@ -66,191 +64,233 @@
             Change Banner
           </button>
           <button class="banner-remove-btn hidden" id="bannerRemoveBtn">Remove</button>
-          <!-- Hidden file input -->
           <input type="file" id="bannerFileInput" accept="image/*" style="display:none" />
         </div>
       </div>
     </div>
 
-    <!-- ── PROFILE HEADER ── -->
-    <div class="profile-header-wrap">
-      <div class="profile-header">
-        <div class="profile-avatar-outer">
-          <img class="profile-avatar-lg" id="playerAvatar" src="" alt="avatar" />
-        </div>
-        <div class="profile-header-info">
-          <div class="profile-roles" id="profileRoles"></div>
-          <div class="profile-name-row">
-            <h1 class="profile-name" id="playerName">—</h1>
-            <span class="profile-flag" id="playerFlag"></span>
+    <!-- ── 2-COLUMN LAYOUT ── -->
+    <div class="profile-layout">
+
+      <!-- ══ SIDEBAR ══ -->
+      <aside class="profile-sidebar">
+        <div class="profile-sidebar-card">
+
+          <!-- Avatar -->
+          <div class="sidebar-avatar-wrap">
+            <img class="profile-avatar-lg" id="playerAvatar" src="" alt="avatar" />
           </div>
-          <div class="profile-steamid" id="playerSteamId">—</div>
-          <div class="profile-lastseen" id="profileLastSeen"></div>
-          <div class="profile-socials">
-            <!-- Steam -->
-            <a class="social-icon-btn" id="steamSocialLink" href="#" target="_blank" rel="noopener" title="Steam Profile">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.455 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/>
+
+          <!-- Name + flag -->
+          <div class="sidebar-identity">
+            <h1 class="sidebar-player-name" id="playerName">—</h1>
+            <span class="profile-flag sidebar-flag" id="playerFlag"></span>
+          </div>
+
+          <!-- Role badges -->
+          <div class="profile-roles sidebar-roles" id="profileRoles"></div>
+
+          <!-- Steam ID + last seen -->
+          <div class="sidebar-meta">
+            <span class="sidebar-steamid" id="playerSteamId"></span>
+            <span class="sidebar-lastseen" id="profileLastSeen"></span>
+          </div>
+
+          <!-- Social links -->
+          <div class="sidebar-socials">
+            <a class="sidebar-social-btn" id="steamSocialLink" href="#" target="_blank" rel="noopener" title="Steam Profile">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0z"/>
               </svg>
+              Steam
             </a>
-            <!-- Faceit -->
-            <a class="social-icon-btn faceit-btn hidden" id="faceitSocialLink" href="#" target="_blank" rel="noopener" title="Faceit Profile">
-              <img src="https://cdn.simpleicons.org/faceit/FF5500" width="18" height="18" alt="Faceit" style="display:block" />
+            <a class="sidebar-social-btn faceit-btn hidden" id="faceitSocialLink" href="#" target="_blank" rel="noopener" title="Faceit Profile">
+              <img src="https://cdn.simpleicons.org/faceit/FF5500" width="13" height="13" alt="Faceit" style="display:block" />
+              Faceit
             </a>
           </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- ── TABS ── -->
-    <div class="profile-tabs-wrap">
-      <div class="profile-tabs">
-        <button class="profile-tab active" data-tab="profile">Profile</button>
-        <button class="profile-tab" data-tab="recent">Recent</button>
-        <button class="profile-tab" data-tab="friends">Friends</button>
-        <div class="profile-tab-indicator"></div>
-      </div>
-    </div>
+          <div class="sidebar-divider"></div>
 
-    <!-- ══ TAB: PROFILE ══ -->
-    <div class="tab-panel" id="tab-profile">
-
-    <!-- ── STATS BAR ── -->
-    <div style="max-width:960px;margin:20px auto 0;padding:0 24px 0;">
-      <span class="section-pill">Stats</span>
-    </div>
-    <div class="profile-stats-bar">
-      <div class="stat-card">
-        <div class="stat-card-value" id="statWorldRank">—</div>
-        <div class="stat-card-label">World Rank</div>
-      </div>
-      <div class="stat-card-sep"></div>
-      <div class="stat-card">
-        <div class="stat-card-value" id="statCountryDisplay">—</div>
-        <div class="stat-card-label">Country</div>
-      </div>
-      <div class="stat-card-sep"></div>
-      <div class="stat-card">
-        <div class="stat-card-value" id="statFaceitElo">—</div>
-        <div class="stat-card-label">Faceit ELO</div>
-      </div>
-      <div class="stat-card-sep"></div>
-      <div class="stat-card">
-        <div class="stat-card-value" id="statPoints">—</div>
-        <div class="stat-card-label">KZ Points</div>
-      </div>
-      <div class="stat-card-sep"></div>
-      <div class="stat-card">
-        <div class="stat-card-value" id="statMaps">—</div>
-        <div class="stat-card-label">Maps Done</div>
-      </div>
-    </div>
-
-    <!-- ── ACTIONS BAR ── -->
-    <div class="profile-actions-bar">
-      <div class="profile-actions-left">
-        <a class="action-btn action-cybershoke" id="cybershokeLink" href="#" target="_blank" rel="noopener">
-          View on Cybershoke
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-            <path d="M2 9L9 2M9 2H4M9 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <button class="action-btn action-update" id="updateRecordBtn">Update Records</button>
-      </div>
-      <div class="profile-actions-right">
-        <!-- Own profile only -->
-        <div class="own-profile-actions hidden" id="ownProfileActions">
-          <div class="flag-change-wrap">
-            <!-- Custom glassmorphism flag dropdown -->
-            <div class="flag-dropdown" id="flagDropdown">
-              <button class="flag-dropdown-trigger" id="flagDropdownTrigger">
-                <span id="flagDropdownLabel">No flag</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-              <div class="flag-dropdown-panel hidden" id="flagDropdownPanel">
-                <div class="flag-search-wrap">
-                  <input class="flag-search-input" id="flagSearchInput" type="text" placeholder="Search country…" autocomplete="off" />
-                </div>
-                <div class="flag-options-list" id="flagOptionsList"></div>
-              </div>
+          <!-- Stats -->
+          <div class="sidebar-section">
+            <div class="sidebar-section-pill">Stats</div>
+            <div class="sidebar-stat-row">
+              <span class="sidebar-stat-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L15 9H22L16.5 13.5L18.5 21L12 17L5.5 21L7.5 13.5L2 9H9Z"/></svg>
+                World Rank
+              </span>
+              <span class="sidebar-stat-val" id="statWorldRank">—</span>
             </div>
-            <button class="flag-change-btn" id="flagChangeBtn">Save Flag</button>
-            <span class="flag-change-status hidden" id="flagChangeStatus"></span>
+            <div class="sidebar-stat-row">
+              <span class="sidebar-stat-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                Country
+              </span>
+              <span class="sidebar-stat-val" id="statCountryDisplay">—</span>
+            </div>
+            <div class="sidebar-stat-row">
+              <span class="sidebar-stat-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                KZ Points
+              </span>
+              <span class="sidebar-stat-val" id="statPoints">—</span>
+            </div>
+            <div class="sidebar-stat-row">
+              <span class="sidebar-stat-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3h18v18H3z"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+                Maps Done
+              </span>
+              <span class="sidebar-stat-val" id="statMaps">—</span>
+            </div>
+            <div class="sidebar-stat-row">
+              <span class="sidebar-stat-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                Faceit ELO
+              </span>
+              <span class="sidebar-stat-val" id="statFaceitElo">—</span>
+            </div>
           </div>
-          <!-- Notification Bell -->
-          <div class="notif-bell-wrap" id="notifBellWrap" style="display:none">
-            <button class="notif-bell-btn" id="notifBellBtn" title="Notifications">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-              <span class="notif-badge hidden" id="notifBadge">0</span>
+
+          <div class="sidebar-divider"></div>
+
+          <!-- Actions -->
+          <div class="sidebar-section">
+            <div class="sidebar-section-pill">Actions</div>
+            <a class="sidebar-action-btn sidebar-cybershoke-btn" id="cybershokeLink" href="#" target="_blank" rel="noopener">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              View on Cybershoke
+            </a>
+            <button class="sidebar-action-btn sidebar-update-btn" id="updateRecordBtn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              Update Records
             </button>
-            <div class="notif-dropdown hidden" id="notifDropdown">
-              <div class="notif-header">Notifications</div>
-              <div class="notif-list" id="notifList">
-                <div class="notif-empty">No notifications yet</div>
+          </div>
+
+          <!-- Own profile only -->
+          <div class="own-profile-actions hidden" id="ownProfileActions">
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-section">
+              <div class="sidebar-section-pill">Settings</div>
+
+              <!-- Flag dropdown -->
+              <div class="flag-change-wrap sidebar-flag-wrap">
+                <div class="flag-dropdown" id="flagDropdown">
+                  <button class="flag-dropdown-trigger sidebar-flag-trigger" id="flagDropdownTrigger">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span id="flagDropdownLabel">No flag</span>
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none" style="margin-left:auto"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <div class="flag-dropdown-panel hidden" id="flagDropdownPanel">
+                    <div class="flag-search-wrap">
+                      <input class="flag-search-input" id="flagSearchInput" type="text" placeholder="Search country…" autocomplete="off" />
+                    </div>
+                    <div class="flag-options-list" id="flagOptionsList"></div>
+                  </div>
+                </div>
+                <button class="sidebar-action-btn sidebar-flag-save-btn" id="flagChangeBtn">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Save Flag
+                </button>
+                <span class="flag-change-status hidden" id="flagChangeStatus"></span>
               </div>
+
+              <!-- Notification Bell -->
+              <div class="notif-bell-wrap sidebar-notif-wrap" id="notifBellWrap" style="display:none">
+                <button class="sidebar-action-btn sidebar-notif-btn" id="notifBellBtn" title="Notifications">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                  Notifications
+                  <span class="notif-badge hidden" id="notifBadge">0</span>
+                </button>
+                <div class="notif-dropdown hidden" id="notifDropdown">
+                  <div class="notif-header">Notifications</div>
+                  <div class="notif-list" id="notifList">
+                    <div class="notif-empty">No notifications yet</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Logout -->
+              <button class="sidebar-action-btn sidebar-logout-btn" id="steamLogoutBtn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Log out
+              </button>
             </div>
           </div>
-          <button class="steam-logout-btn" id="steamLogoutBtn">Log out</button>
+
+          <!-- Guest login prompt -->
+          <a class="sidebar-login-btn hidden" id="steamLoginBtn" href="login.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7">
+              <path d="M12 0C5.373 0 0 5.373 0 12l6.39 2.647A3.37 3.37 0 0 1 9 14.25a3.375 3.375 0 0 1 3.375-3.375l2.894-4.122A4.5 4.5 0 1 1 19.5 11.25a4.488 4.488 0 0 1-2.36-.67L13.5 13.5a3.375 3.375 0 1 1-6.11 1.875L2.042 13.42C3.076 19.385 7.983 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
+            </svg>
+            Login with Steam
+          </a>
+
+        </div><!-- end .profile-sidebar-card -->
+      </aside>
+
+      <!-- ══ MAIN CONTENT ══ -->
+      <main class="profile-main">
+
+        <!-- Tabs -->
+        <div class="profile-tabs-wrap">
+          <div class="profile-tabs">
+            <button class="profile-tab active" data-tab="profile">Profile</button>
+            <button class="profile-tab" data-tab="recent">Recent</button>
+            <button class="profile-tab" data-tab="friends">Friends</button>
+            <div class="profile-tab-indicator"></div>
+          </div>
         </div>
-        <a class="steam-login-btn hidden" id="steamLoginBtn" href="login.html">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7">
-            <path d="M12 0C5.373 0 0 5.373 0 12l6.39 2.647A3.37 3.37 0 0 1 9 14.25a3.375 3.375 0 0 1 3.375-3.375l2.894-4.122A4.5 4.5 0 1 1 19.5 11.25a4.488 4.488 0 0 1-2.36-.67L13.5 13.5a3.375 3.375 0 1 1-6.11 1.875L2.042 13.42C3.076 19.385 7.983 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
-          </svg>
-          Login with Steam
-        </a>
-      </div>
-    </div>
 
-    <!-- Update status -->
-    <div class="update-record-status hidden" id="updateRecordStatus"></div>
-
-    <!-- Cached note -->
-    <p class="cached-at-note" id="cachedAt"></p>
-
-    <!-- ── MAPS TABLE ── -->
-    <div class="table-wrapper" id="statsTable" style="margin-top:8px">
-      <table>
-        <thead>
-          <tr>
-            <th class="col-mapname">Map</th>
-            <th class="col-tier-sm">Tier</th>
-            <th>Runs</th>
-            <th>Time</th>
-            <th>Position</th>
-            <th class="col-date">Date</th>
-          </tr>
-        </thead>
-        <tbody id="statsBody"></tbody>
-      </table>
-      <div class="empty-state hidden" id="noStats">No completed maps found.</div>
-    </div>
-
-    </div><!-- end #tab-profile -->
-
-    <!-- ══ TAB: RECENT ══ -->
-    <div class="tab-panel hidden" id="tab-recent">
-      <div id="recentLoading" class="kz-friends-loading" style="display:none">Loading…</div>
-      <div id="recentEmpty" class="notif-empty" style="display:none">No recent records yet. Click "Update Records" to load them.</div>
-      <div id="recentGrid" class="recent-grid"></div>
-    </div>
-
-    <!-- ══ TAB: FRIENDS ══ -->
-    <div class="tab-panel hidden" id="tab-friends">
-      <div class="friends-empty-wrap">
-        <div class="friends-empty-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
+        <!-- TAB: PROFILE -->
+        <div class="tab-panel" id="tab-profile">
+          <div class="update-record-status hidden" id="updateRecordStatus"></div>
+          <p class="cached-at-note" id="cachedAt"></p>
+          <div class="table-wrapper" id="statsTable">
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-mapname">Map</th>
+                  <th class="col-tier-sm">Tier</th>
+                  <th>Runs</th>
+                  <th>Time</th>
+                  <th>Position</th>
+                  <th class="col-date">Date</th>
+                </tr>
+              </thead>
+              <tbody id="statsBody"></tbody>
+            </table>
+            <div class="empty-state hidden" id="noStats">No completed maps found.</div>
+          </div>
         </div>
-        <p class="friends-empty-title">No friends to show</p>
-        <p class="friends-empty-sub">Friends list integration coming soon.</p>
-      </div>
-    </div>
 
-  </div>
+        <!-- TAB: RECENT -->
+        <div class="tab-panel hidden" id="tab-recent">
+          <div id="recentLoading" class="kz-friends-loading" style="display:none">Loading…</div>
+          <div id="recentEmpty" class="notif-empty" style="display:none">No recent records yet. Click "Update Records" to load them.</div>
+          <div id="recentGrid" class="recent-grid"></div>
+        </div>
+
+        <!-- TAB: FRIENDS -->
+        <div class="tab-panel hidden" id="tab-friends">
+          <div class="friends-empty-wrap">
+            <div class="friends-empty-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <p class="friends-empty-title">No friends to show</p>
+            <p class="friends-empty-sub">Friends list integration coming soon.</p>
+          </div>
+        </div>
+
+      </main>
+    </div><!-- end .profile-layout -->
+
+  </div><!-- end #profileContent -->
 
   <script src="maps-data.js"></script>
   <script src="auth.js"></script>

@@ -1,4 +1,10 @@
 ﻿/* â•â• NAVBAR â•â• */
+/* SF UI Display — Apple system font stack */
+:root {
+  --font-display: "SF UI Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui, sans-serif;
+  --font-body: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+}
+
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
