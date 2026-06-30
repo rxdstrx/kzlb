@@ -143,24 +143,23 @@
       }
       listEl.innerHTML = threads.map(t => `
         <a class="thread-card" href="thread.html?id=${t.id}">
-          <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.src=''" />
+          <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.style.display='none'" />
           <div class="thread-main">
             <div class="thread-top">
               <span class="thread-category ${catClass(t.category)}">${catLabel(t.category)}</span>
               <span class="thread-title">${esc(t.title)}</span>
             </div>
-            <div class="thread-body-preview">${esc(t.body)}</div>
-            <div class="thread-meta">
-              <a class="thread-meta-author" href="profile.html?steamid=${esc(t.steamid)}" onclick="event.stopPropagation()">${esc(t.nickname)}</a>
-              <span class="thread-meta-sep">·</span>
-              <span>${timeAgo(t.created_at)}</span>
-              <span class="thread-meta-sep">·</span>
-              <span>💬 ${t.reply_count||0}</span>
-            </div>
+          </div>
+          <div class="thread-meta">
+            <a class="thread-meta-author" href="profile.html?steamid=${esc(t.steamid)}" onclick="event.stopPropagation()">${esc(t.nickname)}</a>
+            <span class="thread-meta-sep">·</span>
+            <span>${timeAgo(t.created_at)}</span>
+            <span class="thread-meta-sep">·</span>
+            <span>💬 ${t.reply_count||0}</span>
           </div>
           <button class="thread-upvote ${myListLikes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
+              <path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span class="thread-upvote-count">${t.likes||0}</span>
           </button>
@@ -338,6 +337,32 @@
       loadMyLikes();
       renderComposer();
       subscribeReplies();
+      loadPlaylist();
+    }
+
+    function extractYtId(text) {
+      const m = text.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+      return m ? m[1] : null;
+    }
+
+    async function loadPlaylist() {
+      const res  = await fetch(`${SB_URL}/rest/v1/forum_threads?steamid=eq.${encodeURIComponent(thread.steamid)}&order=created_at.desc&select=id,title,created_at,category`, { headers: HDR });
+      const rows = await res.json();
+      if (!Array.isArray(rows)) return;
+      const countEl = document.getElementById('playlistCount');
+      const listEl  = document.getElementById('playlistItems');
+      if (countEl) countEl.textContent = `· ${rows.length}`;
+      if (!listEl) return;
+      listEl.innerHTML = rows.map(p => {
+        const isCurrent = String(p.id) === String(threadId);
+        return `<a href="thread.html?id=${p.id}" class="playlist-item ${isCurrent ? 'playlist-item--active' : ''}">
+          <div class="playlist-item-meta">
+            <span class="thread-category ${catClass(p.category)}" style="font-size:0.55rem">${catLabel(p.category)}</span>
+            <span class="playlist-item-date">${timeAgo(p.created_at)}</span>
+          </div>
+          <div class="playlist-item-title">${esc(p.title)}</div>
+        </a>`;
+      }).join('');
     }
 
     async function loadReplies() {
@@ -360,53 +385,100 @@
     function renderThread() {
       if (!thread) return;
       const liked = myLikes.has(`t_${thread.id}`);
+
+      // Populate info bar
+      const avatarEl  = document.getElementById('infobarAvatar');
+      const nameEl    = document.getElementById('infobarName');
+      const subjectEl = document.getElementById('infobarSubject');
+      const catEl     = document.getElementById('infobarCat');
+      if (avatarEl)  { avatarEl.src = thread.avatar; avatarEl.onerror = () => avatarEl.style.display = 'none'; }
+      if (nameEl)    { nameEl.textContent = thread.nickname; nameEl.href = `profile.html?steamid=${thread.steamid}`; }
+      if (subjectEl) subjectEl.textContent = thread.title;
+      if (catEl)     { catEl.textContent = catLabel(thread.category); catEl.className = `thread-category ${catClass(thread.category)}`; }
+
+      // YouTube embed
+      const ytId    = extractYtId(thread.body);
+      const mediaEl = document.getElementById('threadMedia');
+      if (ytId && mediaEl) {
+        mediaEl.classList.remove('hidden');
+        mediaEl.innerHTML = `<div class="thread-yt-wrap"><iframe src="https://www.youtube.com/embed/${ytId}" frameborder="0" allow="autoplay;encrypted-media" allowfullscreen></iframe></div>`;
+      }
+
+      // Post card
       threadEl.innerHTML = `
-        <div class="thread-post">
-          <div class="thread-post-header">
-            <img class="thread-post-avatar" src="${esc(thread.avatar)}" onerror="this.style.display='none'" />
-            <div class="thread-post-author">
-              <a class="thread-post-name" href="profile.html?steamid=${esc(thread.steamid)}">${esc(thread.nickname)}</a>
-              <div class="thread-post-date">${timeAgo(thread.created_at)}</div>
-            </div>
-            <span class="thread-category ${catClass(thread.category)}">${catLabel(thread.category)}</span>
-          </div>
-          <div class="thread-post-title">${esc(thread.title)}</div>
-          <div class="thread-post-body">${esc(thread.body)}</div>
-          <div class="thread-post-footer">
-            <button class="like-btn ${liked?'liked':''}" id="likeThreadBtn" data-id="t_${thread.id}" data-table="forum_threads" data-row="${thread.id}">
-              ❤ <span id="threadLikeCount">${thread.likes||0}</span>
-            </button>
-            <span style="font-size:0.72rem;color:rgba(255,255,255,0.25)">💬 ${thread.reply_count||0} replies</span>
-          </div>
+        <div class="thread-post-date-line">${timeAgo(thread.created_at)}</div>
+        <h2 class="thread-post-title-v2">${esc(thread.title)}</h2>
+        <div class="thread-post-body-v2">${esc(thread.body).replace(/\n/g,'<br>')}</div>
+        <div class="thread-post-actions-v2">
+          <button class="post-action-btn like-btn ${liked?'liked':''}" id="likeThreadBtn" data-id="t_${thread.id}" data-table="forum_threads" data-row="${thread.id}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span id="threadLikeCount">${thread.likes||0}</span>
+          </button>
+          <button class="post-action-btn thread-upvote" id="upThreadBtn">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>${thread.likes||0}</span>
+          </button>
+          <span class="post-action-meta">💬 ${thread.reply_count||0} replies</span>
         </div>`;
       document.getElementById('likeThreadBtn')?.addEventListener('click', () => toggleLike(`t_${thread.id}`, 'forum_threads', thread.id, 'threadLikeCount'));
     }
 
     function renderReplies() {
-      headerEl.style.display = replies.length ? 'block' : 'none';
+      const countEl = document.getElementById('repliesCount');
+      if (headerEl) headerEl.style.display = replies.length ? 'flex' : 'none';
+      if (countEl) countEl.textContent = replies.length;
       if (!replies.length) { repliesEl.innerHTML = ''; return; }
-      repliesEl.innerHTML = replies.map(r => {
+
+      repliesEl.innerHTML = replies.map((r, i) => {
         const liked = myLikes.has(`r_${r.id}`);
         return `
-          <div class="reply-card" id="reply-${r.id}">
-            <img class="reply-avatar" src="${esc(r.avatar)}" onerror="this.style.display='none'" />
-            <div class="reply-content">
-              <div class="reply-top">
-                <a class="reply-name" href="profile.html?steamid=${esc(r.steamid)}">${esc(r.nickname)}</a>
-                <span class="reply-date">${timeAgo(r.created_at)}</span>
+          <div class="reply-acc" id="reply-${r.id}">
+            <button class="reply-acc-toggle" data-idx="${i}" aria-expanded="false">
+              <div class="reply-acc-toggle-left">
+                <img class="reply-acc-avatar" src="${esc(r.avatar)}" onerror="this.style.display='none'" />
+                <a class="reply-acc-name" href="profile.html?steamid=${esc(r.steamid)}" onclick="event.stopPropagation()">${esc(r.nickname)}</a>
+                <span class="reply-acc-preview">${esc(r.body).slice(0,60)}${r.body.length>60?'…':''}</span>
               </div>
-              <div class="reply-body">${esc(r.body)}</div>
-              <div class="reply-footer">
-                <button class="like-btn ${liked?'liked':''}" data-id="r_${r.id}" data-table="forum_replies" data-row="${r.id}">
-                  ❤ <span>${r.likes||0}</span>
-                </button>
+              <div class="reply-acc-toggle-right">
+                <span class="reply-acc-date">${timeAgo(r.created_at)}</span>
+                <svg class="reply-acc-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </button>
+            <div class="reply-acc-body" aria-hidden="true">
+              <div class="reply-acc-body-inner">
+                <div class="reply-body">${esc(r.body).replace(/\n/g,'<br>')}</div>
+                <div class="reply-footer">
+                  <button class="post-action-btn like-btn ${liked?'liked':''}" data-id="r_${r.id}" data-table="forum_replies" data-row="${r.id}">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <span>${r.likes||0}</span>
+                  </button>
+                  <button class="post-action-btn thread-upvote">
+                    <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>`;
       }).join('');
 
-      repliesEl.querySelectorAll('.like-btn').forEach(btn => {
+      repliesEl.querySelectorAll('.reply-acc-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', !expanded);
+          const body = btn.nextElementSibling;
+          body.setAttribute('aria-hidden', expanded);
+          if (!expanded) {
+            body.style.maxHeight = body.scrollHeight + 'px';
+          } else {
+            body.style.maxHeight = '0';
+          }
+          btn.querySelector('.reply-acc-arrow')?.classList.toggle('open', !expanded);
+        });
+      });
+
+      repliesEl.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
           const span = btn.querySelector('span');
           toggleLike(btn.dataset.id, btn.dataset.table, btn.dataset.row, null, span);
         });
@@ -415,25 +487,48 @@
 
     function appendReply(reply) {
       replies.push(reply);
-      headerEl.style.display = 'block';
+      if (headerEl) { headerEl.style.display = 'flex'; }
+      const countEl = document.getElementById('repliesCount');
+      if (countEl) countEl.textContent = replies.length;
       const div = document.createElement('div');
-      div.className = 'reply-card';
+      div.className = 'reply-acc';
       div.id = `reply-${reply.id}`;
       div.innerHTML = `
-        <img class="reply-avatar" src="${esc(reply.avatar)}" onerror="this.style.display='none'" />
-        <div class="reply-content">
-          <div class="reply-top">
-            <a class="reply-name" href="profile.html?steamid=${esc(reply.steamid)}">${esc(reply.nickname)}</a>
-            <span class="reply-date">${timeAgo(reply.created_at)}</span>
+        <button class="reply-acc-toggle" aria-expanded="false">
+          <div class="reply-acc-toggle-left">
+            <img class="reply-acc-avatar" src="${esc(reply.avatar)}" onerror="this.style.display='none'" />
+            <a class="reply-acc-name" href="profile.html?steamid=${esc(reply.steamid)}" onclick="event.stopPropagation()">${esc(reply.nickname)}</a>
+            <span class="reply-acc-preview">${esc(reply.body).slice(0,60)}${reply.body.length>60?'…':''}</span>
           </div>
-          <div class="reply-body">${esc(reply.body)}</div>
-          <div class="reply-footer">
-            <button class="like-btn" data-id="r_${reply.id}" data-table="forum_replies" data-row="${reply.id}">
-              ❤ <span>${reply.likes||0}</span>
-            </button>
+          <div class="reply-acc-toggle-right">
+            <span class="reply-acc-date">${timeAgo(reply.created_at)}</span>
+            <svg class="reply-acc-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </button>
+        <div class="reply-acc-body" aria-hidden="true">
+          <div class="reply-acc-body-inner">
+            <div class="reply-body">${esc(reply.body).replace(/\n/g,'<br>')}</div>
+            <div class="reply-footer">
+              <button class="post-action-btn like-btn" data-id="r_${reply.id}" data-table="forum_replies" data-row="${reply.id}">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span>${reply.likes||0}</span>
+              </button>
+              <button class="post-action-btn thread-upvote">
+                <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
           </div>
         </div>`;
-      div.querySelector('.like-btn').addEventListener('click', function() {
+      div.querySelector('.reply-acc-toggle').addEventListener('click', function() {
+        const expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !expanded);
+        const body = this.nextElementSibling;
+        body.setAttribute('aria-hidden', expanded);
+        body.style.maxHeight = !expanded ? body.scrollHeight + 'px' : '0';
+        this.querySelector('.reply-acc-arrow')?.classList.toggle('open', !expanded);
+      });
+      div.querySelector('.like-btn')?.addEventListener('click', function(e) {
+        e.stopPropagation();
         const span = this.querySelector('span');
         toggleLike(this.dataset.id, this.dataset.table, this.dataset.row, null, span);
       });

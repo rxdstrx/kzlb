@@ -6,6 +6,7 @@
   <title>Thread — KZplus Forum</title>
   <link rel="stylesheet" href="landing.css" />
   <link rel="stylesheet" href="forum.css" />
+  <link rel="stylesheet" href="thread.css" />
 </head>
 <body>
   <div class="bg-orb orb1"></div>
@@ -48,26 +49,71 @@
     </div>
   </nav>
 
-  <div class="thread-page">
+  <div class="thread-page-v2">
+
+    <!-- Back link -->
     <a class="thread-back" href="forum.html">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
       Back to Forum
     </a>
 
-    <!-- Thread post -->
-    <div id="threadPost"><div class="forum-loading">Loading…</div></div>
+    <!-- ── Info bar (MNTOOLS style) ── -->
+    <div class="thread-infobar" id="threadInfobar">
+      <div class="thread-infobar-author">
+        <img class="thread-infobar-avatar" id="infobarAvatar" src="" alt="" />
+        <a class="thread-infobar-name" id="infobarName" href="#">—</a>
+      </div>
+      <span class="thread-infobar-sep">|</span>
+      <span class="thread-infobar-subject" id="infobarSubject">Loading…</span>
+      <span class="thread-infobar-sep">|</span>
+      <span class="thread-category" id="infobarCat">—</span>
+    </div>
 
-    <!-- Replies -->
-    <div class="replies-header" id="repliesHeader" style="display:none">Replies</div>
-    <div id="repliesList"></div>
+    <!-- ── Main 2-column grid ── -->
+    <div class="thread-grid">
 
-    <!-- Reply composer -->
-    <div id="replyComposer"></div>
-  </div>
+      <!-- LEFT: content -->
+      <div class="thread-content-col">
+
+        <!-- Media / YouTube embed -->
+        <div class="thread-media-wrap hidden" id="threadMedia"></div>
+
+        <!-- Post card -->
+        <div class="thread-post-card" id="threadPost">
+          <div class="forum-loading">Loading…</div>
+        </div>
+
+        <!-- ── Replies section ── -->
+        <div class="thread-replies-section">
+          <div class="replies-acc-header" id="repliesHeader" style="display:none">
+            <span class="replies-acc-pill">Comments</span>
+            <span class="replies-acc-count" id="repliesCount"></span>
+          </div>
+          <div id="repliesList"></div>
+          <div id="replyComposer"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: playlist -->
+      <aside class="thread-playlist-col">
+        <div class="thread-playlist-card" id="threadPlaylistCard">
+          <div class="thread-playlist-hdr">
+            PLAYLIST
+            <span class="thread-playlist-count" id="playlistCount">·&thinsp;—</span>
+          </div>
+          <div class="thread-playlist-items" id="playlistItems">
+            <div class="forum-loading" style="font-size:0.75rem;padding:14px 0">Loading…</div>
+          </div>
+        </div>
+      </aside>
+
+    </div><!-- end .thread-grid -->
+  </div><!-- end .thread-page-v2 -->
 
   <script src="auth.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="supabase-client.js"></script>
   <script src="forum.js"></script>
+  <script src="bg-particles.js"></script>
 </body>
 </html>

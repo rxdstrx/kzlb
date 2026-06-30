@@ -5,6 +5,13 @@
   --font-body: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
 }
 
+/* CC light sweep — shared across all pages */
+@keyframes btnSweep {
+  0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+}
+
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;

@@ -670,7 +670,7 @@
   left: 0;
   right: 0;
   height: 40%;
-  background: linear-gradient(to top, rgba(5,10,25,1) 0%, rgba(5,10,25,0.6) 50%, transparent 100%);
+  background: linear-gradient(to top, rgba(12,4,22,1) 0%, rgba(18,6,30,0.65) 50%, transparent 100%);
   pointer-events: none;
 }
 
@@ -900,8 +900,8 @@
   border-radius: 18px;
   object-fit: cover;
   display: block;
-  border: 2px solid rgba(139,92,246,0.45);
-  box-shadow: 0 0 0 4px rgba(139,92,246,0.10), 0 6px 28px rgba(0,0,0,0.5);
+  border: 2px solid rgba(139,92,246,0.3);
+  box-shadow: 0 0 18px rgba(139,92,246,0.18), 0 6px 20px rgba(0,0,0,0.4);
 }
 
 /* Name + flag */
@@ -1031,7 +1031,8 @@
   gap: 6px;
   font-size: 0.75rem;
   color: rgba(255,255,255,0.35);
-  font-weight: 500;
+  font-weight: 300;
+  font-family: var(--font-display, system-ui);
 }
 .sidebar-stat-label svg { opacity: 0.5; flex-shrink: 0; }
 .sidebar-stat-val {
@@ -1223,4 +1224,52 @@
   .profile-banner { height: 160px !important; }
   .profile-banner-container { padding: 0 16px !important; }
   .profile-back-wrap { padding: 16px 16px 0 !important; }
+}
+
+/* ── Posts tab (X.com flat list style) ── */
+.posts-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.post-feed-item {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s;
+  cursor: pointer;
+}
+.post-feed-item:hover { background: rgba(139,92,246,0.04); }
+.post-feed-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.post-feed-date {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.22);
+  margin-left: auto;
+}
+.post-feed-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.4;
+  margin-bottom: 6px;
+  font-family: var(--font-display, system-ui);
+}
+.post-feed-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.22);
+}
+.posts-empty {
+  padding: 28px 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.25);
 }

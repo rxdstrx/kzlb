@@ -319,11 +319,11 @@ async function loadProfile(sid) {
       if (c && c !== 'xx') {
         if (flagEl) flagEl.innerHTML = countryToFlag(c);
         if (statCountryEl) statCountryEl.innerHTML =
-          `<img src="https://flagcdn.com/w40/${c}.png" style="height:22px;border-radius:3px;vertical-align:middle" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null"> ${c.toUpperCase()}`;
+          `<img src="https://flagcdn.com/w40/${c}.png" style="height:18px;border-radius:2px;vertical-align:middle" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null">`;
       } else {
         if (flagEl) flagEl.innerHTML = countryToFlag(null);
         if (statCountryEl) statCountryEl.innerHTML =
-          `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:22px;border-radius:3px;vertical-align:middle"> Unknown`;
+          `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:18px;border-radius:2px;vertical-align:middle">`;
       }
     }
 
@@ -953,7 +953,7 @@ function initSteamUI() {
 function initTabs() {
   const tabs      = document.querySelectorAll('.profile-tab');
   const indicator = document.querySelector('.profile-tab-indicator');
-  const panels    = { profile: document.getElementById('tab-profile'), recent: document.getElementById('tab-recent'), friends: document.getElementById('tab-friends') };
+  const panels    = { profile: document.getElementById('tab-profile'), posts: document.getElementById('tab-posts'), recent: document.getElementById('tab-recent'), friends: document.getElementById('tab-friends') };
 
   function moveIndicator(activeTab) {
     if (!indicator) return;
@@ -979,6 +979,7 @@ function initTabs() {
     tab.addEventListener('click', () => {
       switchTab(tab.dataset.tab);
       if (tab.dataset.tab === 'recent') renderRecentTab();
+      if (tab.dataset.tab === 'posts') loadPostsTab();
     });
   });
 
@@ -995,6 +996,49 @@ function initTabs() {
 }
 
 // ── Recent Records Tab ──
+// ── Posts Tab ──
+let postsLoaded = false;
+async function loadPostsTab() {
+  if (postsLoaded) return;
+  postsLoaded = true;
+  const feedEl = document.getElementById('postsFeed');
+  if (!feedEl) return;
+  const steamid = new URLSearchParams(window.location.search).get('steamid');
+  if (!steamid) { feedEl.innerHTML = '<div class="posts-empty">No player selected.</div>'; return; }
+  try {
+    const HDR = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}`, 'Content-Type': 'application/json' };
+    const res = await fetch(`${SB_URL}/rest/v1/forum_threads?steamid=eq.${encodeURIComponent(steamid)}&order=created_at.desc&select=id,title,category,created_at,likes,reply_count`, { headers: HDR });
+    const rows = await res.json();
+    if (!Array.isArray(rows) || !rows.length) {
+      feedEl.innerHTML = '<div class="posts-empty">No forum posts yet.</div>';
+      return;
+    }
+    const catClass = c => ({ general:'cat-general', maps:'cat-maps', records:'cat-records', help:'cat-help', 'off-topic':'cat-off-topic' }[c] || 'cat-general');
+    const catLabel = c => ({ general:'General', maps:'Maps', records:'Records', help:'Help', 'off-topic':'Off-Topic' }[c] || c);
+    const timeAgo = iso => {
+      const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+      if (s < 60) return 'just now';
+      if (s < 3600) return `${Math.floor(s/60)}m ago`;
+      if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+      return `${Math.floor(s/86400)}d ago`;
+    };
+    feedEl.innerHTML = rows.map(p => `
+      <a class="post-feed-item" href="thread.html?id=${p.id}">
+        <div class="post-feed-top">
+          <span class="thread-category ${catClass(p.category)}">${catLabel(p.category)}</span>
+          <span class="post-feed-date">${timeAgo(p.created_at)}</span>
+        </div>
+        <div class="post-feed-title">${p.title.replace(/</g,'&lt;')}</div>
+        <div class="post-feed-meta">
+          <span>❤ ${p.likes||0}</span>
+          <span>💬 ${p.reply_count||0}</span>
+        </div>
+      </a>`).join('');
+  } catch (e) {
+    feedEl.innerHTML = '<div class="posts-empty">Failed to load posts.</div>';
+  }
+}
+
 const TIER_COLORS = { 1: '#4ade80', 2: '#86efac', 3: '#fbbf24', 4: '#f97316', 5: '#ef4444', 6: '#dc2626', 7: '#9333ea' };
 const TIER_LABELS = { 1: 'Very Easy', 2: 'Easy', 3: 'Medium', 4: 'Hard', 5: 'Very Hard', 6: 'Extreme', 7: 'Death' };
 

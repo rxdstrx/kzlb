@@ -123,10 +123,7 @@
               <span class="sidebar-stat-val" id="statWorldRank">—</span>
             </div>
             <div class="sidebar-stat-row">
-              <span class="sidebar-stat-label">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                Country
-              </span>
+              <span class="sidebar-stat-label">Country</span>
               <span class="sidebar-stat-val" id="statCountryDisplay">—</span>
             </div>
             <div class="sidebar-stat-row">
@@ -145,7 +142,7 @@
             </div>
             <div class="sidebar-stat-row">
               <span class="sidebar-stat-label">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                <img src="https://cdn.simpleicons.org/faceit/a855f7" width="11" height="11" alt="Faceit" style="display:inline-block;vertical-align:middle;opacity:0.75" />
                 Faceit ELO
               </span>
               <span class="sidebar-stat-val" id="statFaceitElo">—</span>
@@ -171,7 +168,7 @@
           <div class="own-profile-actions hidden" id="ownProfileActions">
             <div class="sidebar-divider"></div>
             <div class="sidebar-section">
-              <div class="sidebar-section-pill">Settings</div>
+
 
               <!-- Flag dropdown -->
               <div class="flag-change-wrap sidebar-flag-wrap">
@@ -236,9 +233,17 @@
         <div class="profile-tabs-wrap">
           <div class="profile-tabs">
             <button class="profile-tab active" data-tab="profile">Profile</button>
+            <button class="profile-tab" data-tab="posts">Posts</button>
             <button class="profile-tab" data-tab="recent">Recent</button>
             <button class="profile-tab" data-tab="friends">Friends</button>
             <div class="profile-tab-indicator"></div>
+          </div>
+        </div>
+
+        <!-- TAB: POSTS -->
+        <div class="tab-panel hidden" id="tab-posts">
+          <div class="posts-feed" id="postsFeed">
+            <div class="forum-loading" style="padding:24px 0">Loading posts…</div>
           </div>
         </div>
 
@@ -298,5 +303,6 @@
   <script src="supabase-client.js"></script>
   <script src="friends.js"></script>
   <script>document.write('<script src="profile.js?v=' + Date.now() + '"><\/script>')</script>
+  <script src="bg-particles.js"></script>
 </body>
 </html>
