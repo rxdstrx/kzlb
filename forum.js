@@ -62,13 +62,16 @@
     let threadIds    = new Set();
     let myListLikes  = new Set();
 
-    // ── Upvote delegation (catches clicks before <a> navigates) ──
+    // ── Card click → navigate; upvote click → toggle ──
     listEl.addEventListener('click', e => {
-      const btn = e.target.closest('.thread-upvote');
-      if (!btn) return;
-      e.preventDefault();
-      e.stopPropagation();
-      toggleListUpvote(btn, btn.dataset.threadId);
+      const upvote = e.target.closest('.thread-upvote');
+      if (upvote) {
+        e.stopPropagation();
+        toggleListUpvote(upvote, upvote.dataset.threadId);
+        return;
+      }
+      const card = e.target.closest('.thread-card[data-href]');
+      if (card) window.location.href = card.dataset.href;
     });
 
     // ── Load threads ──
@@ -141,8 +144,8 @@
         listEl.innerHTML = '<div class="forum-empty"><div class="forum-empty-icon">💬</div>No posts yet. Be the first!</div>';
         return;
       }
-      listEl.innerHTML = threads.map(t => `
-        <a class="thread-card" href="thread.html?id=${t.id}" style="display:flex;flex-direction:row;align-items:center;gap:10px;text-decoration:none;">
+      listEl.innerHTML = threads.map((t, i) => `
+        <div class="thread-card" data-href="thread.html?id=${t.id}" style="display:flex;flex-direction:row;align-items:center;gap:10px;cursor:pointer;animation-delay:${i*0.05}s">
           <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.style.display='none'" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0;" />
           <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;">
             <div style="display:flex;align-items:center;gap:7px;min-width:0;">
@@ -157,10 +160,10 @@
               <span>💬 ${t.reply_count||0}</span>
             </div>
           </div>
-          <span class="thread-upvote ${myListLikes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}" role="button" style="flex-shrink:0;width:auto;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;cursor:pointer;">
+          <button class="thread-upvote ${myListLikes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}" style="flex-shrink:0;width:auto;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;">
             ↑ <span class="thread-upvote-count">${t.likes||0}</span>
-          </span>
-        </a>`).join('');
+          </button>
+        </div>`).join('');
     }
 
     // ── Category filter ──
