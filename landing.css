@@ -1167,3 +1167,25 @@
   0%, 100% { filter: drop-shadow(0 0 4px rgba(251,191,36,0.2)); }
   50%       { filter: drop-shadow(0 0 10px rgba(251,191,36,0.5)); }
 }
+
+/* Page enter animation */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+body { animation: pageEnter 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* "everyone" italic CC light sweep */
+@keyframes everyoneSweep {
+  0%   { background-position: -200% center; }
+  100% { background-position: 300% center; }
+}
+.word-everyone {
+  font-style: italic;
+  background: linear-gradient(105deg, #c084fc 0%, #f5f0ff 45%, #c084fc 65%, #a855f7 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: everyoneSweep 2.8s linear infinite;
+}

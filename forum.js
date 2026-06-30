@@ -142,26 +142,23 @@
         return;
       }
       listEl.innerHTML = threads.map(t => `
-        <a class="thread-card" href="thread.html?id=${t.id}">
-          <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.style.display='none'" />
-          <div class="thread-main">
-            <div class="thread-top">
+        <a class="thread-card" href="thread.html?id=${t.id}" style="display:flex;flex-direction:row;align-items:center;gap:10px;text-decoration:none;">
+          <img class="thread-avatar" src="${esc(t.avatar)}" onerror="this.style.display='none'" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0;" />
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;">
+            <div style="display:flex;align-items:center;gap:7px;min-width:0;">
               <span class="thread-category ${catClass(t.category)}">${catLabel(t.category)}</span>
               <span class="thread-title">${esc(t.title)}</span>
             </div>
+            <div class="thread-meta">
+              <a class="thread-meta-author" href="profile.html?steamid=${esc(t.steamid)}" onclick="event.stopPropagation()">${esc(t.nickname)}</a>
+              <span class="thread-meta-sep">·</span>
+              <span>${timeAgo(t.created_at)}</span>
+              <span class="thread-meta-sep">·</span>
+              <span>💬 ${t.reply_count||0}</span>
+            </div>
           </div>
-          <div class="thread-meta">
-            <a class="thread-meta-author" href="profile.html?steamid=${esc(t.steamid)}" onclick="event.stopPropagation()">${esc(t.nickname)}</a>
-            <span class="thread-meta-sep">·</span>
-            <span>${timeAgo(t.created_at)}</span>
-            <span class="thread-meta-sep">·</span>
-            <span>💬 ${t.reply_count||0}</span>
-          </div>
-          <button class="thread-upvote ${myListLikes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}">
-            <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
-              <path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="thread-upvote-count">${t.likes||0}</span>
+          <button class="thread-upvote ${myListLikes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}" style="flex-shrink:0;width:auto;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;">
+            ↑ <span class="thread-upvote-count">${t.likes||0}</span>
           </button>
         </a>`).join('');
     }
@@ -198,12 +195,14 @@
       const auth = getAuth();
       if (!auth) { window.location.href = 'login.html'; return; }
 
-      const title = postTitle.value.trim();
-      const body  = postBody.value.trim();
-      const cat   = postCat.value;
+      const title   = postTitle.value.trim();
+      const rawBody = postBody.value.trim();
+      const ytUrl   = (document.getElementById('postYoutube')?.value || '').trim();
+      const body    = ytUrl ? `[YT:${ytUrl}]\n${rawBody}` : rawBody;
+      const cat     = postCat.value;
 
-      if (!title) { postError.textContent = 'Title is required.'; postError.style.display = 'block'; return; }
-      if (!body)  { postError.textContent = 'Body is required.';  postError.style.display = 'block'; return; }
+      if (!title)   { postError.textContent = 'Title is required.'; postError.style.display = 'block'; return; }
+      if (!rawBody) { postError.textContent = 'Body is required.';  postError.style.display = 'block'; return; }
       if (title.length < 4) { postError.textContent = 'Title too short.'; postError.style.display = 'block'; return; }
 
       submitPost.disabled = true;
@@ -344,6 +343,9 @@
       const m = text.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
       return m ? m[1] : null;
     }
+    function stripYtTag(text) {
+      return text.replace(/^\[YT:[^\]]+\]\n?/, '').replace(/https?:\/\/(?:www\.)?(?:youtu\.be\/|youtube\.com\/\S+)/g, '').trim();
+    }
 
     async function loadPlaylist() {
       const res  = await fetch(`${SB_URL}/rest/v1/forum_threads?steamid=eq.${encodeURIComponent(thread.steamid)}&order=created_at.desc&select=id,title,created_at,category`, { headers: HDR });
@@ -405,22 +407,21 @@
       }
 
       // Post card
+      const displayBody = stripYtTag(thread.body);
       threadEl.innerHTML = `
         <div class="thread-post-date-line">${timeAgo(thread.created_at)}</div>
         <h2 class="thread-post-title-v2">${esc(thread.title)}</h2>
-        <div class="thread-post-body-v2">${esc(thread.body).replace(/\n/g,'<br>')}</div>
+        <div class="thread-post-body-v2">${esc(displayBody).replace(/\n/g,'<br>')}</div>
         <div class="thread-post-actions-v2">
           <button class="post-action-btn like-btn ${liked?'liked':''}" id="likeThreadBtn" data-id="t_${thread.id}" data-table="forum_threads" data-row="${thread.id}">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             <span id="threadLikeCount">${thread.likes||0}</span>
           </button>
-          <button class="post-action-btn thread-upvote" id="upThreadBtn">
-            <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>${thread.likes||0}</span>
-          </button>
+          <button class="post-action-btn" id="upThreadBtn">↑</button>
           <span class="post-action-meta">💬 ${thread.reply_count||0} replies</span>
         </div>`;
       document.getElementById('likeThreadBtn')?.addEventListener('click', () => toggleLike(`t_${thread.id}`, 'forum_threads', thread.id, 'threadLikeCount'));
+      document.getElementById('upThreadBtn')?.addEventListener('click', function() { this.classList.toggle('upvoted'); });
     }
 
     function renderReplies() {
@@ -440,6 +441,7 @@
                 <span class="reply-acc-preview">${esc(r.body).slice(0,60)}${r.body.length>60?'…':''}</span>
               </div>
               <div class="reply-acc-toggle-right">
+                ${r.likes ? `<span class="reply-acc-likes">♥ ${r.likes}</span>` : ''}
                 <span class="reply-acc-date">${timeAgo(r.created_at)}</span>
                 <svg class="reply-acc-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
@@ -452,9 +454,7 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     <span>${r.likes||0}</span>
                   </button>
-                  <button class="post-action-btn thread-upvote">
-                    <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </button>
+                  <button class="post-action-btn reply-upvote-btn">↑</button>
                 </div>
               </div>
             </div>
@@ -482,6 +482,9 @@
           const span = btn.querySelector('span');
           toggleLike(btn.dataset.id, btn.dataset.table, btn.dataset.row, null, span);
         });
+      });
+      repliesEl.querySelectorAll('.reply-upvote-btn').forEach(btn => {
+        btn.addEventListener('click', e => { e.stopPropagation(); btn.classList.toggle('upvoted'); });
       });
     }
 
@@ -513,9 +516,7 @@
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 <span>${reply.likes||0}</span>
               </button>
-              <button class="post-action-btn thread-upvote">
-                <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
+              <button class="post-action-btn reply-upvote-btn">↑</button>
             </div>
           </div>
         </div>`;
@@ -531,6 +532,9 @@
         e.stopPropagation();
         const span = this.querySelector('span');
         toggleLike(this.dataset.id, this.dataset.table, this.dataset.row, null, span);
+      });
+      div.querySelector('.reply-upvote-btn')?.addEventListener('click', function(e) {
+        e.stopPropagation(); this.classList.toggle('upvoted');
       });
       repliesEl.appendChild(div);
       div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

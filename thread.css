@@ -186,7 +186,14 @@
 .post-action-btn.upvoted { border-color: rgba(168,85,247,0.4); color: #a855f7; background: rgba(139,92,246,0.12); }
 
 /* ── Replies section ── */
-.thread-replies-section { display: flex; flex-direction: column; gap: 6px; }
+.thread-replies-section { display: flex; flex-direction: column; gap: 14px; }
+.reply-acc-likes {
+  font-size: 0.62rem; font-weight: 700;
+  color: rgba(168,85,247,0.7);
+  background: rgba(139,92,246,0.1);
+  border: 1px solid rgba(139,92,246,0.2);
+  padding: 1px 7px; border-radius: 20px;
+}
 
 .replies-acc-header {
   display: flex;

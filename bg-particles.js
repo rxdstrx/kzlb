@@ -1,5 +1,9 @@
 // Interactive dot-grid background particles
 (function () {
+  const s = document.createElement('style');
+  s.textContent = 'body::before{display:none!important}';
+  document.head.appendChild(s);
+
   const canvas = document.createElement('canvas');
   canvas.id = 'bg-particles';
   Object.assign(canvas.style, {
