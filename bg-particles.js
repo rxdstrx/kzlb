@@ -17,8 +17,12 @@
   let W, H, dots = [], mx = -9999, my = -9999;
 
   function build() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
     dots = [];
     for (let x = SPACING / 2; x < W; x += SPACING) {
       for (let y = SPACING / 2; y < H; y += SPACING) {
