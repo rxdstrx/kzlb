@@ -46,10 +46,7 @@ html, body { scroll-behavior: smooth; }
 
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(900px 600px at 82% -10%, rgba(139,92,246,.12), transparent 60%),
-    radial-gradient(700px 600px at -10% 110%, rgba(168,85,247,.10), transparent 55%),
-    #060608;
+  background: #060608;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
   color: #fff;
   overflow-x: hidden;
