@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test — VANGUARD</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            podium: ['"FSP DEMO - PODIUM Sharp 4.11"', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Podium Sharp -->
+  <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/8b75d9dcff6a48c35a46656192adf019?family=FSP+DEMO+-+PODIUM+Sharp+4.11" />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scale-in {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .animate-fade-up {
+      opacity: 0;
+      animation: fade-up 0.8s ease-out 0s forwards;
+    }
+    .animate-fade-up-delay-1 {
+      opacity: 0;
+      animation: fade-up 0.8s ease-out 0.2s forwards;
+    }
+    .animate-fade-up-delay-2 {
+      opacity: 0;
+      animation: fade-up 0.8s ease-out 0.4s forwards;
+    }
+    .animate-fade-up-delay-3 {
+      opacity: 0;
+      animation: fade-up 0.8s ease-out 0.6s forwards;
+    }
+    .animate-fade-up-delay-4 {
+      opacity: 0;
+      animation: fade-up 0.8s ease-out 0.8s forwards;
+    }
+    .animate-fade-in {
+      opacity: 0;
+      animation: fade-in 0.8s ease-out 0s forwards;
+    }
+    .animate-fade-in-delay {
+      opacity: 0;
+      animation: fade-in 0.8s ease-out 0.3s forwards;
+    }
+
+    .font-podium { font-family: 'FSP DEMO - PODIUM Sharp 4.11', sans-serif; }
+    .font-inter  { font-family: 'Inter', sans-serif; }
+
+    .hero-heading {
+      font-size: clamp(2.8rem, 8vw, 7rem);
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+    }
+
+    /* Mobile menu */
+    #mobile-menu {
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #mobile-menu.open { opacity: 1; visibility: visible; }
+    #mobile-menu.closed { opacity: 0; visibility: hidden; }
+
+    .mobile-link {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    #mobile-menu.open .mobile-link { opacity: 1; transform: translateY(0); }
+
+    /* CTA button arrow hover */
+    .cta-btn:hover .arrow-icon {
+      transform: translate(2px, -2px);
+    }
+    .arrow-icon { transition: transform 0.2s ease; }
+
+    /* Video fill */
+    video.bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body class="bg-black overflow-x-hidden">
+
+<!-- ═══════════════════════════════════════════
+     HERO SECTION
+═══════════════════════════════════════════ -->
+<section class="relative w-full h-screen flex flex-col overflow-hidden">
+
+  <!-- Background video -->
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260606_154941_df1a96e1-a06f-450c-bd02-d863414cc1a0.mp4" type="video/mp4" />
+  </video>
+
+  <!-- Dark overlay -->
+  <div class="absolute inset-0 bg-black/50"></div>
+
+  <!-- ── NAVBAR ── -->
+  <nav class="relative z-20 flex items-center justify-between px-6 sm:px-10 lg:px-16 py-5 lg:py-7">
+
+    <!-- Brand -->
+    <span class="font-podium text-white font-bold uppercase text-2xl sm:text-3xl tracking-wider">VANGUARD</span>
+
+    <!-- Center nav links (md+) -->
+    <div class="hidden md:flex items-center gap-8 lg:gap-10">
+      <a href="#" class="font-inter text-sm text-white/80 tracking-widest uppercase hover:text-white transition-colors duration-200">Projects</a>
+      <a href="#" class="font-inter text-sm text-white/80 tracking-widest uppercase hover:text-white transition-colors duration-200">Studio</a>
+      <a href="#" class="font-inter text-sm text-white/80 tracking-widest uppercase hover:text-white transition-colors duration-200">Offerings</a>
+      <a href="#" class="font-inter text-sm text-white/80 tracking-widest uppercase hover:text-white transition-colors duration-200">Inquire</a>
+    </div>
+
+    <!-- Right: CTA (md+) / Hamburger (below md) -->
+    <div class="flex items-center">
+      <!-- GET IN TOUCH (md+) -->
+      <a href="#" class="hidden md:inline-flex items-center gap-2 border border-white/30 hover:border-white/60 hover:bg-white/10 px-6 py-3 text-xs text-white tracking-widest uppercase font-inter transition-all duration-200">
+        GET IN TOUCH
+        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+      </a>
+
+      <!-- Hamburger (below md) -->
+      <button id="menu-open-btn" class="md:hidden flex flex-col space-y-1.5" aria-label="Open menu">
+        <div class="w-6 h-0.5 bg-white"></div>
+        <div class="w-6 h-0.5 bg-white"></div>
+        <div class="w-4 h-0.5 bg-white"></div>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── HERO CONTENT ── -->
+  <div class="relative z-10 flex-1 flex items-center px-6 sm:px-10 lg:px-16 pb-10">
+    <div>
+
+      <!-- Tagline -->
+      <div class="animate-fade-up flex items-center gap-2 mb-6 lg:mb-8">
+        <i data-lucide="crown" class="w-4 h-4 text-white/70"></i>
+        <span class="font-inter text-white/70 text-xs sm:text-sm tracking-[0.3em] uppercase">World-Class Digital Collective</span>
+      </div>
+
+      <!-- Main heading -->
+      <div class="animate-fade-up-delay-1 font-podium text-white uppercase hero-heading">
+        <div>Design.</div>
+        <div>Disrupt.</div>
+        <div>Conquer.</div>
+      </div>
+
+      <!-- Subtext -->
+      <p class="animate-fade-up-delay-2 font-inter text-white/70 text-sm sm:text-base leading-relaxed max-w-md mt-6 lg:mt-8">
+        We build fierce brand identities<br />
+        that don't just turn heads —
+        <strong class="text-white font-semibold"> they lead.</strong>
+      </p>
+
+      <!-- CTA Row -->
+      <div class="animate-fade-up-delay-3 flex flex-wrap items-center gap-4 sm:gap-6 mt-8 lg:mt-10">
+        <!-- Black button -->
+        <a href="#" class="cta-btn group inline-flex items-center gap-2 bg-black hover:bg-neutral-900 text-white px-5 sm:px-7 py-3 sm:py-4 text-[11px] sm:text-xs tracking-widest uppercase font-inter transition-colors duration-200">
+          SEE OUR WORK
+          <i data-lucide="arrow-up-right" class="arrow-icon w-3.5 h-3.5"></i>
+        </a>
+
+        <!-- Award badge (sm+) -->
+        <div class="hidden sm:flex items-center gap-3">
+          <i data-lucide="award" class="w-8 h-8 text-white/50"></i>
+          <div class="font-inter">
+            <div class="text-white/60 text-xs tracking-wider uppercase">Top-Rated</div>
+            <div class="text-white/60 text-xs tracking-wider uppercase">Brand Studio</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="animate-fade-up-delay-4 flex flex-wrap gap-6 sm:gap-12 lg:gap-16 mt-8 sm:mt-10 lg:mt-14">
+        <div>
+          <div class="font-inter text-white text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight">250+</div>
+          <div class="font-inter text-white/50 text-[9px] sm:text-xs tracking-widest uppercase mt-1">Brands Transformed</div>
+        </div>
+        <div>
+          <div class="font-inter text-white text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight">95%</div>
+          <div class="font-inter text-white/50 text-[9px] sm:text-xs tracking-widest uppercase mt-1">Client Retention</div>
+        </div>
+        <div>
+          <div class="font-inter text-white text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight">10+</div>
+          <div class="font-inter text-white/50 text-[9px] sm:text-xs tracking-widest uppercase mt-1">Years in the Game</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     MOBILE MENU OVERLAY
+═══════════════════════════════════════════ -->
+<div id="mobile-menu" class="closed fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex flex-col px-6 py-5">
+
+  <!-- Header row -->
+  <div class="flex items-center justify-between">
+    <span class="font-podium text-white font-bold uppercase text-2xl tracking-wider">VANGUARD</span>
+    <button id="menu-close-btn" aria-label="Close menu">
+      <i data-lucide="x" class="w-6 h-6 text-white"></i>
+    </button>
+  </div>
+
+  <!-- Links (vertically centered) -->
+  <div class="flex-1 flex flex-col justify-center gap-6">
+    <a href="#" class="mobile-link font-podium text-white text-4xl sm:text-5xl uppercase" style="transition-delay:100ms" onclick="closeMenu()">Projects</a>
+    <a href="#" class="mobile-link font-podium text-white text-4xl sm:text-5xl uppercase" style="transition-delay:180ms" onclick="closeMenu()">Studio</a>
+    <a href="#" class="mobile-link font-podium text-white text-4xl sm:text-5xl uppercase" style="transition-delay:260ms" onclick="closeMenu()">Offerings</a>
+    <a href="#" class="mobile-link font-podium text-white text-4xl sm:text-5xl uppercase" style="transition-delay:340ms" onclick="closeMenu()">Inquire</a>
+
+    <!-- GET IN TOUCH -->
+    <a href="#" class="mobile-link inline-flex items-center gap-2 border border-white/30 px-6 py-3 text-xs text-white tracking-widest uppercase font-inter w-fit mt-4" style="transition-delay:420ms" onclick="closeMenu()">
+      GET IN TOUCH
+      <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+    </a>
+  </div>
+</div>
+
+<script>
+  // Init Lucide icons
+  lucide.createIcons();
+
+  const menu = document.getElementById('mobile-menu');
+  const openBtn = document.getElementById('menu-open-btn');
+  const closeBtn = document.getElementById('menu-close-btn');
+
+  function openMenu() {
+    menu.classList.remove('closed');
+    menu.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    menu.classList.remove('open');
+    menu.classList.add('closed');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', openMenu);
+  closeBtn.addEventListener('click', closeMenu);
+</script>
+</body>
+</html>
