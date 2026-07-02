@@ -365,11 +365,21 @@ header {
 }
 .player-nick {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.85);
-  font-weight: 500;
+  color: #d4c6f5;
+  font-weight: 600;
   text-decoration: none;
 }
 .player-nick:hover { color: #c4b5fd; }
+
+.pts-cell {
+  color: #fff;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.pos-cell, .runs-cell {
+  color: rgba(255,255,255,0.4);
+  font-variant-numeric: tabular-nums;
+}
 
 .country-options {
   padding: 6px 8px 8px;
@@ -493,18 +503,17 @@ header {
 }
 
 /* ── Tables ── */
+/* Outer shell: soft grey grid background, fading out toward the bottom */
 .table-wrapper {
   position: relative;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(139, 92, 246, 0.14);
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 12px;
   overflow: hidden;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
   box-shadow:
-    0 0 0 1px rgba(139,92,246,0.05) inset,
     0 20px 48px rgba(0, 0, 0, 0.4),
-    0 0 30px rgba(139, 92, 246, 0.025);
+    0 0 24px rgba(139, 92, 246, 0.02);
 }
 
 .table-wrapper::before {
@@ -513,12 +522,21 @@ header {
   inset: 0;
   z-index: -1;
   background-image:
-    linear-gradient(rgba(168,85,247,0.14) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(168,85,247,0.14) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 28px 28px;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
-  mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
   pointer-events: none;
+}
+
+/* Inner shell: the actual table, sitting inside the framed outer shell */
+.table-wrapper table {
+  position: relative;
+  background: rgba(12, 10, 18, 0.55);
+  border: 1px solid rgba(139, 92, 246, 0.14);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .hidden {
@@ -568,16 +586,16 @@ table {
 }
 
 thead tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(168, 85, 247, 0.18);
 }
 
 thead th {
   padding: 18px 24px;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.35);
   text-align: left;
 }
 
@@ -591,7 +609,8 @@ tbody tr:last-child {
 }
 
 tbody tr:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(168, 85, 247, 0.06);
+  box-shadow: inset 2px 0 0 rgba(168, 85, 247, 0.4);
 }
 
 tbody td {
