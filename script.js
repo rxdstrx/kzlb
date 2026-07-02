@@ -1468,11 +1468,14 @@ function showAddStatus(type, msg) {
       readmeWrap.style.right = 'auto';
       readmeWrap.style.marginTop = '8px';
       readmeWrap.style.marginBottom = '4px';
-      readmeWrap.style.paddingRight = '4px';
+      readmeWrap.style.paddingLeft = '20px';
+      readmeWrap.style.paddingRight = '20px';
       readmeWrap.style.textAlign = 'right';
     } else {
       readmeWrap.style.position = '';
       readmeWrap.style.marginTop = '';
+      readmeWrap.style.paddingLeft = '';
+      readmeWrap.style.paddingRight = '';
       readmeWrap.style.textAlign = '';
     }
   }

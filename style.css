@@ -363,20 +363,20 @@ header {
   background: rgba(255,255,255,0.05);
   flex-shrink: 0;
 }
-.player-nick {
+#lb-table .player-nick {
   font-size: 0.85rem;
   color: #d4c6f5;
   font-weight: 600;
   text-decoration: none;
 }
-.player-nick:hover { color: #c4b5fd; }
+#lb-table .player-nick:hover { color: #c4b5fd; }
 
-.pts-cell {
+#lb-table .pts-cell {
   color: #fff;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
-.pos-cell, .runs-cell {
+#lb-table .pos-cell, #lb-table .runs-cell {
   color: rgba(255,255,255,0.4);
   font-variant-numeric: tabular-nums;
 }
