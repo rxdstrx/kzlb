@@ -863,18 +863,44 @@
   .action-columns { grid-template-columns: 1fr; }
 }
 
+/* â•â• Corner-bracket card shell (React Bits style) â•â• */
+.corner-card {
+  position: relative;
+  background: rgba(12, 10, 18, 0.55);
+}
+.corner-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(circle at 25% 0%, rgba(168,85,247,0.10), transparent 60%);
+  pointer-events: none;
+}
+.corner-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(255,255,255,0.18);
+  pointer-events: none;
+  z-index: 1;
+}
+.corner-bracket.cb-tl { top: 9px; left: 9px; border-top: 1.5px solid; border-left: 1.5px solid; border-top-left-radius: 4px; }
+.corner-bracket.cb-tr { top: 9px; right: 9px; border-top: 1.5px solid; border-right: 1.5px solid; border-top-right-radius: 4px; }
+.corner-bracket.cb-bl { bottom: 9px; left: 9px; border-bottom: 1.5px solid; border-left: 1.5px solid; border-bottom-left-radius: 4px; }
+.corner-bracket.cb-br { bottom: 9px; right: 9px; border-bottom: 1.5px solid; border-right: 1.5px solid; border-bottom-right-radius: 4px; }
+
 .update-records-box {
   position: relative;
-  background: rgba(52,211,153,0.04);
-  border: 1px solid rgba(52,211,153,0.15);
-  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 18px;
   padding: 16px 20px;
   backdrop-filter: blur(10px);
   transition: border-color 0.2s;
 }
 
 .update-records-box:hover {
-  border-color: rgba(52,211,153,0.3);
+  border-color: rgba(52,211,153,0.28);
 }
 
 .update-records-box .add-yourself-header span {
@@ -889,9 +915,8 @@
 .add-yourself-box {
   position: relative;
   margin: 0;
-  background: rgba(168,85,247,0.04);
-  border: 1px solid rgba(168,85,247,0.15);
-  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 18px;
   transition: border-color 0.2s;
 }
 
