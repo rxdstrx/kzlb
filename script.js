@@ -1153,9 +1153,9 @@ function renderAddCountryOptions(filter = '') {
       el.addEventListener('click', () => {
         addSelectedCountry = c.code;
         userPickedCountry = true;
+        document.querySelectorAll('#addCountryList .country-chip').forEach(ch => ch.classList.remove('active'));
         otherBtn.textContent = `${c.flag} ${c.name} ▾`;
         otherBtn.classList.add('active');
-        document.querySelectorAll('#addCountryList .country-chip').forEach(ch => ch.classList.remove('active'));
         addDropdown.classList.add('hidden');
       });
       addOptions.appendChild(el);
