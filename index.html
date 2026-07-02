@@ -10,34 +10,11 @@
   <link rel="stylesheet" href="landing.css" />
   <link rel="stylesheet" href="friends.css" />
   <link rel="stylesheet" href="chat.css" />
-  <style>
-    /* Floating glassy navbar — index.html only */
-    body .navbar {
-      position: fixed;
-      top: 18px;
-      left: 50%;
-      right: auto;
-      transform: translateX(-50%);
-      width: calc(100% - 48px);
-      max-width: 1180px;
-      height: 60px;
-      padding: 0 14px 0 18px;
-      border-radius: 999px;
-      background: rgba(30, 20, 45, 0.45);
-      border: 1px solid rgba(168, 85, 247, 0.22);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
-      backdrop-filter: blur(20px) saturate(140%);
-      -webkit-backdrop-filter: blur(20px) saturate(140%);
-    }
-  </style>
 </head>
 <body>
 
-  <!-- ══ ColorBends background ══ -->
-  <div id="colorBendsBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom, black 0%, black 35%, transparent 75%);mask-image:linear-gradient(to bottom, black 0%, black 35%, transparent 75%);"></div>
-
-  <!-- ══ DotField overlay ══ -->
-  <div id="dotFieldBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom, black 0%, black 35%, transparent 75%);mask-image:linear-gradient(to bottom, black 0%, black 35%, transparent 75%);"></div>
+  <!-- ══ DotField background (fades out as you scroll past the hero) ══ -->
+  <div id="dotFieldBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;"></div>
 
   <!-- ══ NAVBAR ══ -->
   <nav class="navbar">
@@ -563,43 +540,32 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
-  <script src="color-bends.js"></script>
-  <script>
-    window.addEventListener('DOMContentLoaded', function () {
-      initColorBends(document.getElementById('colorBendsBg'), {
-        colors: ['#a855f7', '#7c3aed', '#c084fc'],
-        rotation: 90,
-        speed: 0.15,
-        transparent: true,
-        scale: 0.6,
-        frequency: 1,
-        warpStrength: 0.94,
-        mouseInfluence: 1,
-        parallax: 0.5,
-        noise: 0.15,
-        iterations: 1,
-        intensity: 1.5,
-        bandWidth: 4,
-      });
-    });
-  </script>
   <script src="dot-field.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', function () {
       initDotField(document.getElementById('dotFieldBg'), {
         dotRadius: 1.5,
         dotSpacing: 14,
-        bulgeStrength: 8,
+        bulgeStrength: 0,
         glowRadius: 50,
         sparkle: false,
         waveAmplitude: 0,
-        cursorRadius: 100,
-        cursorForce: 0.01,
+        cursorRadius: 200,
+        cursorForce: 0.04,
         bulgeOnly: false,
-        gradientFrom: '#5d288f',
-        gradientTo: '#08020e',
+        gradientFrom: '#5b486d',
+        gradientTo: 'rgba(180, 151, 207, 0.25)',
       });
+
+      // Fade the dot field out smoothly as the user scrolls past the hero viewport
+      var dotBg = document.getElementById('dotFieldBg');
+      function updateDotFade() {
+        var fadeDistance = window.innerHeight * 0.9;
+        var t = Math.min(window.scrollY / fadeDistance, 1);
+        dotBg.style.opacity = String(1 - t);
+      }
+      window.addEventListener('scroll', updateDotFade, { passive: true });
+      updateDotFade();
     });
   </script>
   <script src="maps-data.js"></script>
