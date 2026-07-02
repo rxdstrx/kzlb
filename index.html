@@ -16,6 +16,9 @@
   <!-- ══ ColorBends background ══ -->
   <div id="colorBendsBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom, black 0%, black 65%, transparent 100%);mask-image:linear-gradient(to bottom, black 0%, black 65%, transparent 100%);"></div>
 
+  <!-- ══ DotField overlay ══ -->
+  <div id="dotFieldBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom, black 0%, black 65%, transparent 100%);mask-image:linear-gradient(to bottom, black 0%, black 65%, transparent 100%);"></div>
+
   <!-- ══ NAVBAR ══ -->
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
@@ -558,6 +561,24 @@
         iterations: 1,
         intensity: 1.5,
         bandWidth: 6,
+      });
+    });
+  </script>
+  <script src="dot-field.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      initDotField(document.getElementById('dotFieldBg'), {
+        dotRadius: 1.5,
+        dotSpacing: 14,
+        bulgeStrength: 8,
+        glowRadius: 50,
+        sparkle: false,
+        waveAmplitude: 0,
+        cursorRadius: 100,
+        cursorForce: 0.01,
+        bulgeOnly: false,
+        gradientFrom: '#5d288f',
+        gradientTo: '#08020e',
       });
     });
   </script>
