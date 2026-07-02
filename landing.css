@@ -1255,10 +1255,11 @@
   50%       { filter: drop-shadow(0 0 10px rgba(251,191,36,0.5)); }
 }
 
-/* Page enter animation */
+/* Page enter animation (opacity only — a transform on body breaks
+   position:fixed containing-block behavior for every fixed descendant) */
 @keyframes pageEnter {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 body { animation: pageEnter 0.5s cubic-bezier(0.22,1,0.36,1) both; }
 
