@@ -35,6 +35,24 @@ async function route() {
 window.addEventListener('hashchange', route);
 window.addEventListener('load', route);
 
+// Clear stale "Done! Welcome..." status + readme position when restored from bfcache (back button)
+window.addEventListener('pageshow', (e) => {
+  if (!e.persisted) return;
+  const statusEl = document.getElementById('addYourselfStatus');
+  const submitBtn = document.getElementById('addYourselfSubmit');
+  if (statusEl) {
+    statusEl.textContent = '';
+    statusEl.className = 'add-yourself-status hidden';
+  }
+  if (submitBtn) submitBtn.disabled = false;
+  const readmeWrap = document.querySelector('#addYourselfBox .readme-wrap');
+  if (readmeWrap) {
+    readmeWrap.style.position = '';
+    readmeWrap.style.marginTop = '';
+    readmeWrap.style.textAlign = '';
+  }
+});
+
 // ── Back button ──
 document.getElementById('backBtn').addEventListener('click', () => {
   window.location.hash = '';
