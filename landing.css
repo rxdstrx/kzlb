@@ -873,14 +873,14 @@
   position: absolute;
   width: 14px;
   height: 14px;
-  border-color: rgba(120,120,130,0.4);
+  border-color: #4b4b55;
   pointer-events: none;
   z-index: 1;
 }
-.corner-bracket.cb-tl { top: 9px; left: 9px; border-top: 1.5px solid; border-left: 1.5px solid; border-top-left-radius: 4px; }
-.corner-bracket.cb-tr { top: 9px; right: 9px; border-top: 1.5px solid; border-right: 1.5px solid; border-top-right-radius: 4px; }
-.corner-bracket.cb-bl { bottom: 9px; left: 9px; border-bottom: 1.5px solid; border-left: 1.5px solid; border-bottom-left-radius: 4px; }
-.corner-bracket.cb-br { bottom: 9px; right: 9px; border-bottom: 1.5px solid; border-right: 1.5px solid; border-bottom-right-radius: 4px; }
+.corner-bracket.cb-tl { top: 9px; left: 9px; border-top: 1.5px solid #4b4b55; border-left: 1.5px solid #4b4b55; border-top-left-radius: 4px; }
+.corner-bracket.cb-tr { top: 9px; right: 9px; border-top: 1.5px solid #4b4b55; border-right: 1.5px solid #4b4b55; border-top-right-radius: 4px; }
+.corner-bracket.cb-bl { bottom: 9px; left: 9px; border-bottom: 1.5px solid #4b4b55; border-left: 1.5px solid #4b4b55; border-bottom-left-radius: 4px; }
+.corner-bracket.cb-br { bottom: 9px; right: 9px; border-bottom: 1.5px solid #4b4b55; border-right: 1.5px solid #4b4b55; border-bottom-right-radius: 4px; }
 
 .update-records-box {
   position: relative;
@@ -892,22 +892,11 @@
 }
 
 .update-records-box:hover {
-  border-color: rgba(52,211,153,0.28);
+  border-color: rgba(168,85,247,0.25);
 }
 
 .update-records-box .add-yourself-header span {
   color: rgba(255,255,255,0.55);
-}
-
-.update-submit {
-  background: rgba(52,211,153,0.10) !important;
-  border-color: rgba(52,211,153,0.35) !important;
-  color: #6ee7b7 !important;
-}
-
-.update-submit:hover {
-  background: rgba(52,211,153,0.18) !important;
-  border-color: rgba(52,211,153,0.5) !important;
 }
 
 /* â•â• ADD YOURSELF BOX â•â• */
@@ -1008,6 +997,9 @@
 
 .add-yourself-submit {
   align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 16px;
   background: rgba(168,85,247,0.10);
   border: 1px solid rgba(168,85,247,0.35);
@@ -1018,6 +1010,14 @@
   font-family: inherit;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
+}
+
+.submit-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c4b5fd;
+  flex-shrink: 0;
 }
 
 .add-yourself-submit:hover {

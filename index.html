@@ -14,7 +14,7 @@
 <body>
 
   <!-- ══ DotField background (fades out as you scroll past the hero) ══ -->
-  <div id="dotFieldBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom, transparent 0, black 110px, black 100%);mask-image:linear-gradient(to bottom, transparent 0, black 110px, black 100%);"></div>
+  <div id="dotFieldBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom, transparent 0, black 160px, black calc(100% - 160px), transparent 100%);mask-image:linear-gradient(to bottom, transparent 0, black 160px, black calc(100% - 160px), transparent 100%);"></div>
 
   <!-- ══ NAVBAR ══ -->
   <nav class="navbar">
@@ -293,8 +293,8 @@
         <span class="corner-bracket cb-br"></span>
         <div class="add-yourself-header">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <circle cx="9" cy="9" r="8" stroke="#38bdf8" stroke-width="1.5"/>
-            <path d="M9 5v8M5 9h8" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="9" cy="9" r="8" stroke="#a855f7" stroke-width="1.5"/>
+            <path d="M9 5v8M5 9h8" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           <span>Don't see the profile you're looking for? Add it to the leaderboard</span>
         </div>
@@ -321,7 +321,7 @@
               </div>
             </div>
           </div>
-          <button class="add-yourself-submit" id="addYourselfSubmit">Add to the Leaderboard</button>
+          <button class="add-yourself-submit" id="addYourselfSubmit"><span class="submit-dot"></span>Add to the Leaderboard</button>
           <div class="add-yourself-status hidden" id="addYourselfStatus"></div>
         </div>
         <div class="readme-wrap">
@@ -338,8 +338,8 @@
           <span class="corner-bracket cb-br"></span>
           <div class="add-yourself-header">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M3 9a6 6 0 1 0 1.5-3.9" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M3 5v4h4" stroke="#34d399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M3 9a6 6 0 1 0 1.5-3.9" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M3 5v4h4" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span>Update my records (or any player)</span>
           </div>
@@ -347,7 +347,7 @@
             <input class="add-yourself-input" id="updateInput" type="text"
               placeholder="Paste Steam, Faceit or Cybershoke link…"
               autocomplete="off" spellcheck="false" />
-            <button class="add-yourself-submit update-submit" id="updateSubmit">Update record</button>
+            <button class="add-yourself-submit update-submit" id="updateSubmit"><span class="submit-dot"></span>Update record</button>
             <div class="add-yourself-status hidden" id="updateStatus"></div>
           </div>
           <div class="readme-wrap">
@@ -357,6 +357,15 @@
         </div>
 
       </div> <!-- end action-columns -->
+
+      <!-- Role filter bar -->
+      <div class="role-filter-bar" id="roleFilterBar" style="display:none">
+        <span class="role-filter-label">Show:</span>
+        <button class="role-filter-btn active" data-role="all">All Players</button>
+      </div>
+
+      <!-- Main leaderboard -->
+      <div id="lbPaginationTop" class="lb-pagination hidden"></div>
 
       <!-- Filter bar -->
       <div class="filter-bar">
@@ -416,14 +425,6 @@
         </div>
       </div>
 
-      <!-- Role filter bar -->
-      <div class="role-filter-bar" id="roleFilterBar" style="display:none">
-        <span class="role-filter-label">Show:</span>
-        <button class="role-filter-btn active" data-role="all">All Players</button>
-      </div>
-
-      <!-- Main leaderboard -->
-      <div id="lbPaginationTop" class="lb-pagination hidden"></div>
       <div class="table-wrapper" id="lb-table">
         <table>
           <thead>
@@ -558,12 +559,11 @@
         gradientTo: 'rgba(180, 151, 207, 0.25)',
       });
 
-      // Fade the dot field out smoothly as the user scrolls past the hero section
+      // Fade the dot field out smoothly as the user scrolls down
       var dotBg = document.getElementById('dotFieldBg');
-      var heroEl = document.querySelector('.hero');
       function updateDotFade() {
-        var heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
-        var t = Math.min(window.scrollY / heroHeight, 1);
+        var fadeDistance = 500;
+        var t = Math.min(window.scrollY / fadeDistance, 1);
         dotBg.style.opacity = String((1 - t) * 0.5);
       }
       window.addEventListener('scroll', updateDotFade, { passive: true });

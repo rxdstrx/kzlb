@@ -512,10 +512,12 @@ header {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: radial-gradient(rgba(168,85,247,0.28) 1px, transparent 1.5px);
-  background-size: 22px 22px;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 90%);
-  mask-image: linear-gradient(to bottom, black 0%, transparent 90%);
+  background-image:
+    linear-gradient(rgba(168,85,247,0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168,85,247,0.14) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
   pointer-events: none;
 }
 
