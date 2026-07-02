@@ -70,6 +70,33 @@
 
 .nav-links a:hover { color: #fff; }
 
+.nav-links a.active {
+  color: #fff;
+  background: rgba(168,85,247,0.15);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin: 0 -12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.28) 50%, transparent 65%);
+  transform: translateX(-120%) skewX(-18deg);
+  animation: navActiveSweep 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes navActiveSweep {
+  0%   { transform: translateX(-120%) skewX(-18deg); }
+  35%  { transform: translateX(220%) skewX(-18deg); }
+  100% { transform: translateX(220%) skewX(-18deg); }
+}
+
 /* â”€â”€ Home dropdown menu â”€â”€ */
 .nav-home-menu {
   position: relative;
@@ -95,6 +122,24 @@
 .nav-home-menu:hover .nav-home-trigger {
   color: #fff;
   background: rgba(255,255,255,0.06);
+}
+
+.nav-home-trigger.active {
+  color: #fff;
+  background: rgba(168,85,247,0.15);
+  border: 1px solid rgba(168,85,247,0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-home-trigger.active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.28) 50%, transparent 65%);
+  transform: translateX(-120%) skewX(-18deg);
+  animation: navActiveSweep 2.8s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .nav-home-dropdown {
@@ -251,6 +296,10 @@
   display: block;
 }
 .nav-avatar-btn:hover { border-color: rgba(168,85,247,0.8); }
+
+.hidden {
+  display: none !important;
+}
 
 .nav-dropdown {
   position: absolute;

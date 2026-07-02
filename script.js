@@ -1159,7 +1159,7 @@ otherBtn.addEventListener('click', (e) => {
     }
     addDropdown.style.left = rect.left + 'px';
     renderAddCountryOptions();
-    addSearch.focus();
+    addSearch.focus({ preventScroll: true });
   }
 });
 

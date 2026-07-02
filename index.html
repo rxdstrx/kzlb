@@ -23,7 +23,7 @@
     </a>
     <ul class="nav-links">
       <li class="nav-home-menu">
-        <span class="nav-home-trigger">
+        <span class="nav-home-trigger active">
           Home
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 4 4-4"/></svg>
         </span>
@@ -564,7 +564,7 @@
       function updateDotFade() {
         var fadeDistance = 500;
         var t = Math.min(window.scrollY / fadeDistance, 1);
-        dotBg.style.opacity = String((1 - t) * 0.5);
+        dotBg.style.opacity = String((1 - t) * 0.25);
       }
       window.addEventListener('scroll', updateDotFade, { passive: true });
       window.addEventListener('resize', updateDotFade, { passive: true });
