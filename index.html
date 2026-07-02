@@ -14,18 +14,11 @@
 <body>
 
   <!-- ══ DotField background (fades out as you scroll past the hero) ══ -->
-  <div id="dotFieldBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;"></div>
+  <div id="dotFieldBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom, transparent 0, black 110px, black 100%);mask-image:linear-gradient(to bottom, transparent 0, black 110px, black 100%);"></div>
 
   <!-- ══ NAVBAR ══ -->
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
-      <!-- KZplus logo -->
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <rect width="36" height="36" rx="10" fill="rgba(139,92,246,0.18)"/>
-        <text x="4" y="24" font-family="system-ui,sans-serif" font-weight="800" font-size="14" fill="#a855f7">KZ</text>
-        <line x1="27" y1="10" x2="27" y2="26" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/>
-        <line x1="19" y1="18" x2="35" y2="18" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/>
-      </svg>
       <span class="nav-logo-text">KZ<span>plus</span></span>
     </a>
     <ul class="nav-links">
@@ -565,14 +558,16 @@
         gradientTo: 'rgba(180, 151, 207, 0.25)',
       });
 
-      // Fade the dot field out smoothly as the user scrolls past the hero viewport
+      // Fade the dot field out smoothly as the user scrolls past the hero section
       var dotBg = document.getElementById('dotFieldBg');
+      var heroEl = document.querySelector('.hero');
       function updateDotFade() {
-        var fadeDistance = window.innerHeight * 0.9;
-        var t = Math.min(window.scrollY / fadeDistance, 1);
-        dotBg.style.opacity = String(1 - t);
+        var heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
+        var t = Math.min(window.scrollY / heroHeight, 1);
+        dotBg.style.opacity = String((1 - t) * 0.5);
       }
       window.addEventListener('scroll', updateDotFade, { passive: true });
+      window.addEventListener('resize', updateDotFade, { passive: true });
       updateDotFade();
     });
   </script>

@@ -111,11 +111,13 @@
 }
 
 .nav-home-dropdown-inner {
-  background: #0d0d14;
+  background: rgba(18, 17, 22, 0.75);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
   padding: 6px;
   box-shadow: 0 24px 64px rgba(0,0,0,0.55);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
 .nav-home-menu:hover .nav-home-dropdown {
@@ -460,30 +462,21 @@
   align-items: center;
   gap: 8px;
   padding: 13px 28px;
-  background: #fff;
-  border: 2px solid transparent;
-  background-clip: padding-box;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 12px;
-  color: #060608;
+  color: #fff;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   font-family: "SF UI Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
   text-decoration: none;
   position: relative;
-  transition: opacity 0.15s;
+  transition: filter 0.15s;
   cursor: pointer;
+  box-shadow: 0 8px 24px rgba(124,58,237,0.35);
 }
 
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #c084fc, #7c3aed);
-  z-index: -1;
-}
-
-.btn-primary:hover { opacity: 0.9; }
+.btn-primary:hover { filter: brightness(1.1); }
 
 .btn-secondary {
   display: inline-flex;
@@ -509,13 +502,12 @@
 }
 
 .chart-card {
-  background: rgba(255,255,255,0.04);
+  background: #0e0c14;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px;
   padding: 24px;
   width: 100%;
   max-width: 420px;
-  backdrop-filter: blur(24px);
   box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 32px 80px rgba(0,0,0,0.5);
   position: relative;
   overflow: hidden;
@@ -881,7 +873,7 @@
   position: absolute;
   width: 14px;
   height: 14px;
-  border-color: rgba(255,255,255,0.18);
+  border-color: rgba(120,120,130,0.4);
   pointer-events: none;
   z-index: 1;
 }
@@ -908,7 +900,14 @@
 }
 
 .update-submit {
-  background: linear-gradient(135deg, #34d399, #059669) !important;
+  background: rgba(52,211,153,0.10) !important;
+  border-color: rgba(52,211,153,0.35) !important;
+  color: #6ee7b7 !important;
+}
+
+.update-submit:hover {
+  background: rgba(52,211,153,0.18) !important;
+  border-color: rgba(52,211,153,0.5) !important;
 }
 
 /* â•â• ADD YOURSELF BOX â•â• */
@@ -1009,19 +1008,22 @@
 
 .add-yourself-submit {
   align-self: flex-start;
-  padding: 10px 22px;
-  background: #c084fc;
-  border: none;
-  border-radius: 10px;
-  color: #060608;
-  font-size: 0.88rem;
+  padding: 8px 16px;
+  background: rgba(168,85,247,0.10);
+  border: 1px solid rgba(168,85,247,0.35);
+  border-radius: 999px;
+  color: #c4b5fd;
+  font-size: 0.8rem;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-.add-yourself-submit:hover { opacity: 0.85; }
+.add-yourself-submit:hover {
+  background: rgba(168,85,247,0.18);
+  border-color: rgba(168,85,247,0.5);
+}
 .add-yourself-submit:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .add-yourself-status {
