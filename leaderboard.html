@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KZplus — About Us</title>
+  <title>Leaderboard (Preview) — KZplus</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="landing.css" />
   <link rel="stylesheet" href="friends.css" />
+  <link rel="stylesheet" href="leaderboard-preview.css" />
 </head>
 <body>
-  <div class="bg-orb orb1"></div>
-  <div class="bg-orb orb2"></div>
 
+  <!-- ══ Aurora background ══ -->
+  <div id="auroraBg" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></div>
+
+  <!-- ══ NAVBAR ══ -->
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
       <span class="nav-logo-text">KZ<span>plus</span></span>
@@ -51,10 +54,10 @@
           </div>
         </div>
       </li>
-      <li><a href="about.html" class="active">About Us</a></li>
+      <li><a href="about.html">About Us</a></li>
       <li><a href="partners.html">Partners</a></li>
       <li><a href="forum.html" class="nav-forum-link">Forum</a></li>
-      <li><a href="leaderboard.html">Leaderboard</a></li>
+      <li><a href="leaderboard.html" class="active">Leaderboard</a></li>
       <li><a href="test.html">Test</a></li>
     </ul>
 
@@ -82,42 +85,41 @@
     </div>
   </nav>
 
-  <div class="page-hero">
-    <div class="hero-tag">About Us</div>
-    <h1>Built by the <span>KZ community</span></h1>
-    <p>
-      KZplus is a community-driven leaderboard platform dedicated to Kreedz — the movement-based climbing discipline in Counter-Strike 2. We track player records, map completions, and rankings across hundreds of maps and tiers.
-    </p>
-    <p>
-      KZ originated in the early days of Counter-Strike as a community mod where players race to reach the end of obstacle course maps using only precise movement — no weapons, no combat. Today it has evolved into one of CS2's most dedicated communities with thousands of active players worldwide.
-    </p>
-    <p>
-      Our goal is to make KZ stats accessible to everyone — whether you're a beginner discovering your first T1 map or an elite runner chasing world records on T7+ maps.
-    </p>
+  <!-- ══ HERO ══ -->
+  <div class="lbp-hero">
+    <div class="lbp-pill" id="lbpPageInfo">
+      <span class="lbp-pill-badge">LIVE</span>
+      <span id="lbpPageText">Loading players…</span>
+    </div>
+    <h1 class="lbp-title">The KZ Leaderboard,<br />reimagined</h1>
+    <p class="lbp-sub">Same players, same points — a glassy new look. Preview only.</p>
+  </div>
 
-    <div class="info-grid">
-      <div class="info-card">
-        <div class="info-card-num">50K+</div>
-        <div class="info-card-label">Monthly active players</div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-num">200+</div>
-        <div class="info-card-label">Maps tracked</div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-num">10</div>
-        <div class="info-card-label">Difficulty tiers</div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-num">24/7</div>
-        <div class="info-card-label">Live stats</div>
-      </div>
+  <!-- ══ LEADERBOARD ══ -->
+  <div class="lbp-shell">
+    <div class="lbp-grid" id="lbpGrid"></div>
+    <div class="lbp-pager">
+      <button class="lbp-page-btn" id="lbpPrev">← Prev</button>
+      <span class="lbp-page-label" id="lbpPageLabel">Page 1 of 1</span>
+      <button class="lbp-page-btn" id="lbpNext">Next →</button>
     </div>
   </div>
 
+  <script src="aurora.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      initAurora(document.getElementById('auroraBg'), {
+        colorStops: ['#4c0f8f', '#B497CF', '#8e27ff'],
+        blend: 0.5,
+        amplitude: 1.0,
+        speed: 0.5,
+      });
+    });
+  </script>
   <script src="auth.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="supabase-client.js"></script>
   <script src="friends.js"></script>
+  <script src="leaderboard-preview.js"></script>
 </body>
 </html>
