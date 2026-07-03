@@ -522,8 +522,8 @@ header {
   inset: 0;
   z-index: -1;
   background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
   background-size: 28px 28px;
   -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
@@ -600,8 +600,9 @@ thead th {
 }
 
 tbody tr {
+  position: relative;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 
 tbody tr:last-child {
@@ -610,17 +611,46 @@ tbody tr:last-child {
 
 tbody tr:hover {
   background:
-    linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
     rgba(168, 85, 247, 0.06);
   background-size: 16px 16px, 16px 16px, 100% 100%;
-  box-shadow: inset 2px 0 0 rgba(168, 85, 247, 0.4);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), inset 2px 0 0 rgba(168, 85, 247, 0.5);
+}
+
+/* Aurora glow — lightweight CSS gradient animation, not real WebGL, so 100 rows stay cheap */
+tbody tr::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, #4c0f8f, #B497CF, #5227FF, #4c0f8f);
+  background-size: 300% 300%;
+  filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: opacity 0.25s ease;
+}
+
+tbody tr:hover::after {
+  opacity: 0.22;
+  animation: auroraRowFlow 5s ease infinite;
+}
+
+@keyframes auroraRowFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 tbody tr:hover td:first-child { border-radius: 10px 0 0 10px; }
 tbody tr:hover td:last-child { border-radius: 0 10px 10px 0; }
 
 tbody td {
+  position: relative;
+  z-index: 1;
   padding: 14px 24px;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.55);
