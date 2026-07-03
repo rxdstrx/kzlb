@@ -707,7 +707,11 @@ thead .col-time { text-align: right; }
 .rank.top3 { color: #8b5cf6; font-weight: 700; }
 
 tbody tr:not(.pinned-self-row):has(.rank.top1) {
-  background: linear-gradient(90deg, rgba(168,85,247,0.18) 0%, rgba(139,92,246,0.07) 45%, transparent 80%);
+  background:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168,85,247,0.18) 0%, rgba(139,92,246,0.07) 45%, transparent 80%);
+  background-size: 16px 16px, 16px 16px, 100% 100%;
   border-bottom-color: rgba(168,85,247,0.20);
   box-shadow:
     inset 3px 0 0 rgba(192,132,252,0.85),
@@ -715,14 +719,42 @@ tbody tr:not(.pinned-self-row):has(.rank.top1) {
   outline: none;
 }
 tbody tr:not(.pinned-self-row):has(.rank.top2) {
-  background: linear-gradient(90deg, rgba(139,92,246,0.12) 0%, rgba(139,92,246,0.04) 45%, transparent 80%);
+  background:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,92,246,0.12) 0%, rgba(139,92,246,0.04) 45%, transparent 80%);
+  background-size: 16px 16px, 16px 16px, 100% 100%;
   border-bottom-color: rgba(139,92,246,0.14);
   box-shadow: inset 3px 0 0 rgba(167,139,250,0.65);
 }
 tbody tr:not(.pinned-self-row):has(.rank.top3) {
-  background: linear-gradient(90deg, rgba(109,40,217,0.10) 0%, rgba(109,40,217,0.03) 45%, transparent 80%);
+  background:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(109,40,217,0.10) 0%, rgba(109,40,217,0.03) 45%, transparent 80%);
+  background-size: 16px 16px, 16px 16px, 100% 100%;
   border-bottom-color: rgba(109,40,217,0.12);
   box-shadow: inset 3px 0 0 rgba(139,92,246,0.50);
+}
+
+/* Same glassy hover treatment as regular rows, layered on top of the top1/2/3 accent */
+tbody tr:not(.pinned-self-row):has(.rank.top1):hover,
+tbody tr:not(.pinned-self-row):has(.rank.top2):hover,
+tbody tr:not(.pinned-self-row):has(.rank.top3):hover {
+  background:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168,85,247,0.22) 0%, rgba(139,92,246,0.10) 45%, transparent 80%);
+  background-size: 16px 16px, 16px 16px, 100% 100%;
+}
+tbody tr:not(.pinned-self-row):has(.rank.top1):hover {
+  box-shadow: inset 3px 0 0 rgba(192,132,252,0.85), inset 0 0 0 1px rgba(255,255,255,0.12);
+}
+tbody tr:not(.pinned-self-row):has(.rank.top2):hover {
+  box-shadow: inset 3px 0 0 rgba(167,139,250,0.65), inset 0 0 0 1px rgba(255,255,255,0.12);
+}
+tbody tr:not(.pinned-self-row):has(.rank.top3):hover {
+  box-shadow: inset 3px 0 0 rgba(139,92,246,0.50), inset 0 0 0 1px rgba(255,255,255,0.12);
 }
 
 /* ── Button CC light sweep ── */
