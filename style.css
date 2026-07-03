@@ -583,7 +583,6 @@ header {
 
 table {
   width: 100%;
-  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0 10px;
 }
@@ -591,7 +590,6 @@ table {
 #leaderboard-head th:nth-child(3),
 #leaderboard-head th:nth-child(4),
 #leaderboard-head th:nth-child(5) {
-  width: 140px;
   text-align: right;
 }
 #leaderboard-body td:nth-child(3),
@@ -777,31 +775,14 @@ tbody tr:not(.pinned-self-row):has(.rank.top1) {
     inset 0 0 0 1px rgba(168,85,247,0.12);
   outline: none;
 }
-tbody tr:not(.pinned-self-row):has(.rank.top1) td {
-  background: linear-gradient(90deg, rgba(168,85,247,0.18) 0%, rgba(139,92,246,0.07) 45%, rgba(255,255,255,0.04) 80%);
-  border-color: rgba(168,85,247,0.20);
-}
 tbody tr:not(.pinned-self-row):has(.rank.top2) {
   box-shadow: inset 3px 0 0 rgba(167,139,250,0.65);
-}
-tbody tr:not(.pinned-self-row):has(.rank.top2) td {
-  background: linear-gradient(90deg, rgba(139,92,246,0.12) 0%, rgba(139,92,246,0.04) 45%, rgba(255,255,255,0.04) 80%);
-  border-color: rgba(139,92,246,0.14);
 }
 tbody tr:not(.pinned-self-row):has(.rank.top3) {
   box-shadow: inset 3px 0 0 rgba(139,92,246,0.50);
 }
-tbody tr:not(.pinned-self-row):has(.rank.top3) td {
-  background: linear-gradient(90deg, rgba(109,40,217,0.10) 0%, rgba(109,40,217,0.03) 45%, rgba(255,255,255,0.04) 80%);
-  border-color: rgba(109,40,217,0.12);
-}
 
 /* Same glassy hover treatment as regular rows, layered on top of the top1/2/3 accent */
-tbody tr:not(.pinned-self-row):has(.rank.top1):hover td,
-tbody tr:not(.pinned-self-row):has(.rank.top2):hover td,
-tbody tr:not(.pinned-self-row):has(.rank.top3):hover td {
-  background: linear-gradient(90deg, rgba(168,85,247,0.22) 0%, rgba(139,92,246,0.10) 45%, rgba(255,255,255,0.04) 80%);
-}
 tbody tr:not(.pinned-self-row):has(.rank.top1):hover {
   box-shadow: inset 3px 0 0 rgba(192,132,252,0.85), inset 0 0 0 1px rgba(255,255,255,0.12);
 }
