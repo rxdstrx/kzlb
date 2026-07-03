@@ -365,6 +365,18 @@ tbody td { padding: 11px 16px; font-size: 0.85rem; color: rgba(255,255,255,0.7);
   --rb-color: #8b5cf6;
 }
 .admin-role-chip-name { color: var(--rb-color); }
+.admin-role-chip-color {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid rgba(var(--rb-rgb), 0.5);
+  border-radius: 5px;
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.admin-role-chip-color::-webkit-color-swatch-wrapper { padding: 1px; }
+.admin-role-chip-color::-webkit-color-swatch { border: none; border-radius: 3px; }
 .admin-role-chip-del {
   background: none;
   border: none;

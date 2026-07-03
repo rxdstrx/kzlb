@@ -631,10 +631,19 @@ function renderRolesList() {
       </span>
       ${r.icon ? `<span>${r.icon}</span>` : ''}
       <span class="admin-role-chip-name">${escHtml(r.name)}</span>
+      <input type="color" class="admin-role-chip-color" value="${r.color || '#8b5cf6'}" title="Change role color" oninput="changeRoleColor('${escHtml(r.name)}', this.value)" />
       <button class="role-filter-toggle ${r.show_in_filter !== false ? 'on' : 'off'}" onclick="toggleRoleFilter('${escHtml(r.name)}', ${r.show_in_filter !== false})" title="${r.show_in_filter !== false ? 'Shown in leaderboard filter — click to hide' : 'Hidden from leaderboard filter — click to show'}">${r.show_in_filter !== false ? '👁 Filter' : '🚫 Hidden'}</button>
       <button class="admin-role-chip-del" onclick="deleteRole('${escHtml(r.name)}')" title="Delete role">✕</button>
     </span>`;
   }).join('');
+}
+
+function changeRoleColor(name, color) {
+  const role = adminRoles.find(r => r.name === name);
+  if (!role) return;
+  role.color = color;
+  renderRolesList();
+  markRolesPending();
 }
 
 function toggleRoleFilter(name, currentlyOn) {
@@ -809,6 +818,7 @@ async function saveRolesConfig() {
     name: r.name,
     priority: i,
     show_in_filter: r.show_in_filter !== false,
+    color: r.color,
   }));
 
   const ok = await callRoleApi({ action: 'save_roles_config', roles });
