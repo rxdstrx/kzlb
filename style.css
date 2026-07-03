@@ -506,7 +506,7 @@ header {
 /* Outer shell: darker card with a chart-card-style purple glow + soft grey grid, fading toward the bottom */
 #lb-table, #tableWrapper {
   position: relative;
-  background: radial-gradient(circle at 20% 0%, rgba(168,85,247,0.10), transparent 60%), #08060c !important;
+  background: #08060c !important;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
   padding: 24px !important;
