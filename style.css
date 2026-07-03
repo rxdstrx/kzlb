@@ -525,8 +525,6 @@ header {
     linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
   background-size: 28px 28px;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
   pointer-events: none;
 }
 
