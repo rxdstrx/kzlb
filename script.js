@@ -1403,7 +1403,7 @@ function showUpdateStatus(type, msg) {
       readmeWrap.style.bottom = 'auto';
       readmeWrap.style.right = 'auto';
       readmeWrap.style.marginTop = '8px';
-      readmeWrap.style.marginBottom = '16px';
+      readmeWrap.style.marginBottom = '0';
       readmeWrap.style.paddingLeft = '20px';
       readmeWrap.style.paddingRight = '20px';
       readmeWrap.style.textAlign = 'right';
