@@ -492,6 +492,16 @@ async function initRoleFilter() {
     // Clear old role buttons (keep "All")
     bar.querySelectorAll('[data-role]:not([data-role="all"])').forEach(el => el.remove());
 
+    const blob = document.getElementById('roleFilterBlob');
+    function moveRoleBlob(btn, rgb) {
+      if (!blob || !btn) return;
+      blob.style.transform = `translateX(${btn.offsetLeft}px)`;
+      blob.style.width = btn.offsetWidth + 'px';
+      blob.style.background = rgb ? `rgba(${rgb},0.15)` : 'rgba(168,85,247,0.12)';
+      blob.style.borderColor = rgb ? `rgba(${rgb},0.4)` : 'rgba(168,85,247,0.32)';
+      blob.classList.add('visible');
+    }
+
     const cfgMap = Object.fromEntries(lbAllRoles.map(r => [r.name, r]));
     const filterRoles = lbAllRoles.filter(r => r.show_in_filter !== false);
     if (!filterRoles.length) return;
@@ -503,16 +513,13 @@ async function initRoleFilter() {
       btn.addEventListener('click', () => {
         lbRoleFilter = r.name;
         lbRoleSteamids = new Set(prRows.filter(x => x.role === r.name).map(x => x.steamid));
+        const cfg = cfgMap[r.name];
+        const rgb = _lbHexToRgb(cfg?.color);
         bar.querySelectorAll('.role-filter-btn').forEach(b => {
           b.classList.toggle('active', b.dataset.role === r.name);
-          if (b.dataset.role === r.name) {
-            const cfg = cfgMap[r.name];
-            const rgb = _lbHexToRgb(cfg?.color);
-            b.style.cssText = `background:rgba(${rgb},0.15);border-color:rgba(${rgb},0.4);color:${cfg?.color}`;
-          } else {
-            b.style.cssText = '';
-          }
+          b.style.color = b.dataset.role === r.name ? cfg?.color : '';
         });
+        moveRoleBlob(btn, rgb);
         lbPage = 1;
         renderLeaderboard();
         renderPinnedSelf();
@@ -521,14 +528,19 @@ async function initRoleFilter() {
     });
 
     // "All" button click
-    bar.querySelector('[data-role="all"]').addEventListener('click', function() {
+    const allBtn = bar.querySelector('[data-role="all"]');
+    allBtn.addEventListener('click', function() {
       lbRoleFilter = 'all';
       lbRoleSteamids = new Set();
-      bar.querySelectorAll('.role-filter-btn').forEach(b => { b.classList.toggle('active', b.dataset.role === 'all'); b.style.cssText = ''; });
+      bar.querySelectorAll('.role-filter-btn').forEach(b => { b.classList.toggle('active', b.dataset.role === 'all'); b.style.color = ''; });
+      moveRoleBlob(allBtn, null);
       lbPage = 1;
       renderLeaderboard();
       renderPinnedSelf();
     });
+
+    // Position blob under "All" on initial render
+    requestAnimationFrame(() => moveRoleBlob(allBtn, null));
   } catch {}
 }
 
@@ -1243,9 +1255,11 @@ document.getElementById('addYourselfSubmit').addEventListener('click', async () 
         document.getElementById('countryConfirmFlag').textContent = match.flag;
         document.getElementById('countryConfirmName').textContent = match.name;
         overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
         showAddStatus('', '');
-        document.getElementById('countryConfirmYes').onclick = () => { overlay.style.display = 'none'; resolve(true); };
-        document.getElementById('countryConfirmNo').onclick = () => { overlay.style.display = 'none'; resolve(false); };
+        const close = (val) => { overlay.style.display = 'none'; document.body.style.overflow = ''; resolve(val); };
+        document.getElementById('countryConfirmYes').onclick = () => close(true);
+        document.getElementById('countryConfirmNo').onclick = () => close(false);
       });
 
       if (confirmed) {
