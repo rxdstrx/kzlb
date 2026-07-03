@@ -586,10 +586,42 @@ table {
   border-collapse: separate;
 }
 
-/* Everything below is scoped to the real leaderboard tables only (#lb-table on
-   index.html, #tableWrapper on map.html/country pages) — never bare table/thead/
-   tbody selectors, which previously bled into unrelated tables like maps.html's
-   map-list table and profile.html's stats table. */
+/* ── Base table styling — shared by every table sitewide (leaderboard,
+   maps.html's map list, profile.html's stats table, etc.) ── */
+thead tr {
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+thead th {
+  padding: 16px 24px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: left;
+}
+
+tbody tr {
+  position: relative;
+  transition: background 0.15s ease;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+tbody tr:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+tbody td {
+  padding: 14px 24px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Leaderboard-exclusive extras (glass blur header, gapped rounded rows,
+   Aurora hover glow) — scoped to #lb-table (index.html) / #tableWrapper
+   (map.html, country pages) ONLY. Never bare selectors here, or they bleed
+   into maps.html's map-list table and profile.html's stats table. ── */
 #lb-table table, #tableWrapper table {
   border-spacing: 0 10px;
 }
@@ -643,6 +675,7 @@ table {
 
 #lb-table tbody tr, #tableWrapper tbody tr {
   position: relative;
+  border-bottom: none;
   transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 
