@@ -1110,12 +1110,11 @@
 
 .readme-wrap {
   position: absolute;
-  bottom: 12px;
-  right: 16px;
+  bottom: 16px;
+  right: 20px;
 }
 
 .readme-btn {
-  position: relative;
   display: inline-block;
   font-size: 0.72rem;
   color: rgba(255,255,255,0.5);
@@ -1128,18 +1127,6 @@
   white-space: nowrap;
   backdrop-filter: blur(6px);
 }
-
-.readme-bracket {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-color: #4b4b55;
-  pointer-events: none;
-}
-.readme-bracket.rb-tl { top: -3px; left: -3px; border-top: 1.5px solid #4b4b55; border-left: 1.5px solid #4b4b55; border-top-left-radius: 3px; }
-.readme-bracket.rb-tr { top: -3px; right: -3px; border-top: 1.5px solid #4b4b55; border-right: 1.5px solid #4b4b55; border-top-right-radius: 3px; }
-.readme-bracket.rb-bl { bottom: -3px; left: -3px; border-bottom: 1.5px solid #4b4b55; border-left: 1.5px solid #4b4b55; border-bottom-left-radius: 3px; }
-.readme-bracket.rb-br { bottom: -3px; right: -3px; border-bottom: 1.5px solid #4b4b55; border-right: 1.5px solid #4b4b55; border-bottom-right-radius: 3px; }
 
 .readme-wrap::before {
   content: '';
