@@ -36,17 +36,21 @@
       const rank = start + i + 1;
       const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
       const flag = flagUrl(p.country);
+      const globalRank = typeof fmtPlace === 'function' ? fmtPlace(p.kz_place) : (p.kz_place || '—');
+      const mapsDone = typeof fmtMaps === 'function' ? fmtMaps(p.kz_maps, p.maps_list) : (p.kz_maps || '0');
       return `
         <a class="lbp-card" href="profile.html?steamid=${p.steamid}&country=${p.country || ''}" style="animation-delay:${i * 0.03}s">
           <span class="lbp-rank ${rankClass}">${rank}</span>
-          <img class="lbp-avatar" src="${p.avatar || ''}" onerror="this.style.visibility='hidden'" />
-          <div class="lbp-info">
+          <div class="lbp-player">
+            <img class="lbp-avatar" src="${p.avatar || ''}" onerror="this.style.visibility='hidden'" />
             <div class="lbp-nick">
               ${flag ? `<img class="lbp-flag" src="${flag}" />` : ''}
               <span>${escapeHtml(p.nickname || 'Unknown')}</span>
             </div>
-            <div class="lbp-pts"><strong>${Number(p.kz_points || 0).toFixed(0)}</strong> pts</div>
           </div>
+          <div class="lbp-pts"><strong>${Number(p.kz_points || 0).toFixed(0)}</strong></div>
+          <div class="lbp-grank">${globalRank}</div>
+          <div class="lbp-maps">${mapsDone}</div>
         </a>`;
     }).join('');
 
