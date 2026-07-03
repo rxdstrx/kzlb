@@ -1381,6 +1381,26 @@ function showUpdateStatus(type, msg) {
   el.className = `add-yourself-status ${type}`;
   el.textContent = msg;
   el.classList.remove('hidden');
+  // Move Read me button below the status box so it doesn't overlap
+  const readmeWrap = el.closest('.update-records-box')?.querySelector('.readme-wrap');
+  if (readmeWrap) {
+    if (msg) {
+      readmeWrap.style.position = 'relative';
+      readmeWrap.style.bottom = 'auto';
+      readmeWrap.style.right = 'auto';
+      readmeWrap.style.marginTop = '8px';
+      readmeWrap.style.marginBottom = '4px';
+      readmeWrap.style.paddingLeft = '20px';
+      readmeWrap.style.paddingRight = '20px';
+      readmeWrap.style.textAlign = 'right';
+    } else {
+      readmeWrap.style.position = '';
+      readmeWrap.style.marginTop = '';
+      readmeWrap.style.paddingLeft = '';
+      readmeWrap.style.paddingRight = '';
+      readmeWrap.style.textAlign = '';
+    }
+  }
 }
 
 // ── Search autocomplete ──

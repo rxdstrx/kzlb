@@ -504,13 +504,17 @@
 
   <!-- Country confirm modal -->
   <div id="countryConfirmOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;">
-    <div id="countryConfirmBox" style="background:#0f0f14;border:1px solid rgba(255,255,255,0.12);border-radius:18px;padding:32px 28px;max-width:340px;width:90%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.7);">
+    <div id="countryConfirmBox" class="corner-card" style="border:1px solid rgba(255,255,255,0.09);border-radius:18px;padding:32px 28px;max-width:340px;width:90%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.7);">
+      <span class="corner-bracket cb-tl"></span>
+      <span class="corner-bracket cb-tr"></span>
+      <span class="corner-bracket cb-bl"></span>
+      <span class="corner-bracket cb-br"></span>
       <p style="font-size:1rem;color:rgba(255,255,255,0.85);margin-bottom:8px;font-weight:600;">Confirm the country</p>
       <p style="font-size:0.88rem;color:rgba(255,255,255,0.45);margin-bottom:20px;">We detected this country from this Faceit profile. Is this correct?</p>
       <div id="countryConfirmFlag" style="font-size:2rem;margin-bottom:6px;"></div>
-      <div id="countryConfirmName" style="font-size:1rem;color:#a5b4fc;font-weight:600;margin-bottom:24px;"></div>
+      <div id="countryConfirmName" style="font-size:1rem;color:#c4b5fd;font-weight:600;margin-bottom:24px;"></div>
       <div style="display:flex;gap:10px;justify-content:center;">
-        <button id="countryConfirmYes" style="padding:9px 24px;background:rgba(129,140,248,0.2);border:1px solid rgba(129,140,248,0.4);border-radius:10px;color:#a5b4fc;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:inherit;">Yes, that's correct</button>
+        <button id="countryConfirmYes" style="padding:9px 24px;background:rgba(168,85,247,0.10);border:1px solid rgba(168,85,247,0.35);border-radius:10px;color:#c4b5fd;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:inherit;">Yes, that's correct</button>
         <button id="countryConfirmNo" style="padding:9px 24px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(255,255,255,0.6);font-size:0.88rem;font-weight:600;cursor:pointer;font-family:inherit;">No, change it</button>
       </div>
     </div>
