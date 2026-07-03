@@ -584,6 +584,13 @@ header {
 table {
   width: 100%;
   border-collapse: separate;
+}
+
+/* Everything below is scoped to the real leaderboard tables only (#lb-table on
+   index.html, #tableWrapper on map.html/country pages) — never bare table/thead/
+   tbody selectors, which previously bled into unrelated tables like maps.html's
+   map-list table and profile.html's stats table. */
+#lb-table table, #tableWrapper table {
   border-spacing: 0 10px;
 }
 
@@ -617,14 +624,14 @@ table {
   .col-rank { width: 40px; }
 }
 
-thead tr {
+#lb-table thead tr, #tableWrapper thead tr {
   background: rgba(18, 17, 22, 0.55);
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-thead th {
+#lb-table thead th, #tableWrapper thead th {
   padding: 16px 24px;
   font-size: 0.7rem;
   font-weight: 700;
@@ -634,18 +641,18 @@ thead th {
   text-align: left;
 }
 
-tbody tr {
+#lb-table tbody tr, #tableWrapper tbody tr {
   position: relative;
   transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 
-tbody tr:hover {
+#lb-table tbody tr:hover, #tableWrapper tbody tr:hover {
   background: rgba(168, 85, 247, 0.06);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), inset 2px 0 0 rgba(168, 85, 247, 0.5);
+  box-shadow: inset 2px 0 0 rgba(168, 85, 247, 0.5);
 }
 
 /* Aurora glow — lightweight CSS gradient animation, not real WebGL, so 100 rows stay cheap */
-tbody tr::after {
+#lb-table tbody tr::after, #tableWrapper tbody tr::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -660,7 +667,7 @@ tbody tr::after {
   transition: opacity 0.25s ease;
 }
 
-tbody tr:hover::after {
+#lb-table tbody tr:hover::after, #tableWrapper tbody tr:hover::after {
   opacity: 0.22;
   animation: auroraRowFlow 5s ease infinite;
 }
@@ -671,7 +678,7 @@ tbody tr:hover::after {
   100% { background-position: 0% 50%; }
 }
 
-tbody td {
+#lb-table tbody td, #tableWrapper tbody td {
   position: relative;
   z-index: 1;
   padding: 14px 24px;
@@ -682,18 +689,18 @@ tbody td {
   border-bottom: 1px solid rgba(255,255,255,0.09);
 }
 
-tbody td:first-child {
+#lb-table tbody td:first-child, #tableWrapper tbody td:first-child {
   border-left: 1px solid rgba(255,255,255,0.09);
   border-top-left-radius: 14px;
   border-bottom-left-radius: 14px;
 }
-tbody td:last-child {
+#lb-table tbody td:last-child, #tableWrapper tbody td:last-child {
   border-right: 1px solid rgba(255,255,255,0.09);
   border-top-right-radius: 14px;
   border-bottom-right-radius: 14px;
 }
 
-tbody tr:hover td {
+#lb-table tbody tr:hover td, #tableWrapper tbody tr:hover td {
   border-color: rgba(168,85,247,0.4);
 }
 
@@ -769,28 +776,26 @@ thead .col-time { text-align: right; }
 /* Top 3 — soft purple */
 .rank.top3 { color: #8b5cf6; font-weight: 700; }
 
-tbody tr:not(.pinned-self-row):has(.rank.top1) {
-  box-shadow:
-    inset 3px 0 0 rgba(192,132,252,0.85),
-    inset 0 0 0 1px rgba(168,85,247,0.12);
+#lb-table tbody tr:not(.pinned-self-row):has(.rank.top1), #tableWrapper tbody tr:not(.pinned-self-row):has(.rank.top1) {
+  box-shadow: inset 3px 0 0 rgba(192,132,252,0.85);
   outline: none;
 }
-tbody tr:not(.pinned-self-row):has(.rank.top2) {
+#lb-table tbody tr:not(.pinned-self-row):has(.rank.top2), #tableWrapper tbody tr:not(.pinned-self-row):has(.rank.top2) {
   box-shadow: inset 3px 0 0 rgba(167,139,250,0.65);
 }
-tbody tr:not(.pinned-self-row):has(.rank.top3) {
+#lb-table tbody tr:not(.pinned-self-row):has(.rank.top3), #tableWrapper tbody tr:not(.pinned-self-row):has(.rank.top3) {
   box-shadow: inset 3px 0 0 rgba(139,92,246,0.50);
 }
 
 /* Same glassy hover treatment as regular rows, layered on top of the top1/2/3 accent */
-tbody tr:not(.pinned-self-row):has(.rank.top1):hover {
-  box-shadow: inset 3px 0 0 rgba(192,132,252,0.85), inset 0 0 0 1px rgba(255,255,255,0.12);
+#lb-table tbody tr:not(.pinned-self-row):has(.rank.top1):hover, #tableWrapper tbody tr:not(.pinned-self-row):has(.rank.top1):hover {
+  box-shadow: inset 3px 0 0 rgba(192,132,252,0.85);
 }
-tbody tr:not(.pinned-self-row):has(.rank.top2):hover {
-  box-shadow: inset 3px 0 0 rgba(167,139,250,0.65), inset 0 0 0 1px rgba(255,255,255,0.12);
+#lb-table tbody tr:not(.pinned-self-row):has(.rank.top2):hover, #tableWrapper tbody tr:not(.pinned-self-row):has(.rank.top2):hover {
+  box-shadow: inset 3px 0 0 rgba(167,139,250,0.65);
 }
-tbody tr:not(.pinned-self-row):has(.rank.top3):hover {
-  box-shadow: inset 3px 0 0 rgba(139,92,246,0.50), inset 0 0 0 1px rgba(255,255,255,0.12);
+#lb-table tbody tr:not(.pinned-self-row):has(.rank.top3):hover, #tableWrapper tbody tr:not(.pinned-self-row):has(.rank.top3):hover {
+  box-shadow: inset 3px 0 0 rgba(139,92,246,0.50);
 }
 
 /* ── Button CC light sweep ── */
