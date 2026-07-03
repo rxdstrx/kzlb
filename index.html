@@ -13,8 +13,8 @@
 </head>
 <body>
 
-  <!-- ══ DotField background (fades out as you scroll past the hero) ══ -->
-  <div id="dotFieldBg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom, transparent 0, black 160px, black calc(100% - 160px), transparent 100%);mask-image:linear-gradient(to bottom, transparent 0, black 160px, black calc(100% - 160px), transparent 100%);"></div>
+  <!-- ══ Aurora background (fixed — stays put while the page scrolls) ══ -->
+  <div id="auroraBg" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></div>
 
   <!-- ══ NAVBAR ══ -->
   <nav class="navbar">
@@ -548,33 +548,15 @@
     </div>
   </div>
 
-  <script src="dot-field.js"></script>
+  <script src="aurora.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', function () {
-      initDotField(document.getElementById('dotFieldBg'), {
-        dotRadius: 1.5,
-        dotSpacing: 14,
-        bulgeStrength: 0,
-        glowRadius: 50,
-        sparkle: false,
-        waveAmplitude: 0,
-        cursorRadius: 200,
-        cursorForce: 0.04,
-        bulgeOnly: false,
-        gradientFrom: '#5b486d',
-        gradientTo: 'rgba(180, 151, 207, 0.25)',
+      initAurora(document.getElementById('auroraBg'), {
+        colorStops: ['#4c0f8f', '#B497CF', '#8e27ff'],
+        blend: 0.5,
+        amplitude: 1.0,
+        speed: 0.5,
       });
-
-      // Fade the dot field out smoothly as the user scrolls down
-      var dotBg = document.getElementById('dotFieldBg');
-      function updateDotFade() {
-        var fadeDistance = 500;
-        var t = Math.min(window.scrollY / fadeDistance, 1);
-        dotBg.style.opacity = String((1 - t) * 0.25);
-      }
-      window.addEventListener('scroll', updateDotFade, { passive: true });
-      window.addEventListener('resize', updateDotFade, { passive: true });
-      updateDotFade();
     });
   </script>
   <script src="maps-data.js"></script>

@@ -643,12 +643,12 @@ function renderPagination(totalRows) {
   if (totalPages <= 1) { lbPagTop.classList.add('hidden'); lbPagBot.classList.add('hidden'); return; }
   const topHtml = `
     <button class="lb-page-btn" id="lbPrevBtnTop" ${lbPage === 1 ? 'disabled' : ''}>← Prev</button>
-    <span class="lb-page-info">Page ${lbPage} of ${totalPages}</span>
+    <span class="lb-page-info">${lbPage} of ${totalPages}</span>
     <button class="lb-page-btn" id="lbNextBtnTop" ${lbPage >= totalPages ? 'disabled' : ''}>Next →</button>
   `;
   const botHtml = `
     <button class="lb-page-btn" id="lbPrevBtnBot" ${lbPage === 1 ? 'disabled' : ''}>← Prev</button>
-    <span class="lb-page-info">Page ${lbPage} of ${totalPages}</span>
+    <span class="lb-page-info">${lbPage} of ${totalPages}</span>
     <button class="lb-page-btn" id="lbNextBtnBot" ${lbPage >= totalPages ? 'disabled' : ''}>Next →</button>
   `;
   lbPagTop.innerHTML = topHtml;
