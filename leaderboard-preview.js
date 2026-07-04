@@ -1,6 +1,8 @@
 // Leaderboard Preview — fetches the same world player data as index.html
 (function () {
   const CACHE_BASE = 'https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache';
+  const SB_LB_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
+  const SB_LB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
   const PAGE_SIZE = 15;
 
   const grid = document.getElementById('lbpGrid');
@@ -68,14 +70,45 @@
   nextBtn.addEventListener('click', () => { page++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
   async function load() {
+    // Free GitHub cache base + only players changed since the cache was built,
+    // fetched live from Supabase — same merge index.html's leaderboard uses, so
+    // new signups / button-updates show up here instantly instead of waiting
+    // for the next scheduled cache rebuild.
+    let ghData = null;
+    try { ghData = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`).then(r => r.ok ? r.json() : null); } catch {}
+    const ghPlayers = ghData ? (ghData.players || ghData) : [];
+
+    const cacheTime = ghData && ghData.updated_at ? new Date(ghData.updated_at).getTime() : null;
+    const anchor = cacheTime ? new Date(cacheTime - 10 * 60 * 1000).toISOString() : null;
+    const sbQuery = anchor
+      ? `${SB_LB_URL}/rest/v1/players?updated_at=gt.${encodeURIComponent(anchor)}&order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`
+      : `${SB_LB_URL}/rest/v1/players?order=kz_points.desc&select=steamid,nickname,avatar,country,kz_points,kz_place,kz_maps&limit=20000`;
+    let sbPlayers = [];
     try {
-      const res = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`);
-      const data = res.ok ? await res.json() : null;
-      const list = data ? (data.players || data) : [];
-      players = list.slice().sort((a, b) => (Number(b.kz_points) || 0) - (Number(a.kz_points) || 0));
-    } catch {
-      players = [];
+      sbPlayers = await fetch(sbQuery, { headers: { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` } })
+        .then(r => r.ok ? r.json() : null) || [];
+    } catch {}
+
+    const sbMap = new Map();
+    for (const p of sbPlayers) sbMap.set(p.steamid, p);
+
+    const merged = new Map();
+    for (const p of ghPlayers) {
+      if (sbMap.has(p.steamid)) {
+        const sb = sbMap.get(p.steamid);
+        merged.set(p.steamid, {
+          ...p, ...sb,
+          country: (sb.country && sb.country !== 'xx') ? sb.country : (p.country || 'xx'),
+        });
+      } else {
+        merged.set(p.steamid, p);
+      }
     }
+    for (const p of sbPlayers) {
+      if (!merged.has(p.steamid)) merged.set(p.steamid, p);
+    }
+
+    players = [...merged.values()].sort((a, b) => (Number(b.kz_points) || 0) - (Number(a.kz_points) || 0));
     render();
   }
 
