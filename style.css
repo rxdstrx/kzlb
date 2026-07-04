@@ -542,11 +542,14 @@ header {
 
 /* The 7-column maps table doesn't fit inside the shell's default ~910px
    max-width at ANY screen size, desktop included — not just mobile.
-   The .maps-page-container override above widens the shell up to 95vw so
-   full map names fit without truncation; table-layout:fixed still keeps
-   the fixed-width columns (rank/tier/stats) from stretching oddly. */
+   The .maps-page-container override above widens the shell to 1140px so
+   full map names fit without truncation; table-layout:fixed keeps the
+   fixed-width columns (rank/tier/stats) from stretching oddly, and
+   width:100% makes the table fill the wrapper instead of leaving a dead
+   gap on the right (columns don't sum to 100% on their own). */
 #mapsTableWrap table {
   table-layout: fixed;
+  width: 100%;
 }
 #mapsTableWrap .col-mapname {
   width: 26%;
