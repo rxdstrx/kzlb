@@ -534,22 +534,69 @@ header {
   overflow: hidden;
 }
 
-/* Scroll horizontally instead of squeezing/cutting off columns — the 7-column
-   maps table doesn't reliably fit even at "desktop" widths, not just mobile.
-   Keep the shell's own 28px padding (left side is fine at rest scroll
-   position). Only the RIGHT edge gets clipped once you scroll to the end,
-   since the shell's padding-right doesn't extend past the scrollable
-   content — so add matching breathing room on the last cell specifically. */
-#mapsTableWrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
+/* The 7-column maps table doesn't fit inside the shell's ~910px max-width
+   (capped by .container) at ANY screen size, desktop included — not just
+   mobile. table-layout:fixed + a shrunk thumbnail + truncated map names
+   keep everything contained inside the shell's rounded, padded box with
+   zero overflow, verified at 540/700/1280px viewports. */
 #mapsTableWrap table {
-  min-width: 760px;
+  table-layout: fixed;
 }
-#mapsTableWrap thead th:last-child,
-#mapsTableWrap tbody td:last-child {
-  padding-right: 28px;
+#mapsTableWrap .col-mapname {
+  width: 45%;
+}
+#mapsTableWrap .map-name-cell {
+  gap: 8px;
+  min-width: 0;
+}
+#mapsTableWrap td:nth-child(2) {
+  min-width: 0;
+  overflow: hidden;
+}
+#mapsTableWrap .map-thumb, #mapsTableWrap .map-thumb-empty {
+  width: 40px;
+  height: 24px;
+  flex-shrink: 0;
+}
+#mapsTableWrap .map-name-cell span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Column order: 1=#, 2=Map, 3=Tier, 4=Completions, 5=Record, 6=Your time, 7=Avg time.
+   .col-* classes only exist on <th>, not <td> (checked maps.js) — nth-child hides
+   the header AND its matching data cell together, so columns never misalign. */
+@media (max-width: 1000px) {
+  #mapsTableWrap thead th, #mapsTableWrap tbody td {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+  #mapsTableWrap .col-completions,
+  #mapsTableWrap .col-record,
+  #mapsTableWrap .col-yourtime,
+  #mapsTableWrap .col-avgtime {
+    width: auto;
+  }
+}
+@media (max-width: 760px) {
+  #mapsTableWrap thead th:nth-child(6),
+  #mapsTableWrap thead th:nth-child(7),
+  #mapsTableWrap tbody td:nth-child(6),
+  #mapsTableWrap tbody td:nth-child(7) {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  #mapsTableWrap thead th:nth-child(4),
+  #mapsTableWrap tbody td:nth-child(4) {
+    display: none;
+  }
+  #mapsTableWrap .col-mapname {
+    width: 30% !important;
+  }
 }
 
 /* No separate inner box — rows float directly on the shell, same as .lbp-card on .lbp-shell */
