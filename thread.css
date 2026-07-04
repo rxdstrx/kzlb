@@ -3,6 +3,8 @@
 ──────────────────────────────────────── */
 
 .thread-page-v2 {
+  position: relative;
+  z-index: 1;
   max-width: 1180px;
   margin: 0 auto;
   padding: 94px 24px 80px;

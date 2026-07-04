@@ -30,6 +30,8 @@ body {
 
 /* ══ Page layout ══ */
 .forum-page {
+  position: relative;
+  z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
   padding: 40px 24px 80px;
