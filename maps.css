@@ -83,6 +83,41 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+/* Glassy pill Back button — same design as the Next/Prev pagination buttons,
+   scoped to maps.html and map.html only */
+.maps-page-container .back-btn,
+.map-page-container .back-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.8);
+  font-weight: 600;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.maps-page-container .back-btn:hover,
+.map-page-container .back-btn:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+.maps-page-container .back-btn::after,
+.map-page-container .back-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.13) 50%, transparent 65%);
+  transform: translateX(-120%) skewX(-18deg);
+  pointer-events: none;
+}
+.maps-page-container .back-btn:hover::after,
+.map-page-container .back-btn:hover::after {
+  animation: btnSweep 0.55s ease forwards;
+}
+
 .col-mapname    { width: auto; }
 .col-tier       { width: 60px; }
 .th-icon-cell {
