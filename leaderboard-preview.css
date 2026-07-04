@@ -103,8 +103,12 @@ body { background: #060608; }
 .lbp-sweep-text {
   position: relative;
   display: inline-block;
+  vertical-align: baseline;
+  line-height: inherit;
   color: #c084fc;
+  font-style: italic;
   overflow: hidden;
+  padding: 0 1px;
 }
 
 .lbp-sweep-text::after {
@@ -116,6 +120,12 @@ body { background: #060608; }
   animation: navActiveSweep 2.8s ease-in-out infinite;
   pointer-events: none;
 }
+
+/* Corner brackets on the shell — rounded to match the shell's own 28px radius */
+.lbp-shell .corner-bracket.cb-tl { border-top-left-radius: 20px; }
+.lbp-shell .corner-bracket.cb-tr { border-top-right-radius: 20px; }
+.lbp-shell .corner-bracket.cb-bl { border-bottom-left-radius: 20px; }
+.lbp-shell .corner-bracket.cb-br { border-bottom-right-radius: 20px; }
 
 /* Search bar — quick check whether a player was added */
 .lbp-search-wrap {

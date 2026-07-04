@@ -108,8 +108,8 @@
     const updatedText = document.getElementById('lbpUpdatedText');
     if (updatedText) {
       updatedText.textContent = ghData && ghData.updated_at
-        ? `Updated ${timeSince(new Date(ghData.updated_at))}`
-        : 'Updated —';
+        ? `All players updated ${timeSince(new Date(ghData.updated_at))}`
+        : 'All players updated —';
     }
 
     const cacheTime = ghData && ghData.updated_at ? new Date(ghData.updated_at).getTime() : null;
