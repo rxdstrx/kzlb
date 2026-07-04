@@ -84,6 +84,14 @@
     return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
+  function timeSince(date) {
+    const s = Math.floor((new Date() - date) / 1000);
+    if (s < 60) return 'just now';
+    if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+    if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+    return `${Math.floor(s / 86400)}d ago`;
+  }
+
   prevBtn.addEventListener('click', () => { page--; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
   nextBtn.addEventListener('click', () => { page++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
   searchInput.addEventListener('input', () => { page = 1; applySearch(); render(); });
@@ -96,6 +104,13 @@
     let ghData = null;
     try { ghData = await fetch(`${CACHE_BASE}/world-kz-players.json?bust=${Date.now()}`).then(r => r.ok ? r.json() : null); } catch {}
     const ghPlayers = ghData ? (ghData.players || ghData) : [];
+
+    const updatedText = document.getElementById('lbpUpdatedText');
+    if (updatedText) {
+      updatedText.textContent = ghData && ghData.updated_at
+        ? `Updated ${timeSince(new Date(ghData.updated_at))}`
+        : 'Updated —';
+    }
 
     const cacheTime = ghData && ghData.updated_at ? new Date(ghData.updated_at).getTime() : null;
     const anchor = cacheTime ? new Date(cacheTime - 10 * 60 * 1000).toISOString() : null;
