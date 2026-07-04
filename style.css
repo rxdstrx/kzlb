@@ -103,6 +103,12 @@ body {
   padding: 60px 24px 80px;
 }
 
+/* Maps page only — let the table grow wider (up to ~95% of the viewport)
+   instead of truncating long map names */
+.maps-page-container {
+  max-width: 95vw;
+}
+
 header {
   text-align: center;
   margin-bottom: 48px;
@@ -534,11 +540,11 @@ header {
   overflow: hidden;
 }
 
-/* The 7-column maps table doesn't fit inside the shell's ~910px max-width
-   (capped by .container) at ANY screen size, desktop included — not just
-   mobile. table-layout:fixed + a shrunk thumbnail + truncated map names
-   keep everything contained inside the shell's rounded, padded box with
-   zero overflow, verified at 540/700/1280px viewports. */
+/* The 7-column maps table doesn't fit inside the shell's default ~910px
+   max-width at ANY screen size, desktop included — not just mobile.
+   The .maps-page-container override above widens the shell up to 95vw so
+   full map names fit without truncation; table-layout:fixed still keeps
+   the fixed-width columns (rank/tier/stats) from stretching oddly. */
 #mapsTableWrap table {
   table-layout: fixed;
 }
@@ -546,24 +552,13 @@ header {
   width: 45%;
 }
 #mapsTableWrap .map-name-cell {
-  gap: 8px;
+  gap: 12px;
   min-width: 0;
-}
-#mapsTableWrap td:nth-child(2) {
-  min-width: 0;
-  overflow: hidden;
 }
 #mapsTableWrap .map-thumb, #mapsTableWrap .map-thumb-empty {
-  width: 40px;
-  height: 24px;
+  width: 72px;
+  height: 42px;
   flex-shrink: 0;
-}
-#mapsTableWrap .map-name-cell span {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  min-width: 0;
 }
 
 /* Column order: 1=#, 2=Map, 3=Tier, 4=Completions, 5=Record, 6=Your time, 7=Avg time.
