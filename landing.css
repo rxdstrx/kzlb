@@ -210,7 +210,73 @@
   transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
 
+.nav-home-item.active {
+  background: rgba(168,85,247,0.15);
+  color: #fff;
+}
+.nav-home-item.active .nav-home-icon {
+  background: rgba(168,85,247,0.1);
+  border-color: rgba(168,85,247,0.2);
+  color: #c084fc;
+}
+
 .nav-home-item-soon { opacity: 0.55; pointer-events: none; }
+
+/* ── Leaderboard dropdown: Main / Country picker ── */
+.nav-lb-dropdown { width: 250px; }
+
+.nav-lb-country-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.nav-lb-country-chevron {
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+.nav-lb-country-toggle.open .nav-lb-country-chevron { transform: rotate(90deg); }
+
+.nav-lb-country-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+
+.nav-lb-country-list.open {
+  max-height: 240px;
+  overflow-y: auto;
+  margin: 4px 0 2px;
+}
+
+.nav-lb-country-list::-webkit-scrollbar { width: 5px; }
+.nav-lb-country-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+.nav-lb-country-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px 7px 43px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: background 0.12s, color 0.12s;
+}
+
+.nav-lb-country-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
+.nav-lb-country-item.active {
+  background: rgba(168,85,247,0.15);
+  color: #fff;
+}
+
+.nav-lb-country-flag { font-size: 0.95rem; }
+
+/* ── Fixed-navbar clearance for simple .container pages (maps, country) ── */
+.container.has-fixed-navbar { padding-top: 110px; }
 
 .nav-soon-tag {
   font-style: normal;

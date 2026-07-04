@@ -2,7 +2,7 @@
 const SB_LB_URL   = 'https://btcufotfvfnuoiokghjm.supabase.co';
 const SB_LB_ANON  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
 const SB_HDR_PT   = { apikey: SB_LB_ANON, Authorization: `Bearer ${SB_LB_ANON}` };
-const PAGE_SIZE = 100;
+const PAGE_SIZE = 25;
 
 let allPlayers = [];
 let currentPage = 1;
@@ -211,42 +211,49 @@ function getMapSorted(mapName) {
 }
 
 function renderPagination(total) {
-  const existing = document.getElementById('pagination');
-  if (existing) existing.remove();
+  const pagTop = document.getElementById('ctPaginationTop');
+  const pagBot = document.getElementById('ctPaginationBottom');
+  if (!pagTop || !pagBot) return;
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
-  if (totalPages <= 1) return;
+  if (totalPages <= 1) {
+    pagTop.classList.add('hidden');
+    pagBot.classList.add('hidden');
+    pagTop.innerHTML = '';
+    pagBot.innerHTML = '';
+    return;
+  }
 
-  const nav = document.createElement('div');
-  nav.id = 'pagination';
-  nav.className = 'pagination';
+  const html = `
+    <button class="lb-page-btn" data-dir="prev" ${currentPage === 1 ? 'disabled' : ''}>← Prev</button>
+    <span class="lb-page-info">${currentPage} of ${totalPages}</span>
+    <button class="lb-page-btn" data-dir="next" ${currentPage >= totalPages ? 'disabled' : ''}>Next →</button>
+  `;
+  pagTop.innerHTML = html;
+  pagBot.innerHTML = html;
+  pagTop.classList.remove('hidden');
+  pagBot.classList.remove('hidden');
 
-  const prev = document.createElement('button');
-  prev.className = 'page-btn' + (currentPage === 1 ? ' disabled' : '');
-  prev.textContent = '← Prev';
-  prev.disabled = currentPage === 1;
-  prev.addEventListener('click', () => { currentPage--; rerenderCurrent(); });
+  function bind(bar, scroll) {
+    bar.querySelector('[data-dir="prev"]').addEventListener('click', () => {
+      currentPage--; rerenderCurrent(); if (scroll) scrollToTableTop();
+    });
+    bar.querySelector('[data-dir="next"]').addEventListener('click', () => {
+      currentPage++; rerenderCurrent(); if (scroll) scrollToTableTop();
+    });
+  }
+  bind(pagTop, false);
+  bind(pagBot, true);
+}
 
-  const info = document.createElement('span');
-  info.className = 'page-info';
-  info.textContent = `Page ${currentPage} of ${totalPages}`;
-
-  const next = document.createElement('button');
-  next.className = 'page-btn' + (currentPage === totalPages ? ' disabled' : '');
-  next.textContent = 'Next →';
-  next.disabled = currentPage === totalPages;
-  next.addEventListener('click', () => { currentPage++; rerenderCurrent(); });
-
-  nav.appendChild(prev);
-  nav.appendChild(info);
-  nav.appendChild(next);
-  tableWrapper.appendChild(nav);
+function scrollToTableTop() {
+  const targetY = tableWrapper.getBoundingClientRect().top + window.scrollY - 120;
+  window.scrollTo({ top: targetY, behavior: 'smooth' });
 }
 
 function rerenderCurrent() {
   if (selectedMap) renderByMap(selectedMap);
   else renderOverall();
-  window.scrollTo({ top: document.getElementById('tableWrapper').offsetTop - 20, behavior: 'smooth' });
 }
 
 function renderOverall() {
