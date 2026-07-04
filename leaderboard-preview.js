@@ -27,7 +27,7 @@
 
   function flagUrl(code) {
     if (!code || code === 'xx') return null;
-    return `https://flagcdn.com/24x18/${code.toLowerCase()}.png`;
+    return `https://flagcdn.com/w20/${code.toLowerCase()}.png`;
   }
 
   function render() {
