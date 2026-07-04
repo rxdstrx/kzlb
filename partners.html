@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="friends.css" />
 </head>
 <body>
-  <div class="bg-orb orb1"></div>
-  <div class="bg-orb orb2"></div>
+  <!-- ══ Aurora background (fixed — stays put while the page scrolls) ══ -->
+  <div id="auroraBg" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></div>
 
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
@@ -78,7 +78,6 @@
           </div>
         </div>
       </li>
-      <li><a href="test.html">Test</a></li>
     </ul>
 
     <!-- Login button (shown when not logged in) -->
@@ -134,5 +133,16 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="supabase-client.js"></script>
   <script src="friends.js"></script>
+  <script src="aurora.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      initAurora(document.getElementById('auroraBg'), {
+        colorStops: ['#4c0f8f', '#B497CF', '#8e27ff'],
+        blend: 0.5,
+        amplitude: 1.0,
+        speed: 0.5,
+      });
+    });
+  </script>
 </body>
 </html>
