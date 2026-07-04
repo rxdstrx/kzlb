@@ -94,31 +94,28 @@ body { background: #060608; }
 }
 
 .lbp-section-title {
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 3vw, 2.1rem);
-  font-weight: 800;
+  font-weight: 500;
   color: #fff;
   letter-spacing: -0.02em;
 }
 
 .lbp-sweep-text {
-  position: relative;
-  display: inline-block;
-  vertical-align: baseline;
-  line-height: inherit;
-  color: #c084fc;
   font-style: italic;
-  overflow: hidden;
-  padding: 0 1px;
+  background: linear-gradient(105deg, #c084fc 42%, #fff 50%, #c084fc 58%);
+  background-size: 250% 100%;
+  background-position: 200% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: lbpSweepBg 2.8s ease-in-out infinite;
 }
 
-.lbp-sweep-text::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.5) 50%, transparent 65%);
-  transform: translateX(-120%) skewX(-18deg);
-  animation: navActiveSweep 2.8s ease-in-out infinite;
-  pointer-events: none;
+@keyframes lbpSweepBg {
+  0%   { background-position: 200% 0; }
+  50%  { background-position: -100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 /* Corner brackets on the shell — rounded to match the shell's own 28px radius */
