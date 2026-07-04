@@ -752,33 +752,6 @@ tbody td {
   box-shadow: inset 2px 0 0 rgba(168, 85, 247, 0.5);
 }
 
-/* Aurora glow — lightweight CSS gradient animation, not real WebGL, so 100 rows stay cheap */
-#lb-table tbody tr::after, #tableWrapper tbody tr::after, #mapsTableWrap tbody tr::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0;
-  pointer-events: none;
-  background: linear-gradient(120deg, #4c0f8f, #B497CF, #5227FF, #4c0f8f);
-  background-size: 300% 300%;
-  filter: blur(18px) saturate(150%);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  transition: opacity 0.25s ease;
-}
-
-#lb-table tbody tr:hover::after, #tableWrapper tbody tr:hover::after, #mapsTableWrap tbody tr:hover::after {
-  opacity: 0.22;
-  animation: auroraRowFlow 5s ease infinite;
-}
-
-@keyframes auroraRowFlow {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 #lb-table tbody td, #tableWrapper tbody td, #mapsTableWrap tbody td {
   position: relative;
   z-index: 1;

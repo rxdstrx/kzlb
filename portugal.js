@@ -91,14 +91,22 @@ async function initPtRoleFilter() {
       bar.appendChild(btn);
     });
 
-    bar.querySelector('[data-role="all"]').addEventListener('click', function() {
+    const allBtn = bar.querySelector('[data-role="all"]');
+    const ALL_ACTIVE_STYLE = 'background:rgba(168,85,247,0.15);border-color:rgba(168,85,247,0.4);color:#c084fc';
+
+    allBtn.addEventListener('click', function() {
       ptRoleFilter = 'all';
       ptRoleSteamids = new Set();
-      bar.querySelectorAll('.role-filter-btn').forEach(b => { b.classList.toggle('active', b.dataset.role === 'all'); b.style.cssText = ''; });
+      bar.querySelectorAll('.role-filter-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.role === 'all');
+        b.style.cssText = b.dataset.role === 'all' ? ALL_ACTIVE_STYLE : '';
+      });
       currentPage = 1;
       if (selectedMap) renderByMap(selectedMap);
       else renderOverall();
     });
+
+    if (allBtn.classList.contains('active')) allBtn.style.cssText = ALL_ACTIVE_STYLE;
   } catch {}
 }
 
