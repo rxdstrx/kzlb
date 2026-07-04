@@ -534,15 +534,14 @@ header {
   overflow: hidden;
 }
 
-/* On narrow screens, scroll horizontally instead of squeezing/cutting off columns */
-@media (max-width: 700px) {
-  #mapsTableWrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #mapsTableWrap table {
-    min-width: 640px;
-  }
+/* Scroll horizontally instead of squeezing/cutting off columns — the 7-column
+   maps table doesn't reliably fit even at "desktop" widths, not just mobile */
+#mapsTableWrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#mapsTableWrap table {
+  min-width: 760px;
 }
 
 /* No separate inner box — rows float directly on the shell, same as .lbp-card on .lbp-shell */
