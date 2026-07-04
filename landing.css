@@ -70,7 +70,7 @@
 
 .nav-links a:hover { color: #fff; }
 
-.nav-links a.active {
+.nav-links > li > a.active {
   display: inline-block;
   color: #fff;
   background: rgba(168,85,247,0.15);
@@ -82,7 +82,7 @@
   overflow: hidden;
 }
 
-.nav-links a.active::after {
+.nav-links > li > a.active::after {
   content: '';
   position: absolute;
   inset: 0;
