@@ -535,13 +535,27 @@ header {
 }
 
 /* Scroll horizontally instead of squeezing/cutting off columns — the 7-column
-   maps table doesn't reliably fit even at "desktop" widths, not just mobile */
+   maps table doesn't reliably fit even at "desktop" widths, not just mobile.
+   The shell's own 28px padding gets clipped at the scroll edges (a container's
+   padding doesn't apply past its scrollable content), so the breathing room
+   has to live on the table's own edge cells instead, where it scrolls with
+   the content and is never cut off. */
 #mapsTableWrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 #mapsTableWrap table {
   min-width: 760px;
+}
+#mapsTableWrap thead th:first-child,
+#mapsTableWrap tbody td:first-child {
+  padding-left: 28px;
+}
+#mapsTableWrap thead th:last-child,
+#mapsTableWrap tbody td:last-child {
+  padding-right: 28px;
 }
 
 /* No separate inner box — rows float directly on the shell, same as .lbp-card on .lbp-shell */
