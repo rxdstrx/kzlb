@@ -103,10 +103,10 @@ body {
   padding: 60px 24px 80px;
 }
 
-/* Maps page only — let the table grow wider (up to ~95% of the viewport)
-   instead of truncating long map names */
+/* Maps page only — a bit wider than the default shell so the 7-column
+   table has room, but still centered like every other page */
 .maps-page-container {
-  max-width: 95vw;
+  max-width: 1140px;
 }
 
 header {
@@ -549,7 +549,7 @@ header {
   table-layout: fixed;
 }
 #mapsTableWrap .col-mapname {
-  width: 45%;
+  width: 26%;
 }
 #mapsTableWrap .map-name-cell {
   gap: 12px;
