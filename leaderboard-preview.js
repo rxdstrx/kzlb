@@ -10,9 +10,20 @@
   const prevBtn = document.getElementById('lbpPrev');
   const nextBtn = document.getElementById('lbpNext');
   const pageInfoText = document.getElementById('lbpPageText');
+  const searchInput = document.getElementById('lbpSearchInput');
 
   let players = [];
+  let visiblePlayers = [];
   let page = 1;
+
+  function applySearch() {
+    const q = searchInput.value.trim().toLowerCase();
+    visiblePlayers = q
+      ? players.filter(p =>
+          (p.nickname || '').toLowerCase().includes(q) ||
+          String(p.steamid || '').includes(q))
+      : players;
+  }
 
   function flagUrl(code) {
     if (!code || code === 'xx') return null;
@@ -20,22 +31,27 @@
   }
 
   function render() {
-    const totalPages = Math.max(1, Math.ceil(players.length / PAGE_SIZE));
+    const totalPages = Math.max(1, Math.ceil(visiblePlayers.length / PAGE_SIZE));
     page = Math.min(Math.max(1, page), totalPages);
 
-    if (!players.length) {
-      grid.innerHTML = '<div class="lbp-empty">No players found.</div>';
+    if (!visiblePlayers.length) {
+      grid.innerHTML = searchInput.value.trim()
+        ? '<div class="lbp-empty">No player matches that search — they may not have been added yet.</div>'
+        : '<div class="lbp-empty">No players found.</div>';
       pageLabel.textContent = 'Page 1 of 1';
       prevBtn.disabled = true;
       nextBtn.disabled = true;
+      pageInfoText.textContent = searchInput.value.trim()
+        ? '0 players match'
+        : `${players.length.toLocaleString()} players tracked`;
       return;
     }
 
     const start = (page - 1) * PAGE_SIZE;
-    const slice = players.slice(start, start + PAGE_SIZE);
+    const slice = visiblePlayers.slice(start, start + PAGE_SIZE);
 
     grid.innerHTML = slice.map((p, i) => {
-      const rank = start + i + 1;
+      const rank = players.indexOf(p) + 1;
       const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
       const flag = flagUrl(p.country);
       const globalRank = typeof fmtPlace === 'function' ? fmtPlace(p.kz_place) : (p.kz_place || '—');
@@ -59,7 +75,9 @@
     pageLabel.textContent = `Page ${page} of ${totalPages}`;
     prevBtn.disabled = page <= 1;
     nextBtn.disabled = page >= totalPages;
-    pageInfoText.textContent = `${players.length.toLocaleString()} players tracked`;
+    pageInfoText.textContent = searchInput.value.trim()
+      ? `${visiblePlayers.length.toLocaleString()} of ${players.length.toLocaleString()} players match`
+      : `${players.length.toLocaleString()} players tracked`;
   }
 
   function escapeHtml(s) {
@@ -68,6 +86,7 @@
 
   prevBtn.addEventListener('click', () => { page--; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
   nextBtn.addEventListener('click', () => { page++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  searchInput.addEventListener('input', () => { page = 1; applySearch(); render(); });
 
   async function load() {
     // Free GitHub cache base + only players changed since the cache was built,
@@ -109,6 +128,7 @@
     }
 
     players = [...merged.values()].sort((a, b) => (Number(b.kz_points) || 0) - (Number(a.kz_points) || 0));
+    applySearch();
     render();
   }
 
