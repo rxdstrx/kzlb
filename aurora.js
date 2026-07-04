@@ -132,7 +132,7 @@ void main() {
     canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;';
     container.appendChild(canvas);
 
-    const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: true });
+    const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false, powerPreference: 'low-power' });
     if (!gl) { console.error('Aurora: WebGL2 not supported'); return () => {}; }
 
     gl.clearColor(0, 0, 0, 0);
@@ -166,7 +166,7 @@ void main() {
 
     let W = 0, H = 0;
     function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       W = container.offsetWidth;
       H = container.offsetHeight;
       canvas.width = W * dpr;
@@ -189,12 +189,20 @@ void main() {
     gl.uniform1f(uAmplitude, amplitude);
     gl.uniform1f(uBlend, blend);
 
-    let raf, start = performance.now();
+    // Capped to ~30fps — a slow-moving noise gradient doesn't need 60fps, and
+    // halving the draw rate meaningfully cuts GPU cost for every backdrop-filter
+    // panel (navbar, dropdowns, header rows) that has to re-blur this live canvas
+    // every time it redraws.
+    const FRAME_INTERVAL = 1000 / 30;
+    let raf, start = performance.now(), lastDraw = 0;
     function loop(now) {
+      raf = requestAnimationFrame(loop);
+      if (document.hidden) return;
+      if (now - lastDraw < FRAME_INTERVAL) return;
+      lastDraw = now;
       const t = (now - start) * 0.001;
       gl.uniform1f(uTime, t * speed * 0.1 * 10);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
-      raf = requestAnimationFrame(loop);
     }
     raf = requestAnimationFrame(loop);
 
