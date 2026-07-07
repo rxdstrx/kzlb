@@ -408,6 +408,16 @@
   <script src="friends.js"></script>
   <script>document.write('<script src="profile.js?v=' + Date.now() + '"><\/script>')</script>
   <script src="aurora.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      initAurora(document.getElementById('auroraBg'), {
+        colorStops: ['#4c0f8f', '#B497CF', '#8e27ff'],
+        blend: 0.5,
+        amplitude: 1.0,
+        speed: 0.5,
+      });
+    });
+  </script>
   <script src="bg-particles.js"></script>
 </body>
 </html>
