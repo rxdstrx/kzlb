@@ -1,4 +1,12 @@
 // forum.js — KZplus Forum
+//
+// NOTE (scaling): the forum currently shares the same Supabase project/database
+// as the rest of the site (leaderboard, players, friends). This is fine at
+// current traffic, but if the forum ever needs to support 100k+ concurrent
+// users actively posting/commenting, it should be split into its own dedicated
+// database (still linked to the main one via steamid, so profiles/leaderboard
+// stay in sync) so forum write load can't contend with or slow down the core
+// leaderboard data. Not needed yet — just flagging it for future reference.
 (function () {
   const SB_URL  = 'https://btcufotfvfnuoiokghjm.supabase.co';
   const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4';
@@ -420,11 +428,13 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             <span id="threadLikeCount">${thread.likes||0}</span>
           </button>
-          <button class="post-action-btn" id="upThreadBtn">↑</button>
+          <button class="post-action-btn upvote-btn ${liked?'upvoted':''}" id="upThreadBtn" data-id="t_${thread.id}" data-table="forum_threads" data-row="${thread.id}">
+            ↑ <span id="threadUpvoteCount">${thread.likes||0}</span>
+          </button>
           <span class="post-action-meta">💬 ${thread.reply_count||0} replies</span>
         </div>`;
-      document.getElementById('likeThreadBtn')?.addEventListener('click', () => toggleLike(`t_${thread.id}`, 'forum_threads', thread.id, 'threadLikeCount'));
-      document.getElementById('upThreadBtn')?.addEventListener('click', function() { this.classList.toggle('upvoted'); });
+      document.getElementById('likeThreadBtn')?.addEventListener('click', () => toggleLike(`t_${thread.id}`, 'forum_threads', thread.id));
+      document.getElementById('upThreadBtn')?.addEventListener('click', () => toggleLike(`t_${thread.id}`, 'forum_threads', thread.id));
     }
 
     function renderReplies() {
@@ -457,7 +467,7 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     <span>${r.likes||0}</span>
                   </button>
-                  <button class="post-action-btn reply-upvote-btn">↑</button>
+                  <button class="post-action-btn reply-upvote-btn ${liked?'upvoted':''}" data-id="r_${r.id}" data-table="forum_replies" data-row="${r.id}">↑ <span>${r.likes||0}</span></button>
                 </div>
               </div>
             </div>
@@ -479,15 +489,11 @@
         });
       });
 
-      repliesEl.querySelectorAll('.like-btn').forEach(btn => {
+      repliesEl.querySelectorAll('.like-btn, .reply-upvote-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
-          const span = btn.querySelector('span');
-          toggleLike(btn.dataset.id, btn.dataset.table, btn.dataset.row, null, span);
+          toggleLike(btn.dataset.id, btn.dataset.table, btn.dataset.row);
         });
-      });
-      repliesEl.querySelectorAll('.reply-upvote-btn').forEach(btn => {
-        btn.addEventListener('click', e => { e.stopPropagation(); btn.classList.toggle('upvoted'); });
       });
     }
 
@@ -519,7 +525,7 @@
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 <span>${reply.likes||0}</span>
               </button>
-              <button class="post-action-btn reply-upvote-btn">↑</button>
+              <button class="post-action-btn reply-upvote-btn" data-id="r_${reply.id}" data-table="forum_replies" data-row="${reply.id}">↑ <span>${reply.likes||0}</span></button>
             </div>
           </div>
         </div>`;
@@ -531,19 +537,17 @@
         body.style.maxHeight = !expanded ? body.scrollHeight + 'px' : '0';
         this.querySelector('.reply-acc-arrow')?.classList.toggle('open', !expanded);
       });
-      div.querySelector('.like-btn')?.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const span = this.querySelector('span');
-        toggleLike(this.dataset.id, this.dataset.table, this.dataset.row, null, span);
-      });
-      div.querySelector('.reply-upvote-btn')?.addEventListener('click', function(e) {
-        e.stopPropagation(); this.classList.toggle('upvoted');
+      div.querySelectorAll('.like-btn, .reply-upvote-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleLike(this.dataset.id, this.dataset.table, this.dataset.row);
+        });
       });
       repliesEl.appendChild(div);
       div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    async function toggleLike(targetKey, table, rowId, countElId, spanEl) {
+    async function toggleLike(targetKey, table, rowId) {
       const auth = getAuth();
       if (!auth) { window.location.href = 'login.html'; return; }
 
@@ -571,10 +575,17 @@
         body: JSON.stringify({ likes: newCount }),
       });
 
-      const countEl = countElId ? document.getElementById(countElId) : spanEl;
-      if (countEl) countEl.textContent = newCount;
-      const btn = countElId ? document.getElementById('likeThreadBtn') : spanEl?.closest('.like-btn');
-      if (btn) btn.classList.toggle('liked', !liked);
+      // A single post can show its like count in more than one place at once
+      // (the heart button AND the ↑ upvote button both represent the SAME
+      // underlying like — there's only one forum_likes row / likes counter per
+      // post, not separate "likes" vs "upvotes"). Update every element sharing
+      // this target's data-id together so they never drift out of sync.
+      document.querySelectorAll(`[data-id="${targetKey}"]`).forEach(btn => {
+        btn.classList.toggle('liked', !liked);
+        btn.classList.toggle('upvoted', !liked);
+        const span = btn.querySelector('span');
+        if (span) span.textContent = newCount;
+      });
 
       if (table === 'forum_threads' && thread) thread.likes = newCount;
 
