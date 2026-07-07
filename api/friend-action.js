@@ -197,25 +197,47 @@ export default async function handler(req, res) {
   }
 
   // ── GET NOTIFICATIONS ──
+  // Merges two sources: `notifications` (friend requests/accepts) and
+  // `forum_notifications` (likes/upvotes/replies on forum posts). The anon key
+  // has no SELECT grant on forum_notifications (insert-only, enforced by
+  // Supabase RLS) — this endpoint runs with the service key, so it's the only
+  // safe place to read it, same as it already is for `notifications`.
   if (action === 'get-notifications') {
     const steamid = payload.steamid;
-    const notifRes = await fetch(
-      `${sbUrl}/rest/v1/notifications?steamid=eq.${steamid}&order=created_at.desc&limit=10`,
-      { headers: sbH }
-    );
+    const [notifRes, forumRes] = await Promise.all([
+      fetch(`${sbUrl}/rest/v1/notifications?steamid=eq.${steamid}&order=created_at.desc&limit=10`, { headers: sbH }),
+      fetch(`${sbUrl}/rest/v1/forum_notifications?steamid=eq.${steamid}&order=created_at.desc&limit=10&select=*`, { headers: sbH }),
+    ]);
     if (!notifRes.ok) return res.status(500).json({ error: await notifRes.text() });
-    const items = await notifRes.json();
+    const friendItems = (await notifRes.json()).map(n => ({ ...n, source: 'friend' }));
+    // forum_notifications might not exist yet on older DBs, or the table might
+    // not have a `read` column — degrade gracefully instead of failing the
+    // whole bell if that request errors.
+    let forumItems = [];
+    if (forumRes.ok) {
+      forumItems = (await forumRes.json()).map(n => ({ ...n, source: 'forum', read: n.read ?? false }));
+    }
+    const items = [...friendItems, ...forumItems]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 15);
     return res.status(200).json({ ok: true, notifications: items });
   }
 
   // ── MARK NOTIFICATIONS AS READ ──
   if (action === 'notifications-read') {
     const steamid = payload.steamid;
-    await fetch(`${sbUrl}/rest/v1/notifications?steamid=eq.${steamid}&read=eq.false`, {
-      method: 'PATCH',
-      headers: { ...sbH, Prefer: 'return=minimal' },
-      body: JSON.stringify({ read: true }),
-    });
+    await Promise.all([
+      fetch(`${sbUrl}/rest/v1/notifications?steamid=eq.${steamid}&read=eq.false`, {
+        method: 'PATCH',
+        headers: { ...sbH, Prefer: 'return=minimal' },
+        body: JSON.stringify({ read: true }),
+      }),
+      fetch(`${sbUrl}/rest/v1/forum_notifications?steamid=eq.${steamid}&read=eq.false`, {
+        method: 'PATCH',
+        headers: { ...sbH, Prefer: 'return=minimal' },
+        body: JSON.stringify({ read: true }),
+      }).catch(() => {}),
+    ]);
     return res.status(200).json({ ok: true });
   }
 

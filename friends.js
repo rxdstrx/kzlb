@@ -101,6 +101,11 @@ function injectBell(auth) {
         }, () => loadAcceptedNotifs(auth))
         .subscribe();
     }
+    // forum_notifications (likes/upvotes/replies) has no anon SELECT grant, so
+    // Realtime (which enforces RLS) can't push those inserts to this client —
+    // poll periodically instead so likes/replies still show up without a
+    // full page reload.
+    setInterval(() => loadAcceptedNotifs(auth), 45000);
   }
 }
 
@@ -157,9 +162,22 @@ function renderNotifList() {
   `).join('');
 
   const acceptedHtml = _acceptedNotifs.map(n => {
-    const msg = n.type === 'friend_you_accepted'
-      ? `You accepted <a class="kz-notif-name" href="profile.html?steamid=${n.from_steamid}">${escHtml(n.from_nickname || n.from_steamid)}</a>'s friend request`
-      : `<a class="kz-notif-name" href="profile.html?steamid=${n.from_steamid}">${escHtml(n.from_nickname || n.from_steamid)}</a> accepted your friend request`;
+    const fromName = escHtml(n.from_nickname || n.from_nick || n.from_steamid);
+    const nameLink = `<a class="kz-notif-name" href="profile.html?steamid=${n.from_steamid}">${fromName}</a>`;
+    let msg, href;
+    if (n.source === 'forum') {
+      const threadTitle = escHtml(n.thread_title || 'your post');
+      href = n.thread_id ? `thread.html?id=${n.thread_id}` : null;
+      const threadLink = href ? `<a class="kz-notif-thread" href="${href}">${threadTitle}</a>` : threadTitle;
+      if (n.type === 'like')        msg = `${nameLink} upvoted your thread ${threadLink}`;
+      else if (n.type === 'like_reply') msg = `${nameLink} upvoted your reply in ${threadLink}`;
+      else if (n.type === 'reply') msg = `${nameLink} replied to your thread ${threadLink}`;
+      else                         msg = `${nameLink} interacted with ${threadLink}`;
+    } else {
+      msg = n.type === 'friend_you_accepted'
+        ? `You accepted ${nameLink}'s friend request`
+        : `${nameLink} accepted your friend request`;
+    }
     return `
       <div class="kz-notif-item ${n.read ? '' : 'kz-notif-unread'}">
         <img class="kz-notif-avatar" src="${n.from_avatar || ''}" onerror="this.style.display='none'" />
@@ -175,6 +193,8 @@ function renderNotifList() {
   if (_acceptedNotifs.length) startNotifTimer();
 }
 
+function notifKey(n) { return `${n.source || 'friend'}_${n.id}`; }
+
 async function loadAcceptedNotifs(auth) {
   try {
     const res = await fetch(`${FRIENDS_API}/friend-action`, {
@@ -184,8 +204,13 @@ async function loadAcceptedNotifs(auth) {
     });
     const data = await res.json();
     if (res.ok && data.notifications) {
+      // forum_notifications arrives via polling, not Realtime (see injectBell),
+      // so detect newly-appeared items here to still flash the bell for them.
+      const oldKeys = new Set(_acceptedNotifs.map(notifKey));
+      const hasNew  = data.notifications.some(n => !oldKeys.has(notifKey(n)));
       _acceptedNotifs = data.notifications;
       renderNotifList();
+      if (hasNew && oldKeys.size) flashBell();
     }
   } catch {}
 }

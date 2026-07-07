@@ -140,6 +140,12 @@
   color: rgba(255,255,255,0.3);
   letter-spacing: 0.01em;
 }
+.kz-notif-thread {
+  color: #a855f7;
+  text-decoration: none;
+  font-weight: 600;
+}
+.kz-notif-thread:hover { color: #c4b5fd; text-decoration: underline; }
 
 .kz-notif-actions { display: flex; gap: 6px; flex-shrink: 0; }
 .kz-notif-accept,
