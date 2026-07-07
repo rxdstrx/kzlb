@@ -679,9 +679,14 @@ tbody td {
 
 /* ── Leaderboard-exclusive extras (glass blur header, gapped rounded rows,
    Aurora hover glow) — scoped to #lb-table (index.html) / #tableWrapper
-   (map.html, country pages) ONLY. Never bare selectors here, or they bleed
-   into maps.html's map-list table and profile.html's stats table. ── */
-#lb-table table, #tableWrapper table, #mapsTableWrap table {
+   (map.html, country pages) / #mapsTableWrap (maps.html) / #statsTable
+   (profile.html) so every stats/records table on the site shares the same
+   gapped-row look. IMPORTANT: always target the actual <table> element
+   (e.g. "#statsTable table"), never a bare wrapper id here — an earlier
+   version of this rule used a bare "#statsTable" selector by mistake, which
+   matched the wrapper div itself instead of its table and caused visible
+   bugs; that's why it was removed entirely rather than fixed at the time. ── */
+#lb-table table, #tableWrapper table, #mapsTableWrap table, #statsTable table {
   border-spacing: 0 10px;
 }
 
