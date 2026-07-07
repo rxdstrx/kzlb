@@ -953,7 +953,7 @@ function initSteamUI() {
 function initTabs() {
   const tabs      = document.querySelectorAll('.profile-tab');
   const indicator = document.querySelector('.profile-tab-indicator');
-  const panels    = { profile: document.getElementById('tab-profile'), posts: document.getElementById('tab-posts'), recent: document.getElementById('tab-recent'), friends: document.getElementById('tab-friends') };
+  const panels    = { profile: document.getElementById('tab-profile'), posts: document.getElementById('tab-posts'), upvoted: document.getElementById('tab-upvoted'), recent: document.getElementById('tab-recent'), friends: document.getElementById('tab-friends') };
 
   function moveIndicator(activeTab) {
     if (!indicator) return;
@@ -980,6 +980,7 @@ function initTabs() {
       switchTab(tab.dataset.tab);
       if (tab.dataset.tab === 'recent') renderRecentTab();
       if (tab.dataset.tab === 'posts') loadPostsTab();
+      if (tab.dataset.tab === 'upvoted') loadUpvotedTab();
     });
   });
 
@@ -1036,6 +1037,59 @@ async function loadPostsTab() {
       </a>`).join('');
   } catch (e) {
     feedEl.innerHTML = '<div class="posts-empty">Failed to load posts.</div>';
+  }
+}
+
+// ── Upvoted Tab ── (threads this profile's steamid has upvoted, via forum_likes)
+let upvotedLoaded = false;
+async function loadUpvotedTab() {
+  if (upvotedLoaded) return;
+  upvotedLoaded = true;
+  const feedEl = document.getElementById('upvotedFeed');
+  if (!feedEl) return;
+  const steamid = new URLSearchParams(window.location.search).get('steamid');
+  if (!steamid) { feedEl.innerHTML = '<div class="posts-empty">No player selected.</div>'; return; }
+  try {
+    const HDR = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}`, 'Content-Type': 'application/json' };
+    // forum_likes stores ONE row per steamid+target — target_id "t_<id>" for threads,
+    // "r_<id>" for replies. Only thread likes belong on this tab.
+    const likesRes = await fetch(`${SB_URL}/rest/v1/forum_likes?steamid=eq.${encodeURIComponent(steamid)}&target_id=like.t_*&select=target_id`, { headers: HDR });
+    const likeRows = await likesRes.json();
+    const threadIds = Array.isArray(likeRows) ? likeRows.map(r => r.target_id.slice(2)).filter(Boolean) : [];
+    if (!threadIds.length) {
+      feedEl.innerHTML = '<div class="posts-empty">No upvoted threads yet.</div>';
+      return;
+    }
+    const res = await fetch(`${SB_URL}/rest/v1/forum_threads?id=in.(${threadIds.join(',')})&order=likes.desc,created_at.desc&select=id,title,category,created_at,likes,reply_count,nickname`, { headers: HDR });
+    const rows = await res.json();
+    if (!Array.isArray(rows) || !rows.length) {
+      feedEl.innerHTML = '<div class="posts-empty">No upvoted threads yet.</div>';
+      return;
+    }
+    const catClass = c => ({ general:'cat-general', maps:'cat-maps', records:'cat-records', help:'cat-help', 'off-topic':'cat-off-topic' }[c] || 'cat-general');
+    const catLabel = c => ({ general:'General', maps:'Maps', records:'Records', help:'Help', 'off-topic':'Off-Topic' }[c] || c);
+    const timeAgo = iso => {
+      const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+      if (s < 60) return 'just now';
+      if (s < 3600) return `${Math.floor(s/60)}m ago`;
+      if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+      return `${Math.floor(s/86400)}d ago`;
+    };
+    feedEl.innerHTML = rows.map(p => `
+      <a class="post-feed-item" href="thread.html?id=${p.id}">
+        <div class="post-feed-top">
+          <span class="thread-category ${catClass(p.category)}">${catLabel(p.category)}</span>
+          <span class="post-feed-date">${timeAgo(p.created_at)}</span>
+        </div>
+        <div class="post-feed-title">${p.title.replace(/</g,'&lt;')}</div>
+        <div class="post-feed-meta">
+          <span>by ${(p.nickname||'').replace(/</g,'&lt;')}</span>
+          <span>❤ ${p.likes||0}</span>
+          <span>💬 ${p.reply_count||0}</span>
+        </div>
+      </a>`).join('');
+  } catch (e) {
+    feedEl.innerHTML = '<div class="posts-empty">Failed to load upvoted threads.</div>';
   }
 }
 

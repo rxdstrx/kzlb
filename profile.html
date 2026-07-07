@@ -234,6 +234,7 @@
           <div class="profile-tabs">
             <button class="profile-tab active" data-tab="profile">Profile</button>
             <button class="profile-tab" data-tab="posts">Posts</button>
+            <button class="profile-tab" data-tab="upvoted">Upvoted</button>
             <button class="profile-tab" data-tab="recent">Recent</button>
             <button class="profile-tab" data-tab="friends">Friends</button>
             <div class="profile-tab-indicator"></div>
@@ -244,6 +245,13 @@
         <div class="tab-panel hidden" id="tab-posts">
           <div class="posts-feed" id="postsFeed">
             <div class="forum-loading" style="padding:24px 0">Loading posts…</div>
+          </div>
+        </div>
+
+        <!-- TAB: UPVOTED -->
+        <div class="tab-panel hidden" id="tab-upvoted">
+          <div class="posts-feed" id="upvotedFeed">
+            <div class="forum-loading" style="padding:24px 0">Loading upvoted threads…</div>
           </div>
         </div>
 

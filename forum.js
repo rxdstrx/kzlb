@@ -86,8 +86,10 @@
     async function loadThreads(reset = true) {
       if (reset) { offset = 0; threads = []; threadIds = new Set(); myListLikes = new Set(); listEl.innerHTML = '<div class="forum-loading">Loading threads…</div>'; }
       const catFilter = activeCat === 'all' ? '' : `&category=eq.${activeCat}`;
+      // Most-upvoted first (ties broken by newest) — applies the same way whether
+      // you're viewing All, Maps, Records, or any other category filter.
       const res = await fetch(
-        `${SB_URL}/rest/v1/forum_threads?order=created_at.desc&limit=${PAGE_SIZE + 1}&offset=${offset}${catFilter}&select=*`,
+        `${SB_URL}/rest/v1/forum_threads?order=likes.desc,created_at.desc&limit=${PAGE_SIZE + 1}&offset=${offset}${catFilter}&select=*`,
         { headers: HDR }
       );
       const rows = await res.json();
