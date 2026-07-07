@@ -252,7 +252,9 @@
   border-radius: 11px;
   overflow: hidden;
   transition: border-color 0.15s;
+  margin-bottom: 10px;
 }
+.reply-acc:last-child { margin-bottom: 0; }
 .reply-acc:hover { border-color: rgba(139,92,246,0.15); }
 
 .reply-acc-toggle {
