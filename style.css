@@ -541,14 +541,21 @@ header {
 }
 
 /* #statsTable lives inside .profile-main, a narrower column (sidebar +
-   main layout) than the full-width contexts the other 3 tables sit in.
-   Its columns' combined min-widths (col-mapname: 160px, col-date: 160px,
-   plus per-cell 24px horizontal padding × 6 columns) can exceed that
-   column's available width, and "overflow: hidden" above was silently
-   CLIPPING the overflowing right edge of every row — visually indistinguishable
-   from uneven left/right padding, which is exactly what it looked like. Scroll
-   instead of clip so it's never lossy/asymmetric-looking, at any width. */
-#statsTable { overflow-x: auto; }
+   main layout) than the full-width contexts the other 3 tables sit in. Its
+   columns' combined min-widths (col-mapname: 160px, col-date: 160px, plus
+   per-cell 24px horizontal padding × 6 columns) could exceed that column's
+   available width. A scrollbar to compensate isn't wanted here — instead,
+   force this specific table into a fixed percentage layout so its columns
+   always share whatever width is actually available and the table can
+   never overflow its shell in the first place, at any width. (The other 3
+   tables keep their normal auto layout — this is scoped to #statsTable only.) */
+#statsTable table { table-layout: fixed; }
+#statsTable .col-mapname                        { width: 26%; min-width: 0; }
+#statsTable .col-tier-sm                        { width: 7%;  min-width: 0; }
+#statsTable thead th:nth-child(3), #statsTable tbody td:nth-child(3) { width: 12%; }
+#statsTable thead th:nth-child(4), #statsTable tbody td:nth-child(4) { width: 15%; }
+#statsTable thead th:nth-child(5), #statsTable tbody td:nth-child(5) { width: 22%; }
+#statsTable .col-date                           { width: 18%; min-width: 0; }
 
 /* The 7-column maps table doesn't fit inside the shell's default ~910px
    max-width at ANY screen size, desktop included — not just mobile.
