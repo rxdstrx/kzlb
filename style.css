@@ -540,6 +540,16 @@ header {
   overflow: hidden;
 }
 
+/* #statsTable lives inside .profile-main, a narrower column (sidebar +
+   main layout) than the full-width contexts the other 3 tables sit in.
+   Its columns' combined min-widths (col-mapname: 160px, col-date: 160px,
+   plus per-cell 24px horizontal padding × 6 columns) can exceed that
+   column's available width, and "overflow: hidden" above was silently
+   CLIPPING the overflowing right edge of every row — visually indistinguishable
+   from uneven left/right padding, which is exactly what it looked like. Scroll
+   instead of clip so it's never lossy/asymmetric-looking, at any width. */
+#statsTable { overflow-x: auto; }
+
 /* The 7-column maps table doesn't fit inside the shell's default ~910px
    max-width at ANY screen size, desktop included — not just mobile.
    The .maps-page-container override above widens the shell to 1140px so
