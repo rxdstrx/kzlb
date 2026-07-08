@@ -68,7 +68,11 @@
     let threads      = [];
     let hasMore      = false;
     let threadIds    = new Set();
-    let myListLikes  = new Set();
+    // Upvotes (the ↑ arrow) and likes (the ❤ heart) are two fully independent
+    // features — separate counters (upvotes/likes columns) and separate
+    // tracking tables (forum_upvotes/forum_likes), so clicking one never
+    // affects the other. This list view only ever shows the upvote arrow.
+    let myListUpvotes = new Set();
 
     // ── Card click → navigate; upvote click → toggle ──
     listEl.addEventListener('click', e => {
@@ -84,12 +88,12 @@
 
     // ── Load threads ──
     async function loadThreads(reset = true) {
-      if (reset) { offset = 0; threads = []; threadIds = new Set(); myListLikes = new Set(); listEl.innerHTML = '<div class="forum-loading">Loading threads…</div>'; }
+      if (reset) { offset = 0; threads = []; threadIds = new Set(); myListUpvotes = new Set(); listEl.innerHTML = '<div class="forum-loading">Loading threads…</div>'; }
       const catFilter = activeCat === 'all' ? '' : `&category=eq.${activeCat}`;
       // Most-upvoted first (ties broken by newest) — applies the same way whether
       // you're viewing All, Maps, Records, or any other category filter.
       const res = await fetch(
-        `${SB_URL}/rest/v1/forum_threads?order=likes.desc,created_at.desc&limit=${PAGE_SIZE + 1}&offset=${offset}${catFilter}&select=*`,
+        `${SB_URL}/rest/v1/forum_threads?order=upvotes.desc,created_at.desc&limit=${PAGE_SIZE + 1}&offset=${offset}${catFilter}&select=*`,
         { headers: HDR }
       );
       const rows = await res.json();
@@ -103,21 +107,21 @@
 
       renderThreads();
       loadMoreBtn.style.display = hasMore ? 'inline-block' : 'none';
-      loadMyListLikes();
+      loadMyListUpvotes();
     }
 
-    async function loadMyListLikes() {
+    async function loadMyListUpvotes() {
       const auth = getAuth();
       if (!auth || !threads.length) return;
       const ids = threads.map(t => `t_${t.id}`).join(',');
-      const res = await fetch(`${SB_URL}/rest/v1/forum_likes?steamid=eq.${auth.steamid}&target_id=in.(${ids})&select=target_id`, { headers: HDR });
+      const res = await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&target_id=in.(${ids})&select=target_id`, { headers: HDR });
       const rows = await res.json();
       if (!Array.isArray(rows)) return;
-      rows.forEach(r => myListLikes.add(r.target_id));
+      rows.forEach(r => myListUpvotes.add(r.target_id));
       // update upvote button states without full re-render
       threads.forEach(t => {
         const btn = listEl.querySelector(`.thread-upvote[data-thread-id="${t.id}"]`);
-        if (btn) btn.classList.toggle('upvoted', myListLikes.has(`t_${t.id}`));
+        if (btn) btn.classList.toggle('upvoted', myListUpvotes.has(`t_${t.id}`));
       });
     }
 
@@ -125,27 +129,27 @@
       const auth = getAuth();
       if (!auth) { window.location.href = 'login.html'; return; }
       const targetKey = `t_${threadId}`;
-      const wasLiked  = myListLikes.has(targetKey);
-      const thread    = threads.find(t => String(t.id) === String(threadId));
-      const newCount  = Math.max(0, ((thread?.likes) || 0) + (wasLiked ? -1 : 1));
+      const wasUpvoted = myListUpvotes.has(targetKey);
+      const thread      = threads.find(t => String(t.id) === String(threadId));
+      const newCount    = Math.max(0, ((thread?.upvotes) || 0) + (wasUpvoted ? -1 : 1));
       // optimistic
-      wasLiked ? myListLikes.delete(targetKey) : myListLikes.add(targetKey);
-      btn.classList.toggle('upvoted', !wasLiked);
+      wasUpvoted ? myListUpvotes.delete(targetKey) : myListUpvotes.add(targetKey);
+      btn.classList.toggle('upvoted', !wasUpvoted);
       const countEl = btn.querySelector('.thread-upvote-count');
       if (countEl) countEl.textContent = newCount;
-      if (thread) thread.likes = newCount;
+      if (thread) thread.upvotes = newCount;
       // persist
-      if (wasLiked) {
-        await fetch(`${SB_URL}/rest/v1/forum_likes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR });
+      if (wasUpvoted) {
+        await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR });
       } else {
-        await fetch(`${SB_URL}/rest/v1/forum_likes`, {
+        await fetch(`${SB_URL}/rest/v1/forum_upvotes`, {
           method: 'POST', headers: { ...HDR, Prefer: 'return=minimal' },
           body: JSON.stringify({ steamid: auth.steamid, target_id: targetKey }),
         });
       }
       await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, {
         method: 'PATCH', headers: { ...HDR, Prefer: 'return=minimal' },
-        body: JSON.stringify({ likes: newCount }),
+        body: JSON.stringify({ upvotes: newCount }),
       });
     }
 
@@ -170,8 +174,8 @@
               <span>💬 ${t.reply_count||0}</span>
             </div>
           </div>
-          <button class="thread-upvote ${myListLikes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}" style="flex-shrink:0;width:auto;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;">
-            ↑ <span class="thread-upvote-count">${t.likes||0}</span>
+          <button class="thread-upvote ${myListUpvotes.has('t_'+t.id)?'upvoted':''}" data-thread-id="${t.id}" style="flex-shrink:0;width:auto;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;">
+            ↑ <span class="thread-upvote-count">${t.upvotes||0}</span>
           </button>
         </div>`).join('');
     }
@@ -271,14 +275,14 @@
     async function loadFeatured() {
       const el = document.getElementById('featuredThreads');
       if (!el) return;
-      const res = await fetch(`${SB_URL}/rest/v1/forum_threads?order=likes.desc&limit=5&select=id,title,category,likes`, { headers: HDR });
+      const res = await fetch(`${SB_URL}/rest/v1/forum_threads?order=upvotes.desc&limit=5&select=id,title,category,upvotes`, { headers: HDR });
       const rows = await res.json();
       if (!Array.isArray(rows) || !rows.length) { el.innerHTML = '<div style="font-size:0.75rem;color:rgba(255,255,255,0.3);padding:8px 0">No posts yet.</div>'; return; }
       el.innerHTML = rows.map(t => `
         <a class="forum-featured-item" href="thread.html?id=${t.id}">
           <span class="forum-featured-badge ${catClass(t.category)}">${catLabel(t.category)}</span>
           <span class="forum-featured-title">${esc(t.title)}</span>
-          <span class="forum-featured-upvotes">↑${t.likes||0}</span>
+          <span class="forum-featured-upvotes">↑${t.upvotes||0}</span>
         </a>`).join('');
     }
 
@@ -334,7 +338,10 @@
 
     let thread   = null;
     let replies  = [];
-    let myLikes  = new Set();
+    // Two fully independent tracking sets — liking a post never touches its
+    // upvote count/state, and vice versa.
+    let myLikes    = new Set();
+    let myUpvotes  = new Set();
 
     if (!threadId) { threadEl.innerHTML = '<div class="forum-empty">Thread not found.</div>'; return; }
 
@@ -347,6 +354,7 @@
       renderThread();
       loadReplies();
       loadMyLikes();
+      loadMyUpvotes();
       renderComposer();
       subscribeReplies();
       loadPlaylist();
@@ -397,9 +405,20 @@
       renderReplies();
     }
 
+    async function loadMyUpvotes() {
+      const auth = getAuth();
+      if (!auth) return;
+      const res  = await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&select=target_id`, { headers: HDR });
+      const rows = await res.json();
+      if (Array.isArray(rows)) rows.forEach(r => myUpvotes.add(r.target_id));
+      renderThread();
+      renderReplies();
+    }
+
     function renderThread() {
       if (!thread) return;
-      const liked = myLikes.has(`t_${thread.id}`);
+      const liked   = myLikes.has(`t_${thread.id}`);
+      const upvoted = myUpvotes.has(`t_${thread.id}`);
 
       // Populate info bar
       const avatarEl  = document.getElementById('infobarAvatar');
@@ -430,13 +449,13 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             <span id="threadLikeCount">${thread.likes||0}</span>
           </button>
-          <button class="post-action-btn upvote-btn ${liked?'upvoted':''}" id="upThreadBtn" data-id="t_${thread.id}" data-table="forum_threads" data-row="${thread.id}">
-            ↑ <span id="threadUpvoteCount">${thread.likes||0}</span>
+          <button class="post-action-btn upvote-btn ${upvoted?'upvoted':''}" id="upThreadBtn" data-id="t_${thread.id}" data-table="forum_threads" data-row="${thread.id}">
+            ↑ <span id="threadUpvoteCount">${thread.upvotes||0}</span>
           </button>
           <span class="post-action-meta">💬 ${thread.reply_count||0} replies</span>
         </div>`;
       document.getElementById('likeThreadBtn')?.addEventListener('click', () => toggleLike(`t_${thread.id}`, 'forum_threads', thread.id));
-      document.getElementById('upThreadBtn')?.addEventListener('click', () => toggleLike(`t_${thread.id}`, 'forum_threads', thread.id));
+      document.getElementById('upThreadBtn')?.addEventListener('click', () => toggleUpvote(`t_${thread.id}`, 'forum_threads', thread.id));
     }
 
     function renderReplies() {
@@ -446,7 +465,8 @@
       if (!replies.length) { repliesEl.innerHTML = ''; return; }
 
       repliesEl.innerHTML = replies.map((r, i) => {
-        const liked = myLikes.has(`r_${r.id}`);
+        const liked   = myLikes.has(`r_${r.id}`);
+        const upvoted = myUpvotes.has(`r_${r.id}`);
         return `
           <div class="reply-acc" id="reply-${r.id}">
             <button class="reply-acc-toggle" data-idx="${i}" aria-expanded="false">
@@ -469,7 +489,7 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     <span>${r.likes||0}</span>
                   </button>
-                  <button class="post-action-btn reply-upvote-btn ${liked?'upvoted':''}" data-id="r_${r.id}" data-table="forum_replies" data-row="${r.id}">↑ <span>${r.likes||0}</span></button>
+                  <button class="post-action-btn reply-upvote-btn ${upvoted?'upvoted':''}" data-id="r_${r.id}" data-table="forum_replies" data-row="${r.id}">↑ <span>${r.upvotes||0}</span></button>
                 </div>
               </div>
             </div>
@@ -491,10 +511,16 @@
         });
       });
 
-      repliesEl.querySelectorAll('.like-btn, .reply-upvote-btn').forEach(btn => {
+      repliesEl.querySelectorAll('.like-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
           toggleLike(btn.dataset.id, btn.dataset.table, btn.dataset.row);
+        });
+      });
+      repliesEl.querySelectorAll('.reply-upvote-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          toggleUpvote(btn.dataset.id, btn.dataset.table, btn.dataset.row);
         });
       });
     }
@@ -527,7 +553,7 @@
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 <span>${reply.likes||0}</span>
               </button>
-              <button class="post-action-btn reply-upvote-btn" data-id="r_${reply.id}" data-table="forum_replies" data-row="${reply.id}">↑ <span>${reply.likes||0}</span></button>
+              <button class="post-action-btn reply-upvote-btn" data-id="r_${reply.id}" data-table="forum_replies" data-row="${reply.id}">↑ <span>${reply.upvotes||0}</span></button>
             </div>
           </div>
         </div>`;
@@ -539,11 +565,11 @@
         body.style.maxHeight = !expanded ? body.scrollHeight + 'px' : '0';
         this.querySelector('.reply-acc-arrow')?.classList.toggle('open', !expanded);
       });
-      div.querySelectorAll('.like-btn, .reply-upvote-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          toggleLike(this.dataset.id, this.dataset.table, this.dataset.row);
-        });
+      div.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) { e.stopPropagation(); toggleLike(this.dataset.id, this.dataset.table, this.dataset.row); });
+      });
+      div.querySelectorAll('.reply-upvote-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) { e.stopPropagation(); toggleUpvote(this.dataset.id, this.dataset.table, this.dataset.row); });
       });
       repliesEl.appendChild(div);
       div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -577,14 +603,13 @@
         body: JSON.stringify({ likes: newCount }),
       });
 
-      // A single post can show its like count in more than one place at once
-      // (the heart button AND the ↑ upvote button both represent the SAME
-      // underlying like — there's only one forum_likes row / likes counter per
-      // post, not separate "likes" vs "upvotes"). Update every element sharing
-      // this target's data-id together so they never drift out of sync.
-      document.querySelectorAll(`[data-id="${targetKey}"]`).forEach(btn => {
+      // The heart (like) button can appear more than once for the same post
+      // (e.g. re-rendered elsewhere) — update every element carrying this
+      // exact target's data-id and a "liked" state so they never drift.
+      // The ↑ upvote button is a completely separate feature (see
+      // toggleUpvote below) and is NOT touched here.
+      document.querySelectorAll(`.like-btn[data-id="${targetKey}"]`).forEach(btn => {
         btn.classList.toggle('liked', !liked);
-        btn.classList.toggle('upvoted', !liked);
         const span = btn.querySelector('span');
         if (span) span.textContent = newCount;
       });
@@ -600,6 +625,58 @@
           const reply = replies.find(r => String(r.id) === String(rowId));
           if (reply && reply.steamid !== auth2.steamid) {
             sendForumNotification(reply.steamid, auth2, 'like_reply', thread?.id, thread?.title);
+          }
+        }
+      }
+    }
+
+    // Same shape as toggleLike, but fully independent: separate tracking set
+    // (myUpvotes), separate table (forum_upvotes), separate counter column
+    // (upvotes). Clicking upvote never affects the like count/state or vice versa.
+    async function toggleUpvote(targetKey, table, rowId) {
+      const auth = getAuth();
+      if (!auth) { window.location.href = 'login.html'; return; }
+
+      const upvoted = myUpvotes.has(targetKey);
+      const delta   = upvoted ? -1 : 1;
+
+      if (upvoted) {
+        myUpvotes.delete(targetKey);
+        await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR });
+      } else {
+        myUpvotes.add(targetKey);
+        await fetch(`${SB_URL}/rest/v1/forum_upvotes`, {
+          method: 'POST',
+          headers: { ...HDR, Prefer: 'return=minimal' },
+          body: JSON.stringify({ steamid: auth.steamid, target_id: targetKey }),
+        });
+      }
+
+      const getRes    = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${rowId}&select=upvotes`, { headers: HDR });
+      const [current] = await getRes.json();
+      const newCount  = Math.max(0, (current?.upvotes || 0) + delta);
+      await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${rowId}`, {
+        method: 'PATCH',
+        headers: { ...HDR, Prefer: 'return=minimal' },
+        body: JSON.stringify({ upvotes: newCount }),
+      });
+
+      document.querySelectorAll(`.upvote-btn[data-id="${targetKey}"], .reply-upvote-btn[data-id="${targetKey}"]`).forEach(btn => {
+        btn.classList.toggle('upvoted', !upvoted);
+        const span = btn.querySelector('span');
+        if (span) span.textContent = newCount;
+      });
+
+      if (table === 'forum_threads' && thread) thread.upvotes = newCount;
+
+      const auth2 = getAuth();
+      if (!upvoted && auth2) {
+        if (table === 'forum_threads' && thread && thread.steamid !== auth2.steamid) {
+          sendForumNotification(thread.steamid, auth2, 'upvote', thread.id, thread.title);
+        } else if (table === 'forum_replies') {
+          const reply = replies.find(r => String(r.id) === String(rowId));
+          if (reply && reply.steamid !== auth2.steamid) {
+            sendForumNotification(reply.steamid, auth2, 'upvote_reply', thread?.id, thread?.title);
           }
         }
       }

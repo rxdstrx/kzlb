@@ -1040,7 +1040,8 @@ async function loadPostsTab() {
   }
 }
 
-// ── Upvoted Tab ── (threads this profile's steamid has upvoted, via forum_likes)
+// ── Upvoted Tab ── (threads this profile's steamid has upvoted, via forum_upvotes —
+// upvotes are a separate feature from likes, see forum.js's toggleUpvote)
 let upvotedLoaded = false;
 async function loadUpvotedTab() {
   if (upvotedLoaded) return;
@@ -1051,16 +1052,16 @@ async function loadUpvotedTab() {
   if (!steamid) { feedEl.innerHTML = '<div class="posts-empty">No player selected.</div>'; return; }
   try {
     const HDR = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}`, 'Content-Type': 'application/json' };
-    // forum_likes stores ONE row per steamid+target — target_id "t_<id>" for threads,
-    // "r_<id>" for replies. Only thread likes belong on this tab.
-    const likesRes = await fetch(`${SB_URL}/rest/v1/forum_likes?steamid=eq.${encodeURIComponent(steamid)}&target_id=like.t_*&select=target_id`, { headers: HDR });
-    const likeRows = await likesRes.json();
-    const threadIds = Array.isArray(likeRows) ? likeRows.map(r => r.target_id.slice(2)).filter(Boolean) : [];
+    // forum_upvotes stores ONE row per steamid+target — target_id "t_<id>" for threads,
+    // "r_<id>" for replies. Only thread upvotes belong on this tab.
+    const upvoteRes = await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${encodeURIComponent(steamid)}&target_id=like.t_*&select=target_id`, { headers: HDR });
+    const upvoteRows = await upvoteRes.json();
+    const threadIds = Array.isArray(upvoteRows) ? upvoteRows.map(r => r.target_id.slice(2)).filter(Boolean) : [];
     if (!threadIds.length) {
       feedEl.innerHTML = '<div class="posts-empty">No upvoted threads yet.</div>';
       return;
     }
-    const res = await fetch(`${SB_URL}/rest/v1/forum_threads?id=in.(${threadIds.join(',')})&order=likes.desc,created_at.desc&select=id,title,category,created_at,likes,reply_count,nickname`, { headers: HDR });
+    const res = await fetch(`${SB_URL}/rest/v1/forum_threads?id=in.(${threadIds.join(',')})&order=upvotes.desc,created_at.desc&select=id,title,category,created_at,upvotes,reply_count,nickname`, { headers: HDR });
     const rows = await res.json();
     if (!Array.isArray(rows) || !rows.length) {
       feedEl.innerHTML = '<div class="posts-empty">No upvoted threads yet.</div>';
@@ -1084,7 +1085,7 @@ async function loadUpvotedTab() {
         <div class="post-feed-title">${p.title.replace(/</g,'&lt;')}</div>
         <div class="post-feed-meta">
           <span>by ${(p.nickname||'').replace(/</g,'&lt;')}</span>
-          <span>❤ ${p.likes||0}</span>
+          <span>↑ ${p.upvotes||0}</span>
           <span>💬 ${p.reply_count||0}</span>
         </div>
       </a>`).join('');

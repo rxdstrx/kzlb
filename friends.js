@@ -169,10 +169,12 @@ function renderNotifList() {
       const threadTitle = escHtml(n.thread_title || 'your post');
       href = n.thread_id ? `thread.html?id=${n.thread_id}` : null;
       const threadLink = href ? `<a class="kz-notif-thread" href="${href}">${threadTitle}</a>` : threadTitle;
-      if (n.type === 'like')        msg = `${nameLink} upvoted your thread ${threadLink}`;
-      else if (n.type === 'like_reply') msg = `${nameLink} upvoted your reply in ${threadLink}`;
-      else if (n.type === 'reply') msg = `${nameLink} replied to your thread ${threadLink}`;
-      else                         msg = `${nameLink} interacted with ${threadLink}`;
+      if (n.type === 'like')             msg = `${nameLink} liked your thread ${threadLink}`;
+      else if (n.type === 'like_reply')  msg = `${nameLink} liked your reply in ${threadLink}`;
+      else if (n.type === 'upvote')      msg = `${nameLink} upvoted your thread ${threadLink}`;
+      else if (n.type === 'upvote_reply')msg = `${nameLink} upvoted your reply in ${threadLink}`;
+      else if (n.type === 'reply')       msg = `${nameLink} replied to your thread ${threadLink}`;
+      else                               msg = `${nameLink} interacted with ${threadLink}`;
     } else {
       msg = n.type === 'friend_you_accepted'
         ? `You accepted ${nameLink}'s friend request`
