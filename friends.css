@@ -168,45 +168,62 @@
 .kz-notif-accept { background: rgba(52,211,153,0.13); color: #34d399; border: 1px solid rgba(52,211,153,0.2); }
 .kz-notif-decline { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.18); }
 
-/* â”€â”€ Add Friend Button â”€â”€ */
+/* ── Add Friend Button — same glassy purple language as .filter-btn
+   (index.html leaderboard filters): translucent white glass at rest,
+   purple glass once a relationship exists (sent / friends / accept). ── */
 .kz-friend-btn {
-  background: rgba(167,139,250,0.12);
-  color: #a78bfa;
-  border: 1px solid rgba(167,139,250,0.25);
-  padding: 6px 14px;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
+  padding: 8px 16px;
+  border-radius: 10px;
   font-size: 0.82rem;
+  font-family: inherit;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, opacity 0.2s;
+  backdrop-filter: blur(12px);
+  transition: background 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s;
   white-space: nowrap;
 }
-.kz-friend-btn:hover:not(:disabled) { background: rgba(167,139,250,0.22); }
+.kz-friend-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); color: #fff; }
 .kz-friend-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.kz-friend-btn--friends { background: rgba(52,211,153,0.1); color: #34d399; border-color: rgba(52,211,153,0.2); cursor: pointer; }
-.kz-friend-btn--friends:hover { background: rgba(52,211,153,0.18) !important; }
-.kz-friend-btn--pending { background: rgba(148,163,184,0.08); color: #64748b; border-color: rgba(148,163,184,0.15); }
-.kz-friend-btn--incoming { background: rgba(251,191,36,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.25); }
+
+/* Friends / Request Sent / Incoming all read as "purple" — the same
+   active-filter tint, just at different intensities so state is still
+   readable at a glance. No green, no red, no amber. */
+.kz-friend-btn--friends {
+  background: rgba(139,92,246,0.15);
+  border-color: rgba(139,92,246,0.35);
+  color: #c4b5fd;
+  cursor: pointer;
+}
+.kz-friend-btn--friends:hover { background: rgba(139,92,246,0.24) !important; }
+.kz-friend-btn--pending {
+  background: rgba(139,92,246,0.08);
+  border-color: rgba(139,92,246,0.2);
+  color: #a78bfa;
+}
+.kz-friend-btn--incoming {
+  background: rgba(139,92,246,0.15);
+  border-color: rgba(139,92,246,0.35);
+  color: #c4b5fd;
+}
 .kz-friend-chevron { font-size: 10px; margin-left: 4px; opacity: 0.7; }
 
-/* ── Sidebar placement (profile.html Actions block) — match the full-width
-   glassy look of .sidebar-action-btn instead of the inline nav-bar sizing ── */
-.profile-actions-left { margin-top: 4px; }
+/* ── Sidebar placement (profile.html, under the Steam/Faceit social
+   links) — full-width to match the rest of the sidebar column ── */
+.profile-actions-left { margin: 4px 0 0; }
 .profile-actions-left .kz-friend-btn-wrap { display: block; width: 100%; }
 .profile-actions-left .kz-friend-btn {
   width: 100%;
   justify-content: center;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 14px;
-  border-radius: 10px;
-  font-size: 0.8rem;
 }
 .profile-actions-left .kz-unfriend-dropdown { min-width: 100%; }
-.profile-actions-left .kz-unfriend-btn { border-radius: 10px; }
 
-/* â”€â”€ Unfriend dropdown â”€â”€ */
+/* ── Unfriend dropdown ── */
 .kz-friend-btn-wrap {
   position: relative;
   display: inline-block;
@@ -226,18 +243,19 @@
 }
 .kz-unfriend-btn {
   width: 100%;
-  background: rgba(239,68,68,0.12);
-  border: 1px solid rgba(239,68,68,0.25);
-  color: #f87171;
-  border-radius: 8px;
+  background: rgba(139,92,246,0.1);
+  border: 1px solid rgba(139,92,246,0.25);
+  color: #c4b5fd;
+  border-radius: 10px;
   padding: 7px 14px;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
+  backdrop-filter: blur(12px);
   white-space: nowrap;
   transition: background 0.15s;
 }
-.kz-unfriend-btn:hover { background: rgba(239,68,68,0.25); }
+.kz-unfriend-btn:hover { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); color: #fff; }
 
 /* â”€â”€ Friends List (Friends Tab) â”€â”€ */
 .kz-friends-loading {

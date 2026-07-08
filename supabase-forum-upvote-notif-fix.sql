@@ -59,3 +59,38 @@ alter publication supabase_realtime add table public.forum_notifications;
 -- ============================================================
 grant update (upvotes) on public.forum_threads to anon;
 grant update (upvotes) on public.forum_replies to anon;
+
+-- ============================================================
+-- Fix 5: forum_notifications INSERT still failed after fix 2 with
+-- "permission denied for sequence forum_notifications_id_seq".
+-- Granting INSERT on a table does NOT automatically grant usage of
+-- its identity/serial sequence — that needs its own grant.
+-- ============================================================
+grant usage, select on sequence public.forum_notifications_id_seq to anon;
+
+-- ============================================================
+-- Fix 6: sending a friend request / accepting one doesn't show up
+-- live for the other person (they have to refresh). Cause:
+-- "friend_requests" was never added to the realtime publication,
+-- so Postgres never streams its INSERT/UPDATE events over the
+-- websocket — the client's realtime subscription connects fine
+-- (so it never falls back to polling either), it just never
+-- receives anything for this table. Wrapped in a check so this is
+-- safe to run again even if it's already been added.
+-- ============================================================
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'friend_requests'
+  ) then
+    execute 'alter publication supabase_realtime add table public.friend_requests';
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'notifications'
+  ) then
+    execute 'alter publication supabase_realtime add table public.notifications';
+  end if;
+end $$;
