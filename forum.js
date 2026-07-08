@@ -761,6 +761,24 @@
       });
     }
 
+    // Patch a like/upvote count + button state in place, without touching the
+    // rest of the DOM — used for realtime pushes from OTHER viewers so an
+    // expanded reply accordion doesn't get collapsed by a re-render.
+    function patchVoteButtons(targetKey, { likes, upvotes }) {
+      if (likes != null) {
+        document.querySelectorAll(`.like-btn[data-id="${targetKey}"]`).forEach(btn => {
+          const span = btn.querySelector('span');
+          if (span) span.textContent = likes;
+        });
+      }
+      if (upvotes != null) {
+        document.querySelectorAll(`.upvote-btn[data-id="${targetKey}"], .reply-upvote-btn[data-id="${targetKey}"]`).forEach(btn => {
+          const span = btn.querySelector('span');
+          if (span) span.textContent = upvotes;
+        });
+      }
+    }
+
     function subscribeReplies() {
       const sb = typeof sbClient !== 'undefined' ? sbClient : null;
       if (!sb) { setTimeout(subscribeReplies, 300); return; }
@@ -772,12 +790,22 @@
           if (replies.find(r => r.id === payload.new.id)) return;
           appendReply(payload.new);
         })
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'forum_replies',
+          filter: `thread_id=eq.${threadId}` }, payload => {
+          const idx = replies.findIndex(r => r.id === payload.new.id);
+          if (idx !== -1) replies[idx] = payload.new;
+          patchVoteButtons(`r_${payload.new.id}`, { likes: payload.new.likes, upvotes: payload.new.upvotes });
+        })
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'forum_threads',
           filter: `id=eq.${threadId}` }, payload => {
           if (thread) {
             thread.likes = payload.new.likes;
+            thread.upvotes = payload.new.upvotes;
             thread.reply_count = payload.new.reply_count;
           }
+          const countEl = document.getElementById('repliesCount');
+          if (countEl) countEl.textContent = payload.new.reply_count || 0;
+          patchVoteButtons(`t_${payload.new.id}`, { likes: payload.new.likes, upvotes: payload.new.upvotes });
         })
         .subscribe();
     }

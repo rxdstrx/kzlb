@@ -953,7 +953,7 @@ function initSteamUI() {
 function initTabs() {
   const tabs      = document.querySelectorAll('.profile-tab');
   const indicator = document.querySelector('.profile-tab-indicator');
-  const panels    = { profile: document.getElementById('tab-profile'), posts: document.getElementById('tab-posts'), upvoted: document.getElementById('tab-upvoted'), recent: document.getElementById('tab-recent'), friends: document.getElementById('tab-friends') };
+  const panels    = { profile: document.getElementById('tab-profile'), posts: document.getElementById('tab-posts'), upvoted: document.getElementById('tab-upvoted'), likes: document.getElementById('tab-likes'), recent: document.getElementById('tab-recent'), friends: document.getElementById('tab-friends') };
 
   function moveIndicator(activeTab) {
     if (!indicator) return;
@@ -981,6 +981,7 @@ function initTabs() {
       if (tab.dataset.tab === 'recent') renderRecentTab();
       if (tab.dataset.tab === 'posts') loadPostsTab();
       if (tab.dataset.tab === 'upvoted') loadUpvotedTab();
+      if (tab.dataset.tab === 'likes') loadLikesTab();
     });
   });
 
@@ -1040,58 +1041,120 @@ async function loadPostsTab() {
   }
 }
 
-// ── Upvoted Tab ── (threads this profile's steamid has upvoted, via forum_upvotes —
-// upvotes are a separate feature from likes, see forum.js's toggleUpvote)
+// ── Upvoted / Likes tabs ── (threads AND replies this profile's steamid has
+// upvoted/liked. forum_upvotes/forum_likes store one row per steamid+target,
+// target_id "t_<id>" for threads, "r_<id>" for replies — upvotes and likes
+// are fully separate features, see forum.js's toggleUpvote/toggleLike.)
+const catClassFor = c => ({ general:'cat-general', maps:'cat-maps', records:'cat-records', help:'cat-help', 'off-topic':'cat-off-topic' }[c] || 'cat-general');
+const catLabelFor = c => ({ general:'General', maps:'Maps', records:'Records', help:'Help', 'off-topic':'Off-Topic' }[c] || c);
+const timeAgoShort = iso => {
+  const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return `${Math.floor(s/60)}m ago`;
+  if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+  return `${Math.floor(s/86400)}d ago`;
+};
+
+async function loadVoteFeedTab(kind, feedEl, steamid) {
+  const HDR = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}`, 'Content-Type': 'application/json' };
+  const table    = kind === 'upvotes' ? 'forum_upvotes' : 'forum_likes';
+  const countCol = kind === 'upvotes' ? 'upvotes' : 'likes';
+  const statIcon = kind === 'upvotes' ? '↑' : '❤';
+  const emptyMsg = kind === 'upvotes' ? 'No upvoted posts yet.' : 'No liked posts yet.';
+
+  const voteRes  = await fetch(`${SB_URL}/rest/v1/${table}?steamid=eq.${encodeURIComponent(steamid)}&select=target_id,created_at&order=created_at.desc`, { headers: HDR });
+  const voteRows = await voteRes.json();
+  if (!Array.isArray(voteRows) || !voteRows.length) { feedEl.innerHTML = `<div class="posts-empty">${emptyMsg}</div>`; return; }
+
+  const votedAt   = {};
+  const threadIds = [], replyIds = [];
+  voteRows.forEach(v => {
+    votedAt[v.target_id] = v.created_at;
+    if (v.target_id.startsWith('t_')) threadIds.push(v.target_id.slice(2));
+    else if (v.target_id.startsWith('r_')) replyIds.push(v.target_id.slice(2));
+  });
+
+  const [threads, replies] = await Promise.all([
+    threadIds.length
+      ? fetch(`${SB_URL}/rest/v1/forum_threads?id=in.(${threadIds.join(',')})&select=id,title,category,${countCol},reply_count,nickname`, { headers: HDR }).then(r => r.json())
+      : Promise.resolve([]),
+    replyIds.length
+      ? fetch(`${SB_URL}/rest/v1/forum_replies?id=in.(${replyIds.join(',')})&select=id,thread_id,body,${countCol},nickname`, { headers: HDR }).then(r => r.json())
+      : Promise.resolve([]),
+  ]);
+
+  // Replies need their parent thread's title for the "in <thread>" link
+  const parentThreadIds = [...new Set((Array.isArray(replies) ? replies : []).map(r => r.thread_id))];
+  const parentThreads = parentThreadIds.length
+    ? await fetch(`${SB_URL}/rest/v1/forum_threads?id=in.(${parentThreadIds.join(',')})&select=id,title`, { headers: HDR }).then(r => r.json())
+    : [];
+  const parentTitleMap = {};
+  (Array.isArray(parentThreads) ? parentThreads : []).forEach(t => { parentTitleMap[t.id] = t.title; });
+
+  const items = [
+    ...(Array.isArray(threads) ? threads : []).map(t => ({ kind: 'thread', data: t, votedAt: votedAt[`t_${t.id}`] })),
+    ...(Array.isArray(replies) ? replies : []).map(r => ({ kind: 'reply', data: r, votedAt: votedAt[`r_${r.id}`] })),
+  ].sort((a, b) => new Date(b.votedAt) - new Date(a.votedAt));
+
+  if (!items.length) { feedEl.innerHTML = `<div class="posts-empty">${emptyMsg}</div>`; return; }
+
+  feedEl.innerHTML = items.map(item => {
+    if (item.kind === 'thread') {
+      const p = item.data;
+      return `
+        <a class="feed-card" href="thread.html?id=${p.id}">
+          <div class="feed-card-top">
+            <span class="thread-category ${catClassFor(p.category)}">${catLabelFor(p.category)}</span>
+            <span class="feed-card-date">${timeAgoShort(item.votedAt)}</span>
+          </div>
+          <div class="feed-card-title">${(p.title||'').replace(/</g,'&lt;')}</div>
+          <div class="feed-card-meta">
+            <span class="feed-card-stat">by ${(p.nickname||'').replace(/</g,'&lt;')}</span>
+            <span class="feed-card-stat feed-card-stat--active">${statIcon} ${p[countCol]||0}</span>
+            <span class="feed-card-stat">💬 ${p.reply_count||0}</span>
+          </div>
+        </a>`;
+    }
+    const r = item.data;
+    const parentTitle = (parentTitleMap[r.thread_id] || 'a thread').replace(/</g,'&lt;');
+    return `
+      <a class="feed-card feed-card--reply" href="thread.html?id=${r.thread_id}#reply-${r.id}">
+        <div class="feed-card-top">
+          <span class="feed-card--reply-tag">Comment</span>
+          <span class="feed-card-date">${timeAgoShort(item.votedAt)}</span>
+        </div>
+        <div class="feed-card-reply-preview">${(r.body||'').replace(/</g,'&lt;').slice(0,160)}${(r.body||'').length>160?'…':''}</div>
+        <div class="feed-card-meta">
+          <span class="feed-card-stat">by ${(r.nickname||'').replace(/</g,'&lt;')}</span>
+          <span class="feed-card-stat feed-card-stat--active">${statIcon} ${r[countCol]||0}</span>
+        </div>
+        <div class="feed-card-reply-parent" style="margin-top:6px">in <span>${parentTitle}</span></div>
+      </a>`;
+  }).join('');
+}
+
 let upvotedLoaded = false;
 async function loadUpvotedTab() {
   if (upvotedLoaded) return;
   upvotedLoaded = true;
   const feedEl = document.getElementById('upvotedFeed');
-  if (!feedEl) return;
   const steamid = new URLSearchParams(window.location.search).get('steamid');
+  if (!feedEl) return;
   if (!steamid) { feedEl.innerHTML = '<div class="posts-empty">No player selected.</div>'; return; }
-  try {
-    const HDR = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}`, 'Content-Type': 'application/json' };
-    // forum_upvotes stores ONE row per steamid+target — target_id "t_<id>" for threads,
-    // "r_<id>" for replies. Only thread upvotes belong on this tab.
-    const upvoteRes = await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${encodeURIComponent(steamid)}&target_id=like.t_*&select=target_id`, { headers: HDR });
-    const upvoteRows = await upvoteRes.json();
-    const threadIds = Array.isArray(upvoteRows) ? upvoteRows.map(r => r.target_id.slice(2)).filter(Boolean) : [];
-    if (!threadIds.length) {
-      feedEl.innerHTML = '<div class="posts-empty">No upvoted threads yet.</div>';
-      return;
-    }
-    const res = await fetch(`${SB_URL}/rest/v1/forum_threads?id=in.(${threadIds.join(',')})&order=upvotes.desc,created_at.desc&select=id,title,category,created_at,upvotes,reply_count,nickname`, { headers: HDR });
-    const rows = await res.json();
-    if (!Array.isArray(rows) || !rows.length) {
-      feedEl.innerHTML = '<div class="posts-empty">No upvoted threads yet.</div>';
-      return;
-    }
-    const catClass = c => ({ general:'cat-general', maps:'cat-maps', records:'cat-records', help:'cat-help', 'off-topic':'cat-off-topic' }[c] || 'cat-general');
-    const catLabel = c => ({ general:'General', maps:'Maps', records:'Records', help:'Help', 'off-topic':'Off-Topic' }[c] || c);
-    const timeAgo = iso => {
-      const s = Math.floor((Date.now() - new Date(iso)) / 1000);
-      if (s < 60) return 'just now';
-      if (s < 3600) return `${Math.floor(s/60)}m ago`;
-      if (s < 86400) return `${Math.floor(s/3600)}h ago`;
-      return `${Math.floor(s/86400)}d ago`;
-    };
-    feedEl.innerHTML = rows.map(p => `
-      <a class="post-feed-item" href="thread.html?id=${p.id}">
-        <div class="post-feed-top">
-          <span class="thread-category ${catClass(p.category)}">${catLabel(p.category)}</span>
-          <span class="post-feed-date">${timeAgo(p.created_at)}</span>
-        </div>
-        <div class="post-feed-title">${p.title.replace(/</g,'&lt;')}</div>
-        <div class="post-feed-meta">
-          <span>by ${(p.nickname||'').replace(/</g,'&lt;')}</span>
-          <span>↑ ${p.upvotes||0}</span>
-          <span>💬 ${p.reply_count||0}</span>
-        </div>
-      </a>`).join('');
-  } catch (e) {
-    feedEl.innerHTML = '<div class="posts-empty">Failed to load upvoted threads.</div>';
-  }
+  try { await loadVoteFeedTab('upvotes', feedEl, steamid); }
+  catch (e) { feedEl.innerHTML = '<div class="posts-empty">Failed to load upvoted posts.</div>'; }
+}
+
+let likesLoaded = false;
+async function loadLikesTab() {
+  if (likesLoaded) return;
+  likesLoaded = true;
+  const feedEl = document.getElementById('likesFeed');
+  const steamid = new URLSearchParams(window.location.search).get('steamid');
+  if (!feedEl) return;
+  if (!steamid) { feedEl.innerHTML = '<div class="posts-empty">No player selected.</div>'; return; }
+  try { await loadVoteFeedTab('likes', feedEl, steamid); }
+  catch (e) { feedEl.innerHTML = '<div class="posts-empty">Failed to load liked posts.</div>'; }
 }
 
 const TIER_COLORS = { 1: '#4ade80', 2: '#86efac', 3: '#fbbf24', 4: '#f97316', 5: '#ef4444', 6: '#dc2626', 7: '#9333ea' };

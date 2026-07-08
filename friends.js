@@ -115,7 +115,7 @@ function injectBell(auth) {
         }, () => { loadAcceptedNotifs(auth); flashBell(); })
         .subscribe();
     }
-    setInterval(() => loadAcceptedNotifs(auth), 45000);
+    setInterval(() => loadAcceptedNotifs(auth), 20000);
   }
 }
 
@@ -272,16 +272,19 @@ function subscribeRealtime(auth) {
       if (payload.new.from_steamid !== auth.steamid) return;
       if (payload.new.status === 'accepted') {
         refreshFriendsTabIfOpen(auth.steamid);
-        // Sender gets notified — poll a few times until notification appears
+        // Sender gets notified. The server inserts the "notifications" row
+        // right after this status update, so it usually lands within a beat
+        // via the dedicated INSERT subscription below — this is just a short
+        // safety-net retry in case that row isn't written yet at this instant.
         const before = _acceptedNotifs.length;
         const tryLoad = (delay, attempts) => {
           setTimeout(async () => {
             await loadAcceptedNotifs(auth);
             if (_acceptedNotifs.length > before) { flashBell(); return; }
-            if (attempts > 1) tryLoad(2000, attempts - 1);
+            if (attempts > 1) tryLoad(500, attempts - 1);
           }, delay);
         };
-        tryLoad(1500, 4);
+        tryLoad(200, 6);
       }
     })
     // ── Real-time: new notification inserted (client-side filter) ──

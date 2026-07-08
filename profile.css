@@ -1273,3 +1273,86 @@
   font-size: 0.85rem;
   color: rgba(255,255,255,0.25);
 }
+
+/* ── Upvoted / Likes tabs — same glassy accordion-card look as the
+   thread.html reply cards, instead of the flat X.com-style Posts list ── */
+.feed-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.feed-card {
+  display: block;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 11px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+.feed-card:hover { border-color: rgba(139,92,246,0.25); background: rgba(139,92,246,0.05); }
+.feed-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.feed-card-date {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.22);
+  margin-left: auto;
+}
+.feed-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  font-family: var(--font-display, system-ui);
+}
+.feed-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.feed-card-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.45);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.feed-card-stat--active { border-color: rgba(168,85,247,0.4); color: #a855f7; background: rgba(139,92,246,0.12); }
+
+/* Reply-type card variant — same shell, comment preview instead of a title */
+.feed-card--reply-tag {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(168,85,247,0.75);
+  background: rgba(139,92,246,0.12);
+  border: 1px solid rgba(139,92,246,0.22);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.feed-card-reply-preview {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+.feed-card-reply-parent {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.35);
+}
+.feed-card-reply-parent a { color: #a855f7; text-decoration: none; }
+.feed-card-reply-parent a:hover { text-decoration: underline; }
