@@ -189,6 +189,136 @@
   color: rgba(255,255,255,0.85);
 }
 
+/* ── Hero section ── */
+.profile-hero {
+  position: relative;
+  max-width: 1200px;
+  margin: 16px auto 0;
+  padding: 0 24px;
+  height: 340px;
+  overflow: hidden;
+  border-radius: 20px;
+}
+.profile-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0 24px;
+  border-radius: 20px;
+  background: radial-gradient(120% 100% at 85% 15%, rgba(139,92,246,0.10) 0%, rgba(8,7,12,0.55) 45%, rgba(6,5,9,0.85) 100%);
+  border: 1px solid rgba(255,255,255,0.07);
+  z-index: 0;
+}
+.profile-hero-grid {
+  position: absolute;
+  inset: 0 24px;
+  border-radius: 20px;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 34px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 34px);
+  -webkit-mask-image: radial-gradient(75% 90% at 78% 30%, black 0%, black 35%, transparent 78%);
+  mask-image: radial-gradient(75% 90% at 78% 30%, black 0%, black 35%, transparent 78%);
+}
+.profile-hero-stroke {
+  position: absolute;
+  top: -0.14em;
+  right: 40px;
+  z-index: 0;
+  font-family: var(--font-display, system-ui);
+  font-size: 15rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(139,92,246,0.16);
+  user-select: none;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 25%, black 65%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 25%, black 65%, transparent);
+}
+.profile-hero-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(38% 55% at 82% 78%, rgba(139,92,246,0.35) 0%, rgba(139,92,246,0.12) 45%, transparent 75%);
+  pointer-events: none;
+}
+.profile-hero-character {
+  position: absolute;
+  right: 4%;
+  bottom: 0;
+  height: 112%;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%),
+                       linear-gradient(to left, transparent 0%, black 14%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%),
+              linear-gradient(to left, transparent 0%, black 14%);
+  mask-composite: intersect;
+  filter: drop-shadow(0 10px 40px rgba(0,0,0,0.5));
+}
+.profile-hero-info {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  max-width: 62%;
+}
+.profile-hero-name {
+  font-family: var(--font-display, system-ui);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0;
+  background: linear-gradient(135deg, #f0f0f5 30%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.profile-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  width: fit-content;
+}
+.profile-hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 18px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.profile-hero-stat:last-child { border-right: none; }
+.profile-hero-stat-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+.profile-hero-stat-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f0f0f5;
+}
+
+@media (max-width: 860px) {
+  .profile-hero { height: auto; padding-bottom: 200px; }
+  .profile-hero-character { height: 220px; right: 50%; transform: translateX(50%); }
+  .profile-hero-info { max-width: 100%; padding-top: 20px; }
+  .profile-hero-stroke { font-size: 8rem; }
+}
+
 /* â”€â”€ Banner â”€â”€ */
 .profile-banner-container {
   max-width: 960px;

@@ -310,21 +310,21 @@ async function loadProfile(sid) {
     document.getElementById('playerSteamId').textContent = sid;
     document.getElementById('playerAvatar').src = avatar;
     document.getElementById('playerName').textContent = name;
+    const heroNameEl = document.getElementById('heroName');
+    if (heroNameEl) heroNameEl.textContent = name;
     document.title = `KZ — ${name}`;
 
     const flagEl = document.getElementById('playerFlag');
     const statCountryEl = document.getElementById('statCountryDisplay');
+    const heroCountryEl = document.getElementById('heroCountry');
 
     function applyCountry(c) {
-      if (c && c !== 'xx') {
-        if (flagEl) flagEl.innerHTML = countryToFlag(c);
-        if (statCountryEl) statCountryEl.innerHTML =
-          `<img src="https://flagcdn.com/w40/${c}.png" style="height:18px;border-radius:2px;vertical-align:middle" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null">`;
-      } else {
-        if (flagEl) flagEl.innerHTML = countryToFlag(null);
-        if (statCountryEl) statCountryEl.innerHTML =
-          `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:18px;border-radius:2px;vertical-align:middle">`;
-      }
+      const flagHtml = (c && c !== 'xx')
+        ? `<img src="https://flagcdn.com/w40/${c}.png" style="height:18px;border-radius:2px;vertical-align:middle" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null">`
+        : `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:18px;border-radius:2px;vertical-align:middle">`;
+      if (flagEl) flagEl.innerHTML = countryToFlag(c && c !== 'xx' ? c : null);
+      if (statCountryEl) statCountryEl.innerHTML = flagHtml;
+      if (heroCountryEl) heroCountryEl.innerHTML = flagHtml;
     }
 
     applyCountry(country);
@@ -445,30 +445,30 @@ async function loadProfile(sid) {
 
     // ── Stats bar ──
     const worldRank = data.kz_place ? `#${Number(data.kz_place).toLocaleString()}` : (desc['{{Position}}'] ?? kzUser.place ?? '—');
-    setStatIfExists('statWorldRank', worldRank);
+    setStatIfExists(['statWorldRank', 'heroWorldRank'], worldRank);
 
     const kzPoints = data.kz_points ? Number(data.kz_points).toFixed(0) : (desc['{{Points}}'] ?? kzUser.points ?? '—');
-    setStatIfExists('statPoints', kzPoints);
+    setStatIfExists(['statPoints', 'heroPoints'], kzPoints);
 
     const mapsCount = data.kz_maps || data.maps?.list?.length || desc['{{COMPLETIONS-MAP}}'] || '—';
-    setStatIfExists('statMaps', mapsCount);
+    setStatIfExists(['statMaps', 'heroMaps'], mapsCount);
 
     // Faceit ELO — fetch async
-    setStatIfExists('statFaceitElo', '…');
+    setStatIfExists(['statFaceitElo', 'heroElo'], '…');
     fetch(`${API_BASE}/api/faceit?action=stats&steamid=${sid}`)
       .then(r => r.ok ? r.json() : null)
       .then(f => {
         if (f?.elo) {
-          setStatIfExists('statFaceitElo', f.elo.toLocaleString());
+          setStatIfExists(['statFaceitElo', 'heroElo'], f.elo.toLocaleString());
           const faceitLink = document.getElementById('faceitSocialLink');
           if (faceitLink && f.faceit_url) {
             faceitLink.href = f.faceit_url;
             faceitLink.classList.remove('hidden');
           }
         } else {
-          setStatIfExists('statFaceitElo', 'No profile');
+          setStatIfExists(['statFaceitElo', 'heroElo'], 'No profile');
         }
-      }).catch(() => setStatIfExists('statFaceitElo', 'No profile'));
+      }).catch(() => setStatIfExists(['statFaceitElo', 'heroElo'], 'No profile'));
 
     // ── Maps table ──
     const mapList = (data.maps?.list || []).sort((a, b) => Number(a.tier) - Number(b.tier));
@@ -495,8 +495,12 @@ async function loadProfile(sid) {
 }
 
 function setStatIfExists(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
+  // id can be a single element id or an array of ids that should mirror the
+  // same value (e.g. a sidebar stat + its hero-section duplicate).
+  (Array.isArray(id) ? id : [id]).forEach(one => {
+    const el = document.getElementById(one);
+    if (el) el.textContent = value;
+  });
 }
 
 // Global map totals — loaded once, used to show correct totals for all players
