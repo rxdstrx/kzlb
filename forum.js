@@ -116,7 +116,7 @@
       const ids = threads.map(t => `t_${t.id}`).join(',');
       const res = await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&target_id=in.(${ids})&select=target_id`, { headers: HDR });
       const rows = await res.json();
-      if (!Array.isArray(rows)) return;
+      if (!Array.isArray(rows)) { console.error('[forum] loadMyListUpvotes failed:', rows); return; }
       rows.forEach(r => myListUpvotes.add(r.target_id));
       // update upvote button states without full re-render
       threads.forEach(t => {
@@ -128,24 +128,35 @@
     async function toggleListUpvote(btn, threadId) {
       const auth = getAuth();
       if (!auth) { window.location.href = 'login.html'; return; }
-      const targetKey = `t_${threadId}`;
-      const wasUpvoted = myListUpvotes.has(targetKey);
-      const thread      = threads.find(t => String(t.id) === String(threadId));
-      const newCount    = Math.max(0, ((thread?.upvotes) || 0) + (wasUpvoted ? -1 : 1));
+      const targetKey    = `t_${threadId}`;
+      const wasUpvoted   = myListUpvotes.has(targetKey);
+      const thread       = threads.find(t => String(t.id) === String(threadId));
+      const originalCount = thread?.upvotes || 0;
+      const newCount     = Math.max(0, originalCount + (wasUpvoted ? -1 : 1));
+      const countEl      = btn.querySelector('.thread-upvote-count');
+
       // optimistic
       wasUpvoted ? myListUpvotes.delete(targetKey) : myListUpvotes.add(targetKey);
       btn.classList.toggle('upvoted', !wasUpvoted);
-      const countEl = btn.querySelector('.thread-upvote-count');
       if (countEl) countEl.textContent = newCount;
       if (thread) thread.upvotes = newCount;
+
       // persist
-      if (wasUpvoted) {
-        await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR });
-      } else {
-        await fetch(`${SB_URL}/rest/v1/forum_upvotes`, {
-          method: 'POST', headers: { ...HDR, Prefer: 'return=minimal' },
-          body: JSON.stringify({ steamid: auth.steamid, target_id: targetKey }),
-        });
+      const voteRes = wasUpvoted
+        ? await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR })
+        : await fetch(`${SB_URL}/rest/v1/forum_upvotes`, {
+            method: 'POST', headers: { ...HDR, Prefer: 'return=minimal' },
+            body: JSON.stringify({ steamid: auth.steamid, target_id: targetKey }),
+          });
+
+      if (!voteRes.ok) {
+        console.error('[forum] upvote persist failed:', await voteRes.text());
+        // revert — the write didn't actually save, so don't leave the UI lying
+        wasUpvoted ? myListUpvotes.add(targetKey) : myListUpvotes.delete(targetKey);
+        btn.classList.toggle('upvoted', wasUpvoted);
+        if (countEl) countEl.textContent = originalCount;
+        if (thread) thread.upvotes = originalCount;
+        return;
       }
       await fetch(`${SB_URL}/rest/v1/forum_threads?id=eq.${threadId}`, {
         method: 'PATCH', headers: { ...HDR, Prefer: 'return=minimal' },
@@ -318,12 +329,13 @@
   // ── Notification helper ──
   async function sendForumNotification(toSteamid, auth, type, threadId, threadTitle) {
     try {
-      await fetch(`${SB_URL}/rest/v1/forum_notifications`, {
+      const res = await fetch(`${SB_URL}/rest/v1/forum_notifications`, {
         method: 'POST',
         headers: { ...HDR, Prefer: 'return=minimal' },
         body: JSON.stringify({ steamid: toSteamid, from_steamid: auth.steamid, from_nick: auth.nickname, from_avatar: auth.avatar || '', type, thread_id: threadId, thread_title: threadTitle || '' }),
       });
-    } catch (_) {}
+      if (!res.ok) console.error('[forum] sendForumNotification failed:', await res.text());
+    } catch (e) { console.error('[forum] sendForumNotification error:', e); }
   }
 
   // ════════════════════════════════════
@@ -411,6 +423,7 @@
       const res  = await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&select=target_id`, { headers: HDR });
       const rows = await res.json();
       if (Array.isArray(rows)) rows.forEach(r => myUpvotes.add(r.target_id));
+      else console.error('[forum] loadMyUpvotes failed:', rows);
       renderThread();
       renderReplies();
     }
@@ -582,17 +595,15 @@
       const liked = myLikes.has(targetKey);
       const delta = liked ? -1 : 1;
 
-      if (liked) {
-        myLikes.delete(targetKey);
-        await fetch(`${SB_URL}/rest/v1/forum_likes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR });
-      } else {
-        myLikes.add(targetKey);
-        await fetch(`${SB_URL}/rest/v1/forum_likes`, {
-          method: 'POST',
-          headers: { ...HDR, Prefer: 'return=minimal' },
-          body: JSON.stringify({ steamid: auth.steamid, target_id: targetKey }),
-        });
-      }
+      const voteRes = liked
+        ? await fetch(`${SB_URL}/rest/v1/forum_likes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR })
+        : await fetch(`${SB_URL}/rest/v1/forum_likes`, {
+            method: 'POST',
+            headers: { ...HDR, Prefer: 'return=minimal' },
+            body: JSON.stringify({ steamid: auth.steamid, target_id: targetKey }),
+          });
+      if (!voteRes.ok) { console.error('[forum] like persist failed:', await voteRes.text()); return; }
+      liked ? myLikes.delete(targetKey) : myLikes.add(targetKey);
 
       const getRes    = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${rowId}&select=likes`, { headers: HDR });
       const [current] = await getRes.json();
@@ -640,17 +651,15 @@
       const upvoted = myUpvotes.has(targetKey);
       const delta   = upvoted ? -1 : 1;
 
-      if (upvoted) {
-        myUpvotes.delete(targetKey);
-        await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR });
-      } else {
-        myUpvotes.add(targetKey);
-        await fetch(`${SB_URL}/rest/v1/forum_upvotes`, {
-          method: 'POST',
-          headers: { ...HDR, Prefer: 'return=minimal' },
-          body: JSON.stringify({ steamid: auth.steamid, target_id: targetKey }),
-        });
-      }
+      const voteRes = upvoted
+        ? await fetch(`${SB_URL}/rest/v1/forum_upvotes?steamid=eq.${auth.steamid}&target_id=eq.${targetKey}`, { method: 'DELETE', headers: HDR })
+        : await fetch(`${SB_URL}/rest/v1/forum_upvotes`, {
+            method: 'POST',
+            headers: { ...HDR, Prefer: 'return=minimal' },
+            body: JSON.stringify({ steamid: auth.steamid, target_id: targetKey }),
+          });
+      if (!voteRes.ok) { console.error('[forum] upvote persist failed:', await voteRes.text()); return; }
+      upvoted ? myUpvotes.delete(targetKey) : myUpvotes.add(targetKey);
 
       const getRes    = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${rowId}&select=upvotes`, { headers: HDR });
       const [current] = await getRes.json();

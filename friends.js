@@ -101,10 +101,20 @@ function injectBell(auth) {
         }, () => loadAcceptedNotifs(auth))
         .subscribe();
     }
-    // forum_notifications (likes/upvotes/replies) has no anon SELECT grant, so
-    // Realtime (which enforces RLS) can't push those inserts to this client —
-    // poll periodically instead so likes/replies still show up without a
-    // full page reload.
+    // forum_notifications (likes/upvotes/replies) now has anon SELECT/INSERT
+    // grants and is added to the realtime publication, so pushes arrive live
+    // just like friend-accepted notifications. Keep a slow poll as a safety
+    // net in case a push is ever missed (e.g. brief socket drop).
+    if (sbClient) {
+      sbClient.channel(`forum_notif_${auth.steamid}`)
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'forum_notifications',
+          filter: `steamid=eq.${auth.steamid}`,
+        }, () => { loadAcceptedNotifs(auth); flashBell(); })
+        .subscribe();
+    }
     setInterval(() => loadAcceptedNotifs(auth), 45000);
   }
 }
