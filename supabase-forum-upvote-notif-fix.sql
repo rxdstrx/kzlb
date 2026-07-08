@@ -48,3 +48,14 @@ create policy "forum_notifications_anon_all"
 -- works for friend-accepted events).
 -- ============================================================
 alter publication supabase_realtime add table public.forum_notifications;
+
+-- ============================================================
+-- Fix 4: the vote SAVES (forum_upvotes insert works) but the
+-- visible counter never moves. Cause: anon has column-level
+-- UPDATE grants on forum_threads/forum_replies that only cover
+-- "likes"/"reply_count" (granted when those columns were added) —
+-- "upvotes" was added later and never got the same grant, so the
+-- PATCH that writes the new count silently fails with 401.
+-- ============================================================
+grant update (upvotes) on public.forum_threads to anon;
+grant update (upvotes) on public.forum_replies to anon;
