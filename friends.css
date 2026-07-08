@@ -213,15 +213,10 @@
 }
 .kz-friend-chevron { font-size: 10px; margin-left: 4px; opacity: 0.7; }
 
-/* ── Sidebar placement (profile.html, under the Steam/Faceit social
-   links) — full-width to match the rest of the sidebar column ── */
-.profile-actions-left { margin: 4px 0 0; }
-.profile-actions-left .kz-friend-btn-wrap { display: block; width: 100%; }
-.profile-actions-left .kz-friend-btn {
-  width: 100%;
-  justify-content: center;
-}
-.profile-actions-left .kz-unfriend-dropdown { min-width: 100%; }
+/* ── Hero placement (profile.html, bottom-right cluster of the hero card,
+   next to Update Records) — inline pill sizing, not full-width like the
+   old sidebar slot ── */
+.profile-actions-left .kz-friend-btn-wrap { display: inline-block; }
 
 /* ── Unfriend dropdown ── */
 .kz-friend-btn-wrap {

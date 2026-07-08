@@ -176,6 +176,35 @@
               <span class="profile-hero-stat-val" id="heroElo">—</span>
             </div>
           </div>
+
+          <!-- Social links — moved here from the sidebar, same glassy pill
+               language as the stat bar above -->
+          <div class="profile-hero-socials">
+            <a class="profile-hero-social-btn" id="steamSocialLink" href="#" target="_blank" rel="noopener" title="Steam Profile">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0z"/>
+              </svg>
+              Steam
+            </a>
+            <a class="profile-hero-social-btn faceit-btn hidden" id="faceitSocialLink" href="#" target="_blank" rel="noopener" title="Faceit Profile">
+              <img src="https://cdn.simpleicons.org/faceit/FF5500" width="13" height="13" alt="Faceit" style="display:block" />
+              Faceit
+            </a>
+          </div>
+        </div>
+
+        <!-- Bottom-right action cluster — friend request + Update Records,
+             moved here from the sidebar per redesign feedback -->
+        <div class="profile-hero-actions-br">
+          <!-- Populated by friends.js: Add Friend / Request Sent / Accept / Friends
+               dropdown. friends.js only renders this when a viewer is logged in AND
+               viewing someone else's profile, so it's automatically absent both on
+               your own profile and for logged-out visitors. -->
+          <div class="profile-actions-left"></div>
+          <button class="profile-hero-social-btn" id="updateRecordBtn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Update Records
+          </button>
         </div>
       </div>
     </section>
@@ -225,33 +254,11 @@
             <span class="sidebar-lastseen" id="profileLastSeen"></span>
           </div>
 
-          <!-- Social links -->
-          <div class="sidebar-socials">
-            <a class="sidebar-social-btn" id="steamSocialLink" href="#" target="_blank" rel="noopener" title="Steam Profile">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0z"/>
-              </svg>
-              Steam
-            </a>
-            <a class="sidebar-social-btn faceit-btn hidden" id="faceitSocialLink" href="#" target="_blank" rel="noopener" title="Faceit Profile">
-              <img src="https://cdn.simpleicons.org/faceit/FF5500" width="13" height="13" alt="Faceit" style="display:block" />
-              Faceit
-            </a>
-          </div>
-
-          <!-- Populated by friends.js: Add Friend / Request Sent / Accept / Friends
-               dropdown. friends.js only renders this when a viewer is logged in AND
-               viewing someone else's profile, so it's automatically absent both on
-               your own profile and for logged-out visitors. -->
-          <div class="profile-actions-left"></div>
-
-          <div class="sidebar-divider"></div>
-
-          <!-- Stats now live in the hero stat bar (Country/World Rank/KZ Points/
-               Maps Done/Faceit ELO) — no need to duplicate them here too.
-               statWorldRank/statCountryDisplay/statPoints/statMaps/statFaceitElo
-               were the sidebar copies; setStatIfExists() in profile.js now only
-               targets the hero*/hero-prefixed ids for those five fields. -->
+          <!-- Steam/Faceit links and the friend-request/Update-Records buttons
+               now live in the hero (glassy pills next to the stat bar, and a
+               bottom-right cluster) instead of duplicating them here — see
+               .profile-hero-socials / .profile-hero-actions-br in the hero
+               section above. -->
 
           <div class="sidebar-divider"></div>
 
@@ -262,10 +269,6 @@
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               View on Cybershoke
             </a>
-            <button class="sidebar-action-btn sidebar-update-btn" id="updateRecordBtn">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-              Update Records
-            </button>
           </div>
 
           <!-- Own profile only -->

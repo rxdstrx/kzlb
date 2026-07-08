@@ -316,12 +316,52 @@
   color: #f0f0f5;
 }
 
+/* Steam/Faceit — moved here from the sidebar, same glassy pill language as
+   the stat bar right above them */
+.profile-hero-socials {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+.profile-hero-social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px);
+  color: rgba(255,255,255,0.65);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.profile-hero-social-btn:hover { background: rgba(255,255,255,0.09); color: #fff; border-color: rgba(255,255,255,0.18); }
+
+/* Friend-request + Update Records — bottom-right cluster of the hero card */
+.profile-hero-actions-br {
+  position: absolute;
+  right: 24px;
+  bottom: 20px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 @media (max-width: 860px) {
   .profile-hero { height: auto; }
   .profile-hero-card { height: auto; padding: 24px 24px 220px; }
   .profile-hero-character { height: 220px; right: 50%; transform: translateX(50%); }
   .profile-hero-info { max-width: 100%; }
   .profile-hero-stroke { font-size: 8rem; }
+  .profile-hero-actions-br { position: static; margin-top: 14px; flex-wrap: wrap; }
 }
 
 /* â”€â”€ Banner â”€â”€ */
