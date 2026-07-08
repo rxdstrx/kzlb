@@ -214,13 +214,17 @@ export default async function handler(req, res) {
     // not have a `read` column — degrade gracefully instead of failing the
     // whole bell if that request errors.
     let forumItems = [];
+    let forumDebug = null;
     if (forumRes.ok) {
       forumItems = (await forumRes.json()).map(n => ({ ...n, source: 'forum', read: n.read ?? false }));
+    } else {
+      // TEMP DIAGNOSTIC — remove once the forum-notifications bell bug is fixed.
+      forumDebug = { status: forumRes.status, body: await forumRes.text() };
     }
     const items = [...friendItems, ...forumItems]
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       .slice(0, 15);
-    return res.status(200).json({ ok: true, notifications: items });
+    return res.status(200).json({ ok: true, notifications: items, forumCount: forumItems.length, forumDebug });
   }
 
   // ── MARK NOTIFICATIONS AS READ ──
