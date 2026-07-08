@@ -189,29 +189,35 @@
   color: rgba(255,255,255,0.85);
 }
 
-/* ── Hero section ── */
+/* ── Hero section ──
+   .profile-hero is just the outer centering/margin wrapper. Everything that
+   needs to be visually clipped to the rounded card (grid, glow, stroke,
+   character) lives inside .profile-hero-card, which is the thing that
+   actually has the border + border-radius + overflow:hidden — so nothing
+   can bleed past the rounded corners the way it could when the border and
+   the layered backgrounds lived on different elements with different insets. */
 .profile-hero {
   position: relative;
   max-width: 1200px;
   margin: 16px auto 0;
   padding: 0 24px;
   height: 340px;
-  overflow: hidden;
-  border-radius: 20px;
 }
-.profile-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0 24px;
+.profile-hero-card {
+  position: relative;
+  height: 100%;
   border-radius: 20px;
-  background: radial-gradient(120% 100% at 85% 15%, rgba(139,92,246,0.10) 0%, rgba(8,7,12,0.55) 45%, rgba(6,5,9,0.85) 100%);
+  overflow: hidden;
   border: 1px solid rgba(255,255,255,0.07);
-  z-index: 0;
+  background: radial-gradient(120% 100% at 85% 15%, rgba(139,92,246,0.10) 0%, rgba(8,7,12,0.55) 45%, rgba(6,5,9,0.85) 100%);
+  padding: 36px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .profile-hero-grid {
   position: absolute;
-  inset: 0 24px;
-  border-radius: 20px;
+  inset: 0;
   z-index: 0;
   background-image:
     repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 34px),
@@ -222,7 +228,7 @@
 .profile-hero-stroke {
   position: absolute;
   top: -0.14em;
-  right: 40px;
+  right: 16px;
   z-index: 0;
   font-family: var(--font-display, system-ui);
   font-size: 15rem;
@@ -263,10 +269,8 @@
 .profile-hero-info {
   position: relative;
   z-index: 2;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 18px;
   max-width: 62%;
 }
@@ -313,9 +317,10 @@
 }
 
 @media (max-width: 860px) {
-  .profile-hero { height: auto; padding-bottom: 200px; }
+  .profile-hero { height: auto; }
+  .profile-hero-card { height: auto; padding: 24px 24px 220px; }
   .profile-hero-character { height: 220px; right: 50%; transform: translateX(50%); }
-  .profile-hero-info { max-width: 100%; padding-top: 20px; }
+  .profile-hero-info { max-width: 100%; }
   .profile-hero-stroke { font-size: 8rem; }
 }
 
