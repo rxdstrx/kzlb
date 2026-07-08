@@ -953,7 +953,7 @@ function initSteamUI() {
 function initTabs() {
   const tabs      = document.querySelectorAll('.profile-tab');
   const indicator = document.querySelector('.profile-tab-indicator');
-  const panels    = { profile: document.getElementById('tab-profile'), posts: document.getElementById('tab-posts'), upvoted: document.getElementById('tab-upvoted'), likes: document.getElementById('tab-likes'), recent: document.getElementById('tab-recent'), friends: document.getElementById('tab-friends') };
+  const panels    = { profile: document.getElementById('tab-profile'), posts: document.getElementById('tab-posts'), upvoted: document.getElementById('tab-upvoted'), likes: document.getElementById('tab-likes'), friends: document.getElementById('tab-friends') };
 
   function moveIndicator(activeTab) {
     if (!indicator) return;
@@ -978,12 +978,33 @@ function initTabs() {
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       switchTab(tab.dataset.tab);
-      if (tab.dataset.tab === 'recent') renderRecentTab();
       if (tab.dataset.tab === 'posts') loadPostsTab();
       if (tab.dataset.tab === 'upvoted') loadUpvotedTab();
       if (tab.dataset.tab === 'likes') loadLikesTab();
     });
   });
+
+  // "Recent" used to be its own top-level tab; it's now a filter toggle
+  // sitting above the stats table, inside the Profile tab.
+  const filterAllBtn    = document.getElementById('mapsFilterAll');
+  const filterRecentBtn = document.getElementById('mapsFilterRecent');
+  const statsTableEl    = document.getElementById('statsTable');
+  const recentPanelEl   = document.getElementById('tab-recent');
+  if (filterAllBtn && filterRecentBtn) {
+    filterAllBtn.addEventListener('click', () => {
+      filterAllBtn.classList.add('active');
+      filterRecentBtn.classList.remove('active');
+      statsTableEl?.classList.remove('hidden');
+      recentPanelEl?.classList.add('hidden');
+    });
+    filterRecentBtn.addEventListener('click', () => {
+      filterRecentBtn.classList.add('active');
+      filterAllBtn.classList.remove('active');
+      statsTableEl?.classList.add('hidden');
+      recentPanelEl?.classList.remove('hidden');
+      renderRecentTab();
+    });
+  }
 
   // Handle browser back/forward
   window.addEventListener('popstate', (e) => {

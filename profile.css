@@ -1227,6 +1227,13 @@
 }
 
 /* ── Posts tab (X.com flat list style) ── */
+/* ── Maps filter bar (replaces the old "Recent" top-level tab) ── */
+.maps-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 14px;
+}
+
 .posts-feed {
   display: flex;
   flex-direction: column;

@@ -145,8 +145,8 @@
       </a>
     </div>
 
-    <!-- ── BANNER ── -->
-    <div class="profile-banner-container">
+    <!-- ── BANNER ── (hidden for now — remove the "hidden" class to bring it back) -->
+    <div class="profile-banner-container hidden">
       <div class="profile-banner" id="profileBanner">
         <div class="banner-overlay"></div>
         <div class="banner-drop-hint hidden" id="bannerDropHint">Drop image here</div>
@@ -336,7 +336,6 @@
             <button class="profile-tab" data-tab="posts">Posts</button>
             <button class="profile-tab" data-tab="upvoted">Upvoted</button>
             <button class="profile-tab" data-tab="likes">Likes</button>
-            <button class="profile-tab" data-tab="recent">Recent</button>
             <button class="profile-tab" data-tab="friends">Friends</button>
             <div class="profile-tab-indicator"></div>
           </div>
@@ -367,6 +366,15 @@
         <div class="tab-panel" id="tab-profile">
           <div class="update-record-status hidden" id="updateRecordStatus"></div>
           <p class="cached-at-note" id="cachedAt"></p>
+
+          <!-- Filter toggle — replaces the old "Recent" top-level tab; switches
+               between all completed maps and just the most recent records,
+               same glassy pill style as the leaderboard filters. -->
+          <div class="maps-filter-bar">
+            <button class="filter-btn active" id="mapsFilterAll">All Maps</button>
+            <button class="filter-btn" id="mapsFilterRecent">Recent</button>
+          </div>
+
           <div class="table-wrapper" id="statsTable">
             <table>
               <thead>
@@ -383,13 +391,12 @@
             </table>
             <div class="empty-state hidden" id="noStats">No completed maps found.</div>
           </div>
-        </div>
 
-        <!-- TAB: RECENT -->
-        <div class="tab-panel hidden" id="tab-recent">
-          <div id="recentLoading" class="kz-friends-loading" style="display:none">Loading…</div>
-          <div id="recentEmpty" class="notif-empty" style="display:none">No recent records yet. Click "Update Records" to load them.</div>
-          <div id="recentGrid" class="recent-grid"></div>
+          <div id="tab-recent" class="hidden">
+            <div id="recentLoading" class="kz-friends-loading" style="display:none">Loading…</div>
+            <div id="recentEmpty" class="notif-empty" style="display:none">No recent records yet. Click "Update Records" to load them.</div>
+            <div id="recentGrid" class="recent-grid"></div>
+          </div>
         </div>
 
         <!-- TAB: FRIENDS -->
