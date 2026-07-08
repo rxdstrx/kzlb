@@ -94,3 +94,18 @@ begin
     execute 'alter publication supabase_realtime add table public.notifications';
   end if;
 end $$;
+
+-- ============================================================
+-- Fix 7 (the real cause of "no upvote/like notification ever
+-- appears in the bell"): the backend endpoint (api/friend-action.js
+-- action=get-notifications) reads forum_notifications using the
+-- SERVICE ROLE key, not anon. Fix 2 only granted anon SELECT/INSERT
+-- — service_role had NO grant at all on this table, so its query
+-- returned 403 "permission denied for table forum_notifications"
+-- every single time, and the endpoint silently degraded to
+-- friend-only notifications (by design, so one broken query
+-- wouldn't take down the whole bell) instead of surfacing the error.
+-- Confirmed directly via the API response's forumDebug field.
+-- ============================================================
+grant select, insert, update, delete on public.forum_notifications to service_role;
+grant usage, select on sequence public.forum_notifications_id_seq to service_role;
