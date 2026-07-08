@@ -162,6 +162,12 @@
         method: 'PATCH', headers: { ...HDR, Prefer: 'return=minimal' },
         body: JSON.stringify({ upvotes: newCount }),
       });
+
+      // Notify the thread author (not when un-upvoting, not your own thread) —
+      // same rule the thread-page upvote button follows.
+      if (!wasUpvoted && thread && thread.steamid !== auth.steamid) {
+        sendForumNotification(thread.steamid, auth, 'upvote', thread.id, thread.title);
+      }
     }
 
     function renderThreads() {
