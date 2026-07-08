@@ -247,42 +247,11 @@
 
           <div class="sidebar-divider"></div>
 
-          <!-- Stats -->
-          <div class="sidebar-section">
-            <div class="sidebar-section-pill">Stats</div>
-            <div class="sidebar-stat-row">
-              <span class="sidebar-stat-label">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L15 9H22L16.5 13.5L18.5 21L12 17L5.5 21L7.5 13.5L2 9H9Z"/></svg>
-                World Rank
-              </span>
-              <span class="sidebar-stat-val" id="statWorldRank">—</span>
-            </div>
-            <div class="sidebar-stat-row">
-              <span class="sidebar-stat-label">Country</span>
-              <span class="sidebar-stat-val" id="statCountryDisplay">—</span>
-            </div>
-            <div class="sidebar-stat-row">
-              <span class="sidebar-stat-label">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                KZ Points
-              </span>
-              <span class="sidebar-stat-val" id="statPoints">—</span>
-            </div>
-            <div class="sidebar-stat-row">
-              <span class="sidebar-stat-label">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3h18v18H3z"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
-                Maps Done
-              </span>
-              <span class="sidebar-stat-val" id="statMaps">—</span>
-            </div>
-            <div class="sidebar-stat-row">
-              <span class="sidebar-stat-label">
-                <img src="https://cdn.simpleicons.org/faceit/a855f7" width="11" height="11" alt="Faceit" style="display:inline-block;vertical-align:middle;opacity:0.75" />
-                Faceit ELO
-              </span>
-              <span class="sidebar-stat-val" id="statFaceitElo">—</span>
-            </div>
-          </div>
+          <!-- Stats now live in the hero stat bar (Country/World Rank/KZ Points/
+               Maps Done/Faceit ELO) — no need to duplicate them here too.
+               statWorldRank/statCountryDisplay/statPoints/statMaps/statFaceitElo
+               were the sidebar copies; setStatIfExists() in profile.js now only
+               targets the hero*/hero-prefixed ids for those five fields. -->
 
           <div class="sidebar-divider"></div>
 

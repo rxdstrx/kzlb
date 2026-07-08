@@ -315,7 +315,6 @@ async function loadProfile(sid) {
     document.title = `KZ — ${name}`;
 
     const flagEl = document.getElementById('playerFlag');
-    const statCountryEl = document.getElementById('statCountryDisplay');
     const heroCountryEl = document.getElementById('heroCountry');
 
     function applyCountry(c) {
@@ -323,7 +322,6 @@ async function loadProfile(sid) {
         ? `<img src="https://flagcdn.com/w40/${c}.png" style="height:18px;border-radius:2px;vertical-align:middle" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null">`
         : `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:18px;border-radius:2px;vertical-align:middle">`;
       if (flagEl) flagEl.innerHTML = countryToFlag(c && c !== 'xx' ? c : null);
-      if (statCountryEl) statCountryEl.innerHTML = flagHtml;
       if (heroCountryEl) heroCountryEl.innerHTML = flagHtml;
     }
 
@@ -445,30 +443,30 @@ async function loadProfile(sid) {
 
     // ── Stats bar ──
     const worldRank = data.kz_place ? `#${Number(data.kz_place).toLocaleString()}` : (desc['{{Position}}'] ?? kzUser.place ?? '—');
-    setStatIfExists(['statWorldRank', 'heroWorldRank'], worldRank);
+    setStatIfExists('heroWorldRank', worldRank);
 
     const kzPoints = data.kz_points ? Number(data.kz_points).toFixed(0) : (desc['{{Points}}'] ?? kzUser.points ?? '—');
-    setStatIfExists(['statPoints', 'heroPoints'], kzPoints);
+    setStatIfExists('heroPoints', kzPoints);
 
     const mapsCount = data.kz_maps || data.maps?.list?.length || desc['{{COMPLETIONS-MAP}}'] || '—';
-    setStatIfExists(['statMaps', 'heroMaps'], mapsCount);
+    setStatIfExists('heroMaps', mapsCount);
 
     // Faceit ELO — fetch async
-    setStatIfExists(['statFaceitElo', 'heroElo'], '…');
+    setStatIfExists('heroElo', '…');
     fetch(`${API_BASE}/api/faceit?action=stats&steamid=${sid}`)
       .then(r => r.ok ? r.json() : null)
       .then(f => {
         if (f?.elo) {
-          setStatIfExists(['statFaceitElo', 'heroElo'], f.elo.toLocaleString());
+          setStatIfExists('heroElo', f.elo.toLocaleString());
           const faceitLink = document.getElementById('faceitSocialLink');
           if (faceitLink && f.faceit_url) {
             faceitLink.href = f.faceit_url;
             faceitLink.classList.remove('hidden');
           }
         } else {
-          setStatIfExists(['statFaceitElo', 'heroElo'], 'No profile');
+          setStatIfExists('heroElo', 'No profile');
         }
-      }).catch(() => setStatIfExists(['statFaceitElo', 'heroElo'], 'No profile'));
+      }).catch(() => setStatIfExists('heroElo', 'No profile'));
 
     // ── Maps table ──
     const mapList = (data.maps?.list || []).sort((a, b) => Number(a.tier) - Number(b.tier));
