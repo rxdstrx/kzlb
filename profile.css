@@ -274,6 +274,13 @@
   gap: 18px;
   max-width: 62%;
 }
+.profile-hero-identity { display: flex; align-items: center; }
+.profile-hero-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 .profile-hero-name {
   font-family: var(--font-display, system-ui);
   font-size: clamp(1.8rem, 4vw, 2.8rem);
@@ -285,6 +292,35 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+.profile-hero-flag img { height: 20px; border-radius: 3px; vertical-align: middle; }
+.profile-hero-roles { gap: 6px; }
+
+/* Steam ID + last-seen/online status, under the Steam social pill */
+.profile-hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
+}
+.profile-hero-steamid {
+  color: rgba(255,255,255,0.25);
+  font-family: "SF Mono", monospace;
+  letter-spacing: 0.03em;
+}
+.profile-hero-lastseen { color: rgba(255,255,255,0.4); }
+
+/* Bottom-left cluster — account controls (own profile) / guest login */
+.profile-hero-actions-bl {
+  position: absolute;
+  left: 24px;
+  bottom: 20px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.own-profile-actions { display: flex; align-items: center; gap: 8px; position: relative; }
+.flag-change-wrap { display: flex; align-items: center; gap: 8px; position: relative; }
 .profile-hero-stats {
   display: flex;
   flex-wrap: wrap;
@@ -1036,15 +1072,14 @@
 }
 .profile-banner { height: 240px !important; border-radius: 20px !important; }
 
-/* 2-column grid below the banner */
-.profile-layout {
+/* The old 2-column sidebar+main grid (.profile-layout) is gone — the
+   sidebar's identity/stats/actions all moved into the hero, so .profile-main
+   is now the sole top-level content block and takes over its container
+   sizing directly. */
+.profile-main {
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 24px 80px;
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 24px;
-  align-items: start;
 }
 
 /* ── Sidebar card ── */

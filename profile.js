@@ -309,9 +309,7 @@ async function loadProfile(sid) {
     // ── Basic info ──
     document.getElementById('playerSteamId').textContent = sid;
     document.getElementById('playerAvatar').src = avatar;
-    document.getElementById('playerName').textContent = name;
-    const heroNameEl = document.getElementById('heroName');
-    if (heroNameEl) heroNameEl.textContent = name;
+    document.getElementById('heroName').textContent = name;
     document.title = `KZ — ${name}`;
 
     const flagEl = document.getElementById('playerFlag');
