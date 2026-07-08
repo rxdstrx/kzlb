@@ -320,6 +320,12 @@
   gap: 8px;
 }
 .own-profile-actions { display: flex; align-items: center; gap: 8px; position: relative; }
+
+/* Guest "Login with Steam" prompt — the nav bar already has its own login
+   button, so this hero copy stays hidden regardless of profile.js toggling
+   its "hidden" class for logged-out visitors. Element itself must stay in
+   the DOM though — initSteamUI() bails out entirely if it's missing. */
+#steamLoginBtn { display: none !important; }
 .flag-change-wrap { display: flex; align-items: center; gap: 8px; position: relative; }
 .profile-hero-stats {
   display: flex;
@@ -803,13 +809,30 @@
 .update-record-status.error   { color: #f87171; }
 
 /* Cached note */
+/* Same glassy purple pill + dot language as index.html's "Add to the
+   Leaderboard" button (.add-yourself-submit / .submit-dot) */
 .cached-at-note {
-  max-width: 960px;
-  margin: 6px auto 0;
-  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 7px 16px;
+  background: rgba(168,85,247,0.10);
+  border: 1px solid rgba(168,85,247,0.35);
+  border-radius: 999px;
+  color: #c4b5fd;
   font-size: 0.72rem;
-  color: rgba(255,255,255,0.18);
+  font-weight: 600;
 }
+.cached-at-note::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c4b5fd;
+  flex-shrink: 0;
+}
+.cached-at-note:empty { display: none; }
 
 /* â”€â”€ Maps table â”€â”€ */
 .table-wrapper {
@@ -1416,7 +1439,6 @@
 .profile-main .profile-tabs-wrap,
 .profile-main .table-wrapper,
 .profile-main .update-record-status,
-.profile-main .cached-at-note,
 .profile-main #tab-friends,
 .profile-main .recent-grid {
   max-width: none !important;
@@ -1428,7 +1450,6 @@
 
 .profile-main .table-wrapper { padding: 0 0 40px !important; }
 .profile-main .update-record-status { padding: 0 !important; margin: 8px 0 0 !important; }
-.profile-main .cached-at-note { padding: 0 !important; margin: 6px 0 0 !important; }
 .profile-main .recent-grid { padding: 16px 0 48px !important; }
 .profile-main #tab-friends { padding: 0 0 40px !important; }
 

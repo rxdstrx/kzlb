@@ -153,6 +153,11 @@
         <div class="profile-hero-glow"></div>
         <img class="profile-hero-character" src="profile-hero-character.png" alt="" />
         <div class="profile-hero-info">
+          <!-- Online / last-seen / never-logged-in status, above the nickname -->
+          <div class="profile-hero-meta">
+            <span class="profile-hero-lastseen" id="profileLastSeen"></span>
+          </div>
+
           <!-- Identity: nickname + flag + role badges together (no avatar
                photo here — kept out of the hero per feedback) -->
           <div class="profile-hero-identity">
@@ -162,9 +167,11 @@
               <div class="profile-roles profile-hero-roles" id="profileRoles"></div>
             </div>
           </div>
-          <!-- playerAvatar still exists (hidden) so profile.js's unconditional
-               .src assignment doesn't throw — it's just not shown anywhere now -->
+          <!-- playerAvatar and playerSteamId still exist (hidden) purely so
+               profile.js's unconditional assignments don't throw — steamid is
+               no longer shown in the hero, and there's no avatar photo here. -->
           <img id="playerAvatar" src="" alt="" class="hidden" />
+          <span id="playerSteamId" class="hidden"></span>
 
           <div class="profile-hero-stats">
             <div class="profile-hero-stat">
@@ -206,12 +213,6 @@
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Cybershoke
             </a>
-          </div>
-
-          <!-- Steam ID + last seen/online status, right under the Steam button -->
-          <div class="profile-hero-meta">
-            <span class="profile-hero-steamid" id="playerSteamId"></span>
-            <span class="profile-hero-lastseen" id="profileLastSeen"></span>
           </div>
         </div>
 
