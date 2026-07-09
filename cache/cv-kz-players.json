@@ -1,32 +1,11 @@
 {
-  "updated_at": "2026-07-09T07:29:49.558Z",
+  "updated_at": "2026-07-09T09:44:13.192Z",
   "players": [
-    {
-      "steamid": "76561198220560427",
-      "nickname": "P3PE",
-      "country": "cv",
-      "cached_at": "2026-06-07T09:56:10.388Z",
-      "kz_points": 18,
-      "kz_place": 270226,
-      "kz_maps": "1 (0.61%)",
-      "avatar": "https://avatars.steamstatic.com/3299103af85704b8670c7d0db8a48149d84cda79_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_victoria",
-          "points": "18.5678",
-          "completions": "4",
-          "tier": "1",
-          "place_num": "32 853 / 61 073",
-          "time_record": "02:38.4063",
-          "unixtime_record": 1778449385
-        }
-      ]
-    },
     {
       "steamid": "76561199201039966",
       "nickname": "hog",
       "country": "cv",
-      "cached_at": "2026-07-08T08:32:45.935Z",
+      "cached_at": "2026-07-09T09:43:43.293Z",
       "kz_points": 23478,
       "kz_place": 21,
       "kz_maps": "157 (95.16%)",
@@ -118,7 +97,7 @@
           "points": "361.9788",
           "time_record": "03:54.6094",
           "unixtime_record": 1781096671,
-          "place_num": "22 / 367",
+          "place_num": "22 / 9 999",
           "tier": "6",
           "completions": "11"
         },
@@ -127,7 +106,7 @@
           "points": "233.4221",
           "time_record": "02:38.5469",
           "unixtime_record": 1781200181,
-          "place_num": "23 / 664",
+          "place_num": "23 / 9 999",
           "tier": "5",
           "completions": "10"
         },
@@ -1501,6 +1480,27 @@
           "place_num": "92 712 / 197 641",
           "time_record": "05:17.8907",
           "unixtime_record": 1739104503
+        }
+      ]
+    },
+    {
+      "steamid": "76561198220560427",
+      "nickname": "P3PE",
+      "country": "cv",
+      "cached_at": "2026-06-07T09:56:10.388Z",
+      "kz_points": 18,
+      "kz_place": 270226,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/3299103af85704b8670c7d0db8a48149d84cda79_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_victoria",
+          "points": "18.5678",
+          "completions": "4",
+          "tier": "1",
+          "place_num": "32 853 / 61 073",
+          "time_record": "02:38.4063",
+          "unixtime_record": 1778449385
         }
       ]
     }

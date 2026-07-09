@@ -1,22 +1,11 @@
 {
-  "updated_at": "2026-07-09T07:29:49.817Z",
+  "updated_at": "2026-07-09T09:44:13.187Z",
   "players": [
-    {
-      "steamid": "76561198127705901",
-      "nickname": "-Cuzy13K",
-      "country": "de",
-      "cached_at": "2026-06-08T22:10:14.853Z",
-      "kz_points": 0,
-      "kz_place": 9999,
-      "kz_maps": "0 (0%)",
-      "avatar": "https://avatars.steamstatic.com/7e09055205e91cc6ba4981b7bf5b7c27c8c0d339_full.jpg",
-      "maps_list": []
-    },
     {
       "steamid": "76561199414628017",
       "nickname": "spikeps",
       "country": "de",
-      "cached_at": "2026-07-08T08:32:41.766Z",
+      "cached_at": "2026-07-09T09:43:37.956Z",
       "kz_points": 26014,
       "kz_place": 10,
       "kz_maps": "141 (85.46%)",
@@ -234,7 +223,7 @@
           "points": "280.7984",
           "time_record": "02:11.7969",
           "unixtime_record": 1773668816,
-          "place_num": "10 / 664",
+          "place_num": "10 / 9 999",
           "tier": "5",
           "completions": "15"
         },
@@ -738,7 +727,7 @@
           "points": "333.9136",
           "time_record": "04:14.3282",
           "unixtime_record": 1775413786,
-          "place_num": "50 / 367",
+          "place_num": "50 / 9 999",
           "tier": "6",
           "completions": "3"
         },
@@ -1297,7 +1286,7 @@
       "steamid": "76561199168955278",
       "nickname": "HeIIMare",
       "country": "de",
-      "cached_at": "2026-07-08T08:32:51.148Z",
+      "cached_at": "2026-07-09T09:43:48.736Z",
       "kz_points": 21720,
       "kz_place": 35,
       "kz_maps": "135 (81.82%)",
@@ -1764,12 +1753,12 @@
         },
         {
           "map": "kz_hitech",
-          "points": "247.8902",
-          "time_record": "03:33.0157",
-          "unixtime_record": 1773396646,
+          "points": "0.0000",
+          "time_record": "03:15.9219",
+          "unixtime_record": 1783504979,
           "place_num": "46 / 9 999",
           "tier": "5",
-          "completions": "13"
+          "completions": "15"
         },
         {
           "map": "kz_demonhours",
@@ -1983,7 +1972,7 @@
           "points": "306.6873",
           "time_record": "04:36.9063",
           "unixtime_record": 1781027608,
-          "place_num": "75 / 367",
+          "place_num": "75 / 9 999",
           "tier": "6",
           "completions": "6"
         },
@@ -2035,11 +2024,11 @@
         {
           "map": "kz_maga",
           "points": "0.0000",
-          "time_record": "05:26.3907",
-          "unixtime_record": 1783478505,
+          "time_record": "04:58.8594",
+          "unixtime_record": 1783500623,
           "place_num": "95 / 196",
           "tier": "6",
-          "completions": "6"
+          "completions": "7"
         },
         {
           "map": "kz_brightblock",
@@ -2223,12 +2212,12 @@
         },
         {
           "map": "kz_afterlife",
-          "points": "152.1591",
-          "time_record": "05:59.0000",
-          "unixtime_record": 1781861843,
+          "points": "0.0000",
+          "time_record": "04:06.0469",
+          "unixtime_record": 1783516591,
           "place_num": "141 / 491",
           "tier": "6",
-          "completions": "3"
+          "completions": "5"
         },
         {
           "map": "kz_sunstone",
@@ -2307,7 +2296,7 @@
           "points": "109.9394",
           "time_record": "05:36.6250",
           "unixtime_record": 1770039701,
-          "place_num": "171 / 664",
+          "place_num": "171 / 9 999",
           "tier": "5",
           "completions": "9"
         },
@@ -2670,7 +2659,7 @@
           "points": "163.9237",
           "time_record": "03:45.7657",
           "unixtime_record": 1779503674,
-          "place_num": "79 / 664",
+          "place_num": "79 / 9 999",
           "tier": "5",
           "completions": "12"
         },
@@ -3030,7 +3019,7 @@
           "points": "84.1961",
           "time_record": "16:48.6407",
           "unixtime_record": 1777915809,
-          "place_num": "233 / 367",
+          "place_num": "233 / 9 999",
           "tier": "6",
           "completions": "1"
         },
@@ -3842,6 +3831,17 @@
           "unixtime_record": 1763745936
         }
       ]
+    },
+    {
+      "steamid": "76561198127705901",
+      "nickname": "-Cuzy13K",
+      "country": "de",
+      "cached_at": "2026-06-08T22:10:14.853Z",
+      "kz_points": 0,
+      "kz_place": 9999,
+      "kz_maps": "0 (0%)",
+      "avatar": "https://avatars.steamstatic.com/7e09055205e91cc6ba4981b7bf5b7c27c8c0d339_full.jpg",
+      "maps_list": []
     }
   ]
 }
