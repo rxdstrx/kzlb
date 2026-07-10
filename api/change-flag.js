@@ -24,7 +24,6 @@ function verifyJWT(token, secret) {
   }
 }
 
-const NICKNAME_COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
 const NICKNAME_RE = /^[A-Za-z0-9 _\-.]{2,24}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -72,11 +71,8 @@ export default async function handler(req, res) {
       profile = created[0] || {};
     }
 
-    let nicknameCooldownRemainingMs = 0;
-    if (player.nickname_updated_at) {
-      const msSince = Date.now() - new Date(player.nickname_updated_at).getTime();
-      nicknameCooldownRemainingMs = Math.max(0, NICKNAME_COOLDOWN_MS - msSince);
-    }
+    // Cooldown disabled for now (per request) — always reported as 0.
+    const nicknameCooldownRemainingMs = 0;
 
     return res.status(200).json({
       ok: true,
@@ -102,16 +98,9 @@ export default async function handler(req, res) {
       if (!NICKNAME_RE.test(nickname)) {
         return res.status(400).json({ error: 'Nickname must be 2-24 characters (letters, numbers, spaces, - _ .).' });
       }
-      const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}&select=nickname_updated_at&limit=1`, { headers: sbH });
-      const rows = r.ok ? await r.json() : [];
-      const lastChange = rows[0]?.nickname_updated_at;
-      if (lastChange) {
-        const msSince = Date.now() - new Date(lastChange).getTime();
-        if (msSince < NICKNAME_COOLDOWN_MS) {
-          const daysLeft = Math.ceil((NICKNAME_COOLDOWN_MS - msSince) / (24 * 60 * 60 * 1000));
-          return res.status(429).json({ error: `You can change your nickname again in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}.` });
-        }
-      }
+      // Cooldown disabled for now (per request) — nickname_manual is what
+      // actually protects against scrapes overwriting a chosen nickname;
+      // the cooldown was a separate, independent restriction.
       const upd = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
         method: 'PATCH',
         headers: { ...sbH, Prefer: 'return=minimal' },

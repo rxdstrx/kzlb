@@ -127,11 +127,6 @@
     return { setValue: v => setValue(v, false) };
   }
 
-  function formatCooldown(ms) {
-    const days = Math.ceil(ms / (24 * 60 * 60 * 1000));
-    return `${days} day${days !== 1 ? 's' : ''}`;
-  }
-
   async function loadSettings(auth) {
     const { ok, data } = await callApi({ token: auth.token, action: 'get-settings' });
     if (!ok || !data.ok) return null;
@@ -162,10 +157,7 @@
     const nicknameSaveBtn = document.getElementById('nicknameSaveBtn');
     const nicknameStatus = document.getElementById('nicknameStatus');
     if (nicknameInput) nicknameInput.value = settings.nickname || '';
-    if (settings.nicknameCooldownRemainingMs > 0) {
-      nicknameSaveBtn.disabled = true;
-      showStatus(nicknameStatus, `You can change your nickname again in ${formatCooldown(settings.nicknameCooldownRemainingMs)}.`, 'error');
-    }
+    // Cooldown disabled for now — always allow changing.
     nicknameSaveBtn?.addEventListener('click', async () => {
       const nickname = nicknameInput.value.trim();
       if (!nickname) return;
