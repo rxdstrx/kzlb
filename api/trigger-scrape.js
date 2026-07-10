@@ -1,7 +1,25 @@
+const ALLOWED_ORIGINS = ['https://rxdstrx.github.io', 'https://kzlb.vercel.app'];
+
+// This endpoint spends a GitHub Actions dispatch (GH_TOKEN) per call, so an
+// open/unthrottled version is a real abuse vector (anyone who finds the URL
+// can spam-trigger scrapes for arbitrary steamids). Same in-memory
+// per-IP lockout pattern as admin-action.js.
+const recentCalls = new Map();
+const RATE_LIMIT_MS = 60 * 1000; // 1 call per IP per minute
+
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin || '';
+  if (ALLOWED_ORIGINS.includes(origin)) res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
+
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
+  const now = Date.now();
+  const last = recentCalls.get(ip) || 0;
+  if (now - last < RATE_LIMIT_MS) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
+  }
+  recentCalls.set(ip, now);
 
   const steamid = req.query.steamid;
   if (!steamid || !/^\d{17}$/.test(steamid)) {
