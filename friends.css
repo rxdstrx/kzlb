@@ -262,7 +262,7 @@
 
 .kz-friends-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 12px;
   padding: 16px 0;
 }
@@ -272,13 +272,19 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 14px;
+  gap: 14px;
+  padding: 16px 18px;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.08);
   transition: transform 0.15s, border-color 0.15s;
   cursor: default;
+}
+
+.kz-friends-note {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.35);
+  padding: 0 0 4px;
 }
 .kz-friend-card:hover {
   transform: translateY(-2px);

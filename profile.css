@@ -581,9 +581,11 @@
   box-shadow: 0 0 8px rgba(168,85,247,0.5);
 }
 
-/* â”€â”€ Friends tab container â”€â”€ */
+/* â”€â”€ Friends tab container â”€â”€
+   Widened from 960px — at 960px the grid only fit 3 narrow columns and
+   each card read as cramped/squished left-right. */
 #tab-friends {
-  max-width: 960px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 0 24px 40px;
 }

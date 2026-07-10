@@ -732,7 +732,9 @@ async function renderFriendsList(profileSteamid, auth) {
         </div>`;
     }).join('');
 
-    container.innerHTML = `<div class="kz-friends-grid">${html}</div>`;
+    container.innerHTML = `
+      <div class="kz-friends-note">Banners shown here match each player's profile banner. Custom player-set banners aren't available yet — once they are, changes will automatically reflect here too.</div>
+      <div class="kz-friends-grid">${html}</div>`;
   } catch {
     container.innerHTML = '<div class="kz-notif-empty">Failed to load friends.</div>';
   }
