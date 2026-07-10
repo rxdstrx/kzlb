@@ -364,6 +364,80 @@
 }
 .nav-avatar-btn:hover { border-color: rgba(168,85,247,0.8); }
 
+/* ── Nav notification bell — deliberately less transparent + less rounded
+   than the glassy hero pills (rgba(255,255,255,0.04) read as "see-through
+   to the page behind it"); this sits in the dense navbar so it needs more
+   contrast to read cleanly. ── */
+.nav-notif-bell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.75);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.nav-notif-bell:hover { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.2); }
+.nav-notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: 8px;
+  background: #a855f7;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+}
+.nav-notif-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 42px;
+  width: 280px;
+  max-height: 360px;
+  overflow-y: auto;
+  background: #0e0e16;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 8px;
+  z-index: 2000;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+}
+.nav-notif-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 8px;
+}
+.nav-notif-empty {
+  padding: 18px 8px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.35);
+}
+.nav-notif-item {
+  display: block;
+  padding: 9px 10px;
+  border-radius: 9px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  cursor: pointer;
+}
+.nav-notif-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.nav-notif-item.unread { background: rgba(168,85,247,0.08); }
+
 .hidden {
   display: none !important;
 }

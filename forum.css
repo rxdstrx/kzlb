@@ -70,7 +70,8 @@ body {
   font-weight: 800;
   color: #f0f0f5;
   letter-spacing: -0.04em;
-  line-height: 1;
+  line-height: 1.25;
+  padding-bottom: 0.08em;
   margin-bottom: 8px;
   font-family: var(--font-display, -apple-system, BlinkMacSystemFont, system-ui, sans-serif);
 }

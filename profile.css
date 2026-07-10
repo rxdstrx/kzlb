@@ -285,7 +285,8 @@
   font-family: var(--font-display, system-ui);
   font-size: clamp(1.8rem, 4vw, 2.8rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.25;
+  padding-bottom: 0.08em;
   margin: 0;
   background: linear-gradient(135deg, #f0f0f5 30%, #c4b5fd 100%);
   -webkit-background-clip: text;
@@ -772,7 +773,7 @@
 .flag-change-btn:disabled { opacity: 0.5; cursor: default; }
 .flag-change-status { font-size: 0.78rem; }
 .flag-change-status.loading { color: rgba(255,255,255,0.5); }
-.flag-change-status.success { color: #34d399; }
+.flag-change-status.success { color: #c4b5fd; }
 .flag-change-status.error   { color: #f87171; }
 
 .steam-logout-btn {

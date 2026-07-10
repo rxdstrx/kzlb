@@ -233,6 +233,8 @@ function updateNavAuth() {
         location.reload();
       });
     }
+
+    initNavNotifications(auth);
   } else {
     if (navSteamLogin) navSteamLogin.classList.remove('hidden');
     if (navUser)       navUser.classList.add('hidden');
@@ -245,6 +247,99 @@ function updateNavAuth() {
 
 // No modal — login is handled by login.html
 function maybeShowLoginModal() {}
+
+// ── Nav notification bell — lives in the shared navbar (every page), not
+// just the profile hero, so it works from settings.html and anywhere else. ──
+function timeSinceNotifNav(iso) {
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+}
+
+function renderNavNotifications(items) {
+  const list  = document.getElementById('navNotifList');
+  const badge = document.getElementById('navNotifBadge');
+  if (!list) return;
+
+  const unread = items.filter(n => !n.read).length;
+  if (badge) {
+    if (unread > 0) { badge.textContent = unread > 9 ? '9+' : unread; badge.classList.remove('hidden'); }
+    else badge.classList.add('hidden');
+  }
+
+  if (!items.length) {
+    list.innerHTML = '<div class="nav-notif-empty">No notifications yet</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(n => {
+    const msg = n.type === 'friend_accepted'
+      ? `<strong>${n.from_nickname || 'Someone'}</strong> accepted your friend request`
+      : n.type === 'friend_you_accepted'
+      ? `You accepted <strong>${n.from_nickname || 'Someone'}</strong>'s friend request`
+      : n.type === 'friend_request'
+      ? `<strong>${n.from_nickname || 'Someone'}</strong> sent you a friend request`
+      : 'Notification';
+    return `
+      <div class="nav-notif-item ${n.read ? '' : 'unread'}">
+        <div>${msg}</div>
+        <div style="opacity:.5;font-size:.72rem;margin-top:2px">${timeSinceNotifNav(n.created_at)}</div>
+      </div>`;
+  }).join('');
+}
+
+async function loadNavNotifications(token) {
+  try {
+    const res = await fetch('https://kzlb.vercel.app/api/friend-action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, action: 'get-notifications' }),
+    });
+    const data = await res.json();
+    if (res.ok && data.notifications) renderNavNotifications(data.notifications);
+  } catch {}
+}
+
+function initNavNotifications(auth) {
+  const btn  = document.getElementById('navNotifBell');
+  const drop = document.getElementById('navNotifDropdown');
+  if (!btn || !drop || btn._bound) return;
+  btn._bound = true;
+
+  loadNavNotifications(auth.token);
+
+  if (window.sbClient) {
+    window.sbClient
+      .channel(`nav_notif_${auth.steamid}`)
+      .on('postgres_changes', {
+        event: 'INSERT', schema: 'public', table: 'notifications',
+        filter: `steamid=eq.${auth.steamid}`,
+      }, () => loadNavNotifications(auth.token))
+      .subscribe();
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = !drop.classList.contains('hidden');
+    drop.classList.toggle('hidden');
+    if (!isOpen) {
+      fetch('https://kzlb.vercel.app/api/friend-action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: auth.token, action: 'notifications-read' }),
+      }).catch(() => {});
+      document.getElementById('navNotifBadge')?.classList.add('hidden');
+      setTimeout(() => loadNavNotifications(auth.token), 500);
+    }
+  });
+  document.addEventListener('click', () => drop.classList.add('hidden'));
+  drop.addEventListener('click', e => e.stopPropagation());
+}
 
 // ── On every page load: sync avatar + ensure player is registered ──
 function syncPlayerData() {
