@@ -1362,7 +1362,9 @@ function initNotifications(auth) {
   const drop = document.getElementById('notifDropdown');
   if (!wrap || !btn || !drop) return;
 
-  wrap.style.display = 'block';
+  // Notification bell removed from the profile hero banner per feedback —
+  // keep the underlying load/mark-read logic alive (used elsewhere later,
+  // e.g. a future nav bell) but never reveal this wrap.
 
   // Initial load
   loadNotifications(auth.steamid, auth.token);
