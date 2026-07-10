@@ -70,6 +70,14 @@ window.applyKzLanguage = function applyKzLanguage(lang) {
     const key = el.dataset.i18n;
     if (dict[key] !== undefined) el.textContent = dict[key];
   });
+  // Custom dropdown trigger labels mirror whichever option is selected —
+  // they don't carry a fixed data-i18n key, so re-sync them from the
+  // (now-translated) selected option's text.
+  document.querySelectorAll('.kz-select').forEach(wrap => {
+    const selected = wrap.querySelector('.kz-select-option.selected');
+    const label = wrap.querySelector('[id$="Label"]');
+    if (selected && label) label.textContent = selected.textContent;
+  });
   document.documentElement.setAttribute('lang', lang === 'ru' ? 'ru' : 'en');
   localStorage.setItem('kz_lang', lang);
 };

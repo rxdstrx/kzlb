@@ -315,7 +315,12 @@ async function loadProfile(sid) {
     const flagEl = document.getElementById('playerFlag');
     const heroCountryEl = document.getElementById('heroCountry');
 
+    // Set true once we learn the owner turned "show location" off — blocks
+    // every later applyCountry() call (country fetch, Faceit/Steam fallback)
+    // from re-revealing the flag, regardless of fetch ordering.
+    let locationHidden = false;
     function applyCountry(c) {
+      if (locationHidden) c = null;
       const flagHtml = (c && c !== 'xx')
         ? `<img src="https://flagcdn.com/w40/${c}.png" style="height:18px;border-radius:2px;vertical-align:middle" onerror="this.src='${UNKNOWN_FLAG_SRC}';this.onerror=null">`
         : `<img src="${UNKNOWN_FLAG_SRC}" alt="?" style="height:18px;border-radius:2px;vertical-align:middle">`;
@@ -338,6 +343,20 @@ async function loadProfile(sid) {
          if (c && c !== 'xx' && sid === localStorage.getItem('kz_steam_id')) {
            localStorage.setItem('kz_country', c);
          }
+       }
+     }).catch(() => {});
+
+    // ── "Show location" enforcement: if the profile owner turned this off,
+    // hide their flag from everyone except themselves. ──
+    fetch(
+      `https://btcufotfvfnuoiokghjm.supabase.co/rest/v1/player_profiles?steamid=eq.${sid}&select=show_location&limit=1`,
+      { headers: { apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4', Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0Y3Vmb3RmdmZudW9pb2tnaGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODEzMTcsImV4cCI6MjA5NjY1NzMxN30.hj_whZDtPhqfC-5ktGvLfqoMBp_x3G8w3lv5IcBdCX4` } }
+    ).then(r => r.ok ? r.json() : null)
+     .then(rows => {
+       const isOwner = sid === localStorage.getItem('kz_steam_id');
+       if (rows?.length && rows[0].show_location === false && !isOwner) {
+         locationHidden = true;
+         applyCountry(null);
        }
      }).catch(() => {});
 
@@ -1030,31 +1049,25 @@ async function loadPostsTab() {
   if (!steamid) { feedEl.innerHTML = '<div class="posts-empty">No player selected.</div>'; return; }
   try {
     const HDR = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}`, 'Content-Type': 'application/json' };
-    const res = await fetch(`${SB_URL}/rest/v1/forum_threads?steamid=eq.${encodeURIComponent(steamid)}&order=created_at.desc&select=id,title,category,created_at,likes,reply_count`, { headers: HDR });
+    const res = await fetch(`${SB_URL}/rest/v1/forum_threads?steamid=eq.${encodeURIComponent(steamid)}&order=created_at.desc&select=id,title,category,created_at,likes,upvotes,reply_count`, { headers: HDR });
     const rows = await res.json();
     if (!Array.isArray(rows) || !rows.length) {
       feedEl.innerHTML = '<div class="posts-empty">No forum posts yet.</div>';
       return;
     }
-    const catClass = c => ({ general:'cat-general', maps:'cat-maps', records:'cat-records', help:'cat-help', 'off-topic':'cat-off-topic' }[c] || 'cat-general');
-    const catLabel = c => ({ general:'General', maps:'Maps', records:'Records', help:'Help', 'off-topic':'Off-Topic' }[c] || c);
-    const timeAgo = iso => {
-      const s = Math.floor((Date.now() - new Date(iso)) / 1000);
-      if (s < 60) return 'just now';
-      if (s < 3600) return `${Math.floor(s/60)}m ago`;
-      if (s < 86400) return `${Math.floor(s/3600)}h ago`;
-      return `${Math.floor(s/86400)}d ago`;
-    };
+    // Same feed-card markup as the Upvoted/Likes tabs (catClassFor/catLabelFor/
+    // timeAgoShort are the shared helpers defined alongside loadVoteFeedTab below).
     feedEl.innerHTML = rows.map(p => `
-      <a class="post-feed-item" href="thread.html?id=${p.id}">
-        <div class="post-feed-top">
-          <span class="thread-category ${catClass(p.category)}">${catLabel(p.category)}</span>
-          <span class="post-feed-date">${timeAgo(p.created_at)}</span>
+      <a class="feed-card" href="thread.html?id=${p.id}">
+        <div class="feed-card-top">
+          <span class="thread-category ${catClassFor(p.category)}">${catLabelFor(p.category)}</span>
+          <span class="feed-card-date">${timeAgoShort(p.created_at)}</span>
         </div>
-        <div class="post-feed-title">${p.title.replace(/</g,'&lt;')}</div>
-        <div class="post-feed-meta">
-          <span>❤ ${p.likes||0}</span>
-          <span>💬 ${p.reply_count||0}</span>
+        <div class="feed-card-title">${p.title.replace(/</g,'&lt;')}</div>
+        <div class="feed-card-meta">
+          <span class="feed-card-stat">❤ ${p.likes||0}</span>
+          <span class="feed-card-stat">↑ ${p.upvotes||0}</span>
+          <span class="feed-card-stat">💬 ${p.reply_count||0}</span>
         </div>
       </a>`).join('');
   } catch (e) {

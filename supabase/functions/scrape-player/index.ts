@@ -83,9 +83,11 @@ serve(async (req) => {
     }
 
     // ── Save player to Supabase players table ──
-    const playerRow = {
+    // A player who manually renamed via Settings owns their nickname from
+    // then on — never let a re-scrape overwrite it back to the Cybershoke name.
+    const { data: existingPlayer } = await sb.from('players').select('nickname_manual').eq('steamid', steamid).maybeSingle()
+    const playerRow: Record<string, unknown> = {
       steamid,
-      nickname,
       avatar: finalAvatar,
       kz_points,
       kz_place,
@@ -93,6 +95,7 @@ serve(async (req) => {
       cached_at: now,
       updated_at: now,
     }
+    if (!existingPlayer?.nickname_manual) playerRow.nickname = nickname
     const { error: playerErr } = await sb.from('players').upsert(playerRow, { onConflict: 'steamid' })
     if (playerErr) console.error('players upsert error:', playerErr)
 

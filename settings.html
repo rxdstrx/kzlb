@@ -178,10 +178,16 @@
               <div class="settings-row-sub" data-i18n="fieldShowLocationSub">If off, other players won't see your country</div>
             </div>
             <div class="settings-row-control">
-              <select class="settings-select" id="showLocationSelect">
-                <option value="yes" data-i18n="optRecommended">Recommended (Yes)</option>
-                <option value="no" data-i18n="optNo">No</option>
-              </select>
+              <div class="kz-select" id="showLocationSelect">
+                <button class="flag-dropdown-trigger" id="showLocationTrigger" type="button">
+                  <span id="showLocationLabel">Recommended (Yes)</span>
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none" style="margin-left:auto"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="kz-select-panel hidden" id="showLocationPanel">
+                  <div class="kz-select-option" data-value="yes" data-i18n="optRecommended">Recommended (Yes)</div>
+                  <div class="kz-select-option" data-value="no" data-i18n="optNo">No</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -193,10 +199,16 @@
               <div class="settings-row-sub" data-i18n="fieldLanguageSub">Site language</div>
             </div>
             <div class="settings-row-control">
-              <select class="settings-select" id="languageSelect">
-                <option value="en">English</option>
-                <option value="ru">Русский</option>
-              </select>
+              <div class="kz-select" id="languageSelect">
+                <button class="flag-dropdown-trigger" id="languageTrigger" type="button">
+                  <span id="languageLabel">English</span>
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none" style="margin-left:auto"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="kz-select-panel hidden" id="languagePanel">
+                  <div class="kz-select-option" data-value="en">English</div>
+                  <div class="kz-select-option" data-value="ru">Русский</div>
+                </div>
+              </div>
             </div>
           </div>
 

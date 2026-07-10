@@ -93,6 +93,40 @@
     return { getSelected: () => selected };
   }
 
+  // ── Generic 2-option glassy dropdown (Show location / Language) ──
+  function initKzSelect(wrapId, triggerId, labelId, panelId, initialValue, onChange) {
+    const wrap    = document.getElementById(wrapId);
+    const trigger = document.getElementById(triggerId);
+    const label   = document.getElementById(labelId);
+    const panel   = document.getElementById(panelId);
+    if (!wrap || !trigger || !panel) return { setValue: () => {} };
+
+    const options = panel.querySelectorAll('.kz-select-option');
+    function setValue(value, fire) {
+      options.forEach(o => o.classList.toggle('selected', o.dataset.value === value));
+      const match = [...options].find(o => o.dataset.value === value);
+      if (match && label) label.textContent = match.textContent;
+      wrap.dataset.value = value;
+      if (fire) onChange(value);
+    }
+
+    options.forEach(opt => {
+      opt.addEventListener('click', () => {
+        setValue(opt.dataset.value, true);
+        panel.classList.add('hidden');
+      });
+    });
+    trigger.addEventListener('click', e => {
+      e.stopPropagation();
+      panel.classList.toggle('hidden');
+    });
+    document.addEventListener('click', () => panel.classList.add('hidden'));
+    panel.addEventListener('click', e => e.stopPropagation());
+
+    setValue(initialValue, false);
+    return { setValue: v => setValue(v, false) };
+  }
+
   function formatCooldown(ms) {
     const days = Math.ceil(ms / (24 * 60 * 60 * 1000));
     return `${days} day${days !== 1 ? 's' : ''}`;
@@ -174,24 +208,19 @@
     });
 
     // ── Show location ──
-    const showLocationSelect = document.getElementById('showLocationSelect');
-    if (showLocationSelect) {
-      showLocationSelect.value = settings.showLocation === false ? 'no' : 'yes';
-      showLocationSelect.addEventListener('change', () => {
-        callApi({ token: auth.token, action: 'update-settings', showLocation: showLocationSelect.value === 'yes' });
-      });
-    }
+    initKzSelect('showLocationSelect', 'showLocationTrigger', 'showLocationLabel', 'showLocationPanel',
+      settings.showLocation === false ? 'no' : 'yes',
+      value => callApi({ token: auth.token, action: 'update-settings', showLocation: value === 'yes' })
+    );
 
     // ── Language ──
-    const languageSelect = document.getElementById('languageSelect');
-    if (languageSelect) {
-      languageSelect.value = settings.language || 'en';
-      languageSelect.addEventListener('change', () => {
-        const lang = languageSelect.value;
+    initKzSelect('languageSelect', 'languageTrigger', 'languageLabel', 'languagePanel',
+      settings.language || 'en',
+      lang => {
         window.applyKzLanguage(lang);
         callApi({ token: auth.token, action: 'update-settings', language: lang });
-      });
-    }
+      }
+    );
 
     // ── Trade link ──
     const tradeLinkInput = document.getElementById('tradeLinkInput');

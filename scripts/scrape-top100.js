@@ -20,22 +20,25 @@ const SB_HDR = SB_URL && SB_KEY ? {
   Prefer: 'resolution=merge-duplicates,return=minimal',
 } : null;
 
-async function upsertToSupabase(player, mapsRaw) {
+async function upsertToSupabase(player, mapsRaw, nicknameLocked) {
   if (!SB_HDR) return;
   const sid = player.steamid;
+  const body = {
+    steamid:   sid,
+    avatar:    player.avatar,
+    country:   player.country,
+    kz_points: Number(player.kz_points) || 0,
+    kz_place:  Number(player.kz_place)  || 0,
+    kz_maps:   (mapsRaw || []).length,
+    cached_at: player.cached_at,
+  };
+  // A player who manually renamed via Settings owns their nickname from then
+  // on — never let a scrape overwrite it back to the Cybershoke-scraped name.
+  if (!nicknameLocked) body.nickname = player.nickname;
   await fetch(`${SB_URL}/rest/v1/players`, {
     method: 'POST',
     headers: SB_HDR,
-    body: JSON.stringify({
-      steamid:   sid,
-      nickname:  player.nickname,
-      avatar:    player.avatar,
-      country:   player.country,
-      kz_points: Number(player.kz_points) || 0,
-      kz_place:  Number(player.kz_place)  || 0,
-      kz_maps:   (mapsRaw || []).length,
-      cached_at: player.cached_at,
-    }),
+    body: JSON.stringify(body),
   });
   const rows = (mapsRaw || []).filter(m => m.map).map(m => ({
     steamid:        sid,
@@ -104,6 +107,27 @@ async function fetchSupabaseCountries(steamids) {
   return map;
 }
 
+// Same manual-lock pattern as country, for nicknames changed via Settings.
+async function fetchManualNicknames(steamids) {
+  const locked = new Set();
+  if (!SB_URL || !SB_KEY || !steamids.length) return locked;
+  const CHUNK = 200;
+  for (let i = 0; i < steamids.length; i += CHUNK) {
+    const chunk = steamids.slice(i, i + CHUNK);
+    try {
+      const r = await fetch(
+        `${SB_URL}/rest/v1/players?steamid=in.(${chunk.join(',')})&nickname_manual=eq.true&select=steamid`,
+        { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+      );
+      if (r.ok) {
+        const rows = await r.json();
+        rows.forEach(row => locked.add(row.steamid));
+      }
+    } catch {}
+  }
+  return locked;
+}
+
 (async () => {
   // Step 1: scrape all top 100 players via Python (one process, one session)
   console.log('Scraping top 100 via curl_cffi...');
@@ -123,6 +147,7 @@ async function fetchSupabaseCountries(steamids) {
   // Step 1.5: batch-fetch current countries from Supabase (authoritative —
   // see fetchSupabaseCountries above) before resolving each player below.
   const supabaseCountries = await fetchSupabaseCountries(scraped.map(p => p.steamid).filter(Boolean));
+  const manualNicknames = await fetchManualNicknames(scraped.map(p => p.steamid).filter(Boolean));
 
   // Step 2: for each player, resolve country + write individual cache file
   const results = [];
@@ -168,7 +193,7 @@ async function fetchSupabaseCountries(steamids) {
     };
 
     // Write to Supabase immediately (0 Edge Function invocations)
-    await upsertToSupabase(player, p.maps || []);
+    await upsertToSupabase(player, p.maps || [], manualNicknames.has(sid));
     console.log(`  → Supabase upserted: ${player.nickname}`);
 
     // Write individual cache file (same format as before)

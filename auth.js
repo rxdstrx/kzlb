@@ -228,6 +228,7 @@ function updateNavAuth() {
 
     if (navLogoutBtn) {
       navLogoutBtn.addEventListener('click', () => {
+        if (!confirm('Log out of your account?')) return;
         clearAuth();
         location.reload();
       });

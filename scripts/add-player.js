@@ -160,6 +160,24 @@ function getLeaderboardFile(c) {
   if (sbUrl && sbKey) {
     const sbH = { apikey: sbKey, Authorization: `Bearer ${sbKey}`, 'Content-Type': 'application/json' };
     const fullData = { steamid, nickname: resolvedNickname, country, cached_at: new Date().toISOString(), user: {}, maps: mapsData };
+
+    // A player who manually renamed via Settings owns their nickname from
+    // then on — never let a re-scrape (admin refresh, etc.) overwrite it.
+    let nicknameLocked = false;
+    try {
+      const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}&select=nickname_manual&limit=1`, {
+        headers: { apikey: sbKey, Authorization: `Bearer ${sbKey}` },
+      });
+      if (r.ok) { const rows = await r.json(); nicknameLocked = !!rows[0]?.nickname_manual; }
+    } catch {}
+
+    const playersRow = {
+      steamid, avatar: player.avatar || '', country,
+      kz_points: Number(player.kz_points) || 0, kz_place: Number(player.kz_place) || 0,
+      kz_maps: mapList.length, cached_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+    };
+    if (!nicknameLocked) playersRow.nickname = resolvedNickname;
+
     await Promise.all([
       // Write full JSON to player_cache — profile reads this instantly
       fetch(`${sbUrl}/rest/v1/player_cache`, {
@@ -171,11 +189,7 @@ function getLeaderboardFile(c) {
       fetch(`${sbUrl}/rest/v1/players`, {
         method: 'POST',
         headers: { ...sbH, Prefer: 'resolution=merge-duplicates,return=minimal' },
-        body: JSON.stringify({
-          steamid, nickname: resolvedNickname, avatar: player.avatar || '', country,
-          kz_points: Number(player.kz_points) || 0, kz_place: Number(player.kz_place) || 0,
-          kz_maps: mapList.length, cached_at: new Date().toISOString(), updated_at: new Date().toISOString(),
-        }),
+        body: JSON.stringify(playersRow),
       }).then(r => r.ok ? console.log(`Supabase: players synced for ${resolvedNickname}`) : r.text().then(t => console.warn(`Supabase players failed: ${t}`))),
     ]).catch(e => console.warn('Supabase early sync error:', e.message));
   }
