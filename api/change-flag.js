@@ -118,6 +118,18 @@ export default async function handler(req, res) {
         body: JSON.stringify({ nickname, nickname_manual: true, nickname_updated_at: new Date().toISOString() }),
       });
       if (!upd.ok) return res.status(500).json({ error: 'Failed to update nickname: ' + await upd.text() });
+
+      // forum_threads/forum_replies store a nickname snapshot at post time
+      // (not a live join to players), so a rename leaves old posts showing
+      // the old name unless we also patch those rows here.
+      await Promise.all([
+        fetch(`${sbUrl}/rest/v1/forum_threads?steamid=eq.${steamid}`, {
+          method: 'PATCH', headers: { ...sbH, Prefer: 'return=minimal' }, body: JSON.stringify({ nickname }),
+        }),
+        fetch(`${sbUrl}/rest/v1/forum_replies?steamid=eq.${steamid}`, {
+          method: 'PATCH', headers: { ...sbH, Prefer: 'return=minimal' }, body: JSON.stringify({ nickname }),
+        }),
+      ]).catch(() => {});
     }
 
     const profileUpdate = {};
