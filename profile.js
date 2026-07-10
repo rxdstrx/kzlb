@@ -101,6 +101,10 @@ if (steamid) saveOriginalCachedAt();
 
 if (updateRecordBtn && steamid) {
   updateRecordBtn.addEventListener('click', async () => {
+    if (!(typeof getAuth === 'function' && getAuth())) {
+      window.location.href = 'login.html';
+      return;
+    }
     updateRecordBtn.disabled = true;
     updateRecordStatus.className = 'update-record-status loading';
     updateRecordStatus.textContent = '⏳ Updating… ~2 seconds';

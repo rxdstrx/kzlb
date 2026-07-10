@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="profile.css" />
   <link rel="stylesheet" href="landing.css" />
   <link rel="stylesheet" href="friends.css" />
-  <link rel="stylesheet" href="chat.css" />
 </head>
 <body>
 
@@ -157,10 +156,8 @@
             <path d="M60 140 C64 152 66 160 62 166" stroke="white" stroke-width="6" stroke-linecap="round" fill="none"/>
           </svg>
           <h1 class="hero-title">
-            <span class="word-reveal" style="--i:0">Kreedz</span>
-            <span class="word-reveal gradient-word" style="--i:1">made</span><br>
-            <span class="word-reveal gradient-word" style="--i:2">for</span>
-            <em class="word-reveal gradient-word word-everyone" style="--i:3">everyone</em>
+            <span class="word-reveal" style="--i:0">Kreedz</span><br>
+            <em class="word-reveal gradient-word word-2027" style="--i:1">2027</em>
           </h1>
         </div>
         <p class="hero-sub">
@@ -548,32 +545,6 @@
     </div>
   </div>
 
-  <!-- ══ CHAT WIDGET ══ -->
-  <div class="kz-chat-widget" id="kzChatWidget">
-    <div class="kz-chat-header" id="kzChatToggle">
-      <div class="kz-chat-header-left">
-        <span class="kz-chat-dot"></span>
-        <span class="kz-chat-title">KZ Chat</span>
-      </div>
-      <svg class="kz-chat-chevron" id="kzChatChevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <div class="kz-chat-body" id="kzChatBody">
-      <div class="kz-chat-messages" id="kzChatMessages"></div>
-      <div class="kz-chat-input-wrap" id="kzChatInputWrap">
-        <img class="kz-chat-self-avatar" id="kzChatSelfAvatar" src="" alt="" />
-        <input class="kz-chat-input" id="kzChatInput" type="text" placeholder="Say something…" maxlength="200" autocomplete="off" />
-        <button class="kz-chat-send" id="kzChatSend">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
-        </button>
-      </div>
-      <div class="kz-chat-login-prompt hidden" id="kzChatLoginPrompt">
-        <a href="login.html" class="kz-chat-login-link">Login with Steam to chat</a>
-      </div>
-    </div>
-  </div>
-
   <script src="aurora.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', function () {
@@ -593,7 +564,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="supabase-client.js"></script>
   <script src="friends.js"></script>
-  <script src="chat.js"></script>
   <script>
     document.getElementById('navLbLink')?.addEventListener('click', function(e) {
       const target = document.getElementById('lb-table');

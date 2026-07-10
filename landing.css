@@ -1387,3 +1387,26 @@ body { animation: pageEnter 0.5s cubic-bezier(0.22,1,0.36,1) both; }
   background-clip: text;
   animation: everyoneSweep 2.8s linear infinite;
 }
+
+/* "2027" — purple gradient with a soft, blurred white light sweep.
+   Combines the shared word-reveal fade-in with the sweep loop — a plain
+   `animation:` here would replace (not add to) .word-reveal's animation
+   since the shorthand isn't additive across rules, leaving the word stuck
+   at opacity:0. */
+.word-2027 {
+  font-style: normal;
+  position: relative;
+  background: linear-gradient(105deg, #a855f7 0%, #c084fc 30%, #f5f0ff 50%, #c084fc 70%, #a855f7 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation:
+    wordReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    word2027Blur 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    everyoneSweep 4s linear infinite;
+  animation-delay: calc(var(--i) * 0.12s + 0.1s), calc(var(--i) * 0.12s + 0.1s), calc(var(--i) * 0.12s + 0.8s);
+}
+@keyframes word2027Blur {
+  to { filter: blur(0.4px); }
+}

@@ -31,9 +31,24 @@ function initFriends() {
   if (profileSteamid) {
     if (auth && profileSteamid !== auth.steamid) {
       initAddFriendBtn(auth, profileSteamid);
+    } else if (!auth && profileSteamid !== localStorage.getItem('kz_steam_id')) {
+      initAddFriendBtnLoggedOut();
     }
     initFriendsTab(profileSteamid, auth);
   }
+}
+
+// Logged-out visitor viewing someone else's profile — show the button but
+// send them to Steam login on click instead of hiding it entirely.
+function initAddFriendBtnLoggedOut() {
+  const actionsLeft = document.querySelector('.profile-actions-left');
+  if (!actionsLeft) return;
+  const btn = document.createElement('button');
+  btn.id = 'kzAddFriendBtn';
+  btn.className = 'action-btn kz-friend-btn';
+  btn.textContent = 'Add Friend';
+  btn.addEventListener('click', () => { window.location.href = 'login.html'; });
+  actionsLeft.appendChild(btn);
 }
 
 // ── Get steamid from URL (for profile page) ──
