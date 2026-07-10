@@ -121,23 +121,24 @@
     </a>
 
     <div class="pt-header">
+      <h1 class="pt-title">Portugal <span>KZ Leaderboard</span></h1>
       <span class="pt-flag"><img src="https://flagcdn.com/w80/pt.png" alt="Portugal" style="height:48px;border-radius:4px;"></span>
-      <div>
-        <h1 class="pt-title">Portugal <span>KZ Leaderboard</span></h1>
-        <p class="pt-sub" id="ptSub">Loading...</p>
+      <div class="pt-live-pill" id="ptLivePill">
+        <span class="pt-live-badge">LIVE</span>
+        <span id="ptSub">Loading...</span>
       </div>
     </div>
 
-    <!-- Tab bar -->
-    <div class="pt-tabs">
-      <button class="pt-tab active" id="tabOverall">Overall</button>
-      <button class="pt-tab" id="tabMap">By Map</button>
-    </div>
+    <!-- Tab bar + role filter, grouped into one row -->
+    <div class="pt-filters-row">
+      <div class="pt-tabs">
+        <button class="pt-tab active" id="tabOverall">Overall</button>
+        <button class="pt-tab" id="tabMap">By Map</button>
+      </div>
 
-    <!-- Role filter bar -->
-    <div class="role-filter-bar" id="roleFilterBar" style="display:none">
-      <span class="role-filter-label">Show:</span>
-      <button class="role-filter-btn active" data-role="all">All Players</button>
+      <div class="role-filter-bar" id="roleFilterBar" style="display:none">
+        <button class="role-filter-btn active" data-role="all">All Players</button>
+      </div>
     </div>
 
     <!-- Map selector (hidden by default) -->

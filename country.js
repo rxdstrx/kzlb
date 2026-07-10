@@ -222,7 +222,7 @@ async function init() {
       );
       if (res.ok) {
         const rows = await res.json();
-        if (Array.isArray(rows)) { allPlayers = rows; ptSub.textContent = `${allPlayers.length} players`; loaded = true; }
+        if (Array.isArray(rows)) { allPlayers = rows; ptSub.textContent = `${allPlayers.length} players tracked`; loaded = true; }
       }
     } catch {}
 
@@ -235,7 +235,7 @@ async function init() {
       const cachePlayers = cacheData.players || [];
       if (!loaded) {
         allPlayers = cachePlayers;
-        ptSub.textContent = `${allPlayers.length} players with KZ data · Updated ${timeSince(new Date(cacheData.updated_at))} ago`;
+        ptSub.textContent = `${allPlayers.length} players tracked`;
       } else {
         const mapsById = new Map(cachePlayers.map(p => [String(p.steamid), p.maps_list || []]));
         allPlayers = allPlayers.map(p => ({ ...p, maps_list: mapsById.get(String(p.steamid)) || [] }));
@@ -272,7 +272,7 @@ async function init() {
       bar.id = 'roleFilterBar';
       bar.className = 'role-filter-bar';
       bar.style.display = 'none';
-      bar.innerHTML = '<span class="role-filter-label">Show:</span><button class="role-filter-btn active" data-role="all">All Players</button>';
+      bar.innerHTML = '<button class="role-filter-btn active" data-role="all">All Players</button>';
       const tabs = document.getElementById('tabOverall');
       if (tabs && tabs.parentElement) {
         tabs.parentElement.parentElement.insertBefore(bar, tabs.parentElement.nextSibling);

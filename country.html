@@ -121,16 +121,19 @@
     </a>
 
     <div class="pt-header">
+      <h1 class="pt-title"><span id="countryName"></span> <span>KZ Leaderboard</span></h1>
       <span class="pt-flag" id="countryFlag"></span>
-      <div>
-        <h1 class="pt-title"><span id="countryName"></span> <span>KZ Leaderboard</span></h1>
-        <p class="pt-sub" id="ptSub">Loading...</p>
+      <div class="pt-live-pill" id="ptLivePill">
+        <span class="pt-live-badge">LIVE</span>
+        <span id="ptSub">Loading...</span>
       </div>
     </div>
 
-    <div class="pt-tabs">
-      <button class="pt-tab active" id="tabOverall">Overall</button>
-      <button class="pt-tab" id="tabMap">By Map</button>
+    <div class="pt-filters-row">
+      <div class="pt-tabs">
+        <button class="pt-tab active" id="tabOverall">Overall</button>
+        <button class="pt-tab" id="tabMap">By Map</button>
+      </div>
     </div>
 
     <div class="pt-map-selector hidden" id="mapSelector">

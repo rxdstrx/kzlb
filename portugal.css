@@ -1,8 +1,10 @@
 ﻿.pt-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 14px;
+  margin-bottom: 28px;
+  text-align: center;
 }
 
 .pt-flag {
@@ -11,11 +13,11 @@
 }
 
 .pt-title {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #f0f0f5;
   letter-spacing: -0.02em;
-  margin: 0 0 4px;
+  margin: 0;
 }
 
 .pt-title span {
@@ -24,17 +26,56 @@
   -webkit-text-fill-color: transparent;
 }
 
+/* Same "LIVE" pill design as leaderboard.html's .lbp-pill, showing this
+   country's tracked-player total instead of the global count. */
+.pt-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.7);
+}
+
+.pt-live-badge {
+  background: #fff;
+  color: #060608;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
 .pt-sub {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.3);
+  font-size: inherit;
+  color: inherit;
   margin: 0;
+}
+
+.pt-filters-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .pt-tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
 }
+
+/* .role-filter-bar/.role-filter-btn are shared with leaderboard/map pages
+   (styled in style.css) — only override the margin here so it sits flush
+   inline next to .pt-tabs instead of stacking with its own gap below. */
+.pt-filters-row .role-filter-bar { margin-bottom: 0; }
 
 .pt-tab {
   padding: 8px 20px;
@@ -55,33 +96,41 @@
   color: #c4b5fd;
 }
 
+/* Same glassy shell as settings.html's .kz-select-panel/.flag-dropdown-panel.
+   This stays an inline block (pushes the table down, not an absolute
+   overlay), so opening it can never cover another button/element. */
 .pt-map-selector {
   margin-bottom: 16px;
-  background: rgba(15,15,30,0.6);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
+  background: rgba(15,15,20,0.95);
+  border: 1px solid rgba(139,92,246,0.2);
+  border-radius: 10px;
   padding: 14px;
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
 }
 
 .pt-map-selector .country-search-input {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
-  padding: 8px 14px;
-  color: rgba(255,255,255,0.8);
-  font-size: 0.82rem;
+  padding: 9px 14px;
+  color: #f0f0f5;
+  font-size: 0.84rem;
   width: 100%;
   box-sizing: border-box;
   outline: none;
   font-family: inherit;
-  backdrop-filter: blur(8px);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.pt-map-selector .country-search-input:focus {
+  border-color: rgba(139,92,246,0.4);
+  background: rgba(255,255,255,0.06);
 }
 
 .pt-map-selector .country-search-input::placeholder {
-  color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.25);
 }
 
 .pt-map-list {
@@ -97,25 +146,24 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 10px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  color: rgba(255,255,255,0.6);
-  font-size: 0.75rem;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.78rem;
   cursor: pointer;
-  transition: all 0.12s;
+  transition: background 0.12s, color 0.12s;
   white-space: nowrap;
 }
 
 .pt-map-chip:hover {
-  background: rgba(255,255,255,0.09);
+  background: rgba(139,92,246,0.12);
   color: #fff;
 }
 
 .pt-map-chip.active {
-  background: rgba(139,92,246,0.2);
-  border-color: rgba(139,92,246,0.4);
+  background: rgba(139,92,246,0.18);
   color: #c4b5fd;
 }
 
