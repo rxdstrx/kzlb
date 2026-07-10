@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KZ — Settings</title>
+  <link rel="stylesheet" href="landing.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="profile.css" />
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+  <!-- ══ Aurora background (fixed — stays put while the page scrolls), same as index/forum/profile ══ -->
+  <div id="auroraBg" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></div>
+
+  <!-- NAVBAR (identical to profile.html so this page feels like part of the same site) -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-text">KZ<span>plus</span></span>
+    </a>
+    <ul class="nav-links">
+      <li class="nav-home-menu">
+        <span class="nav-home-trigger">
+          Home
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 4 4-4"/></svg>
+        </span>
+        <div class="nav-home-dropdown">
+          <div class="nav-home-dropdown-inner">
+          <a href="index.html#lb-table" class="nav-home-item" id="navLbLink">
+            <span class="nav-home-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </span>
+            <span>LeaderBoard</span>
+          </a>
+          <a href="https://rxdstrx.github.io/kzlb/maps.html" class="nav-home-item">
+            <span class="nav-home-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+            </span>
+            <span>Maps</span>
+          </a>
+          </div>
+        </div>
+      </li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="partners.html">Partners</a></li>
+      <li><a href="forum.html" class="nav-forum-link">Forum</a></li>
+      <li class="nav-home-menu nav-lb-menu">
+        <span class="nav-home-trigger" id="navLbTrigger">
+          Leaderboard
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 4 4-4"/></svg>
+        </span>
+        <div class="nav-home-dropdown nav-lb-dropdown">
+          <div class="nav-home-dropdown-inner">
+          <a href="leaderboard.html" class="nav-home-item" id="navLbMainItem">
+            <span class="nav-home-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </span>
+            <span>Main</span>
+          </a>
+          <div class="nav-home-item nav-lb-country-toggle" id="navLbCountryToggle">
+            <span class="nav-home-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </span>
+            <span>Country</span>
+            <svg class="nav-lb-country-chevron" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 4 4-4"/></svg>
+          </div>
+          <div class="nav-lb-country-list" id="navLbCountryList"></div>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <a class="nav-steam-login hidden" id="navSteamLogin" href="login.html">Login with Steam</a>
+
+    <div class="nav-avatar-wrap hidden" id="navUser">
+      <img id="navUserAvatar" src="" alt="" class="nav-avatar-btn" />
+      <div class="nav-dropdown hidden" id="navDropdown">
+        <div class="nav-dropdown-info">
+          <img id="navDropdownAvatar" src="" alt="" class="nav-dropdown-avatar" />
+          <span id="navDropdownName"></span>
+        </div>
+        <div class="nav-dropdown-divider"></div>
+        <a href="#" class="nav-dropdown-item" id="navDropdownProfile">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          Open Profile
+        </a>
+        <a href="settings.html" class="nav-dropdown-item" id="navDropdownSettings">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+        <button class="nav-dropdown-item nav-dropdown-logout" id="navLogoutBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Log out
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Logged-out prompt -->
+  <div class="settings-guest hidden" id="settingsGuest">
+    <p>Log in with Steam to manage your settings.</p>
+    <a class="filter-btn active" href="login.html">Login with Steam</a>
+  </div>
+
+  <div class="settings-wrap hidden" id="settingsWrap">
+    <h1 class="settings-title" data-i18n="settingsTitle">Settings</h1>
+
+    <div class="settings-layout">
+      <!-- Left nav -->
+      <aside class="settings-sidebar">
+        <button class="settings-nav-item active" data-panel="profile" data-i18n="navProfile">Profile</button>
+        <button class="settings-nav-item" data-panel="confidentiality" data-i18n="navConfidentiality">Confidentiality</button>
+      </aside>
+
+      <!-- Right content -->
+      <main class="settings-card">
+
+        <!-- PROFILE PANEL -->
+        <section class="settings-panel" id="panel-profile">
+          <h2 class="settings-panel-title" data-i18n="panelProfileTitle">Profile</h2>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label" data-i18n="fieldNickname">Unique nickname</div>
+              <div class="settings-row-sub" data-i18n="fieldNicknameSub">Can be changed once every 3 days</div>
+            </div>
+            <div class="settings-row-control">
+              <input type="text" class="settings-input" id="nicknameInput" maxlength="24" />
+            </div>
+            <button class="settings-action-btn" id="nicknameSaveBtn" data-i18n="btnChange">Change</button>
+          </div>
+          <div class="settings-row-status hidden" id="nicknameStatus"></div>
+
+          <div class="settings-divider"></div>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label" data-i18n="fieldEmail">Your email</div>
+              <div class="settings-row-sub" data-i18n="fieldEmailSub">Optional</div>
+            </div>
+            <div class="settings-row-control">
+              <input type="email" class="settings-input" id="emailInput" placeholder="you@example.com" />
+            </div>
+            <button class="settings-action-btn" id="emailSaveBtn" data-i18n="btnApply">Apply changes</button>
+          </div>
+          <div class="settings-row-status hidden" id="emailStatus"></div>
+
+          <div class="settings-divider"></div>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label" data-i18n="fieldCountry">Country or region</div>
+              <div class="settings-row-sub" data-i18n="fieldCountrySub">Sets the flag shown on your profile and the leaderboard</div>
+            </div>
+            <div class="settings-row-control">
+              <div class="flag-dropdown" id="settingsFlagDropdown">
+                <button class="flag-dropdown-trigger" id="settingsFlagTrigger">
+                  <span id="settingsFlagLabel">No flag</span>
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none" style="margin-left:auto"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="flag-dropdown-panel hidden" id="settingsFlagPanel">
+                  <div class="flag-search-wrap">
+                    <input class="flag-search-input" id="settingsFlagSearch" type="text" placeholder="Search country…" autocomplete="off" />
+                  </div>
+                  <div class="flag-options-list" id="settingsFlagOptions"></div>
+                </div>
+              </div>
+            </div>
+            <button class="settings-action-btn" id="countrySaveBtn" data-i18n="btnChange">Change</button>
+          </div>
+          <div class="settings-row-status hidden" id="countryStatus"></div>
+
+          <div class="settings-divider"></div>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label" data-i18n="fieldShowLocation">Show location</div>
+              <div class="settings-row-sub" data-i18n="fieldShowLocationSub">If off, other players won't see your country</div>
+            </div>
+            <div class="settings-row-control">
+              <select class="settings-select" id="showLocationSelect">
+                <option value="yes" data-i18n="optRecommended">Recommended (Yes)</option>
+                <option value="no" data-i18n="optNo">No</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label" data-i18n="fieldLanguage">Language</div>
+              <div class="settings-row-sub" data-i18n="fieldLanguageSub">Site language</div>
+            </div>
+            <div class="settings-row-control">
+              <select class="settings-select" id="languageSelect">
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label" data-i18n="fieldTradeLink">Trade link</div>
+              <div class="settings-row-sub" data-i18n="fieldTradeLinkSub">Optional</div>
+            </div>
+            <div class="settings-row-control">
+              <input type="text" class="settings-input" id="tradeLinkInput" placeholder="https://steamcommunity.com/tradeoffer/new/..." />
+            </div>
+            <button class="settings-action-btn" id="tradeLinkSaveBtn" data-i18n="btnApply">Apply changes</button>
+          </div>
+          <div class="settings-row-status hidden" id="tradeLinkStatus"></div>
+        </section>
+
+        <!-- CONFIDENTIALITY PANEL -->
+        <section class="settings-panel hidden" id="panel-confidentiality">
+          <h2 class="settings-panel-title" data-i18n="panelConfidentialityTitle">Confidentiality</h2>
+          <p class="settings-panel-note" data-i18n="confidentialityNote">These toggles are saved but not yet enforced site-wide — coming soon.</p>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label" data-i18n="fieldSafeTalking">Safe talking</div>
+              <div class="settings-row-sub" data-i18n="fieldSafeTalkingSub">Filter potentially unsafe messages</div>
+            </div>
+            <label class="settings-toggle">
+              <input type="checkbox" id="safeTalkingToggle" />
+              <span class="settings-toggle-track"></span>
+            </label>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label" data-i18n="fieldHideOnline">Who sees my online status</div>
+              <div class="settings-row-sub" data-i18n="fieldHideOnlineSub">Hide your online status from other players</div>
+            </div>
+            <label class="settings-toggle">
+              <input type="checkbox" id="hideOnlineToggle" />
+              <span class="settings-toggle-track"></span>
+            </label>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label" data-i18n="fieldHideInventory">Inventory visibility</div>
+              <div class="settings-row-sub" data-i18n="fieldHideInventorySub">Hide your Steam inventory from other players</div>
+            </div>
+            <label class="settings-toggle">
+              <input type="checkbox" id="hideInventoryToggle" />
+              <span class="settings-toggle-track"></span>
+            </label>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="maps-data.js"></script>
+  <script src="auth.js"></script>
+  <script src="countries-data.js"></script>
+  <script src="nav-leaderboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="settings-i18n.js"></script>
+  <script src="settings.js"></script>
+  <script src="aurora.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      initAurora(document.getElementById('auroraBg'), {
+        colorStops: ['#4c0f8f', '#B497CF', '#8e27ff'],
+        blend: 0.5,
+        amplitude: 1.0,
+        speed: 0.5,
+      });
+    });
+  </script>
+</body>
+</html>
