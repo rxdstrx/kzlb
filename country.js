@@ -457,6 +457,31 @@ async function renderByMap(mapName) {
       .map(r => { const p = playerById.get(String(r.steamid)); return p ? { ...p, entry: r } : null; })
       .filter(Boolean)
       .sort((a, b) => timeToSeconds(a.entry.time_record) - timeToSeconds(b.entry.time_record));
+
+    // Normalize place_num denominators against the true GLOBAL total for this
+    // map (same fix as map.html) — the country-filtered query above only sees
+    // this country's players' rows, whose denominators can lag behind the
+    // real total the moment any player worldwide updates their stats.
+    try {
+      const globalRes = await fetch(
+        `${SB_LB_URL}/rest/v1/player_maps?map=eq.${encodeURIComponent(mapName)}&select=place_num`,
+        { headers: SB_HDR_C }
+      );
+      if (globalRes.ok) {
+        const globalRows = await globalRes.json();
+        let maxMapTotal = 0;
+        globalRows.forEach(r => {
+          const m = (r.place_num || '').replace(/[\s ]/g, '').match(/^(\d+)\/(\d+)$/);
+          if (m) maxMapTotal = Math.max(maxMapTotal, parseInt(m[2], 10));
+        });
+        if (maxMapTotal > 0) {
+          sorted.forEach(p => {
+            const m = (p.entry.place_num || '').replace(/[\s ]/g, '').match(/^(\d+)\/(\d+)$/);
+            if (m) p.entry.place_num = `${m[1]}/${maxMapTotal}`;
+          });
+        }
+      }
+    } catch {}
   } catch {}
 
   // Fallback to cached maps_list if Supabase returns nothing
