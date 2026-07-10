@@ -900,12 +900,12 @@ thead .col-time { text-align: right; }
   30%  { opacity: 1; }
   100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
 }
-button, .btn-primary, .btn-secondary, .search-submit,
+button:not(.profile-tab), .btn-primary, .btn-secondary, .search-submit,
 .filter-btn, .lb-page-btn, .role-filter-btn, .tier-chip {
   position: relative;
   overflow: hidden;
 }
-button::after, .btn-primary::after, .btn-secondary::after,
+button:not(.profile-tab)::after, .btn-primary::after, .btn-secondary::after,
 .search-submit::after, .filter-btn::after, .lb-page-btn::after,
 .role-filter-btn::after, .tier-chip::after {
   content: '';
@@ -918,7 +918,7 @@ button::after, .btn-primary::after, .btn-secondary::after,
   transform: translateX(-120%) skewX(-18deg);
   pointer-events: none;
 }
-button:hover::after, .btn-primary:hover::after, .btn-secondary:hover::after,
+button:not(.profile-tab):hover::after, .btn-primary:hover::after, .btn-secondary:hover::after,
 .search-submit:hover::after, .filter-btn:hover::after, .lb-page-btn:hover::after,
 .role-filter-btn:hover::after, .tier-chip:hover::after {
   animation: btnSweep 0.55s ease forwards;
