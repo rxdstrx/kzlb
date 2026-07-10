@@ -287,8 +287,11 @@ function renderNavNotifications(items) {
       : 'Notification';
     return `
       <div class="nav-notif-item ${n.read ? '' : 'unread'}">
-        <div>${msg}</div>
-        <div style="opacity:.5;font-size:.72rem;margin-top:2px">${timeSinceNotifNav(n.created_at)}</div>
+        <img class="nav-notif-avatar" src="${n.from_avatar || ''}" onerror="this.src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_medium.jpg'">
+        <div style="flex:1">
+          <div class="nav-notif-text">${msg}</div>
+          <div class="nav-notif-time">${timeSinceNotifNav(n.created_at)}</div>
+        </div>
       </div>`;
   }).join('');
 }

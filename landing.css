@@ -364,10 +364,6 @@
 }
 .nav-avatar-btn:hover { border-color: rgba(168,85,247,0.8); }
 
-/* ── Nav notification bell — same glassy pill language as the rest of the
-   site (.flag-dropdown-trigger / .kz-select-panel: blur + translucent dark
-   fill), just with the fill opacity turned up and the radius turned down
-   so it stays legible in the dense navbar instead of reading as see-through. ── */
 .nav-notif-bell {
   position: relative;
   display: inline-flex;
@@ -376,15 +372,13 @@
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.13);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.75);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.nav-notif-bell:hover { background: rgba(255,255,255,0.19); color: #fff; border-color: rgba(255,255,255,0.24); }
+.nav-notif-bell:hover { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.2); }
 .nav-notif-badge {
   position: absolute;
   top: -4px;
@@ -400,47 +394,60 @@
   line-height: 15px;
   text-align: center;
 }
+/* Same structured card design as the old profile-hero notif dropdown
+   (.notif-dropdown/.notif-item/.notif-avatar in profile.css) — avatar +
+   nickname + action text + timestamp, not a flat text list. */
 .nav-notif-dropdown {
   position: absolute;
   top: calc(100% + 12px);
-  right: 42px;
-  width: 280px;
-  max-height: 360px;
-  overflow-y: auto;
-  background: rgba(15,15,20,0.95);
+  right: 0;
+  width: 300px;
+  background: rgba(12,10,24,0.98);
   border: 1px solid rgba(139,92,246,0.2);
-  border-radius: 10px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 8px;
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(139,92,246,0.05) inset;
   z-index: 2000;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  overflow: hidden;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 .nav-notif-header {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: rgba(255,255,255,0.4);
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 6px 8px;
+  letter-spacing: 0.05em;
 }
+.nav-notif-list { max-height: 340px; overflow-y: auto; }
 .nav-notif-empty {
-  padding: 18px 8px;
+  padding: 24px 16px;
   text-align: center;
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.3);
+  font-size: 13px;
 }
 .nav-notif-item {
-  display: block;
-  padding: 9px 10px;
-  border-radius: 9px;
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.7);
-  text-decoration: none;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.15s;
 }
-.nav-notif-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
-.nav-notif-item.unread { background: rgba(168,85,247,0.08); }
+.nav-notif-item:last-child { border-bottom: none; }
+.nav-notif-item.unread { background: rgba(139,92,246,0.08); }
+.nav-notif-item:hover { background: rgba(255,255,255,0.05); }
+.nav-notif-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.nav-notif-text { flex: 1; font-size: 12.5px; line-height: 1.4; color: rgba(255,255,255,0.8); }
+.nav-notif-text strong { color: #fff; }
+.nav-notif-time { font-size: 11px; color: rgba(255,255,255,0.3); white-space: nowrap; margin-top: 2px; }
 
 .hidden {
   display: none !important;
