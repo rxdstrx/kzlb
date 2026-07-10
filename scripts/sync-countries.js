@@ -3,6 +3,31 @@ const path = require('path');
 
 const CACHE_DIR = path.join(__dirname, '..', 'cache');
 const FACEIT_KEY = process.env.FACEIT_KEY;
+const SB_URL = process.env.SUPABASE_URL;
+const SB_KEY = process.env.SUPABASE_SERVICE_KEY;
+
+// Players who manually set their own flag (profile page or admin panel) have
+// country_manual = true in Supabase — this script must never override that,
+// or a deliberate choice gets silently reverted to whatever Faceit reports.
+async function fetchManualFlags(steamids) {
+  const manual = new Set();
+  if (!SB_URL || !SB_KEY || !steamids.length) return manual;
+  const CHUNK = 200;
+  for (let i = 0; i < steamids.length; i += CHUNK) {
+    const chunk = steamids.slice(i, i + CHUNK);
+    try {
+      const r = await fetch(
+        `${SB_URL}/rest/v1/players?steamid=in.(${chunk.join(',')})&country_manual=eq.true&select=steamid`,
+        { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+      );
+      if (r.ok) {
+        const rows = await r.json();
+        rows.forEach(row => manual.add(row.steamid));
+      }
+    } catch {}
+  }
+  return manual;
+}
 
 async function getFaceitCountry(steamid) {
   try {
@@ -51,10 +76,14 @@ async function main() {
   const steamids = Object.keys(playerMap);
   console.log(`Checking ${steamids.length} players for country changes…`);
 
+  const manualFlags = await fetchManualFlags(steamids);
+  if (manualFlags.size) console.log(`Skipping ${manualFlags.size} player(s) with a manually-set flag`);
+
   const moves = []; // { steamid, oldCountry, newCountry, player }
 
   for (let i = 0; i < steamids.length; i++) {
     const steamid = steamids[i];
+    if (manualFlags.has(steamid)) continue; // player (or admin) deliberately set this — never override
     const { country: oldCountry, player } = playerMap[steamid];
 
     const newCountry = await getFaceitCountry(steamid);

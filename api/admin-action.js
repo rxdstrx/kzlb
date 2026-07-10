@@ -154,7 +154,10 @@ export default async function handler(req, res) {
     const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}`, {
       method: 'PATCH',
       headers: { ...sbH, Prefer: 'return=representation' },
-      body: JSON.stringify({ country }),
+      // An admin explicitly setting a country is deliberate too — lock it
+      // the same way a player's own profile flag change does, so the next
+      // automatic Faceit/Steam re-detection doesn't silently revert it.
+      body: JSON.stringify({ country, country_manual: true }),
     });
     if (!r.ok) return res.status(500).json({ error: 'DB update failed' });
     const rows = await r.json();
@@ -169,10 +172,21 @@ export default async function handler(req, res) {
     return res.json({ ok: true });
   } else if (action === 'update') {
     workflow = 'add-player.yml';
+    // Country must come from Supabase (the authoritative, current value —
+    // reflects any manual flag change from change-flag.js), not the
+    // git-hosted cache file, which only updates on scrape and can be stale.
+    // Falling back to the cache/'xx' only covers players Supabase doesn't
+    // know about yet.
     let existingCountry = 'xx';
     try {
-      const r = await fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/${steamid}.json`);
-      if (r.ok) { const d = await r.json(); if (d.country) existingCountry = d.country; }
+      if (sbUrl && sbKey) {
+        const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}&select=country&limit=1`, { headers: sbH });
+        if (r.ok) { const rows = await r.json(); if (rows[0]?.country) existingCountry = rows[0].country; }
+      }
+      if (existingCountry === 'xx') {
+        const r = await fetch(`https://raw.githubusercontent.com/rxdstrx/kzlb/main/cache/${steamid}.json`);
+        if (r.ok) { const d = await r.json(); if (d.country) existingCountry = d.country; }
+      }
     } catch {}
     inputs = { steamid, country: existingCountry, nickname: '' };
   } else if (action === 'add') {

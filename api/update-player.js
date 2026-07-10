@@ -36,7 +36,11 @@ export default async function handler(req, res) {
     } catch {}
   }
 
-  // Look up existing country from player cache
+  // Look up existing country. The git-hosted cache file only proves the
+  // player is on the leaderboard — it's NOT the source of truth for country,
+  // since it only updates on scrape and can be stale relative to a manual
+  // flag change (change-flag.js writes straight to Supabase). Supabase wins
+  // whenever it has a value; the cache file is just the last-resort fallback.
   let country = 'xx';
   let playerFound = false;
   try {
@@ -47,6 +51,18 @@ export default async function handler(req, res) {
       if (data.country) country = data.country;
     }
   } catch {}
+
+  if (sbUrl && sbKey) {
+    try {
+      const r = await fetch(`${sbUrl}/rest/v1/players?steamid=eq.${steamid}&select=country&limit=1`, {
+        headers: { apikey: sbKey, Authorization: `Bearer ${sbKey}` },
+      });
+      if (r.ok) {
+        const rows = await r.json();
+        if (rows[0]?.country) country = rows[0].country;
+      }
+    } catch {}
+  }
 
   if (!playerFound) {
     return res.status(404).json({ error: 'Player not found in leaderboard. Use "Add to the leaderboard" first.' });

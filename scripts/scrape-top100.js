@@ -78,6 +78,32 @@ async function getFaceitCountry(steamid) {
   } catch { return 'xx'; }
 }
 
+// Supabase is the authoritative source for country — it's what change-flag.js
+// updates the instant a player picks their own flag on their profile. The
+// git-hosted per-player cache file only refreshes when THIS script runs, so
+// reading it first would silently revert any manual flag change back to
+// whatever country was cached before the change. Batch-fetch once up front
+// instead of one request per player.
+async function fetchSupabaseCountries(steamids) {
+  const map = new Map();
+  if (!SB_URL || !SB_KEY || !steamids.length) return map;
+  const CHUNK = 200;
+  for (let i = 0; i < steamids.length; i += CHUNK) {
+    const chunk = steamids.slice(i, i + CHUNK);
+    try {
+      const r = await fetch(
+        `${SB_URL}/rest/v1/players?steamid=in.(${chunk.join(',')})&select=steamid,country`,
+        { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+      );
+      if (r.ok) {
+        const rows = await r.json();
+        rows.forEach(row => { if (row.country) map.set(row.steamid, row.country); });
+      }
+    } catch {}
+  }
+  return map;
+}
+
 (async () => {
   // Step 1: scrape all top 100 players via Python (one process, one session)
   console.log('Scraping top 100 via curl_cffi...');
@@ -94,6 +120,10 @@ async function getFaceitCountry(steamid) {
     process.exit(1);
   }
 
+  // Step 1.5: batch-fetch current countries from Supabase (authoritative —
+  // see fetchSupabaseCountries above) before resolving each player below.
+  const supabaseCountries = await fetchSupabaseCountries(scraped.map(p => p.steamid).filter(Boolean));
+
   // Step 2: for each player, resolve country + write individual cache file
   const results = [];
   for (let i = 0; i < scraped.length; i++) {
@@ -104,10 +134,11 @@ async function getFaceitCountry(steamid) {
       continue;
     }
 
-    // Use existing cached country if available, otherwise Faceit
-    let country = 'xx';
+    // Supabase's current value wins (respects a manual flag change); fall
+    // back to the git-hosted per-player cache file, then Faceit auto-detect.
+    let country = supabaseCountries.get(sid) || 'xx';
     const indFile = path.join(cacheDir, `${sid}.json`);
-    if (fs.existsSync(indFile)) {
+    if (country === 'xx' && fs.existsSync(indFile)) {
       try {
         const cached = JSON.parse(fs.readFileSync(indFile, 'utf8'));
         if (cached.country && cached.country !== 'xx') country = cached.country;
