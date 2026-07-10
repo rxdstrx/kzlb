@@ -364,10 +364,10 @@
 }
 .nav-avatar-btn:hover { border-color: rgba(168,85,247,0.8); }
 
-/* ── Nav notification bell — deliberately less transparent + less rounded
-   than the glassy hero pills (rgba(255,255,255,0.04) read as "see-through
-   to the page behind it"); this sits in the dense navbar so it needs more
-   contrast to read cleanly. ── */
+/* ── Nav notification bell — same glassy pill language as the rest of the
+   site (.flag-dropdown-trigger / .kz-select-panel: blur + translucent dark
+   fill), just with the fill opacity turned up and the radius turned down
+   so it stays legible in the dense navbar instead of reading as see-through. ── */
 .nav-notif-bell {
   position: relative;
   display: inline-flex;
@@ -376,13 +376,15 @@
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.09);
-  color: rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.13);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(255,255,255,0.8);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.nav-notif-bell:hover { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.2); }
+.nav-notif-bell:hover { background: rgba(255,255,255,0.19); color: #fff; border-color: rgba(255,255,255,0.24); }
 .nav-notif-badge {
   position: absolute;
   top: -4px;
@@ -405,9 +407,11 @@
   width: 280px;
   max-height: 360px;
   overflow-y: auto;
-  background: #0e0e16;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 14px;
+  background: rgba(15,15,20,0.95);
+  border: 1px solid rgba(139,92,246,0.2);
+  border-radius: 10px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 8px;
   z-index: 2000;
   box-shadow: 0 16px 40px rgba(0,0,0,0.5);
