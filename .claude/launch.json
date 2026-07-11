@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "-l", "5173", "."],
       "port": 5173
+    },
+    {
+      "name": "escola",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-l", "5180", "C:/Users/uastr/Documents/EscolaConducao"],
+      "port": 5180
     }
   ]
 }
