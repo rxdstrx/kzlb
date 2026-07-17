@@ -1,6 +1,17 @@
 {
-  "updated_at": "2026-07-16T08:18:22.124Z",
+  "updated_at": "2026-07-17T06:10:33.167Z",
   "players": [
+    {
+      "steamid": "76561198127705901",
+      "nickname": "-Cuzy13K",
+      "country": "de",
+      "cached_at": "2026-06-08T22:10:14.853Z",
+      "kz_points": 0,
+      "kz_place": 9999,
+      "kz_maps": "0 (0%)",
+      "avatar": "https://avatars.steamstatic.com/7e09055205e91cc6ba4981b7bf5b7c27c8c0d339_full.jpg",
+      "maps_list": []
+    },
     {
       "steamid": "76561199414628017",
       "nickname": "spikeps",
@@ -3860,15 +3871,26 @@
       ]
     },
     {
-      "steamid": "76561198127705901",
-      "nickname": "-Cuzy13K",
+      "steamid": "76561199256481489",
+      "nickname": "dante mentality",
+      "faceit_elo": 2417,
       "country": "de",
-      "cached_at": "2026-06-08T22:10:14.853Z",
-      "kz_points": 0,
-      "kz_place": 9999,
-      "kz_maps": "0 (0%)",
-      "avatar": "https://avatars.steamstatic.com/7e09055205e91cc6ba4981b7bf5b7c27c8c0d339_full.jpg",
-      "maps_list": []
+      "cached_at": "2026-06-07T09:37:13.364Z",
+      "kz_points": 16,
+      "kz_place": 275579,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/95385cfd6d00c3a74dbad6326d69c09db033dce5_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_leto",
+          "points": "16.9901",
+          "completions": "1",
+          "tier": "2",
+          "place_num": "78 219 / 123 694",
+          "time_record": "07:05.4844",
+          "unixtime_record": 1724327380
+        }
+      ]
     }
   ]
 }
