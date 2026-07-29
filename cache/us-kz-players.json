@@ -1,44 +1,14 @@
 {
-  "updated_at": "2026-07-29T06:26:13.177Z",
+  "updated_at": "2026-07-29T08:45:00.209Z",
   "players": [
-    {
-      "steamid": "76561198405208390",
-      "nickname": "carloscastaneda",
-      "country": "us",
-      "cached_at": "2026-06-07T09:52:39.707Z",
-      "kz_points": 28,
-      "kz_place": 237483,
-      "kz_maps": "2 (1.21%)",
-      "avatar": "https://avatars.steamstatic.com/105b039939198335a9680af465a7b46d72c2c941_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_leto",
-          "points": "7.7518",
-          "completions": "1",
-          "tier": "2",
-          "place_num": "100 714 / 127 615",
-          "time_record": "15:32.5625",
-          "unixtime_record": 1770975396
-        },
-        {
-          "map": "kz_phamous",
-          "points": "20.7857",
-          "completions": "1",
-          "tier": "2",
-          "place_num": "171 523 / 202 575",
-          "time_record": "12:57.2032",
-          "unixtime_record": 1771056111
-        }
-      ]
-    },
     {
       "steamid": "76561199746524905",
       "nickname": "Asuramaru",
       "country": "us",
-      "cached_at": "2026-07-28T08:37:40.728Z",
+      "cached_at": "2026-07-29T08:44:55.011Z",
       "kz_points": 17125,
       "kz_place": 87,
-      "kz_maps": "136 (82.43%)",
+      "kz_maps": "138 (83.64%)",
       "avatar": "https://avatars.steamstatic.com/b52e5b7920033b5c32e6ec8eb8433bc8f2a4ee73_full.jpg",
       "maps_list": [
         {
@@ -592,12 +562,12 @@
         },
         {
           "map": "kz_lmn",
-          "points": "67.8904",
-          "time_record": "00:52.4844",
-          "unixtime_record": 1779445162,
+          "points": "0.0000",
+          "time_record": "00:50.9063",
+          "unixtime_record": 1785237180,
           "place_num": "124 / 17 241",
           "tier": "1",
-          "completions": "10"
+          "completions": "11"
         },
         {
           "map": "kz_hb_smieszneznaczki",
@@ -1257,6 +1227,24 @@
           "completions": "1"
         },
         {
+          "map": "kz_kzro_hardhoodoo",
+          "points": "0.0000",
+          "time_record": "02:03:49.5938",
+          "unixtime_record": 1785253131,
+          "place_num": "9 999 / 9 999",
+          "tier": "6",
+          "completions": "1"
+        },
+        {
+          "map": "kz_edp445",
+          "points": "0.0000",
+          "time_record": "00:47.5469",
+          "unixtime_record": 1785239325,
+          "place_num": "9 999 / 19 564",
+          "tier": "2",
+          "completions": "1"
+        },
+        {
           "map": "kz_woodstock_v2",
           "points": "25.1331",
           "time_record": "03:34.2969",
@@ -1384,6 +1372,36 @@
           "place_num": "8 089 / 25 054",
           "time_record": "02:17.6250",
           "unixtime_record": 1767878832
+        }
+      ]
+    },
+    {
+      "steamid": "76561198405208390",
+      "nickname": "carloscastaneda",
+      "country": "us",
+      "cached_at": "2026-06-07T09:52:39.707Z",
+      "kz_points": 28,
+      "kz_place": 237483,
+      "kz_maps": "2 (1.21%)",
+      "avatar": "https://avatars.steamstatic.com/105b039939198335a9680af465a7b46d72c2c941_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_leto",
+          "points": "7.7518",
+          "completions": "1",
+          "tier": "2",
+          "place_num": "100 714 / 127 615",
+          "time_record": "15:32.5625",
+          "unixtime_record": 1770975396
+        },
+        {
+          "map": "kz_phamous",
+          "points": "20.7857",
+          "completions": "1",
+          "tier": "2",
+          "place_num": "171 523 / 202 575",
+          "time_record": "12:57.2032",
+          "unixtime_record": 1771056111
         }
       ]
     }

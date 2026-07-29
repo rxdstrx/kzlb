@@ -1,7 +1,7 @@
 {
   "steamid": "76561198205097675",
   "country": "ua",
-  "cached_at": "2026-07-28T08:37:21.855Z",
+  "cached_at": "2026-07-29T08:44:27.597Z",
   "user": {},
   "maps": {
     "header": {
@@ -10,7 +10,7 @@
       "desc": {
         "{{Points}}": 25215,
         "{{Position}}": 13,
-        "{{COMPLETIONS-MAP}}": "146 (88.49%)"
+        "{{COMPLETIONS-MAP}}": "147 (89.1%)"
       }
     },
     "list": [
@@ -546,15 +546,6 @@
         "completions": "4"
       },
       {
-        "map": "kz_kukkojapallokidutus",
-        "points": "156.1676",
-        "time_record": "04:50.9375",
-        "unixtime_record": 1778760619,
-        "place_num": "54 / 255",
-        "tier": "6",
-        "completions": "17"
-      },
-      {
         "map": "kz_afterlife",
         "points": "234.0501",
         "time_record": "03:53.3907",
@@ -562,6 +553,15 @@
         "place_num": "55 / 520",
         "tier": "6",
         "completions": "6"
+      },
+      {
+        "map": "kz_kukkojapallokidutus",
+        "points": "266.0126",
+        "time_record": "04:50.9375",
+        "unixtime_record": 1778760619,
+        "place_num": "55 / 255",
+        "tier": "6",
+        "completions": "17"
       },
       {
         "map": "kz_breezeblocks",
@@ -784,7 +784,7 @@
         "points": "135.7727",
         "time_record": "03:30.8594",
         "unixtime_record": 1753143840,
-        "place_num": "96 / 433",
+        "place_num": "96 / 9 999",
         "tier": "6",
         "completions": "7"
       },
@@ -1327,6 +1327,15 @@
         "place_num": "3 241 / 16 026",
         "tier": "1",
         "completions": "7"
+      },
+      {
+        "map": "kz_cf_foliage",
+        "points": "0.0000",
+        "time_record": "18:00.1563",
+        "unixtime_record": 1785235332,
+        "place_num": "9 999 / 99",
+        "tier": "7",
+        "completions": "11"
       }
     ]
   }
