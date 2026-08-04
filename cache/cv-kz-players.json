@@ -1,32 +1,11 @@
 {
-  "updated_at": "2026-08-04T06:21:49.282Z",
+  "updated_at": "2026-08-04T08:40:39.726Z",
   "players": [
-    {
-      "steamid": "76561198220560427",
-      "nickname": "P3PE",
-      "country": "cv",
-      "cached_at": "2026-06-07T09:56:10.388Z",
-      "kz_points": 18,
-      "kz_place": 270226,
-      "kz_maps": "1 (0.61%)",
-      "avatar": "https://avatars.steamstatic.com/3299103af85704b8670c7d0db8a48149d84cda79_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_victoria",
-          "points": "18.5678",
-          "completions": "4",
-          "tier": "1",
-          "place_num": "32 853 / 64 441",
-          "time_record": "02:38.4063",
-          "unixtime_record": 1778449385
-        }
-      ]
-    },
     {
       "steamid": "76561199201039966",
       "nickname": "hog",
       "country": "cv",
-      "cached_at": "2026-08-03T09:50:02.807Z",
+      "cached_at": "2026-08-04T08:40:10.801Z",
       "kz_points": 23438,
       "kz_place": 24,
       "kz_maps": "157 (95.16%)",
@@ -298,7 +277,7 @@
           "points": "199.6568",
           "time_record": "05:05.2188",
           "unixtime_record": 1779968471,
-          "place_num": "44 / 422",
+          "place_num": "44 / 9 999",
           "tier": "5",
           "completions": "5"
         },
@@ -529,12 +508,12 @@
         },
         {
           "map": "kz_slide_deee",
-          "points": "112.3809",
-          "time_record": "11:40.2969",
-          "unixtime_record": 1779120635,
+          "points": "0.0000",
+          "time_record": "05:40.6250",
+          "unixtime_record": 1785760367,
           "place_num": "75 / 9 999",
           "tier": "6",
-          "completions": "3"
+          "completions": "4"
         },
         {
           "map": "kz_hitech",
@@ -718,12 +697,12 @@
         },
         {
           "map": "kz_divert",
-          "points": "105.5181",
-          "time_record": "09:31.9375",
-          "unixtime_record": 1776199480,
+          "points": "0.0000",
+          "time_record": "06:01.5000",
+          "unixtime_record": 1785761610,
           "place_num": "113 / 253",
           "tier": "6",
-          "completions": "3"
+          "completions": "5"
         },
         {
           "map": "skz_bananaysoda_2",
@@ -1060,10 +1039,10 @@
         },
         {
           "map": "kz_moorerutan",
-          "points": "108.9269",
+          "points": "108.4179",
           "time_record": "02:53.1094",
           "unixtime_record": 1761668127,
-          "place_num": "218 / 10 364",
+          "place_num": "218 / 10 365",
           "tier": "2",
           "completions": "2"
         },
@@ -1501,6 +1480,27 @@
           "place_num": "92 712 / 204 071",
           "time_record": "05:17.8907",
           "unixtime_record": 1739104503
+        }
+      ]
+    },
+    {
+      "steamid": "76561198220560427",
+      "nickname": "P3PE",
+      "country": "cv",
+      "cached_at": "2026-06-07T09:56:10.388Z",
+      "kz_points": 18,
+      "kz_place": 270226,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/3299103af85704b8670c7d0db8a48149d84cda79_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_victoria",
+          "points": "18.5678",
+          "completions": "4",
+          "tier": "1",
+          "place_num": "32 853 / 64 441",
+          "time_record": "02:38.4063",
+          "unixtime_record": 1778449385
         }
       ]
     }

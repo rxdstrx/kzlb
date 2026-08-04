@@ -1,32 +1,11 @@
 {
-  "updated_at": "2026-08-04T06:21:48.853Z",
+  "updated_at": "2026-08-04T08:40:39.737Z",
   "players": [
-    {
-      "steamid": "76561199104228714",
-      "nickname": "aurafarmer",
-      "country": "ch",
-      "cached_at": "2026-06-07T10:05:44.153Z",
-      "kz_points": 114,
-      "kz_place": 99184,
-      "kz_maps": "1 (0.61%)",
-      "avatar": "https://avatars.steamstatic.com/18425f42891a862e702ae66dbca59152ee76372d_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_phamous",
-          "points": "114.0416",
-          "completions": "17",
-          "tier": "2",
-          "place_num": "3 097 / 204 071",
-          "time_record": "02:21.6563",
-          "unixtime_record": 1778875772
-        }
-      ]
-    },
     {
       "steamid": "76561199180987361",
       "nickname": "n0ca71",
       "country": "ch",
-      "cached_at": "2026-08-03T09:50:24.758Z",
+      "cached_at": "2026-08-04T08:40:30.271Z",
       "kz_points": 18017,
       "kz_place": 74,
       "kz_maps": "142 (86.07%)",
@@ -757,7 +736,7 @@
           "points": "69.6322",
           "time_record": "14:35.1563",
           "unixtime_record": 1782666115,
-          "place_num": "223 / 422",
+          "place_num": "223 / 9 999",
           "tier": "5",
           "completions": "2"
         },
@@ -1168,10 +1147,10 @@
         },
         {
           "map": "kz_moorerutan",
-          "points": "90.6075",
+          "points": "90.1841",
           "time_record": "03:28.1094",
           "unixtime_record": 1761468076,
-          "place_num": "706 / 10 364",
+          "place_num": "707 / 10 365",
           "tier": "2",
           "completions": "3"
         },
@@ -1309,6 +1288,27 @@
           "place_num": "3 000 / 26 306",
           "tier": "3",
           "completions": "3"
+        }
+      ]
+    },
+    {
+      "steamid": "76561199104228714",
+      "nickname": "aurafarmer",
+      "country": "ch",
+      "cached_at": "2026-06-07T10:05:44.153Z",
+      "kz_points": 114,
+      "kz_place": 99184,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/18425f42891a862e702ae66dbca59152ee76372d_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_phamous",
+          "points": "114.0416",
+          "completions": "17",
+          "tier": "2",
+          "place_num": "3 097 / 204 071",
+          "time_record": "02:21.6563",
+          "unixtime_record": 1778875772
         }
       ]
     }

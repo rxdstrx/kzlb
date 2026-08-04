@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-08-04T06:21:49.105Z",
+  "updated_at": "2026-08-04T08:40:39.734Z",
   "players": [
     {
       "steamid": "76561199169524945",
       "nickname": "󠁳󠁳 jil",
       "country": "cn",
-      "cached_at": "2026-08-03T09:50:16.558Z",
+      "cached_at": "2026-08-04T08:40:23.283Z",
       "kz_points": 19837,
       "kz_place": 55,
       "kz_maps": "136 (82.43%)",
@@ -493,7 +493,7 @@
           "points": "121.5665",
           "time_record": "08:21.2813",
           "unixtime_record": 1780716217,
-          "place_num": "131 / 422",
+          "place_num": "131 / 9 999",
           "tier": "5",
           "completions": "4"
         },
@@ -1012,10 +1012,10 @@
         },
         {
           "map": "kz_moorerutan",
-          "points": "107.5581",
+          "points": "107.0555",
           "time_record": "02:55.3125",
           "unixtime_record": 1752749185,
-          "place_num": "236 / 10 364",
+          "place_num": "236 / 10 365",
           "tier": "2",
           "completions": "5"
         },
@@ -1234,48 +1234,6 @@
           "place_num": "1 161 / 204 071",
           "tier": "2",
           "completions": "15"
-        }
-      ]
-    },
-    {
-      "steamid": "76561199348448301",
-      "nickname": "kill",
-      "country": "cn",
-      "cached_at": "2026-06-07T08:21:29.675Z",
-      "kz_points": 47,
-      "kz_place": 186519,
-      "kz_maps": "1 (0.61%)",
-      "avatar": "https://avatars.steamstatic.com/85fe96b0f84e8a2a1d73fa545a1e3a74e3ae3254_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_victoria",
-          "points": "47.0955",
-          "completions": "9",
-          "tier": "1",
-          "place_num": "4 170 / 64 441",
-          "time_record": "01:02.4532",
-          "unixtime_record": 1776276681
-        }
-      ]
-    },
-    {
-      "steamid": "76561199104228714",
-      "nickname": "aurafarmer",
-      "country": "cn",
-      "cached_at": "2026-06-07T10:05:44.153Z",
-      "kz_points": 114,
-      "kz_place": 99184,
-      "kz_maps": "1 (0.61%)",
-      "avatar": "https://avatars.steamstatic.com/18425f42891a862e702ae66dbca59152ee76372d_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_phamous",
-          "points": "114.0416",
-          "completions": "17",
-          "tier": "2",
-          "place_num": "3 097 / 204 071",
-          "time_record": "02:21.6563",
-          "unixtime_record": 1778875772
         }
       ]
     },
@@ -1951,7 +1909,7 @@
           "points": "109.5598",
           "time_record": "02:52.1094",
           "unixtime_record": 1753289810,
-          "place_num": "204 / 10 364",
+          "place_num": "204 / 10 365",
           "tier": "2",
           "completions": "1"
         },
@@ -2395,7 +2353,7 @@
           "points": "328.0959",
           "completions": "3",
           "tier": "5",
-          "place_num": "5 / 422",
+          "place_num": "5 / 9 999",
           "time_record": "03:11.1719",
           "unixtime_record": 1780080213
         },
@@ -2650,6 +2608,48 @@
           "place_num": "63 / 2 396",
           "time_record": "02:52.9688",
           "unixtime_record": 1772881881
+        }
+      ]
+    },
+    {
+      "steamid": "76561199104228714",
+      "nickname": "aurafarmer",
+      "country": "cn",
+      "cached_at": "2026-06-07T10:05:44.153Z",
+      "kz_points": 114,
+      "kz_place": 99184,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/18425f42891a862e702ae66dbca59152ee76372d_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_phamous",
+          "points": "114.0416",
+          "completions": "17",
+          "tier": "2",
+          "place_num": "3 097 / 204 071",
+          "time_record": "02:21.6563",
+          "unixtime_record": 1778875772
+        }
+      ]
+    },
+    {
+      "steamid": "76561199348448301",
+      "nickname": "kill",
+      "country": "cn",
+      "cached_at": "2026-06-07T08:21:29.675Z",
+      "kz_points": 47,
+      "kz_place": 186519,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/85fe96b0f84e8a2a1d73fa545a1e3a74e3ae3254_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_victoria",
+          "points": "47.0955",
+          "completions": "9",
+          "tier": "1",
+          "place_num": "4 170 / 64 441",
+          "time_record": "01:02.4532",
+          "unixtime_record": 1776276681
         }
       ]
     }
