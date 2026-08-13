@@ -1,35 +1,14 @@
 {
-  "updated_at": "2026-08-13T05:28:35.252Z",
+  "updated_at": "2026-08-13T07:37:57.338Z",
   "players": [
-    {
-      "steamid": "76561199104228714",
-      "nickname": "aurafarmer",
-      "country": "ch",
-      "cached_at": "2026-06-07T10:05:44.153Z",
-      "kz_points": 114,
-      "kz_place": 99184,
-      "kz_maps": "1 (0.61%)",
-      "avatar": "https://avatars.steamstatic.com/18425f42891a862e702ae66dbca59152ee76372d_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_phamous",
-          "points": "114.0416",
-          "completions": "17",
-          "tier": "2",
-          "place_num": "3 097 / 206 034",
-          "time_record": "02:21.6563",
-          "unixtime_record": 1778875772
-        }
-      ]
-    },
     {
       "steamid": "76561199180987361",
       "nickname": "n0ca71",
       "country": "ch",
-      "cached_at": "2026-08-12T07:28:00.509Z",
+      "cached_at": "2026-08-13T07:37:47.488Z",
       "kz_points": 18109,
       "kz_place": 74,
-      "kz_maps": "142 (86.07%)",
+      "kz_maps": "144 (87.28%)",
       "avatar": "https://avatars.steamstatic.com/f0c716dc9f9485a5195faca2a2d182d78c1ce278_full.jpg",
       "maps_list": [
         {
@@ -55,7 +34,7 @@
           "points": "189.3692",
           "time_record": "01:29.3282",
           "unixtime_record": 1780232950,
-          "place_num": "27 / 2 439",
+          "place_num": "27 / 9 999",
           "tier": "3",
           "completions": "6"
         },
@@ -925,12 +904,12 @@
         },
         {
           "map": "kz_slowrun",
-          "points": "22.1683",
-          "time_record": "21:31.4375",
-          "unixtime_record": 1768716375,
+          "points": "0.0000",
+          "time_record": "05:40.3907",
+          "unixtime_record": 1786533973,
           "place_num": "351 / 9 999",
           "tier": "6",
-          "completions": "2"
+          "completions": "4"
         },
         {
           "map": "kz_sp1_bloodyljs_v2",
@@ -1096,12 +1075,12 @@
         },
         {
           "map": "kz_kzro_mountainroad",
-          "points": "189.7199",
-          "time_record": "05:17.0313",
-          "unixtime_record": 1766957059,
+          "points": "0.0000",
+          "time_record": "03:06.1563",
+          "unixtime_record": 1786536256,
           "place_num": "531 / 1 181",
           "tier": "5",
-          "completions": "1"
+          "completions": "3"
         },
         {
           "map": "kz_brightblock",
@@ -1135,7 +1114,7 @@
           "points": "121.5504",
           "time_record": "03:18.8750",
           "unixtime_record": 1780000661,
-          "place_num": "597 / 2 374",
+          "place_num": "597 / 9 999",
           "tier": "3",
           "completions": "2"
         },
@@ -1309,6 +1288,45 @@
           "place_num": "3 087 / 26 851",
           "tier": "3",
           "completions": "3"
+        },
+        {
+          "map": "kz_bhop_apricity",
+          "points": "0.0000",
+          "time_record": "20:40.7188",
+          "unixtime_record": 1786568236,
+          "place_num": "9 999 / 157",
+          "tier": "6",
+          "completions": "1"
+        },
+        {
+          "map": "kz_kzro_hardhoodoo",
+          "points": "0.0000",
+          "time_record": "02:03:15.5469",
+          "unixtime_record": 1786545652,
+          "place_num": "9 999 / 9 999",
+          "tier": "6",
+          "completions": "1"
+        }
+      ]
+    },
+    {
+      "steamid": "76561199104228714",
+      "nickname": "aurafarmer",
+      "country": "ch",
+      "cached_at": "2026-06-07T10:05:44.153Z",
+      "kz_points": 114,
+      "kz_place": 99184,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/18425f42891a862e702ae66dbca59152ee76372d_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_phamous",
+          "points": "114.0416",
+          "completions": "17",
+          "tier": "2",
+          "place_num": "3 097 / 206 034",
+          "time_record": "02:21.6563",
+          "unixtime_record": 1778875772
         }
       ]
     }
