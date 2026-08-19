@@ -12,6 +12,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "-l", "5180", "C:/Users/uastr/Documents/EscolaConducao"],
       "port": 5180
+    },
+    {
+      "name": "clashroyale-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:/Users/uastr/Documents/clashroyale-web", "run", "dev", "--", "--port", "5183", "--strictPort"],
+      "port": 5183
     }
   ]
 }
