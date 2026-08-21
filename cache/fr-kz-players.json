@@ -1,32 +1,11 @@
 {
-  "updated_at": "2026-08-21T04:29:36.461Z",
+  "updated_at": "2026-08-21T06:51:49.214Z",
   "players": [
-    {
-      "steamid": "76561198220560427",
-      "nickname": "P3PE",
-      "country": "fr",
-      "cached_at": "2026-06-07T09:56:10.388Z",
-      "kz_points": 18,
-      "kz_place": 270226,
-      "kz_maps": "1 (0.61%)",
-      "avatar": "https://avatars.steamstatic.com/3299103af85704b8670c7d0db8a48149d84cda79_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_victoria",
-          "points": "18.5678",
-          "completions": "4",
-          "tier": "1",
-          "place_num": "32 853 / 66 201",
-          "time_record": "02:38.4063",
-          "unixtime_record": 1778449385
-        }
-      ]
-    },
     {
       "steamid": "76561199152115838",
       "nickname": "auditore",
       "country": "fr",
-      "cached_at": "2026-08-20T06:49:21.923Z",
+      "cached_at": "2026-08-21T06:51:26.348Z",
       "kz_points": 20971,
       "kz_place": 43,
       "kz_maps": "110 (66.67%)",
@@ -520,7 +499,7 @@
         },
         {
           "map": "kz_lumen",
-          "points": "161.6218",
+          "points": "158.6038",
           "time_record": "01:43.2344",
           "unixtime_record": 1779468671,
           "place_num": "47 / 3 217",
@@ -667,7 +646,7 @@
           "points": "200.5702",
           "time_record": "03:04.5157",
           "unixtime_record": 1779648494,
-          "place_num": "81 / 1 964",
+          "place_num": "81 / 9 999",
           "tier": "5",
           "completions": "2"
         },
@@ -997,10 +976,10 @@
         },
         {
           "map": "kz_key",
-          "points": "89.2804",
+          "points": "87.4518",
           "time_record": "03:48.2813",
           "unixtime_record": 1776802880,
-          "place_num": "1 518 / 15 689",
+          "place_num": "1 522 / 15 714",
           "tier": "2",
           "completions": "1"
         },
@@ -1042,6 +1021,27 @@
           "place_num": "122 562 / 208 005",
           "time_record": "06:51.6250",
           "unixtime_record": 1768060524
+        }
+      ]
+    },
+    {
+      "steamid": "76561198220560427",
+      "nickname": "P3PE",
+      "country": "fr",
+      "cached_at": "2026-06-07T09:56:10.388Z",
+      "kz_points": 18,
+      "kz_place": 270226,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/3299103af85704b8670c7d0db8a48149d84cda79_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_victoria",
+          "points": "18.5678",
+          "completions": "4",
+          "tier": "1",
+          "place_num": "32 853 / 66 201",
+          "time_record": "02:38.4063",
+          "unixtime_record": 1778449385
         }
       ]
     }
