@@ -1,32 +1,11 @@
 {
-  "updated_at": "2026-08-25T04:30:15.288Z",
+  "updated_at": "2026-08-25T06:52:27.048Z",
   "players": [
-    {
-      "steamid": "76561199104228714",
-      "nickname": "aurafarmer",
-      "country": "ch",
-      "cached_at": "2026-06-07T10:05:44.153Z",
-      "kz_points": 114,
-      "kz_place": 99184,
-      "kz_maps": "1 (0.61%)",
-      "avatar": "https://avatars.steamstatic.com/18425f42891a862e702ae66dbca59152ee76372d_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_phamous",
-          "points": "114.0416",
-          "completions": "17",
-          "tier": "2",
-          "place_num": "3 097 / 209 082",
-          "time_record": "02:21.6563",
-          "unixtime_record": 1778875772
-        }
-      ]
-    },
     {
       "steamid": "76561199180987361",
       "nickname": "n0ca71",
       "country": "ch",
-      "cached_at": "2026-08-24T07:01:57.934Z",
+      "cached_at": "2026-08-25T06:52:17.050Z",
       "kz_points": 18388,
       "kz_place": 74,
       "kz_maps": "144 (87.28%)",
@@ -784,7 +763,7 @@
           "points": "135.8101",
           "time_record": "05:45.5938",
           "unixtime_record": 1780140158,
-          "place_num": "242 / 1 464",
+          "place_num": "242 / 9 999",
           "tier": "4",
           "completions": "5"
         },
@@ -1327,6 +1306,27 @@
           "place_num": "3 188 / 27 443",
           "tier": "3",
           "completions": "3"
+        }
+      ]
+    },
+    {
+      "steamid": "76561199104228714",
+      "nickname": "aurafarmer",
+      "country": "ch",
+      "cached_at": "2026-06-07T10:05:44.153Z",
+      "kz_points": 114,
+      "kz_place": 99184,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/18425f42891a862e702ae66dbca59152ee76372d_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_phamous",
+          "points": "114.0416",
+          "completions": "17",
+          "tier": "2",
+          "place_num": "3 097 / 209 082",
+          "time_record": "02:21.6563",
+          "unixtime_record": 1778875772
         }
       ]
     },

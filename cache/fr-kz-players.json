@@ -1,32 +1,11 @@
 {
-  "updated_at": "2026-08-25T04:30:16.530Z",
+  "updated_at": "2026-08-25T06:52:27.042Z",
   "players": [
-    {
-      "steamid": "76561198220560427",
-      "nickname": "P3PE",
-      "country": "fr",
-      "cached_at": "2026-06-07T09:56:10.388Z",
-      "kz_points": 18,
-      "kz_place": 270226,
-      "kz_maps": "1 (0.61%)",
-      "avatar": "https://avatars.steamstatic.com/3299103af85704b8670c7d0db8a48149d84cda79_full.jpg",
-      "maps_list": [
-        {
-          "map": "kz_victoria",
-          "points": "18.5678",
-          "completions": "4",
-          "tier": "1",
-          "place_num": "32 853 / 66 587",
-          "time_record": "02:38.4063",
-          "unixtime_record": 1778449385
-        }
-      ]
-    },
     {
       "steamid": "76561199152115838",
       "nickname": "auditore",
       "country": "fr",
-      "cached_at": "2026-08-24T07:01:50.399Z",
+      "cached_at": "2026-08-25T06:52:04.920Z",
       "kz_points": 20963,
       "kz_place": 44,
       "kz_maps": "110 (66.67%)",
@@ -100,7 +79,7 @@
           "points": "250.0497",
           "time_record": "03:07.7032",
           "unixtime_record": 1780338921,
-          "place_num": "11 / 1 464",
+          "place_num": "11 / 9 999",
           "tier": "4",
           "completions": "7"
         },
@@ -1081,6 +1060,27 @@
           "place_num": "122 562 / 209 082",
           "time_record": "06:51.6250",
           "unixtime_record": 1768060524
+        }
+      ]
+    },
+    {
+      "steamid": "76561198220560427",
+      "nickname": "P3PE",
+      "country": "fr",
+      "cached_at": "2026-06-07T09:56:10.388Z",
+      "kz_points": 18,
+      "kz_place": 270226,
+      "kz_maps": "1 (0.61%)",
+      "avatar": "https://avatars.steamstatic.com/3299103af85704b8670c7d0db8a48149d84cda79_full.jpg",
+      "maps_list": [
+        {
+          "map": "kz_victoria",
+          "points": "18.5678",
+          "completions": "4",
+          "tier": "1",
+          "place_num": "32 853 / 66 587",
+          "time_record": "02:38.4063",
+          "unixtime_record": 1778449385
         }
       ]
     }

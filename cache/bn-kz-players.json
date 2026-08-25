@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-08-25T04:30:14.652Z",
+  "updated_at": "2026-08-25T06:52:27.045Z",
   "players": [
     {
       "steamid": "76561199842249972",
       "nickname": "10q",
       "country": "bn",
-      "cached_at": "2026-08-24T07:01:53.966Z",
+      "cached_at": "2026-08-25T06:52:10.663Z",
       "kz_points": 19799,
       "kz_place": 58,
-      "kz_maps": "141 (85.46%)",
+      "kz_maps": "142 (86.07%)",
       "avatar": "https://avatars.steamstatic.com/42b6950fd0b462c3cdefb4826ead67380ca42ce3_full.jpg",
       "maps_list": [
         {
@@ -394,7 +394,7 @@
           "points": "172.2094",
           "time_record": "04:32.5469",
           "unixtime_record": 1780168116,
-          "place_num": "115 / 1 464",
+          "place_num": "115 / 9 999",
           "tier": "4",
           "completions": "5"
         },
@@ -1279,6 +1279,15 @@
           "place_num": "2 396 / 11 628",
           "tier": "2",
           "completions": "2"
+        },
+        {
+          "map": "kz_moon_fix",
+          "points": "0.0000",
+          "time_record": "02:54:28.7500",
+          "unixtime_record": 1787586724,
+          "place_num": "9 999 / 76",
+          "tier": "7",
+          "completions": "1"
         }
       ]
     }
