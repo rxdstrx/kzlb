@@ -18,6 +18,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "C:/Users/uastr/Documents/clashroyale-web", "run", "dev", "--", "--port", "5183", "--strictPort"],
       "port": 5183
+    },
+    {
+      "name": "tracker",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:/Users/uastr/Documents/tracker", "run", "dev", "--", "--port", "5185"],
+      "port": 5185
     }
   ]
 }
