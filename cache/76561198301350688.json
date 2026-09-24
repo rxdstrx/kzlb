@@ -1,7 +1,7 @@
 {
   "steamid": "76561198301350688",
   "country": "ua",
-  "cached_at": "2026-09-23T11:00:13.457Z",
+  "cached_at": "2026-09-24T11:19:08.448Z",
   "user": {},
   "maps": {
     "header": {
@@ -10,7 +10,7 @@
       "desc": {
         "{{Points}}": 18677,
         "{{Position}}": 82,
-        "{{COMPLETIONS-MAP}}": "141 (77.91%)"
+        "{{COMPLETIONS-MAP}}": "142 (78.46%)"
       }
     },
     "list": [
@@ -109,13 +109,13 @@
         "points": "69.3114",
         "time_record": "17:04.3438",
         "unixtime_record": 1790101091,
-        "place_num": "89 / 117",
+        "place_num": "89 / 116",
         "tier": "6",
         "completions": "2"
       },
       {
         "map": "kz_kuutio",
-        "points": "188.8087",
+        "points": "187.1030",
         "time_record": "04:47.3125",
         "unixtime_record": 1785083127,
         "place_num": "97 / 2 242",
@@ -402,15 +402,6 @@
         "completions": "9"
       },
       {
-        "map": "kz_longjumps_easy",
-        "points": "191.8866",
-        "time_record": "00:29.9219",
-        "unixtime_record": 1789681957,
-        "place_num": "195 / 2 304",
-        "tier": "3",
-        "completions": "4"
-      },
-      {
         "map": "kz_kiwi_lars",
         "points": "202.2905",
         "time_record": "03:32.5313",
@@ -427,6 +418,15 @@
         "place_num": "197 / 16 402",
         "tier": "2",
         "completions": "7"
+      },
+      {
+        "map": "kz_longjumps_easy",
+        "points": "190.0977",
+        "time_record": "00:29.9219",
+        "unixtime_record": 1789681957,
+        "place_num": "199 / 2 362",
+        "tier": "3",
+        "completions": "4"
       },
       {
         "map": "kz_adv_cursedjourney",
@@ -745,10 +745,10 @@
       },
       {
         "map": "kz_shift",
-        "points": "152.7405",
+        "points": "103.8695",
         "time_record": "01:50.7500",
         "unixtime_record": 1779919771,
-        "place_num": "316 / 2 902",
+        "place_num": "317 / 2 903",
         "tier": "3",
         "completions": "7"
       },
@@ -808,10 +808,10 @@
       },
       {
         "map": "kz_wasabi",
-        "points": "102.2891",
+        "points": "74.7789",
         "time_record": "01:43.7032",
         "unixtime_record": 1784577981,
-        "place_num": "329 / 12 325",
+        "place_num": "333 / 12 337",
         "tier": "2",
         "completions": "9"
       },
@@ -1099,7 +1099,7 @@
         "points": "52.5995",
         "time_record": "06:22.4375",
         "unixtime_record": 1785440904,
-        "place_num": "597 / 953",
+        "place_num": "597 / 952",
         "tier": "5",
         "completions": "5"
       },
@@ -1213,10 +1213,10 @@
       },
       {
         "map": "kz_summercliff2",
-        "points": "94.2441",
+        "points": "92.8361",
         "time_record": "05:10.7657",
         "unixtime_record": 1775299718,
-        "place_num": "1 068 / 16 857",
+        "place_num": "1 070 / 16 873",
         "tier": "2",
         "completions": "5"
       },
@@ -1231,10 +1231,10 @@
       },
       {
         "map": "kz_mz",
-        "points": "64.3734",
+        "points": "45.1344",
         "time_record": "00:12.1250",
         "unixtime_record": 1784465807,
-        "place_num": "1 134 / 18 315",
+        "place_num": "1 139 / 18 321",
         "tier": "1",
         "completions": "26"
       },
@@ -1282,6 +1282,15 @@
         "place_num": "3 252 / 215 147",
         "tier": "2",
         "completions": "13"
+      },
+      {
+        "map": "kz_d_decompile",
+        "points": "0.0000",
+        "time_record": "01:20:35.2188",
+        "unixtime_record": 1790163003,
+        "place_num": "9 999 / 32",
+        "tier": "6",
+        "completions": "1"
       }
     ]
   }
