@@ -1,7 +1,7 @@
 {
   "steamid": "76561198205809289",
   "country": "ru",
-  "cached_at": "2026-09-24T11:18:59.842Z",
+  "cached_at": "2026-09-25T11:24:17.251Z",
   "user": {},
   "maps": {
     "header": {
@@ -10,16 +10,16 @@
       "desc": {
         "{{Points}}": 20658,
         "{{Position}}": 54,
-        "{{COMPLETIONS-MAP}}": "161 (88.96%)"
+        "{{COMPLETIONS-MAP}}": "162 (89.51%)"
       }
     },
     "list": [
       {
         "map": "kz_shift",
-        "points": "134.1032",
+        "points": "126.1330",
         "time_record": "01:25.7813",
         "unixtime_record": 1780167585,
-        "place_num": "20 / 2 903",
+        "place_num": "26 / 2 906",
         "tier": "3",
         "completions": "9"
       },
@@ -96,15 +96,6 @@
         "completions": "6"
       },
       {
-        "map": "kz_divert",
-        "points": "119.9302",
-        "time_record": "09:52.0000",
-        "unixtime_record": 1789993027,
-        "place_num": "66 / 116",
-        "tier": "6",
-        "completions": "5"
-      },
-      {
         "map": "kz_hitech",
         "points": "238.5465",
         "time_record": "03:41.3594",
@@ -112,6 +103,15 @@
         "place_num": "66 / 669",
         "tier": "5",
         "completions": "7"
+      },
+      {
+        "map": "kz_divert",
+        "points": "113.7271",
+        "time_record": "09:52.0000",
+        "unixtime_record": 1789993027,
+        "place_num": "67 / 118",
+        "tier": "6",
+        "completions": "5"
       },
       {
         "map": "kz_slowerrun",
@@ -217,7 +217,7 @@
         "points": "118.1004",
         "time_record": "06:06.6094",
         "unixtime_record": 1789482924,
-        "place_num": "81 / 404",
+        "place_num": "81 / 9 999",
         "tier": "4",
         "completions": "2"
       },
@@ -424,7 +424,7 @@
         "points": "189.1577",
         "time_record": "01:17.2813",
         "unixtime_record": 1780316902,
-        "place_num": "129 / 5 841",
+        "place_num": "129 / 9 999",
         "tier": "3",
         "completions": "7"
       },
@@ -537,15 +537,6 @@
         "completions": "7"
       },
       {
-        "map": "kz_longjumps_space",
-        "points": "243.2442",
-        "time_record": "01:49.7344",
-        "unixtime_record": 1780399400,
-        "place_num": "146 / 5 349",
-        "tier": "4",
-        "completions": "13"
-      },
-      {
         "map": "kz_sxb2_remake",
         "points": "209.1635",
         "time_record": "03:51.6250",
@@ -553,6 +544,15 @@
         "place_num": "147 / 1 864",
         "tier": "4",
         "completions": "8"
+      },
+      {
+        "map": "kz_longjumps_space",
+        "points": "237.9658",
+        "time_record": "01:49.7344",
+        "unixtime_record": 1780399400,
+        "place_num": "149 / 5 387",
+        "tier": "4",
+        "completions": "13"
       },
       {
         "map": "kz_illusion_gfix",
@@ -1045,7 +1045,7 @@
         "points": "83.2332",
         "time_record": "02:24.3282",
         "unixtime_record": 1790074136,
-        "place_num": "294 / 1 011",
+        "place_num": "294 / 9 999",
         "tier": "2",
         "completions": "2"
       },
@@ -1189,7 +1189,7 @@
         "points": "92.4986",
         "time_record": "01:11.4844",
         "unixtime_record": 1775566267,
-        "place_num": "376 / 4 453",
+        "place_num": "376 / 9 999",
         "tier": "2",
         "completions": "8"
       },
@@ -1213,10 +1213,10 @@
       },
       {
         "map": "kz_after_agitation_v2",
-        "points": "93.2352",
+        "points": "5.2481",
         "time_record": "27:31.2500",
         "unixtime_record": 1777735422,
-        "place_num": "407 / 1 498",
+        "place_num": "408 / 1 500",
         "tier": "4",
         "completions": "2"
       },
@@ -1461,6 +1461,15 @@
         "unixtime_record": 1777222966,
         "place_num": "1 337 / 2 372",
         "tier": "4",
+        "completions": "1"
+      },
+      {
+        "map": "kz_bhop_slide",
+        "points": "0.0000",
+        "time_record": "33:38.1719",
+        "unixtime_record": 1790319470,
+        "place_num": "9 999 / 48",
+        "tier": "6",
         "completions": "1"
       }
     ]
