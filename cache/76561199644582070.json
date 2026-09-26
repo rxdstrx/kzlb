@@ -1,7 +1,7 @@
 {
   "steamid": "76561199644582070",
   "country": "ru",
-  "cached_at": "2026-09-25T11:23:58.393Z",
+  "cached_at": "2026-09-26T11:00:58.042Z",
   "user": {},
   "maps": {
     "header": {
@@ -10,7 +10,7 @@
       "desc": {
         "{{Points}}": 26187,
         "{{Position}}": 17,
-        "{{COMPLETIONS-MAP}}": "161 (88.96%)"
+        "{{COMPLETIONS-MAP}}": "162 (89.51%)"
       }
     },
     "list": [
@@ -30,7 +30,7 @@
         "unixtime_record": 1789713437,
         "place_num": "3 / 4 147",
         "tier": "1",
-        "completions": "6"
+        "completions": "8"
       },
       {
         "map": "kz_alouette_fix",
@@ -150,15 +150,6 @@
         "completions": "9"
       },
       {
-        "map": "kz_lmn",
-        "points": "71.5817",
-        "time_record": "00:48.7344",
-        "unixtime_record": 1789751337,
-        "place_num": "9 / 18 417",
-        "tier": "1",
-        "completions": "20"
-      },
-      {
         "map": "kz_royalcapital",
         "points": "131.8060",
         "time_record": "01:31.1407",
@@ -166,6 +157,15 @@
         "place_num": "10 / 9 999",
         "tier": "2",
         "completions": "4"
+      },
+      {
+        "map": "kz_lmn",
+        "points": "71.3222",
+        "time_record": "00:48.7344",
+        "unixtime_record": 1789751337,
+        "place_num": "10 / 18 460",
+        "tier": "1",
+        "completions": "20"
       },
       {
         "map": "kz_colors",
@@ -502,10 +502,10 @@
       },
       {
         "map": "kz_hex",
-        "points": "203.4736",
+        "points": "202.1897",
         "time_record": "01:19.8750",
         "unixtime_record": 1780407463,
-        "place_num": "33 / 3 807",
+        "place_num": "33 / 3 819",
         "tier": "3",
         "completions": "3"
       },
@@ -1371,7 +1371,7 @@
         "unixtime_record": 1773136724,
         "place_num": "333 / 6 323",
         "tier": "2",
-        "completions": "2"
+        "completions": "3"
       },
       {
         "map": "kz_sp1_bloodyljs_v2",
@@ -1462,6 +1462,15 @@
         "place_num": "1 362 / 215 147",
         "tier": "2",
         "completions": "16"
+      },
+      {
+        "map": "kz_greebochki",
+        "points": "0.0000",
+        "time_record": "01:31.4219",
+        "unixtime_record": 1790359248,
+        "place_num": "9 999 / 871",
+        "tier": "3",
+        "completions": "1"
       }
     ]
   }
