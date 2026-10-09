@@ -1,7 +1,7 @@
 {
   "steamid": "76561199214261896",
   "country": "jp",
-  "cached_at": "2026-10-08T13:00:13.774Z",
+  "cached_at": "2026-10-09T12:46:33.058Z",
   "user": {},
   "maps": {
     "header": {
@@ -10,7 +10,7 @@
       "desc": {
         "{{Points}}": 36029,
         "{{Position}}": 1,
-        "{{COMPLETIONS-MAP}}": "138 (76.25%)"
+        "{{COMPLETIONS-MAP}}": "140 (77.35%)"
       }
     },
     "list": [
@@ -469,7 +469,7 @@
         "points": "7673.8083",
         "time_record": "10:02.2813",
         "unixtime_record": 1790335632,
-        "place_num": "298 / 743",
+        "place_num": "298 / 742",
         "tier": "5",
         "completions": "0"
       },
@@ -865,7 +865,7 @@
         "points": "6647.4217",
         "time_record": "06:36.0469",
         "unixtime_record": 1790949603,
-        "place_num": "539 / 1 143",
+        "place_num": "539 / 9 999",
         "tier": "4",
         "completions": "1"
       },
@@ -1240,20 +1240,38 @@
       },
       {
         "map": "kz_wetlands",
-        "points": "5776.4476",
-        "time_record": "01:22.6719",
-        "unixtime_record": 1790970584,
+        "points": "8987.3213",
+        "time_record": "00:36.6094",
+        "unixtime_record": 1791524823,
         "place_num": "6 285 / 17 451",
+        "tier": "2",
+        "completions": "2"
+      },
+      {
+        "map": "kz_igneous",
+        "points": "8844.3939",
+        "time_record": "01:46.0000",
+        "unixtime_record": 1791467390,
+        "place_num": "9 999 / 49 154",
+        "tier": "2",
+        "completions": "3"
+      },
+      {
+        "map": "kz_sunstone",
+        "points": "8602.6447",
+        "time_record": "02:18.7344",
+        "unixtime_record": 1791525733,
+        "place_num": "9 999 / 13 249",
         "tier": "2",
         "completions": "1"
       },
       {
-        "map": "kz_igneous",
-        "points": "8771.6713",
-        "time_record": "01:50.2813",
-        "unixtime_record": 1791464085,
-        "place_num": "9 999 / 49 154",
-        "tier": "2",
+        "map": "kz_afterlife",
+        "points": "7027.7955",
+        "time_record": "33:53.5625",
+        "unixtime_record": 1791477200,
+        "place_num": "9 999 / 541",
+        "tier": "6",
         "completions": "1"
       }
     ]

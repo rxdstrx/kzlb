@@ -1,7 +1,7 @@
 {
   "steamid": "76561199000915337",
   "country": "ru",
-  "cached_at": "2026-10-08T13:00:16.418Z",
+  "cached_at": "2026-10-09T12:46:36.221Z",
   "user": {},
   "maps": {
     "header": {
@@ -10,7 +10,7 @@
       "desc": {
         "{{Points}}": 35757,
         "{{Position}}": 5,
-        "{{COMPLETIONS-MAP}}": "143 (79.01%)"
+        "{{COMPLETIONS-MAP}}": "146 (80.67%)"
       }
     },
     "list": [
@@ -334,7 +334,7 @@
         "points": "8407.8763",
         "time_record": "04:20.2969",
         "unixtime_record": 1786906809,
-        "place_num": "158 / 1 143",
+        "place_num": "158 / 9 999",
         "tier": "4",
         "completions": "0"
       },
@@ -946,7 +946,7 @@
         "points": "6380.3669",
         "time_record": "19:20.0625",
         "unixtime_record": 1787319100,
-        "place_num": "493 / 743",
+        "place_num": "493 / 742",
         "tier": "5",
         "completions": "0"
       },
@@ -1293,6 +1293,24 @@
         "completions": "1"
       },
       {
+        "map": "kz_sanctum",
+        "points": "8965.9723",
+        "time_record": "02:21.6094",
+        "unixtime_record": 1791474558,
+        "place_num": "9 999 / 2 788",
+        "tier": "3",
+        "completions": "1"
+      },
+      {
+        "map": "kz_communitybhop",
+        "points": "8870.0217",
+        "time_record": "01:16:27.5000",
+        "unixtime_record": 1791471583,
+        "place_num": "9 999 / 61",
+        "tier": "4",
+        "completions": "1"
+      },
+      {
         "map": "kz_lumen",
         "points": "9167.1212",
         "time_record": "01:56.7032",
@@ -1300,6 +1318,15 @@
         "place_num": "9 999 / 3 305",
         "tier": "3",
         "completions": "1"
+      },
+      {
+        "map": "kz_mz",
+        "points": "9008.6368",
+        "time_record": "00:11.5625",
+        "unixtime_record": 1791473225,
+        "place_num": "9 999 / 17 863",
+        "tier": "1",
+        "completions": "2"
       }
     ]
   }
