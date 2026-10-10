@@ -1,7 +1,7 @@
 {
   "steamid": "76561199799103100",
   "country": "ru",
-  "cached_at": "2026-10-09T12:47:09.962Z",
+  "cached_at": "2026-10-10T12:05:36.200Z",
   "user": {},
   "maps": {
     "header": {
@@ -10,7 +10,7 @@
       "desc": {
         "{{Points}}": 33901,
         "{{Position}}": 91,
-        "{{COMPLETIONS-MAP}}": "97 (53.6%)"
+        "{{COMPLETIONS-MAP}}": "98 (54.15%)"
       }
     },
     "list": [
@@ -880,12 +880,21 @@
       },
       {
         "map": "kz_loftroofs",
-        "points": "8917.7958",
-        "time_record": "04:52.5000",
-        "unixtime_record": 1791482603,
+        "points": "10000.0000",
+        "time_record": "03:55.9375",
+        "unixtime_record": 1791623498,
         "place_num": "9 999 / 5 933",
         "tier": "3",
-        "completions": "1"
+        "completions": "4"
+      },
+      {
+        "map": "kz_sxb2_onlyslide",
+        "points": "8787.5304",
+        "time_record": "06:31.7813",
+        "unixtime_record": 1791555896,
+        "place_num": "9 999 / 540",
+        "tier": "4",
+        "completions": "2"
       }
     ]
   }
