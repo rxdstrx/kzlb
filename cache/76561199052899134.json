@@ -1,7 +1,7 @@
 {
   "steamid": "76561199052899134",
   "country": "xx",
-  "cached_at": "2026-10-14T11:24:27.993Z",
+  "cached_at": "2026-10-15T11:01:31.542Z",
   "user": {},
   "maps": {
     "header": {
@@ -10,18 +10,18 @@
       "desc": {
         "{{Points}}": 34945,
         "{{Position}}": 50,
-        "{{COMPLETIONS-MAP}}": "90 (49.73%)"
+        "{{COMPLETIONS-MAP}}": "92 (50.83%)"
       }
     },
     "list": [
       {
         "map": "kz_noir",
-        "points": "9875.4109",
-        "time_record": "01:03.0157",
-        "unixtime_record": 1791908508,
+        "points": "10000.0000",
+        "time_record": "01:01.8125",
+        "unixtime_record": 1791997689,
         "place_num": "2 / 6 559",
         "tier": "2",
-        "completions": "3"
+        "completions": "4"
       },
       {
         "map": "kz_illusion_gfix",
@@ -823,6 +823,24 @@
         "place_num": "2 528 / 14 926",
         "tier": "2",
         "completions": "0"
+      },
+      {
+        "map": "kz_grotto",
+        "points": "9504.2812",
+        "time_record": "01:24.7969",
+        "unixtime_record": 1792000797,
+        "place_num": "9 999 / 38 966",
+        "tier": "2",
+        "completions": "1"
+      },
+      {
+        "map": "kz_rectangle",
+        "points": "8381.5675",
+        "time_record": "01:28.7500",
+        "unixtime_record": 1792040489,
+        "place_num": "9 999 / 1 492",
+        "tier": "4",
+        "completions": "1"
       }
     ]
   }

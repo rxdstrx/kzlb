@@ -1,7 +1,7 @@
 {
   "steamid": "76561199884912937",
   "country": "ru",
-  "cached_at": "2026-10-14T11:24:19.730Z",
+  "cached_at": "2026-10-15T11:01:20.128Z",
   "user": {},
   "maps": {
     "header": {
@@ -10,7 +10,7 @@
       "desc": {
         "{{Points}}": 35742,
         "{{Position}}": 26,
-        "{{COMPLETIONS-MAP}}": "122 (67.41%)"
+        "{{COMPLETIONS-MAP}}": "126 (69.62%)"
       }
     },
     "list": [
@@ -268,12 +268,12 @@
       },
       {
         "map": "kz_celestial",
-        "points": "9208.1006",
-        "time_record": "00:59.6719",
-        "unixtime_record": 1786120727,
+        "points": "9332.9419",
+        "time_record": "00:58.9688",
+        "unixtime_record": 1792054816,
         "place_num": "37 / 4 012",
         "tier": "3",
-        "completions": "0"
+        "completions": "1"
       },
       {
         "map": "kz_nightcastle",
@@ -1104,12 +1104,48 @@
         "completions": "1"
       },
       {
+        "map": "kz_longjumps_space",
+        "points": "9357.8342",
+        "time_record": "01:46.0625",
+        "unixtime_record": 1792054568,
+        "place_num": "9 999 / 5 421",
+        "tier": "4",
+        "completions": "3"
+      },
+      {
+        "map": "kz_illusion_gfix",
+        "points": "9009.9916",
+        "time_record": "03:54.3125",
+        "unixtime_record": 1791995801,
+        "place_num": "9 999 / 2 779",
+        "tier": "4",
+        "completions": "1"
+      },
+      {
+        "map": "kz_hoist",
+        "points": "9702.6352",
+        "time_record": "01:53.8282",
+        "unixtime_record": 1791996131,
+        "place_num": "9 999 / 633",
+        "tier": "5",
+        "completions": "2"
+      },
+      {
         "map": "kz_alien_city",
         "points": "9649.1669",
         "time_record": "10:01.4375",
         "unixtime_record": 1791973499,
         "place_num": "9 999 / 402",
         "tier": "6",
+        "completions": "1"
+      },
+      {
+        "map": "kz_maya",
+        "points": "9091.7165",
+        "time_record": "03:00.8750",
+        "unixtime_record": 1791995263,
+        "place_num": "9 999 / 2 582",
+        "tier": "3",
         "completions": "1"
       }
     ]
